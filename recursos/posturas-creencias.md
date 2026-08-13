@@ -1,0 +1,83 @@
+## Cómo leer el arbol:
+    <Respuesta de la Pregunta y descripción implicita de la misma>: <Nombre de Postura>
+    <Nombre de Postura> -> <Pregunta hacia la Postura>
+    Un * en el nombre de la postura significa que es un termino sugerido debido a falta de un término oficial.
+
+## Arbol de Desición:
+- Existencia: ¿Cómo inició el universo?
+    - Existencia -> ¿El universo fue causado por un Creador?
+      - Sí: Creacionismo
+          - Creacionismo -> ¿El Creador se identifica como Dios?
+              - No: Deísmo
+              - Sí: Teísmo
+                  - Teísmo & Deísmo -> ¿Jesucristo realmente existió?
+                      - No: Miticismo
+                      - Sí: Historicidad de Jesús*
+                          - Historicidad de Jesús* -> ¿Es Jesucristo un ser creado?
+                              - Sí: Cristo-creaturismo*
+                                  - Cristo-creaturismo* -> ¿Era Jesucristo inferior y subordinado a Dios?
+                                      - No: Sin-nombre {No se identifica quién que sostenga esta postura}
+                                      - Sí: Subordinacionismo
+                                          - Subordinacionismo -> ¿Era Jesucristo inicialmente un ser divino?
+                                              - Sí: Arrianismo
+                                                  - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
+                                                      - Sí: Arrianismo de los JW (Testigos de Jehová)
+                                                      - No: Arrianismo Clasico
+                                              - No: Unitarismo
+                                                - Unitarismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente?
+                                                  - Sí: Adopcionismo 
+                                                  - No: Unitarismo Clasico
+                                                      - Unitarismo Clasico -> ¿Jesús realizó milagros?
+                                                          - Sí: ?
+                                                            - ? -> ¿Jesucristo llegó a morir?
+                                                                - Sí: Ebionismo
+                                                                  - Ebionismo -> ¿Jesucristo Resucitó?
+                                                                    - Sí: Ebionismo Clasico
+                                                                    - No: Ahmadismo {Islam Ahmadí}
+                                                                - No: ? {Islam Suní/Chiita}
+                                                          - No: Naturalismo cristológico
+                                                              - Naturalismo cristológico -> ¿Jesús fue un profeta?
+                                                                  - Sí: Socinianismo* {Judaísmo moderno/liberal (académico)}
+                                                                  - No: Reduccionismo histórico*
+                                                                    - Reduccionismo histórico* -> ¿Jesús fue un engañador?
+                                                                        - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
+                                                                        - No: ?
+                                                                          - ? -> ¿Jesús fue solo un sabio? 
+                                                                              - Sí: ?
+                                                                              - No: ?
+                                                                                - ? -> ¿Jesús fue solamente una persona confundida?
+                                                                                    - Sí: Postura del Lunático
+                                                                                    - No: Postura de la Leyenda
+                              - No: Encarnacionismo / Preexistencialismo
+                                  - Encarnacionismo / Preexistencialismo -> ¿Es Jesús en sustancia diferente a Dios?
+                                      - Sí: Homoiousianismo / Semi-Arrianismo
+                                      - No: Consustancialismo
+                                          -  Consustancialismo -> ¿Es Jesús el mismo en substancia pero diferente persona que Dios?
+                                              - No: Modalismo / Unicitarismo / Unicitarianismo
+                                              - Sí: Trinitarianismo
+                                                  - Trinitarianismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real, o solo lo aparentaba?
+                                                      - No (solo apariencia): Docetismo
+                                                      - Sí: ?
+                                                          - ? -> ¿Jesús tuvo una mente/alma humana racional completa?
+                                                              - No: Apolinarismo
+                                                              - Sí: ?
+                                                                  - ? -> ¿Las dos naturalezas forman dos personas distintas?
+                                                                      - Sí: Nestorianismo
+                                                                      - No, Solo una: ?
+                                                                        - ? -> ¿La naturaleza humana pierde su integridad, siendo absorbida por la divina?
+                                                                            - Sí: Monofisismo (Eutiquianismo)
+                                                                            - No, Cristo es plenamente Dios y plenamente hombre: ?
+                                                                                - ? -> ¿La unión se describe como una sola naturaleza con las 2 mezcladas?
+                                                                                    - Sí: Miafisismo
+                                                                                    - No, Dos naturalezas distintas, sin mezcla ni separación (unión hipostática): Calcedonianismo / Diofisismo
+                                                                                      - Calcedonianismo / Diofisismo -> ¿Cristo tiene dos voluntades?
+                                                                                        - Sí: [[diotelitismo]] {ortodoxia calcedonense}
+                                                                                        - No, tiene una sola: Monotelitismo
+	  - No: Naturalismo cosmológico o Panteísmo*
+        - Naturalismo cosmológico o Panteísmo* -> ¿Es el universo mismo, en su totalidad, de naturaleza divina?
+          - Sí: Panteísmo / Panenteísmo*
+          - No: Naturalismo cosmológico*
+              - Naturalismo cosmológico* -> ¿Siempre ha existido?
+                  - Sí: Eternalismo
+                  - No: Cosmogénesis espontánea*
+    
