@@ -4,10 +4,10 @@
 ## Sintaxis
 Dos tipos de línea, ambas en lista anidada de Markdown:
 
-| Nombre de la línea    | Formato                                                                            | Uso                                   |
-| --------------------- |:-----------------------------------------------------------------------------------| ------------------------------------- |
-| Arista                | `<Respuesta>`: `<Nombre de Postura>`                                               | Respuesta que produce una postura     |
-| Nodo                  | `<Nombre de Postura>` -> `<Pregunta>` (`<Formato coloquial de la misma pregunta>`) | Pegunta planteada desde esa postura   | 
+| Nombre de la línea    | Formato                                                                                                               | Uso                                   |
+| --------------------- |:----------------------------------------------------------------------------------------------------------------------| ------------------------------------- |
+| Arista                | `<Respuesta>`: `<Nombre de Postura>`                                                                                  | Respuesta que produce una postura     |
+| Nodo                  | `<Nombre de Postura>` -> `<Pregunta>` (`<Opcionalmente la misma pregunta en formato coloquial>`)                      | Pegunta planteada desde esa postura   | 
 
 La indentación expresa anidamiento. El nombre de postura repetido al inicio de la línea `->` no es redundancia: identifica desde qué nodo se hace la pregunta, y es lo que permite que una postura tenga más de una pregunta colgando.
 
@@ -110,11 +110,11 @@ Consecuencias para quien lea o edite el archivo:
                                                                 - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina (Teopneustia)? (¿La Biblia tiene inspiración divina?)
                                                                     - No: Anti-inspiracionalismo
                                                                     - Sí: Inspiracionismo / Teopneustia
-                                                                      - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afecto a su descendencia, el humano nace muerto y en un estado de “pecador” (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
+                                                                      - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y en un estado de “pecador” (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
                                                                         - No, El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
-                                                                          - ? -> Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar?
+                                                                          - ? -> ¿Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar?
                                                                             - Sí: ?
-                                                                              - ? -> ¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno, pero **no pierde la capacidad de hacer el bien posteriormente **aun si no tiene el perdón de Dios**?
+                                                                              - ? -> ¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno, pero **no pierde la capacidad de hacer el bien posteriormente aun si no tiene el perdón de Dios**?
                                                                                 - Sí: ?
                                                                                   - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
                                                                                     - Sí: ?
@@ -125,7 +125,7 @@ Consecuencias para quien lea o edite el archivo:
                                                                                 - No: ?
                                                                             - No: ? 
                                                                         - Sí: Depravación Total del hombre
-                                                                          - ? -> ¿Tiene el humano la capacidad de hacer bien?
+                                                                          - Depravación Total del hombre -> ¿Tiene el humano la capacidad de hacer bien?
                                                                             - Sí: ?
                                                                               - ? -> ¿La capacidad de hacer el bien es solo una capacidad “civil” de hacer el bien como "amar a sus hijos"?
                                                                                 - Sí: ?
@@ -170,7 +170,7 @@ Consecuencias para quien lea o edite el archivo:
                                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                                             - No: Homoiousianismo / Semi-Arrianismo
                                             - Sí: Consustancialismo
-                                                -  Consustancialismo -> ¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina? (Cuando Jesús ora al Padre ¿le habla a alguien más y no a sí mismo?)
+                                                -  Consustancialismo -> ¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina? (¿Existe un Hijo Eterno?)
                                                     - No: Modalismo / Unicitarismo / Unicitarianismo
                                                     - Sí: Trinitarianismo
                                                         - Trinitarianismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?
