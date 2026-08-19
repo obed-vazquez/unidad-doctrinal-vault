@@ -1,0 +1,27 @@
+ ## El Pecado Original \- Consecuencias del pecado de Adán.
+
+- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**
+   - Antes del Discernimiento
+      - La inocencia le da acceso al cielo y no puede pecar.
+   - Después del Discernimiento
+      - Puede pecar; el primer pecado lo condena al infierno, pero **no pierde la capacidad de hacer el bien posteriormente **aun si no tiene el perdón de Dios**.
+         - Al pedir perdón a Dios, es perdonado y gana derecho a entrar al cielo al morir.
+            - **Volver a pecar le quita el derecho a entrar al cielo.**
+- El hombre nace muerto y en un estado de “pecador” (no pecando). La *depravación total* del hombre \+ Naturaleza pecaminosa.
+   - Con capacidad de hacer bien “civil” (amar a sus hijos)
+      - pero **condenado al infierno**
+         - Antes del Discernimiento
+            - Se le puede infundir “gracia” (el Don, pero se pierde) salvadora con sacramentos (bautismo regenerador).
+            - Va al Limbo
+            - Va al infierno
+         - Después del Discernimiento
+            - Inevitablemente peca y pierde la capacidad de tener fe (obras salvíficas).
+            - Inevitablemente peca, pero puede decidir tener fe (obras salvíficas)
+      - **Con inocencia y entrada al cielo.**
+         - Antes del Discernimiento
+            - La inocencia le da acceso al cielo y no puede pecar.
+         - Después del Discernimiento
+            - Inevitablemente peca y **pierde la capacidad de tener fe** (obras salvíficas).
+               - **Solo Dios puede llamar o responder al llamado del individuo para producir fe.**
+            - Inevitablemente peca, pero **puede decidir tener fe** (obras salvíficas)
+   - Sin la capacidad de hacer ningún tipo de bien y condenado al infierno. Depravación absoluta.
