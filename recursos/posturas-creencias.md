@@ -40,6 +40,34 @@ Consecuencias para quien lea o edite el archivo:
     Un * en el nombre de la postura significa que es un termino sugerido debido a falta de un término oficial.
     Un ? en el nombre de la postura significa que no se cuenta actualmente con un nombre de la misma o se tiene duda; no significa que este incompleto, es posible que no exista un termino para el mismo.
 
+## Generar diagramas
+
+El conversor `scripts/convertir_posturas_creencias.py` transforma este árbol a:
+
+- [posturas-creencias.mmd](diagramas/posturas-creencias.mmd) para Mermaid.
+- [posturas-creencias.dag](diagramas/posturas-creencias.dag) para pegarlo en [DrawDecisionTree](https://www.drawdecisiontree.com/build).
+
+puede ejecutar el script con:
+[convertir-posturas-creencias.ps1](../scripts/convertir-posturas-creencias.ps1)
+
+O Desde la raíz del repositorio, ejecútalo en PowerShell con:
+
+```powershell
+.\scripts\convertir-posturas-creencias.ps1 -Strict
+```
+
+El modificador `-Strict` hace que el proceso falle si debe reparar o inferir una parte de la estructura. O
+También se puede ejecutar directamente con Python:
+
+```powershell
+python scripts\convertir_posturas_creencias.py recursos\posturas-creencias.md --strict
+```
+
+Los archivos de `recursos/diagramas` se generan automáticamente; no necesitan edición manual.
+
+[DrawDesitionTree](https://www.drawdecisiontree.com/embed/card/obed-vazquez/posturas-creencias?f=inline)
+
+
 ## Árbol de Decisión:
 - Existencia -> ¿El universo fue causado por un Creador?
   - Sí: Creacionismo

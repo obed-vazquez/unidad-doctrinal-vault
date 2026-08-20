@@ -53,8 +53,10 @@ class Posture:
 class Question:
     id: str
     text: str
+    formal_text: str
     source_line: int
     posture_hints: list[str] = field(default_factory=list)
+    colloquial_hint: str | None = None
     answers: list["Answer"] = field(default_factory=list)
 
 
@@ -88,10 +90,14 @@ class Model:
     def add_question(self, text: str, source_line: int) -> str:
         self._question_number += 1
         question_id = f"Q{self._question_number}"
+        full_text = display_text(text)
+        formal_text, colloquial_hint = split_colloquial_question(full_text)
         self.questions[question_id] = Question(
             id=question_id,
-            text=display_text(text),
+            text=full_text,
+            formal_text=formal_text,
             source_line=source_line,
+            colloquial_hint=colloquial_hint,
         )
         return question_id
 
@@ -104,6 +110,31 @@ def display_text(value: str) -> str:
 
     value = WIKILINK.sub(replace_wikilink, value)
     return " ".join(value.strip().split())
+
+
+def split_colloquial_question(question: str) -> tuple[str, str | None]:
+    """Separa el paréntesis coloquial final de la pregunta formal.
+
+    Solo se extrae un paréntesis final que inicia con ``¿``. Así se conservan
+    aclaraciones formales como ``(especialmente su resurrección)`` dentro de
+    la pregunta principal.
+    """
+
+    match = re.search(r"\s+\((¿[^()]*)\)\s*$", question)
+    if not match:
+        return question, None
+    return question[: match.start()].rstrip(), match.group(1).strip()
+
+
+def output_posture_label(label: str) -> str:
+    """Representa una postura sin nombre como guion en los diagramas."""
+
+    text = display_text(label)
+    if text == "?":
+        return "-"
+    if text.startswith("? "):
+        return "-" + text[1:]
+    return text
 
 
 def alias_keys(label: str) -> set[str]:
@@ -337,7 +368,7 @@ def render_mermaid(model: Model, source_name: str) -> str:
     for question in model.questions.values():
         lines.append(f'    {question.id}{{"{mermaid_label(question.text)}"}}')
     for posture in model.postures.values():
-        lines.append(f'    {posture.id}["{mermaid_label(posture.label)}"]')
+        lines.append(f'    {posture.id}["{mermaid_label(output_posture_label(posture.label))}"]')
 
     for question in model.questions.values():
         for answer in question.answers:
@@ -387,7 +418,7 @@ def render_draw_decision_tree(model: Model, source_name: str) -> str:
             router_id = f"R{router_number}"
             routers[posture.id] = router_id
             router_answers[router_id] = [
-                (f"Explorar: {model.questions[qid].text}", qid)
+                (f"Explorar: {model.questions[qid].formal_text}", qid)
                 for qid in posture.questions
             ]
 
@@ -409,7 +440,7 @@ def render_draw_decision_tree(model: Model, source_name: str) -> str:
         routes = [(answer.label, destination(answer.target_posture)) for answer in question.answers]
         if not routes:
             missing_id = f"OUT_SIN_RUTA_{question.id}"
-            missing_outcomes[missing_id] = f"Sin ruta documentada desde {question.text}"
+            missing_outcomes[missing_id] = f"Sin ruta documentada desde {question.formal_text}"
             routes = [("Sin ruta documentada", f"[{missing_id}]")]
         question_answer_lists[question.id] = routes
 
@@ -428,21 +459,22 @@ def render_draw_decision_tree(model: Model, source_name: str) -> str:
         lines.extend(
             render_dag_question(
                 question.id,
-                question.text,
+                question.formal_text,
                 question_answer_lists[question.id],
                 question.posture_hints,
+                question.colloquial_hint,
             )
         )
         lines.append("")
 
     for posture_id, router_id in routers.items():
-        posture_label = model.postures[posture_id].label
+        posture_label = output_posture_label(model.postures[posture_id].label)
         text = f"La postura «{posture_label}» abre varios ejes. ¿Cuál deseas explorar?"
         lines.extend(render_dag_question(router_id, text, router_answers[router_id], [posture_label]))
         lines.append("")
 
     for posture in terminal_postures:
-        lines.append(f"[{outcome_id(posture.id)}]: {dag_text(posture.label)}")
+        lines.append(f"[{outcome_id(posture.id)}]: {dag_text(output_posture_label(posture.label))}")
         lines.append("  description: Postura terminal extraída del documento fuente.")
         lines.append(f"  code: {outcome_id(posture.id)}")
         lines.append("")
@@ -463,6 +495,7 @@ def render_dag_question(
     question_text: str,
     answers: list[tuple[str, str]],
     posture_hints: list[str] | None = None,
+    colloquial_hint: str | None = None,
 ) -> list[str]:
     """Genera preguntas con un máximo de seis opciones por nodo del DSL."""
 
@@ -471,10 +504,14 @@ def render_dag_question(
     page = 1
     current_id = question_id
     while remaining:
-        current_text = question_text if page == 1 else f"Opciones restantes: {question_text}"
-        result.append(f"{current_id}: {dag_text(current_text)}")
         if page == 1 and posture_hints:
-            result.append(f"  hint: Postura: {dag_text(' / '.join(posture_hints))}")
+            visible_postures = " / ".join(output_posture_label(name) for name in posture_hints)
+            current_text = f"{visible_postures} - {question_text}"
+        else:
+            current_text = question_text if page == 1 else f"Opciones restantes: {question_text}"
+        result.append(f"{current_id}: {dag_text(current_text)}")
+        if page == 1 and colloquial_hint:
+            result.append(f"  hint: {dag_text(colloquial_hint)}")
         current_answers = remaining[:5] if len(remaining) > 6 else remaining
         remaining = remaining[len(current_answers) :]
         for letter, (label, target) in zip(CHOICES, current_answers):

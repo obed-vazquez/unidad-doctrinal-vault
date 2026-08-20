@@ -1,0 +1,448 @@
+# Generado por scripts/convertir_posturas_creencias.py; no editar a mano.
+# Fuente: posturas-creencias.md
+dag: Clasificación de posturas, creencias y doctrinas
+version: 1.0.0
+entry: Q1
+mode: decision
+description: Conversión automática del árbol doctrinal Markdown.
+tags: teología, filosofía, doctrinas
+
+Q1: Existencia - ¿El universo fue causado por un Creador?
+  A: Sí -> Q2
+  B: No -> R3
+
+Q2: Creacionismo - ¿El Creador se identifica como Dios?
+  A: No -> Q3
+  B: Sí -> Q3
+
+Q3: Teísmo / Deísmo - ¿Jesucristo realmente existió?
+  A: No -> [OUT_P4]
+  B: Sí -> Q4
+
+Q4: Historicidad de Jesús* - ¿Jesús declaró ser Dios?
+  A: No -> [OUT_P6]
+  B: Sí -> Q5
+
+Q5: - - ¿La evidencia de los milagros de Jesús son suficientes para concluír que realmente ocurrieron?
+  A: No -> Q6
+  B: Sí -> Q10
+
+Q6: Naturalismo cristológico* - ¿Jesús fue un profeta?
+  A: Sí -> [OUT_P9]
+  B: No -> Q7
+
+Q7: Reduccionismo histórico* - ¿Jesús fue un engañador?
+  A: Sí -> [OUT_P11]
+  B: No -> Q8
+
+Q8: - - ¿Jesús fue solo un sabio?
+  A: Sí -> [OUT_P13]
+  B: No -> Q9
+
+Q9: - - ¿Jesús fue solamente una persona confundida?
+  A: Sí -> [OUT_P15]
+  B: No -> [OUT_P16]
+
+Q10: - - ¿Los milagros (especialmente su resurección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús?
+  hint: ¿Jesús es Dios?
+  A: No -> Q11
+  B: Sí -> R1
+
+Q11: - - ¿Es Jesucristo un ser creado?
+  A: No -> Q18
+  B: Sí -> Q12
+
+Q12: Cristo-creaturismo* - ¿Era Jesucristo inferior y subordinado a Dios?
+  A: No -> [OUT_P21]
+  B: Sí -> Q13
+
+Q13: - - ¿Era Jesucristo inicialmente un ser divino?
+  A: Sí -> Q14
+  B: No -> Q15
+  C: Sí -> [OUT_P27]
+  D: No -> Q16
+
+Q14: Arrianismo - ¿Es Jesús identificado como el Arcángel Miguel?
+  A: Sí -> [OUT_P24]
+  B: No -> [OUT_P25]
+
+Q15: Unitarismo - ¿Dios adoptó a Jesucristo como hijo posteriormente?
+  A: Sin ruta documentada -> [OUT_SIN_RUTA_Q15]
+
+Q16: Unitarismo Clasico - ¿Jesucristo llegó a morir?
+  A: Sí -> Q17
+  B: No -> [OUT_P32]
+
+Q17: Ebionismo - ¿Jesucristo Resucitó?
+  A: Sí -> [OUT_P30]
+  B: No -> [OUT_P31]
+
+Q18: Encarnacionismo / Preexistencialismo / Subordinacionismo - ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa?
+  hint: ¿El Antiguo Testamento tiene revelación divina?
+  A: No -> [OUT_P34]
+  B: Sí -> Q19
+
+Q19: - - ¿El reconocimiento de relevación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados?
+  hint: ¿Todo el Antiguo Testamento es revelación divina?
+  A: No -> [OUT_P36]
+  B: Sí -> Q20
+
+Q20: - - ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa?
+  hint: ¿Las cartas apostólicas son revelación divina?
+  A: No -> Q21
+  B: Sí -> Q22
+
+Q21: - - ¿Solo las palabras de Jesús dentro del Nuevo Testamento son autoritativas?
+  A: Sí -> [OUT_P39]
+  B: No -> [OUT_P40]
+
+Q22: Autoridad apostólica derivada* - ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa?
+  hint: ¿El Nuevo Testamento es revelación divina?
+  A: No -> [OUT_P42]
+  B: Sí -> Q23
+
+Q23: Canon neotestamentario pleno* - ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina (Teopneustia)?
+  hint: ¿La Biblia tiene inspiración divina?
+  A: No -> [OUT_P44]
+  B: Sí -> Q24
+
+Q24: Inspiracionismo / Teopneustia - ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y en un estado de “pecador” (aunque no activamente pecando)?
+  hint: ¿El humano nace con una "Naturaleza pecaminosa"?
+  A: No, El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo** -> Q25
+  B: Sí -> Q29
+
+Q25: - - ¿Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar?
+  A: Sí -> Q26
+  B: No -> [OUT_P54]
+
+Q26: - - ¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno, pero **no pierde la capacidad de hacer el bien posteriormente aun si no tiene el perdón de Dios**?
+  A: Sí -> Q27
+  B: No -> [OUT_P53]
+
+Q27: - - ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
+  A: Sí -> Q28
+  B: No -> [OUT_P52]
+
+Q28: - - ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
+  A: Sí -> [OUT_P50]
+  B: No -> [OUT_P51]
+
+Q29: Depravación Total del hombre - ¿Tiene el humano la capacidad de hacer bien?
+  A: Sí -> Q30
+  B: No -> [OUT_P83]
+
+Q30: - - ¿La capacidad de hacer el bien es solo una capacidad “civil” de hacer el bien como "amar a sus hijos"?
+  A: Sí -> Q31
+  B: No -> [OUT_P82]
+
+Q31: - - ¿Antes del Discernimiento y aun con la capacidad de hacer el bien, el humano sigue estando condenado debido a su estado de muerte (naturaleza pecaminosa) aun sin haber cometido pecado?
+  A: Sí -> Q32
+  B: No, tiene inocencia y entrada al cielo a pesar de su estado de muerte (naturaleza pecaminosa) pues no puede pecar -> Q39
+
+Q32: - - ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador?
+  A: Sí -> Q33
+  B: No -> [OUT_P72]
+
+Q33: - - ¿Para el humano, el no haber recibido bautismo regenerador antes del Discernimiento, lo deja condenado?
+  A: No -> [OUT_P60]
+  B: Sí -> R2
+
+Q34: - - ¿Lo deja condenado al Limbo?
+  A: Sí -> [OUT_P62]
+  B: No -> Q35
+
+Q35: - - ¿Lo deja condenado al Infierno?
+  A: Sí -> [OUT_P64]
+  B: No -> [OUT_P65]
+
+Q36: - - ¿Después del Discernimiento el humano inevitablemente peca?
+  A: No -> [OUT_P66]
+  B: Sí -> Q37
+
+Q37: - - ¿Después de pecar pierde la capacidad de tener fe (hacer obras salvíficas)?
+  A: Sí -> [OUT_P68]
+  B: No -> Q38
+
+Q38: - - ¿Después de pecar puede decidir tener fe (obras salvíficas)?
+  A: No -> [OUT_P70]
+  B: Sí -> [OUT_P71]
+
+Q39: - - ¿Después del Discernimiento Inevitablemente peca?
+  A: No -> [OUT_P74]
+  B: Sí -> Q40
+
+Q40: - - ¿Después de pecar pierde la capacidad de tener fe (hacer obras salvíficas)?
+  A: Sí -> Q41
+  B: No -> Q42
+
+Q41: - - ¿Solo Dios puede llamar o mover al individuo para producir fe?
+  A: Sí -> [OUT_P77]
+  B: No -> [OUT_P78]
+
+Q42: - - ¿Después de pecar puede decidir tener fe (obras salvíficas)?
+  A: No -> [OUT_P80]
+  B: Sí -> [OUT_P81]
+
+Q43: Encarnacionismo / Preexistencialismo - ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina?
+  hint: ¿Dios es la misma sustancia que Jesús?
+  A: No -> [OUT_P84]
+  B: Sí -> Q44
+
+Q44: Consustancialismo - ¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina?
+  hint: ¿Existe un Hijo Eterno?
+  A: No -> [OUT_P86]
+  B: Sí -> Q45
+
+Q45: Trinitarianismo - ¿Jesús tuvo un cuerpo y naturaleza humana real?
+  A: No (solo apariencia) -> [OUT_P88]
+  B: Sí -> Q46
+
+Q46: - - ¿Jesús tuvo una mente/alma humana racional completa?
+  A: No -> [OUT_P90]
+  B: Sí -> Q47
+
+Q47: - - ¿Son el Verbo eterno y el hombre Jesús dos alguien distintos, unidos tan estrechamente que actúan y son honrados como uno solo, pero de modo que lo que le ocurre al hombre no le ocurre a Dios: Jesús muere sin que Dios muera, y María es madre del hombre y no de Dios?
+  hint: ¿Dios habitaba dentro del hombre Jesús como en un templo, sin ser él mismo quien nació y murió?
+  A: Sí -> [OUT_P92]
+  B: No, un solo una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer -> Q48
+
+Q48: Monoprosopismo - ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos?
+  hint: ¿la divinidad de Cristo anuló su humanidad?
+  A: Sí, subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino -> [OUT_P94]
+  B: No, Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre -> Q49
+
+Q49: Diofisismo - En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades?
+  hint: ¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?
+  A: No, el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro -> [OUT_P96]
+  B: Sí, el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino. -> [OUT_P97]
+
+Q50: Ateísmo cosmológico* - ¿La materia/realidad física es eterna y no fue creada por un Dios?
+  A: Sí -> [OUT_P99]
+
+Q51: Ateísmo cosmológico* - ¿Es el universo mismo, en su totalidad, de naturaleza divina?
+  A: Sí -> [OUT_P100]
+  B: No -> [OUT_P101]
+
+R1: Encarnacionismo / Preexistencialismo - La postura «Encarnacionismo / Preexistencialismo» abre varios ejes. ¿Cuál deseas explorar?
+  A: Explorar: ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? -> Q18
+  B: Explorar: ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? -> Q43
+
+R2: - - La postura «-» abre varios ejes. ¿Cuál deseas explorar?
+  A: Explorar: ¿Lo deja condenado al Limbo? -> Q34
+  B: Explorar: ¿Después del Discernimiento el humano inevitablemente peca? -> Q36
+
+R3: Ateísmo cosmológico* - La postura «Ateísmo cosmológico*» abre varios ejes. ¿Cuál deseas explorar?
+  A: Explorar: ¿La materia/realidad física es eterna y no fue creada por un Dios? -> Q50
+  B: Explorar: ¿Es el universo mismo, en su totalidad, de naturaleza divina? -> Q51
+
+[OUT_P4]: Miticismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P4
+
+[OUT_P6]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P6
+
+[OUT_P9]: Socinianismo* {Judaísmo moderno/liberal (académico)}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P9
+
+[OUT_P11]: Postura del Impostor {Judaísmo rabínico/talmúdico}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P11
+
+[OUT_P13]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P13
+
+[OUT_P15]: Postura del Lunático
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P15
+
+[OUT_P16]: Postura de la Leyenda
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P16
+
+[OUT_P21]: Sin-nombre {No se identifica quién que sostenga esta postura}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P21
+
+[OUT_P24]: Arrianismo de los JW (Testigos de Jehová)
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P24
+
+[OUT_P25]: Arrianismo Clasico
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P25
+
+[OUT_P27]: Adopcionismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P27
+
+[OUT_P30]: Ebionismo Clasico
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P30
+
+[OUT_P31]: Ahmadismo {Islam Ahmadí}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P31
+
+[OUT_P32]: - {Islam Suní/Chiita}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P32
+
+[OUT_P34]: Teología Liberal / Racionalismo Teológico?
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P34
+
+[OUT_P36]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P36
+
+[OUT_P39]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P39
+
+[OUT_P40]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P40
+
+[OUT_P42]: Canon neotestamentario restringido*
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P42
+
+[OUT_P44]: Anti-inspiracionalismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P44
+
+[OUT_P50]: Pelagianismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P50
+
+[OUT_P51]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P51
+
+[OUT_P52]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P52
+
+[OUT_P53]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P53
+
+[OUT_P54]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P54
+
+[OUT_P60]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P60
+
+[OUT_P62]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P62
+
+[OUT_P64]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P64
+
+[OUT_P65]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P65
+
+[OUT_P66]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P66
+
+[OUT_P68]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P68
+
+[OUT_P70]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P70
+
+[OUT_P71]: - {Catolicismo?}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P71
+
+[OUT_P72]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P72
+
+[OUT_P74]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P74
+
+[OUT_P77]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P77
+
+[OUT_P78]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P78
+
+[OUT_P80]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P80
+
+[OUT_P81]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P81
+
+[OUT_P82]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P82
+
+[OUT_P83]: Depravación absoluta
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P83
+
+[OUT_P84]: Homoiousianismo / Semi-Arrianismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P84
+
+[OUT_P86]: Modalismo / Unicitarismo / Unicitarianismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P86
+
+[OUT_P88]: Docetismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P88
+
+[OUT_P90]: Apolinarismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P90
+
+[OUT_P92]: Nestorianismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P92
+
+[OUT_P94]: Monofisismo / Eutiquianismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P94
+
+[OUT_P96]: Monotelitismo / monotelismo
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P96
+
+[OUT_P97]: Diotelitismo {ortodoxia calcedonense}
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P97
+
+[OUT_P99]: Materialismo cosmológico
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P99
+
+[OUT_P100]: Panteísmo / Panenteísmo*
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P100
+
+[OUT_P101]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P101
+
+[OUT_SIN_RUTA_Q15]: Sin ruta documentada desde ¿Dios adoptó a Jesucristo como hijo posteriormente?
+  description: El documento no especifica una respuesta para esta pregunta.
+  code: OUT_SIN_RUTA_Q15
