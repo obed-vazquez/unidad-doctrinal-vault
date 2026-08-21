@@ -42,28 +42,13 @@ Consecuencias para quien lea o edite el archivo:
 
 ## Generar diagramas
 
-El conversor `scripts/convertir_posturas_creencias.py` transforma este árbol a:
+Doble clic en **[Generar-Diagramas.cmd](diagramas/Generar-Diagramas.cmd)**. Regenera
+`recursos/diagramas` (Mermaid, DrawDecisionTree, Graphviz e imagen SVG) a partir de
+este documento, instalando Graphviz solo si hace falta, y abre la imagen al terminar.
+No necesita edición manual ni comandos.
 
-- [posturas-creencias.mmd](diagramas/posturas-creencias.mmd) para Mermaid.
-- [posturas-creencias.dag](diagramas/posturas-creencias.dag) para pegarlo en [DrawDecisionTree](https://www.drawdecisiontree.com/build).
-
-puede ejecutar el script con:
-[convertir-posturas-creencias.ps1](../scripts/convertir-posturas-creencias.ps1)
-
-O Desde la raíz del repositorio, ejecútalo en PowerShell con:
-
-```powershell
-.\scripts\convertir-posturas-creencias.ps1 -Strict
-```
-
-El modificador `-Strict` hace que el proceso falle si debe reparar o inferir una parte de la estructura. O
-También se puede ejecutar directamente con Python:
-
-```powershell
-python scripts\convertir_posturas_creencias.py recursos\posturas-creencias.md --strict
-```
-
-Los archivos de `recursos/diagramas` se generan automáticamente; no necesitan edición manual.
+Opciones avanzadas (rutas, formato, resolución, `-Strict`):
+`Get-Help .\scripts\convertir-posturas-creencias.ps1 -Full`.
 
 [DrawDesitionTree](https://www.drawdecisiontree.com/embed/card/obed-vazquez/posturas-creencias?f=inline)
 

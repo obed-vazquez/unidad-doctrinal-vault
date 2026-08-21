@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convierte el árbol Markdown de posturas doctrinales a Mermaid y DrawDecisionTree.
+"""Convierte el árbol Markdown de posturas doctrinales a Mermaid, DrawDecisionTree y Graphviz.
 
 El documento fuente describe dos clases de líneas en una lista Markdown:
 
@@ -16,6 +16,8 @@ from __future__ import annotations
 import argparse
 import html
 import re
+import shutil
+import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -25,6 +27,15 @@ from typing import Iterable
 
 TREE_HEADER = "## Árbol de Decisión:"
 CHOICES = "ABCDEF"
+IMAGE_FORMATS = ("svg", "png", "pdf")
+DEFAULT_IMAGE_FORMAT = "svg"
+DEFAULT_DPI = 300
+LABEL_WIDTH = 30
+
+# Los mismos colores que classDef en el Mermaid, para que los tres formatos se
+# lean como un solo diagrama.
+QUESTION_COLORS = ("#FFF3CD", "#8A6D3B", "#2F250D")
+POSTURE_COLORS = ("#E7F1FF", "#2E6DA4", "#102A43")
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 LIST_ITEM = re.compile(r"^(?P<indent>[ \t]*)-\s+(?P<text>.+?)\s*$")
 
@@ -525,17 +536,135 @@ def render_dag_question(
     return result
 
 
-def default_outputs(input_path: Path) -> tuple[Path, Path]:
+def wrap_label(text: str, width: int = LABEL_WIDTH) -> list[str]:
+    """Parte un texto en líneas cortas para que los nodos no queden apaisados."""
+
+    lines: list[str] = []
+    current = ""
+    for word in display_text(text).split():
+        candidate = f"{current} {word}".strip()
+        if current and len(candidate) > width:
+            lines.append(current)
+            current = word
+        else:
+            current = candidate
+    if current:
+        lines.append(current)
+    return lines or ["-"]
+
+
+def dot_label(text: str, width: int = LABEL_WIDTH) -> str:
+    """Escapa un texto y lo reparte en las líneas centradas de un label DOT."""
+
+    escaped = [
+        line.replace("\\", "\\\\").replace('"', '\\"')
+        for line in wrap_label(text, width)
+    ]
+    return "\\n".join(escaped)
+
+
+def render_graphviz(model: Model, source_name: str) -> str:
+    """Genera el DOT que `dot` convierte en una imagen jerárquica.
+
+    A diferencia del .dag, aquí no hacen falta selectores: Graphviz dibuja el
+    grafo completo, así que una postura con varios ejes conserva sus aristas.
+    """
+
+    question_fill, question_border, question_font = QUESTION_COLORS
+    posture_fill, posture_border, posture_font = POSTURE_COLORS
+
+    lines = [
+        "// Generado por scripts/convertir_posturas_creencias.py; no editar a mano.",
+        f"// Fuente: {source_name}",
+        "digraph posturas_creencias {",
+        '    graph [rankdir=TB, splines=spline, nodesep=0.35, ranksep=0.70,',
+        '           bgcolor="transparent", fontname="Segoe UI", fontsize=22,',
+        '           labelloc="t", label="Clasificación de posturas, creencias y doctrinas\\n "];',
+        '    node  [fontname="Segoe UI", fontsize=11, margin="0.16,0.09"];',
+        '    edge  [fontname="Segoe UI", fontsize=9, color="#5A6672", arrowsize=0.7];',
+        "",
+    ]
+
+    for question in model.questions.values():
+        lines.append(
+            f'    {question.id} [label="{dot_label(question.text)}", shape=box, '
+            f'style="rounded,filled", fillcolor="{question_fill}", '
+            f'color="{question_border}", fontcolor="{question_font}"];'
+        )
+    lines.append("")
+
+    for posture in model.postures.values():
+        label = dot_label(output_posture_label(posture.label))
+        lines.append(
+            f'    {posture.id} [label="{label}", shape=box, style="filled", '
+            f'fillcolor="{posture_fill}", color="{posture_border}", '
+            f'fontcolor="{posture_font}"];'
+        )
+    lines.append("")
+
+    for question in model.questions.values():
+        for answer in question.answers:
+            lines.append(
+                f'    {question.id} -> {answer.target_posture} '
+                f'[label="{dot_label(answer.label, 18)}"];'
+            )
+    # La arista punteada replica el `-.->` de Mermaid: la postura abre un eje.
+    for posture in model.postures.values():
+        for question_id in posture.questions:
+            lines.append(
+                f'    {posture.id} -> {question_id} '
+                f'[style=dashed, color="{posture_border}", arrowhead=empty];'
+            )
+
+    lines.extend(["}", ""])
+    return "\n".join(lines)
+
+
+def render_image(
+    graphviz_path: Path, image_path: Path, image_format: str, dpi: int
+) -> None:
+    """Invoca `dot`. Propaga FileNotFoundError si Graphviz no está instalado."""
+
+    executable = shutil.which("dot")
+    if executable is None:
+        raise FileNotFoundError("dot")
+
+    command = [executable, f"-T{image_format}"]
+    if image_format == "png":
+        command.append(f"-Gdpi={dpi}")
+    command.extend([str(graphviz_path), "-o", str(image_path)])
+    subprocess.run(command, check=True, capture_output=True, text=True)
+
+
+def resolve_image_format(image_path: Path | None, requested: str | None) -> str:
+    if requested:
+        return requested
+    if image_path is not None:
+        suffix = image_path.suffix.lower().lstrip(".")
+        if suffix in IMAGE_FORMATS:
+            return suffix
+    return DEFAULT_IMAGE_FORMAT
+
+
+def default_outputs(input_path: Path) -> tuple[Path, Path, Path]:
     output_directory = input_path.parent / "diagramas"
     return (
         output_directory / f"{input_path.stem}.mmd",
         output_directory / f"{input_path.stem}.dag",
+        output_directory / f"{input_path.stem}.gv",
     )
+
+
+def default_image_path(input_path: Path, image_format: str) -> Path:
+    return input_path.parent / "diagramas" / f"{input_path.stem}.{image_format}"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Convierte un árbol doctrinal Markdown a Mermaid (.mmd) y DrawDecisionTree (.dag)."
+        description=(
+            "Convierte un árbol doctrinal Markdown a Mermaid (.mmd), "
+            "DrawDecisionTree (.dag), Graphviz (.gv) y una imagen."
+        )
     )
     parser.add_argument("input", type=Path, help="Archivo Markdown fuente.")
     parser.add_argument(
@@ -549,6 +678,33 @@ def parse_args() -> argparse.Namespace:
         dest="dag",
         type=Path,
         help="Ruta del archivo DrawDecisionTree de salida (por defecto: recursos/diagramas, .dag).",
+    )
+    parser.add_argument(
+        "--graphviz",
+        type=Path,
+        help="Ruta del archivo DOT de salida (por defecto: recursos/diagramas, .gv).",
+    )
+    parser.add_argument(
+        "--imagen",
+        type=Path,
+        help="Ruta de la imagen renderizada (por defecto: recursos/diagramas, .svg).",
+    )
+    parser.add_argument(
+        "--formato",
+        choices=IMAGE_FORMATS,
+        help=f"Formato de la imagen (por defecto: {DEFAULT_IMAGE_FORMAT}).",
+    )
+    parser.add_argument(
+        "--dpi",
+        type=int,
+        default=DEFAULT_DPI,
+        help=f"Resolución del PNG; se ignora en svg y pdf (por defecto: {DEFAULT_DPI}).",
+    )
+    parser.add_argument(
+        "--sin-imagen",
+        dest="sin_imagen",
+        action="store_true",
+        help="Escribe el .gv pero no invoca a Graphviz para renderizar la imagen.",
     )
     parser.add_argument(
         "--strict",
@@ -565,11 +721,28 @@ def main() -> int:
         print(f"Error: no existe el archivo fuente: {input_path}", file=sys.stderr)
         return 2
 
-    default_mermaid, default_dag = default_outputs(input_path)
+    image_format = resolve_image_format(args.imagen, args.formato)
+    if args.imagen is not None and args.formato:
+        suffix = args.imagen.suffix.lower().lstrip(".")
+        if suffix in IMAGE_FORMATS and suffix != args.formato:
+            print(
+                f"Error: --formato {args.formato} no concuerda con la extensión "
+                f"de --imagen ({args.imagen.name}).",
+                file=sys.stderr,
+            )
+            return 2
+
+    default_mermaid, default_dag, default_graphviz = default_outputs(input_path)
     mermaid_path = args.mermaid or default_mermaid
     dag_path = args.dag or default_dag
-    if mermaid_path.resolve() == dag_path.resolve():
-        print("Error: las dos salidas deben tener rutas distintas.", file=sys.stderr)
+    graphviz_path = args.graphviz or default_graphviz
+    image_path = args.imagen or default_image_path(input_path, image_format)
+
+    outputs = [mermaid_path, dag_path, graphviz_path]
+    if not args.sin_imagen:
+        outputs.append(image_path)
+    if len({path.resolve() for path in outputs}) != len(outputs):
+        print("Error: cada salida debe tener una ruta distinta.", file=sys.stderr)
         return 2
 
     try:
@@ -584,13 +757,37 @@ def main() -> int:
         print("Error: --strict no permite advertencias de conversión.", file=sys.stderr)
         return 1
 
-    mermaid_path.parent.mkdir(parents=True, exist_ok=True)
-    dag_path.parent.mkdir(parents=True, exist_ok=True)
+    for path in outputs:
+        path.parent.mkdir(parents=True, exist_ok=True)
     mermaid_path.write_text(render_mermaid(model, input_path.name), encoding="utf-8", newline="\n")
     dag_path.write_text(render_draw_decision_tree(model, input_path.name), encoding="utf-8", newline="\n")
+    graphviz_path.write_text(render_graphviz(model, input_path.name), encoding="utf-8", newline="\n")
 
     print(f"Mermaid: {mermaid_path}")
     print(f"DrawDecisionTree: {dag_path}")
+    print(f"Graphviz: {graphviz_path}")
+
+    if args.sin_imagen:
+        print("Imagen: omitida (--sin-imagen).")
+    else:
+        try:
+            render_image(graphviz_path, image_path, image_format, args.dpi)
+        except FileNotFoundError:
+            # Sin Graphviz el .gv sigue siendo válido: la conversión no falla.
+            print(
+                "Advertencia: no se encontró 'dot' en PATH; no se generó la imagen. "
+                "Instálalo con: winget install Graphviz.Graphviz",
+                file=sys.stderr,
+            )
+            print("Imagen: no generada (falta Graphviz).")
+        except subprocess.CalledProcessError as error:
+            print(f"Error: Graphviz falló al renderizar {image_path}.", file=sys.stderr)
+            if error.stderr:
+                print(error.stderr.strip(), file=sys.stderr)
+            return 1
+        else:
+            print(f"Imagen: {image_path}")
+
     print(
         f"Convertidos {len(model.questions)} preguntas y {len(model.postures)} posturas "
         f"({len(model.warnings)} advertencias)."
