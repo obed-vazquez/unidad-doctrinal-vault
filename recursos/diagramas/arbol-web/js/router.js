@@ -19,6 +19,7 @@
       modo: null,
       tema: null,
       completo: null,
+      divulgacion: null,
       camara: null
     };
 
@@ -66,6 +67,10 @@
     if (presentacion === 'lista' || presentacion === 'grafo') lectura.presentacion = presentacion;
 
     if (parametros.get('full') !== null) lectura.completo = parametros.get('full') === '1';
+    var rec = parametros.get('rec');
+    if (rec === 'cuestionario' || rec === 'limpio' || rec === 'exploracion' || rec === 'completo') {
+      lectura.divulgacion = rec;
+    }
 
     // `?limpio=1` ignora lo guardado en localStorage para esta carga. Sirve
     // para compartir un enlace que se vea igual en cualquier navegador y para
@@ -103,7 +108,10 @@
     if (estado.modo !== 'libre') parametros.set('modo', estado.modo);
     if (estado.vista !== 'grafo') parametros.set('vista', estado.vista);
     if (estado.tema !== 'oscuro') parametros.set('tema', estado.tema);
-    if (estado.arbolCompleto) parametros.set('full', '1');
+    if (estado.divulgacion && estado.divulgacion !== 'cuestionario') {
+      parametros.set('rec', estado.divulgacion);
+    }
+    if (estado.arbolCompleto || estado.divulgacion === 'completo') parametros.set('full', '1');
 
     var hayAnclajes = Object.keys(estado.fijados).length > 0;
     parametros.set('view', hayAnclajes ? 'manual' : 'auto');
@@ -160,7 +168,15 @@
     if (lectura.modo) { estado.modo = lectura.modo; huboCambio = true; }
     if (lectura.tema) { estado.tema = lectura.tema; }
     if (lectura.presentacion) { estado.vista = lectura.presentacion; huboCambio = true; }
-    if (lectura.completo !== null) { estado.arbolCompleto = lectura.completo; huboCambio = true; }
+    if (lectura.divulgacion) {
+      estado.divulgacion = lectura.divulgacion;
+      estado.arbolCompleto = lectura.divulgacion === 'completo';
+      huboCambio = true;
+    } else if (lectura.completo !== null) {
+      estado.arbolCompleto = lectura.completo;
+      estado.divulgacion = lectura.completo ? 'completo' : 'cuestionario';
+      huboCambio = true;
+    }
     if (lectura.camara) { estado.camara = lectura.camara; huboCambio = true; }
     return {
       huboCambio: huboCambio,

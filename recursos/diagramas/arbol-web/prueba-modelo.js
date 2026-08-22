@@ -50,7 +50,7 @@ const contexto = vm.createContext(Object.assign(ventana, {
   RegExp, Error, Infinity, Date
 }));
 
-['js/state.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
+['js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
   vm.runInContext(fs.readFileSync(path.join(__dirname, archivo), 'utf8'), contexto, {
     filename: archivo
   });
@@ -114,6 +114,10 @@ comprobar('la pregunta convergente cuelga de ambas posturas, sin responder',
 
 const todos = Arbol.nodosVisibles(grafo, {}, true);
 comprobar('el modo «árbol completo» muestra todo', todos.size === grafo.nodos.size);
+
+visibles = Arbol.nodosVisibles(grafo, { Q1: 'A' }, 'limpio');
+comprobar('el modo limpio oculta la postura no elegida',
+  visibles.has('T:P1') && !visibles.has('B:P98'), Array.from(visibles).join(','));
 
 console.log('\n== Layout ==');
 const respuestas = { Q1: 'A', Q2: 'B', Q3: 'B', Q4: 'B', Q5: 'A' };
@@ -326,6 +330,24 @@ delete Arbol.Estado.respuestas.Q3;
 comprobar('los anclajes, resaltados y la selección de lo podado se limpian',
   !Arbol.Estado.fijados['T:P6'] && !Arbol.Estado.resaltados.has('T:P6')
   && Arbol.Estado.seleccionado === null);
+
+Arbol.Estado.respuestas = { Q1: 'A', Q2: 'B', Q3: 'B' };
+Arbol.Estado.responder('Q1', 'B');
+comprobar('cambiar Sí por No poda la rama de Sí',
+  Arbol.Estado.respuestas.Q1 === 'B' && Arbol.Estado.respuestas.Q2 === undefined
+  && Arbol.Estado.respuestas.Q3 === undefined,
+  JSON.stringify(Arbol.Estado.respuestas));
+
+console.log('\n== Contribuciones locales ==');
+const edits = Arbol.Edits.vacio();
+Arbol.Edits.nombrarPostura(edits, 'P8', 'Socinianismo nombrado');
+const mezclado = Arbol.Edits.aplicar(datos, edits);
+comprobar('renombrar una postura no toca el JSON canónico',
+  datos.postures.P8.label !== 'Socinianismo nombrado'
+  && mezclado.postures.P8.label === 'Socinianismo nombrado');
+const md = Arbol.Edits.aMarkdown(datos);
+comprobar('el export Markdown arranca como el documento fuente',
+  md.indexOf('## Árbol de Decisión:') !== -1 && md.indexOf('Creacionismo') !== -1);
 
 console.log('\n== URL compartible ==');
 Arbol.Estado.respuestas = { Q1: 'A', Q2: 'B', Q5: 'A' };

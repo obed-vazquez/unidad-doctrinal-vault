@@ -137,12 +137,22 @@
     };
   }
 
-  /* Divulgación progresiva: la raíz siempre es visible; responder una pregunta
-     revela TODAS sus posturas destino (también la no elegida) y, con ellas, sus
-     preguntas colgantes todavía sin responder. */
-  function nodosVisibles(grafo, respuestas, arbolCompleto) {
+  /* true legacy = árbol completo; false/omitido = cuestionario. */
+  function normalizarDivulgacion(valor) {
+    if (valor === true) return 'completo';
+    if (valor === false || valor == null) return 'cuestionario';
+    if (valor === 'cuestionario' || valor === 'limpio'
+      || valor === 'exploracion' || valor === 'completo') return valor;
+    return 'cuestionario';
+  }
+
+  /* Divulgación progresiva. En cuestionario, responder revela TODAS las
+     posturas destino (también la no elegida). En limpio, solo la elegida.
+     En exploración, un conjunto de nodos expandidos abre todas sus salidas. */
+  function nodosVisibles(grafo, respuestas, divulgacion, expandidos) {
+    var modo = normalizarDivulgacion(divulgacion);
     var visibles = new Set();
-    if (arbolCompleto) {
+    if (modo === 'completo') {
       grafo.nodos.forEach(function (_, id) { visibles.add(id); });
       return visibles;
     }
@@ -153,23 +163,42 @@
       visibles.add(id);
       var nodo = grafo.nodos.get(id);
       if (!nodo) continue;
-      var abierto = nodo.tipo === 'postura'
-        || (nodo.preguntaId && respuestas[nodo.preguntaId] != null);
+      var abierto;
+      if (modo === 'exploracion') {
+        abierto = !!(expandidos && expandidos.has(id));
+      } else {
+        abierto = nodo.tipo === 'postura'
+          || (nodo.preguntaId && respuestas[nodo.preguntaId] != null);
+      }
       if (!abierto) continue;
-      nodo.salidas.forEach(function (arista) { pila.push(arista.hasta); });
+      nodo.salidas.forEach(function (arista) {
+        if (modo === 'limpio' && arista.tipo === 'respuesta'
+          && respuestas[arista.preguntaId] !== arista.clave) return;
+        pila.push(arista.hasta);
+      });
     }
     return visibles;
   }
 
-  function aristasVisibles(grafo, visibles, respuestas, arbolCompleto) {
+  function aristasVisibles(grafo, visibles, respuestas, divulgacion) {
+    var modo = normalizarDivulgacion(divulgacion);
     var resultado = new Set();
     grafo.aristas.forEach(function (arista, id) {
       if (!visibles.has(arista.desde) || !visibles.has(arista.hasta)) return;
-      if (arista.tipo === 'eje' || arbolCompleto || respuestas[arista.preguntaId] != null) {
+      if (arista.tipo === 'eje' || modo === 'completo' || modo === 'exploracion') {
         resultado.add(id);
+        return;
       }
+      if (respuestas[arista.preguntaId] == null) return;
+      if (modo === 'limpio' && respuestas[arista.preguntaId] !== arista.clave) return;
+      resultado.add(id);
     });
     return resultado;
+  }
+
+  /* Nodos del recorrido que el usuario eligió (sin las ramas gemelas). */
+  function nodosEnCaminoElegido(grafo, respuestas) {
+    return nodosVisibles(grafo, respuestas, 'limpio');
   }
 
   /* Borra, sobre el objeto recibido, toda respuesta cuya pregunta ya no es
@@ -208,11 +237,15 @@
     camara: { x: 0, y: 0, k: 1 },
     camaraRestaurada: false,
     tema: 'oscuro',
-    arbolCompleto: false,
-    modo: 'libre',           // 'libre' | 'explorador'
+    divulgacion: 'cuestionario', // cuestionario | limpio | exploracion | completo
+    arbolCompleto: false,    // espejo de divulgacion === 'completo' (URL y tests)
+    expandidos: new Set(),   // nodos abiertos en exploración libre
+    modo: 'libre',           // 'libre' | 'explorador'  (explorador de creencias)
     vista: 'grafo',          // 'grafo' | 'lista'
     panelAbierto: false,
     pestana: 'detalle',
+    panelAncho: 396,
+    compactoCreencias: true,
 
     tradiciones: [],         // nombres canónicos seleccionados
     posturasSueltas: [],     // ids de posturas sin afiliación seleccionadas
@@ -242,15 +275,67 @@
     },
 
     visibles: function () {
-      return nodosVisibles(this.grafo, this.respuestasEfectivas(), this.arbolCompleto);
+      return nodosVisibles(this.grafo, this.respuestasEfectivas(),
+        this.divulgacion, this.expandidos);
     },
 
     aristasDe: function (visibles) {
-      return aristasVisibles(this.grafo, visibles, this.respuestasEfectivas(), this.arbolCompleto);
+      return aristasVisibles(this.grafo, visibles, this.respuestasEfectivas(),
+        this.divulgacion);
+    },
+
+    caminoElegido: function () {
+      return nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas());
+    },
+
+    fijarDivulgacion: function (valor) {
+      var anterior = this.divulgacion;
+      var siguiente = normalizarDivulgacion(valor);
+      if (siguiente === 'exploracion' && anterior !== 'exploracion') {
+        this.sembrarExpandidos(anterior);
+      }
+      this.divulgacion = siguiente;
+      this.arbolCompleto = siguiente === 'completo';
+      this.emitir('divulgacion');
+    },
+
+    /* Al entrar en exploración libre, los nodos que ya tenían hijos a la vista
+       quedan expandidos para no colapsar el árbol que el usuario construyó. */
+    sembrarExpandidos: function (desdeModo) {
+      var visibles = nodosVisibles(this.grafo, this.respuestasEfectivas(),
+        desdeModo || 'cuestionario', this.expandidos);
+      var sembrados = new Set();
+      visibles.forEach(function (id) {
+        var nodo = this.grafo.nodos.get(id);
+        if (!nodo || !nodo.salidas.length) return;
+        var tieneHijoVisible = nodo.salidas.some(function (arista) {
+          return visibles.has(arista.hasta);
+        });
+        if (tieneHijoVisible) sembrados.add(id);
+      }, this);
+      this.expandidos = sembrados;
+    },
+
+    alternarExpandido: function (nodoId) {
+      if (this.expandidos.has(nodoId)) this.expandidos.delete(nodoId);
+      else this.expandidos.add(nodoId);
+      this.emitir('expandir');
     },
 
     responder: function (preguntaId, clave) {
+      if (this.divulgacion === 'cuestionario' && this.grafo) {
+        var anfitrion = this.grafo.anfitrionDePregunta(preguntaId);
+        var camino = nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas());
+        if (anfitrion && !camino.has(anfitrion)) return;
+      }
+      var anterior = this.respuestas[preguntaId];
+      if (anterior && anterior !== clave) {
+        delete this.respuestas[preguntaId];
+        delete this.superpuestas[preguntaId];
+        podarInalcanzables(this.grafo, this.respuestas);
+      }
       this.respuestas[preguntaId] = clave;
+      this.limpiarHuérfanos();
       this.emitir('respuesta');
     },
 
@@ -270,11 +355,7 @@
        descendientes seguían guardadas y la rama entera reaparecía intacta al
        volver a responder la misma pregunta. Los nodos que siguen alcanzados
        por otra rama conservan su respuesta. */
-    borrarRespuesta: function (preguntaId) {
-      delete this.respuestas[preguntaId];
-      delete this.superpuestas[preguntaId];
-      podarInalcanzables(this.grafo, this.respuestas);
-
+    limpiarHuérfanos: function () {
       var visibles = nodosVisibles(this.grafo, this.respuestas, false);
       var self = this;
       Object.keys(this.fijados).forEach(function (id) {
@@ -284,6 +365,13 @@
         if (!visibles.has(id)) self.resaltados.delete(id);
       });
       if (this.seleccionado && !visibles.has(this.seleccionado)) this.seleccionado = null;
+    },
+
+    borrarRespuesta: function (preguntaId) {
+      delete this.respuestas[preguntaId];
+      delete this.superpuestas[preguntaId];
+      podarInalcanzables(this.grafo, this.respuestas);
+      this.limpiarHuérfanos();
       this.emitir('respuesta');
     },
 
@@ -305,7 +393,6 @@
 
     seleccionar: function (nodoId) {
       this.seleccionado = nodoId;
-      if (nodoId) { this.panelAbierto = true; this.pestana = 'detalle'; }
       this.emitir('seleccion');
     },
 
@@ -328,7 +415,9 @@
       this.tradiciones = [];
       this.posturasSueltas = [];
       this.modo = 'libre';
+      this.divulgacion = 'cuestionario';
       this.arbolCompleto = false;
+      this.expandidos = new Set();
       this.emitir('reinicio');
     },
 
@@ -342,11 +431,15 @@
           fijados: this.fijados,
           camara: this.camara,
           tema: this.tema,
+          divulgacion: this.divulgacion,
           arbolCompleto: this.arbolCompleto,
+          expandidos: Array.from(this.expandidos),
           modo: this.modo,
           vista: this.vista,
           panelAbierto: this.panelAbierto,
           pestana: this.pestana,
+          panelAncho: this.panelAncho,
+          compactoCreencias: this.compactoCreencias,
           tradiciones: this.tradiciones,
           posturasSueltas: this.posturasSueltas,
           soloDesacuerdos: this.soloDesacuerdos,
@@ -373,7 +466,18 @@
       if (guardado.fijados) this.fijados = guardado.fijados;
       if (guardado.camara) { this.camara = guardado.camara; this.camaraRestaurada = true; }
       if (guardado.tema) this.tema = guardado.tema;
-      if (typeof guardado.arbolCompleto === 'boolean') this.arbolCompleto = guardado.arbolCompleto;
+      if (guardado.divulgacion) {
+        this.divulgacion = normalizarDivulgacion(guardado.divulgacion);
+        this.arbolCompleto = this.divulgacion === 'completo';
+      } else if (typeof guardado.arbolCompleto === 'boolean') {
+        this.arbolCompleto = guardado.arbolCompleto;
+        this.divulgacion = guardado.arbolCompleto ? 'completo' : 'cuestionario';
+      }
+      if (Array.isArray(guardado.expandidos)) this.expandidos = new Set(guardado.expandidos);
+      if (typeof guardado.panelAncho === 'number') this.panelAncho = guardado.panelAncho;
+      if (typeof guardado.compactoCreencias === 'boolean') {
+        this.compactoCreencias = guardado.compactoCreencias;
+      }
       if (guardado.modo) this.modo = guardado.modo;
       if (guardado.vista) this.vista = guardado.vista;
       if (typeof guardado.panelAbierto === 'boolean') this.panelAbierto = guardado.panelAbierto;
@@ -412,6 +516,7 @@
   Arbol.construirGrafo = construirGrafo;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;
+  Arbol.nodosEnCaminoElegido = nodosEnCaminoElegido;
   Arbol.Estado = Estado;
 
 })(window);

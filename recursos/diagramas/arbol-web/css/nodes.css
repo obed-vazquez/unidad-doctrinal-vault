@@ -30,17 +30,32 @@
 /* --------------------------------------------------------------------- nodo */
 
 .nodo { cursor: pointer; }
-.nodo.atenuado { opacity: 0.26; }
-.nodo.entrando { animation: aparecer 260ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
-@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+.nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
+.nodo.entrando { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.nodo.saliendo { animation: rama-sale 280ms ease both; pointer-events: none; }
+@keyframes rama-entra {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes nacer-raiz {
+  from { opacity: 0; }
+  55% { opacity: 1; }
+  to { opacity: 1; }
+}
+@keyframes rama-sale {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
-.nodo-sombra { fill: rgba(0, 0, 0, 0.35); }
+.nodo-sombra { fill: rgba(0, 0, 0, 0.35); pointer-events: none; }
 :root[data-tema="claro"] .nodo-sombra { fill: rgba(31, 45, 65, 0.12); }
 
 .nodo-caja {
   fill: var(--nodo-fondo);
   stroke: var(--nodo-borde);
   stroke-width: 1.4;
+  pointer-events: all;
   transition: stroke 180ms ease, fill 180ms ease;
 }
 /* El hover es un realce discreto del borde neutro. El azul queda reservado a
@@ -81,18 +96,25 @@
 
 /* Estado 3: seleccionado (anillo de foco). */
 .nodo.seleccionado .nodo-caja { stroke: var(--acento); stroke-width: 2.2; }
+.nodo.borrador .nodo-caja { stroke-dasharray: 6 4; }
 .nodo-anillo {
   fill: none;
   stroke: var(--acento);
   stroke-width: 2;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 180ms ease;
 }
 .nodo.seleccionado .nodo-anillo { opacity: 0.42; }
 
 /* Estado + resaltado permanente (Ctrl + clic). */
-.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; transition: opacity 200ms ease; }
-.nodo.resaltado .nodo-brillo { opacity: 0.55; }
+.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+.nodo.resaltado .nodo-brillo { opacity: 0.55; animation: pulso-resalte 900ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+@keyframes pulso-resalte {
+  0% { opacity: 0; }
+  35% { opacity: 0.9; }
+  100% { opacity: 0.55; }
+}
 .nodo.resaltado .nodo-caja { stroke: var(--resalte); }
 
 /* Camino iluminado del explorador de creencias. */
@@ -114,6 +136,8 @@
 .opcion:hover .opcion-texto { fill: var(--acento); }
 .opcion.elegida .opcion-caja { fill: var(--acento-suave); stroke: var(--acento); }
 .opcion.elegida .opcion-texto { fill: var(--acento); }
+.opcion.tenue { opacity: 0.42; }
+.opcion.tenue:hover { opacity: 1; }
 .opcion-glosa { fill: var(--texto-tenue); font-size: 10px; font-weight: 700; }
 
 .respuesta-chip-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1.2; }
@@ -134,7 +158,8 @@
 .papelera:hover .papelera-caja { fill: rgba(240, 97, 109, 0.18); stroke: var(--peligro); }
 .papelera:hover .papelera-icono { stroke: var(--peligro); }
 
-.chincheta { cursor: pointer; }
+.chincheta { cursor: pointer; opacity: 1; }
+.nodo.fijado .chincheta { opacity: 1; }
 .chincheta-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1; }
 .chincheta-cabeza { fill: var(--acento); stroke: none; }
 .chincheta-aguja { fill: none; stroke: var(--acento); stroke-width: 1.5; stroke-linecap: round; }
@@ -147,3 +172,9 @@
 
 .marca-tradicion { fill: var(--dorado); }
 .marca-tradicion.tentativa { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nodo.entrando, .nodo.raiz.entrando, .nodo.saliendo, .nodo.resaltado .nodo-brillo {
+    animation: none;
+  }
+}

@@ -50,9 +50,15 @@
       <button type="button" class="boton" id="btn-reorganizar" title="Restaurar las posiciones automáticas (R)">
         <span class="icono">↻</span><span class="rotulo">Reorganizar</span>
       </button>
-      <button type="button" class="boton alternable" id="btn-completo" title="Mostrar todas las ramas sin responder (A)">
-        <span class="icono">◫</span><span class="rotulo">Árbol completo</span>
-      </button>
+      <label class="selector-modo" title="Cómo se revelan las ramas (A para ciclar)">
+        <span class="rotulo">Recorrido</span>
+        <select id="sel-recorrido">
+          <option value="cuestionario">Cuestionario</option>
+          <option value="limpio">Limpio</option>
+          <option value="exploracion">Exploración libre</option>
+          <option value="completo">Árbol completo</option>
+        </select>
+      </label>
       <span class="barra-separador" id="sep-resaltados" hidden></span>
       <button type="button" class="boton resalte" id="btn-resaltados" hidden
               title="Encuadrar todos los nodos resaltados (H)">
@@ -76,13 +82,19 @@
       <button type="button" class="boton" id="btn-compartir" title="Copiar enlace con esta vista">
         <span class="icono">⇗</span><span class="rotulo">Compartir</span>
       </button>
-      <button type="button" class="boton" id="btn-tema" title="Cambiar entre tema oscuro y claro (T)">
+      <button type="button" class="boton" id="btn-exportar-md" title="Exportar el árbol actual (con tus aportes) en Markdown">
+        <span class="icono">⇩</span><span class="rotulo">Exportar</span>
+      </button>
+      <button type="button" class="boton icono-solo" id="btn-tema" title="Cambiar entre tema oscuro y claro (T)">
         <span class="icono">◐</span>
       </button>
-      <button type="button" class="boton peligro" id="btn-reiniciar"
+      <button type="button" class="boton peligro icono-solo" id="btn-reiniciar"
               title="Borrar respuestas, resaltados y anclajes">
-        <svg class="icono-basurero" viewBox="0 0 22 20" aria-hidden="true">
-          <path d="M 6 7 H 16 M 8 7 V 15 M 11 7 V 15 M 14 7 V 15 M 8.5 5 H 13.5"></path>
+        <svg class="icono-basurero" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16"></path>
+          <path d="M9 7V5h6v2"></path>
+          <path d="M7 7l1 14h8l1-14"></path>
+          <path d="M10 11v6M14 11v6"></path>
         </svg>
       </button>
     </div>
@@ -102,6 +114,7 @@
   </div>
 
   <aside id="panel" class="cerrado" aria-label="Panel de detalle">
+    <div id="panel-asa" title="Arrastrar para cambiar el ancho"></div>
     <button type="button" id="panel-cerrar" title="Cerrar panel">✕</button>
     <nav class="panel-pestanas" role="tablist">
       <button type="button" class="pestana activa" data-pestana="detalle" role="tab">Detalle</button>
@@ -119,6 +132,10 @@
                autocomplete="off" spellcheck="false">
       </div>
       <div class="panel-controles">
+        <label class="interruptor">
+          <input type="checkbox" id="chk-compacto" checked>
+          Modo compacto
+        </label>
         <button type="button" class="mini-boton" id="btn-limpiar-creencias">Limpiar selección</button>
         <button type="button" class="mini-boton destacado" id="btn-ir-comparar">Comparar →</button>
       </div>
@@ -172,6 +189,7 @@
 </div>
 
 <script src="js/state.js"></script>
+<script src="js/edits.js"></script>
 <script src="js/layout.js"></script>
 <script src="js/search.js"></script>
 <script src="js/renderer.js"></script>

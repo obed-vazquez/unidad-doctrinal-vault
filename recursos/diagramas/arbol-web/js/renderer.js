@@ -31,6 +31,21 @@
     return elemento;
   }
 
+  function ancestro(elemento, selector) {
+    if (!elemento || !elemento.closest) return null;
+    return elemento.closest(selector);
+  }
+
+  /* Con setPointerCapture el `click`/`dblclick` a veces apunta al SVG, no a
+     la tarjeta. elementFromPoint recupera el nodo real bajo el cursor. */
+  function elementoBajoPuntero(evento) {
+    var bajo = null;
+    if (typeof document.elementFromPoint === 'function') {
+      bajo = document.elementFromPoint(evento.clientX, evento.clientY);
+    }
+    return bajo || evento.target;
+  }
+
   function cajaSuperior(ancho, alto, radio) {
     return 'M 0 ' + radio
       + ' A ' + radio + ' ' + radio + ' 0 0 1 ' + radio + ' 0'
@@ -74,6 +89,8 @@
     arrastre: null,
     panorama: null,
     _clicDiferido: null,
+    _ultimoNodoPuntero: null,
+    _conteoClic: { id: null, veces: 0, marca: 0 },
 
     iniciar: function (opciones) {
       this.opciones = opciones || {};
@@ -231,14 +248,25 @@
           self.capaNodos.appendChild(grupo);
           self.nodosDOM.set(id, grupo);
         }
+        grupo.classList.remove('saliendo');
         self.pintarNodo(grupo, nodo, compuesto, respuesta, esNuevo);
       });
 
       this.nodosDOM.forEach(function (grupo, id) {
         if (vistos.has(id)) return;
-        grupo.remove();
-        self.nodosDOM.delete(id);
-        self.posiciones.delete(id);
+        if (self.reducirMovimiento()) {
+          grupo.remove();
+          self.nodosDOM.delete(id);
+          self.posiciones.delete(id);
+          return;
+        }
+        grupo.classList.add('saliendo');
+        global.setTimeout(function () {
+          if (self.contexto && self.contexto.visibles && self.contexto.visibles.has(id)) return;
+          grupo.remove();
+          self.nodosDOM.delete(id);
+          self.posiciones.delete(id);
+        }, 280);
       });
     },
 
@@ -264,9 +292,21 @@
         } else {
           clases.push('atenuado');
         }
+      } else if (this.debeAtenuarRecorrido() && contexto.caminoUsuario
+        && contexto.caminoUsuario.size > 1 && !contexto.caminoUsuario.has(nodo.id)) {
+        clases.push('atenuado');
       }
       if (esNuevo) clases.push('entrando');
+      if (nodo.postura && nodo.postura.is_local) clases.push('borrador');
       grupo.setAttribute('class', clases.join(' '));
+
+      var firma = compuesto.ancho + 'x' + compuesto.alto + ':'
+        + (respuesta == null ? '' : respuesta) + ':'
+        + compuesto.partes.map(function (p) { return p.k + (p.expandido ? 'e' : ''); }).join(',')
+        + ':' + ((nodo.postura && nodo.postura.label) || '')
+        + (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id) ? ':f' : '');
+      if (!esNuevo && grupo.getAttribute('data-firma') === firma) return;
+      grupo.setAttribute('data-firma', firma);
 
       while (grupo.firstChild) grupo.removeChild(grupo.firstChild);
 
@@ -359,7 +399,8 @@
             var g = crear('g', {
               'data-clave': boton.clave,
               'data-pregunta': nodo.preguntaId
-            }, 'opcion' + (respuesta === boton.clave ? ' elegida' : ''));
+            }, 'opcion' + (respuesta === boton.clave ? ' elegida'
+              : (respuesta != null ? ' tenue' : '')));
             g.appendChild(crear('rect', {
               x: padX + boton.x, y: y, width: boton.ancho, height: alturas.boton, rx: 8
             }, 'opcion-caja'));
@@ -376,6 +417,16 @@
             grupo.appendChild(g);
           });
         });
+
+      } else if (parte.k === 'expandir') {
+        var gExp = crear('g', { 'data-expandir': parte.nodoId },
+          'opcion expandir' + (parte.expandido ? ' elegida' : ''));
+        gExp.appendChild(crear('rect', {
+          x: padX, y: parte.y, width: parte.ancho, height: parte.alto, rx: 8
+        }, 'opcion-caja'));
+        gExp.appendChild(texto(parte.texto, padX + parte.ancho / 2,
+          parte.y + parte.alto / 2, 'opcion-texto'));
+        grupo.appendChild(gExp);
 
       } else if (parte.k === 'chipRespuesta') {
         grupo.appendChild(crear('rect', {
@@ -448,8 +499,12 @@
       disposicion.forEach(function (caja, id) {
         var actual = self.posiciones.get(id);
         if (!actual) {
-          self.posiciones.set(id, { x: caja.x, y: caja.y });
-          inicio.set(id, { x: caja.x, y: caja.y });
+          var origen = self.posicionDeEntrada(id, caja);
+          self.posiciones.set(id, { x: origen.x, y: origen.y });
+          inicio.set(id, { x: origen.x, y: origen.y });
+          if (Math.abs(origen.x - caja.x) > 0.5 || Math.abs(origen.y - caja.y) > 0.5) {
+            hayMovimiento = true;
+          }
         } else {
           inicio.set(id, { x: actual.x, y: actual.y });
           if (Math.abs(actual.x - caja.x) > 0.5 || Math.abs(actual.y - caja.y) > 0.5) {
@@ -490,6 +545,39 @@
     reducirMovimiento: function () {
       return global.matchMedia
         && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    },
+
+    /* En cuestionario (y limpio, por si queda un gemelo visible) se atenúa
+       lo que no está en el recorrido elegido. Exploración libre y árbol
+       completo muestran todas las ramas a plena opacidad. */
+    debeAtenuarRecorrido: function () {
+      var modo = this.contexto && this.contexto.divulgacion;
+      return modo === 'cuestionario' || modo === 'limpio';
+    },
+
+    /* Un nodo recién abierto nace junto a su padre visible y viaja a su sitio. */
+    posicionDeEntrada: function (id, cajaDestino) {
+      var contexto = this.contexto;
+      var nodo = contexto.grafo.nodos.get(id);
+      if (nodo) {
+        var i;
+        for (i = 0; i < nodo.entradas.length; i++) {
+          var padreId = nodo.entradas[i].desde;
+          var padre = this.posiciones.get(padreId);
+          var cajaPadre = contexto.disposicion.get(padreId);
+          if (padre) {
+            return {
+              x: padre.x + ((cajaPadre && cajaPadre.ancho || 0) - cajaDestino.ancho) / 2,
+              y: padre.y + (cajaPadre && cajaPadre.alto || 0)
+            };
+          }
+        }
+      }
+      var raiz = contexto.grafo.raices.filter(function (rid) {
+        return contexto.visibles.has(rid);
+      })[0];
+      var posRaiz = raiz ? this.posiciones.get(raiz) : null;
+      return posRaiz ? { x: posRaiz.x, y: posRaiz.y } : { x: cajaDestino.x, y: cajaDestino.y };
     },
 
     aplicarPosiciones: function () {
@@ -588,6 +676,12 @@
         } else if (elegida) {
           clases.push('elegida');
           clasesTrazo.push('elegida');
+        } else if (self.debeAtenuarRecorrido() && contexto.caminoUsuario
+          && arista.tipo === 'respuesta'
+          && contexto.respuestas[arista.preguntaId] != null
+          && !contexto.caminoUsuario.has(arista.hasta)) {
+          clases.push('atenuada');
+          clasesTrazo.push('atenuada');
         }
         grupo.setAttribute('class', clases.join(' '));
         trazo.setAttribute('class', clasesTrazo.join(' '));
@@ -718,6 +812,8 @@
     registrarEventos: function () {
       var self = this;
 
+      this.svg.addEventListener('selectstart', function (evento) { evento.preventDefault(); });
+
       this.svg.addEventListener('wheel', function (evento) {
         evento.preventDefault();
         var caja = self.svg.getBoundingClientRect();
@@ -734,16 +830,19 @@
       }, { passive: false });
 
       this.svg.addEventListener('pointerdown', function (evento) {
-        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
-        if (evento.target.closest && (evento.target.closest('.opcion')
-          || evento.target.closest('.papelera')
-          || evento.target.closest('.chincheta'))) return;
-        // Con Ctrl pulsado el gesto es «resaltar», no «arrastrar».
+        if (evento.button != null && evento.button !== 0) return;
+        evento.preventDefault();
+        var bajo = elementoBajoPuntero(evento);
+        var nodoDOM = ancestro(bajo, '.nodo');
+        if (ancestro(bajo, '.opcion') || ancestro(bajo, '.papelera')
+          || ancestro(bajo, '.chincheta')) return;
         if ((evento.ctrlKey || evento.metaKey) && nodoDOM) return;
 
+        self._ultimoNodoPuntero = nodoDOM;
         if (nodoDOM) {
           var id = nodoDOM.getAttribute('data-id');
           var punto = self.posiciones.get(id);
+          if (!punto) return;
           self.arrastre = {
             id: id,
             inicioCliente: { x: evento.clientX, y: evento.clientY },
@@ -759,7 +858,7 @@
           };
           self.svg.classList.add('arrastrando');
         }
-        self.svg.setPointerCapture(evento.pointerId);
+        try { self.svg.setPointerCapture(evento.pointerId); } catch (error) { /* nada */ }
       });
 
       this.svg.addEventListener('pointermove', function (evento) {
@@ -793,12 +892,11 @@
       });
 
       this.svg.addEventListener('pointerup', function (evento) {
-        if (self.svg.hasPointerCapture(evento.pointerId)) {
+        if (self.svg.hasPointerCapture && self.svg.hasPointerCapture(evento.pointerId)) {
           self.svg.releasePointerCapture(evento.pointerId);
         }
         self.svg.classList.remove('arrastrando', 'moviendo-nodo');
         if (self.panorama) {
-          // Un desplazamiento del lienzo no debe deseleccionar el nodo activo.
           self.ignorarSiguienteClic = self.panorama.movido;
           self.panorama = null;
           return;
@@ -807,6 +905,7 @@
         var arrastre = self.arrastre;
         self.arrastre = null;
         if (arrastre.movido) {
+          self.ignorarSiguienteClic = true;
           var punto = self.posiciones.get(arrastre.id);
           if (self.opciones.alFijar) self.opciones.alFijar(arrastre.id, punto);
           self.dibujarMinimapa();
@@ -821,11 +920,9 @@
 
       this.svg.addEventListener('click', function (evento) {
         if (self.ignorarSiguienteClic) { self.ignorarSiguienteClic = false; return; }
-        var nodoBajoCursor = evento.target.closest ? evento.target.closest('.nodo') : null;
+        var bajo = elementoBajoPuntero(evento);
+        var nodoBajoCursor = ancestro(bajo, '.nodo') || self._ultimoNodoPuntero;
 
-        // Ctrl + clic resalta ANTES que cualquier otra cosa: sin esta
-        // precedencia, pulsar sobre un botón de respuesta contestaba la
-        // pregunta en lugar de marcar el nodo.
         if ((evento.ctrlKey || evento.metaKey) && nodoBajoCursor) {
           evento.preventDefault();
           evento.stopPropagation();
@@ -835,7 +932,14 @@
           return;
         }
 
-        var opcion = evento.target.closest ? evento.target.closest('.opcion') : null;
+        var opcion = ancestro(bajo, '.opcion');
+        if (opcion && opcion.getAttribute('data-expandir')) {
+          evento.stopPropagation();
+          if (self.opciones.alExpandir) {
+            self.opciones.alExpandir(opcion.getAttribute('data-expandir'));
+          }
+          return;
+        }
         if (opcion) {
           evento.stopPropagation();
           if (self.opciones.alResponder) {
@@ -844,7 +948,7 @@
           }
           return;
         }
-        var papelera = evento.target.closest ? evento.target.closest('.papelera') : null;
+        var papelera = ancestro(bajo, '.papelera');
         if (papelera) {
           evento.stopPropagation();
           if (self.opciones.alBorrar) {
@@ -852,7 +956,7 @@
           }
           return;
         }
-        var chincheta = evento.target.closest ? evento.target.closest('.chincheta') : null;
+        var chincheta = ancestro(bajo, '.chincheta');
         if (chincheta) {
           evento.stopPropagation();
           if (self.opciones.alDesanclar) {
@@ -861,17 +965,22 @@
           return;
         }
         if (nodoBajoCursor) {
-          // Diferimos la selección para que un doble clic pueda cancelarla y
-          // disparar alDobleClic sin que el primer clic provoque un refresco
-          // completo del DOM que descoloca el segundo evento.
-          // El usuario reporta que sigue sin funcionar el doble click
           var idCapturado = nodoBajoCursor.getAttribute('data-id');
+          var ahora = Date.now();
+          var conteo = self._conteoClic;
+          if (conteo.id === idCapturado && ahora - conteo.marca < 420) {
+            global.clearTimeout(self._clicDiferido);
+            self._conteoClic = { id: null, veces: 0, marca: 0 };
+            evento.preventDefault();
+            self.ocultarTooltip();
+            if (self.opciones.alDobleClic) self.opciones.alDobleClic(idCapturado);
+            return;
+          }
+          self._conteoClic = { id: idCapturado, veces: 1, marca: ahora };
           global.clearTimeout(self._clicDiferido);
           self._clicDiferido = global.setTimeout(function () {
-            if (self.opciones.alSeleccionar) {
-              self.opciones.alSeleccionar(idCapturado);
-            }
-          }, 250);
+            if (self.opciones.alSeleccionar) self.opciones.alSeleccionar(idCapturado);
+          }, 280);
           return;
         }
         global.clearTimeout(self._clicDiferido);
@@ -879,12 +988,17 @@
       });
 
       this.svg.addEventListener('dblclick', function (evento) {
-        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
-        if (!nodoDOM) return;
         evento.preventDefault();
-        // Cancelamos la selección diferida del clic simple: el doble clic
-        // hace su propia selección + centrado.
+        evento.stopPropagation();
+        if (global.getSelection) {
+          var sel = global.getSelection();
+          if (sel && sel.removeAllRanges) sel.removeAllRanges();
+        }
+        var bajo = elementoBajoPuntero(evento);
+        var nodoDOM = ancestro(bajo, '.nodo') || self._ultimoNodoPuntero;
         global.clearTimeout(self._clicDiferido);
+        self._conteoClic = { id: null, veces: 0, marca: 0 };
+        if (!nodoDOM) return;
         self.ocultarTooltip();
         if (self.opciones.alDobleClic) {
           self.opciones.alDobleClic(nodoDOM.getAttribute('data-id'));
@@ -893,15 +1007,9 @@
 
       this.svg.addEventListener('mousemove', function (evento) {
         if (self.arrastre || self.panorama) return;
-        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
+        var nodoDOM = ancestro(elementoBajoPuntero(evento), '.nodo');
         if (!nodoDOM) { self.ocultarTooltip(); return; }
         var id = nodoDOM.getAttribute('data-id');
-        // Estado 3: la pregunta formal completa solo reaparece con el nodo
-        // seleccionado y el cursor encima (especificación §5.1).
-        if (!self.contexto || self.contexto.estado.seleccionado !== id) {
-          self.ocultarTooltip();
-          return;
-        }
         var contenido = self.opciones.tooltipHTML
           ? self.opciones.tooltipHTML(self.contexto.grafo.nodos.get(id))
           : null;
