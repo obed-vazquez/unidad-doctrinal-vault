@@ -68,41 +68,41 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                 - ? -> ¿La evidencia de los milagros de Jesús son suficientes para concluír que realmente ocurrieron?
                   - No: Naturalismo cristológico*
                     - Naturalismo cristológico* -> ¿Jesús fue un profeta?
-                          - Sí: Socinianismo* {Judaísmo moderno/liberal (académico)}
-                          - No: Reduccionismo histórico*
-                            - Reduccionismo histórico* -> ¿Jesús fue un engañador?
-                              - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
+                      - Sí: Socinianismo* {Judaísmo moderno/liberal (académico)}
+                      - No: Reduccionismo histórico*
+                        - Reduccionismo histórico* -> ¿Jesús fue un engañador?
+                          - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
+                          - No: ?
+                            - ? -> ¿Jesús fue solo un sabio? 
+                              - Sí: ?
                               - No: ?
-                                - ? -> ¿Jesús fue solo un sabio? 
-                                  - Sí: ?
-                                  - No: ?
-                                    - ? -> ¿Jesús fue solamente una persona confundida?
-                                      - Sí: Postura del Lunático
-                                      - No: Postura de la Leyenda
+                                - ? -> ¿Jesús fue solamente una persona confundida?
+                                  - Sí: Postura del Lunático
+                                  - No: Postura de la Leyenda
                   - Sí: ?
                     - ? -> ¿Los milagros (especialmente su resurección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús? (¿Jesús es Dios?)
                       - No: ?
-                          - ? -> ¿Es Jesucristo un ser creado?
-                              - No: Subordinacionismo {SUD?}
-                              - Sí: Cristo-creaturismo*
-                                  - Cristo-creaturismo* -> ¿Era Jesucristo inferior y subordinado a Dios?
-                                      - No: Sin-nombre {No se identifica quién que sostenga esta postura}
-                                      - Sí: ?
-                                          - ? -> ¿Era Jesucristo inicialmente un ser divino?
-                                              - Sí: Arrianismo
-                                                  - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
-                                                      - Sí: Arrianismo de los JW (Testigos de Jehová)
-                                                      - No: Arrianismo Clasico
-                                              - No: Unitarismo
-                                                  - Unitarismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente?
-                                                  - Sí: Adopcionismo 
-                                                  - No: Unitarismo Clasico
-                                                      - Unitarismo Clasico -> ¿Jesucristo llegó a morir?
-                                                         - Sí: Ebionismo
-                                                         - Ebionismo -> ¿Jesucristo Resucitó?
-                                                           - Sí: Ebionismo Clasico
-                                                           - No: Ahmadismo {Islam Ahmadí}
-                                                         - No: ? {Islam Suní/Chiita}
+                        - ? -> ¿Es Jesucristo un ser creado?
+                          - No: Subordinacionismo {SUD?}
+                          - Sí: Cristo-creaturismo*
+                            - Cristo-creaturismo* -> ¿Era Jesucristo inferior y subordinado a Dios?
+                              - No: Sin-nombre {No se identifica quién que sostenga esta postura}
+                              - Sí: ?
+                                - ? -> ¿Era Jesucristo inicialmente un ser divino?
+                                  - Sí: Arrianismo
+                                    - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
+                                      - Sí: Arrianismo de los JW (Testigos de Jehová)
+                                      - No: Arrianismo Clasico
+                                  - No: Unitarismo
+                                    - Unitarismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente?
+                                      - Sí: Adopcionismo 
+                                      - No: Unitarismo Clasico
+                                        - Unitarismo Clasico -> ¿Jesucristo llegó a morir?
+                                          - Sí: Ebionismo
+                                          - Ebionismo -> ¿Jesucristo Resucitó?
+                                            - Sí: Ebionismo Clasico
+                                            - No: Ahmadismo {Islam Ahmadí}
+                                          - No: ? {Islam Suní/Chiita}
                       - Sí: Encarnacionismo / Preexistencialismo
                         - Encarnacionismo / Preexistencialismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)
                           - No: Teología Liberal / Racionalismo Teológico?
