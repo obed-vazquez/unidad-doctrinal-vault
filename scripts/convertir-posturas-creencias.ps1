@@ -10,8 +10,9 @@
 
     Genera recursos\diagramas\posturas-creencias.mmd,
     recursos\diagramas\posturas-creencias.dag,
-    recursos\diagramas\posturas-creencias.gv y
-    recursos\diagramas\posturas-creencias.svg.
+    recursos\diagramas\posturas-creencias.gv,
+    recursos\diagramas\posturas-creencias.svg y los datos del visor web
+    recursos\diagramas\arbol-web\datos\posturas-creencias.json.
 
 .EXAMPLE
     .\scripts\convertir-posturas-creencias.ps1 -Format png -Dpi 300
@@ -41,12 +42,16 @@ param(
 
     [string]$ImagePath,
 
+    [string]$JsonPath,
+
     [ValidateSet('svg', 'png', 'pdf')]
     [string]$Format,
 
     [int]$Dpi,
 
     [switch]$NoImage,
+
+    [switch]$NoJson,
 
     [switch]$NoAutoInstallGraphviz,
 
@@ -172,6 +177,12 @@ if ($GraphvizPath) {
 }
 if ($ImagePath) {
     $arguments += @('--imagen', $ImagePath)
+}
+if ($JsonPath) {
+    $arguments += @('--json', $JsonPath)
+}
+if ($NoJson) {
+    $arguments += '--sin-json'
 }
 if ($Format) {
     $arguments += @('--formato', $Format)

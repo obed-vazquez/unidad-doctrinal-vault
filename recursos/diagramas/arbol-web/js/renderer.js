@@ -1,0 +1,834 @@
+/* Dibujo en SVG puro: nodos, aristas Bézier, cámara por matriz, minimapa,
+   arrastre con fijación y tooltip enriquecido.
+   No hay <foreignObject> ni capas HTML sobre el lienzo: todo el diagrama es
+   vectorial, de modo que el zoom no pixela a ningún nivel. */
+
+(function (global) {
+  'use strict';
+
+  var Arbol = global.Arbol || (global.Arbol = {});
+  var NS = 'http://www.w3.org/2000/svg';
+
+  var ZOOM_MIN = 0.04;
+  var ZOOM_MAX = 24;
+  var DURACION = 300;
+  var UMBRAL_ARRASTRE = 4;
+
+  function crear(nombre, atributos, clase) {
+    var elemento = document.createElementNS(NS, nombre);
+    if (clase) elemento.setAttribute('class', clase);
+    if (atributos) {
+      Object.keys(atributos).forEach(function (nombreAtributo) {
+        elemento.setAttribute(nombreAtributo, atributos[nombreAtributo]);
+      });
+    }
+    return elemento;
+  }
+
+  function texto(contenido, x, y, clase) {
+    var elemento = crear('text', { x: x, y: y }, clase);
+    elemento.textContent = contenido;
+    return elemento;
+  }
+
+  function cajaSuperior(ancho, alto, radio) {
+    return 'M 0 ' + radio
+      + ' A ' + radio + ' ' + radio + ' 0 0 1 ' + radio + ' 0'
+      + ' H ' + (ancho - radio)
+      + ' A ' + radio + ' ' + radio + ' 0 0 1 ' + ancho + ' ' + radio
+      + ' V ' + alto + ' H 0 Z';
+  }
+
+  function suavizar(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  }
+
+  var Vista = {
+    svg: null,
+    mundo: null,
+    capaAristas: null,
+    capaNodos: null,
+    patron: null,
+    opciones: {},
+    contexto: null,
+    camara: { x: 0, y: 0, k: 1 },
+    nodosDOM: new Map(),
+    aristasDOM: new Map(),
+    posiciones: new Map(),
+    animacion: null,
+    arrastre: null,
+    panorama: null,
+
+    iniciar: function (opciones) {
+      this.opciones = opciones || {};
+      this.svg = document.getElementById('lienzo');
+      this.mundo = document.getElementById('mundo');
+      this.capaAristas = document.getElementById('capa-aristas');
+      this.capaNodos = document.getElementById('capa-nodos');
+      this.patron = document.getElementById('rejilla');
+      this.tooltip = document.getElementById('tooltip');
+      this.minimapaSVG = document.getElementById('minimapa-svg');
+      this.minimapaNodos = document.getElementById('minimapa-nodos');
+      this.minimapaVista = document.getElementById('minimapa-vista');
+      this.minimapaEscala = document.getElementById('minimapa-escala');
+      this.registrarEventos();
+    },
+
+    /* ------------------------------------------------------- coordenadas - */
+
+    aMundo: function (clienteX, clienteY) {
+      var caja = this.svg.getBoundingClientRect();
+      return {
+        x: (clienteX - caja.left - this.camara.x) / this.camara.k,
+        y: (clienteY - caja.top - this.camara.y) / this.camara.k
+      };
+    },
+
+    aplicarCamara: function () {
+      var camara = this.camara;
+      var matriz = 'translate(' + camara.x + ',' + camara.y + ') scale(' + camara.k + ')';
+      this.mundo.setAttribute('transform', matriz);
+      if (this.patron) this.patron.setAttribute('patternTransform', matriz);
+      if (this.minimapaEscala) {
+        this.minimapaEscala.textContent = Math.round(camara.k * 100) + ' %';
+      }
+      this.actualizarMinimapaVista();
+      if (this.opciones.alCambiarCamara) this.opciones.alCambiarCamara(camara);
+    },
+
+    fijarCamara: function (camara) {
+      this.camara = {
+        x: camara.x,
+        y: camara.y,
+        k: Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, camara.k || 1))
+      };
+      this.aplicarCamara();
+    },
+
+    animarCamara: function (destino) {
+      var self = this;
+      var inicio = { x: this.camara.x, y: this.camara.y, k: this.camara.k };
+      var t0 = null;
+      function paso(marca) {
+        if (t0 === null) t0 = marca;
+        var avance = Math.min(1, (marca - t0) / DURACION);
+        var e = suavizar(avance);
+        self.camara = {
+          x: inicio.x + (destino.x - inicio.x) * e,
+          y: inicio.y + (destino.y - inicio.y) * e,
+          k: inicio.k + (destino.k - inicio.k) * e
+        };
+        self.aplicarCamara();
+        if (avance < 1) global.requestAnimationFrame(paso);
+      }
+      global.requestAnimationFrame(paso);
+    },
+
+    /* Encuadra un conjunto de nodos dejando sitio al panel lateral abierto. */
+    encuadrar: function (ids, animar) {
+      var disposicion = this.contexto && this.contexto.disposicion;
+      if (!disposicion) return;
+      var lista = (ids && ids.length ? ids : Array.from(disposicion.keys()))
+        .filter(function (id) { return disposicion.has(id); });
+      if (!lista.length) return;
+
+      var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      lista.forEach(function (id) {
+        var caja = disposicion.get(id);
+        minX = Math.min(minX, caja.x);
+        minY = Math.min(minY, caja.y);
+        maxX = Math.max(maxX, caja.x + caja.ancho);
+        maxY = Math.max(maxY, caja.y + caja.alto);
+      });
+
+      var rect = this.svg.getBoundingClientRect();
+      var margenIzq = 40;
+      var margenDer = (this.opciones.margenDerecho && this.opciones.margenDerecho()) || 40;
+      var margenArr = 92;
+      var margenAba = 70;
+      var disponibleX = Math.max(120, rect.width - margenIzq - margenDer);
+      var disponibleY = Math.max(120, rect.height - margenArr - margenAba);
+      var k = Math.min(disponibleX / (maxX - minX || 1), disponibleY / (maxY - minY || 1), 1.35);
+      k = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, k));
+
+      var destino = {
+        k: k,
+        x: margenIzq + (disponibleX - (maxX - minX) * k) / 2 - minX * k,
+        y: margenArr + (disponibleY - (maxY - minY) * k) / 2 - minY * k
+      };
+      if (animar === false) this.fijarCamara(destino);
+      else this.animarCamara(destino);
+    },
+
+    encuadrarNodoYDescendientes: function (nodoId) {
+      var grafo = this.contexto.grafo;
+      var visibles = this.contexto.visibles;
+      var ids = [nodoId];
+      var nodo = grafo.nodos.get(nodoId);
+      if (nodo) {
+        nodo.salidas.forEach(function (arista) {
+          if (visibles.has(arista.hasta)) ids.push(arista.hasta);
+        });
+      }
+      this.encuadrar(ids, true);
+    },
+
+    /* ------------------------------------------------------------ render - */
+
+    render: function (contexto) {
+      this.contexto = contexto;
+      this.sincronizarNodos();
+      this.animarPosiciones();
+      this.dibujarMinimapa();
+    },
+
+    sincronizarNodos: function () {
+      var self = this;
+      var contexto = this.contexto;
+      var vistos = new Set();
+
+      contexto.visibles.forEach(function (id) {
+        vistos.add(id);
+        var nodo = contexto.grafo.nodos.get(id);
+        if (!nodo) return;
+        var respuesta = nodo.preguntaId ? contexto.respuestas[nodo.preguntaId] : undefined;
+        var compuesto = Arbol.Layout.componer(nodo, respuesta == null ? null : respuesta, contexto);
+        var grupo = self.nodosDOM.get(id);
+        var esNuevo = !grupo;
+        if (esNuevo) {
+          grupo = crear('g', { 'data-id': id }, 'nodo');
+          self.capaNodos.appendChild(grupo);
+          self.nodosDOM.set(id, grupo);
+        }
+        self.pintarNodo(grupo, nodo, compuesto, respuesta, esNuevo);
+      });
+
+      this.nodosDOM.forEach(function (grupo, id) {
+        if (vistos.has(id)) return;
+        grupo.remove();
+        self.nodosDOM.delete(id);
+        self.posiciones.delete(id);
+      });
+    },
+
+    pintarNodo: function (grupo, nodo, compuesto, respuesta, esNuevo) {
+      var contexto = this.contexto;
+      var estado = contexto.estado;
+      var camino = contexto.camino;
+      var ancho = compuesto.ancho;
+      var alto = compuesto.alto;
+      var padX = compuesto.padX;
+
+      var clases = ['nodo', 'tipo-' + nodo.tipo];
+      if (nodo.postura && nodo.postura.is_root) clases.push('raiz');
+      if (estado.seleccionado === nodo.id) clases.push('seleccionado');
+      if (estado.resaltados.has(nodo.id)) clases.push('resaltado');
+      if (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id)) clases.push('fijado');
+      if (camino) {
+        if (camino.nodos.has(nodo.id)) {
+          clases.push('camino');
+          if (camino.destinosTentativos && camino.destinosTentativos.has(nodo.id)) {
+            clases.push('tentativa');
+          }
+        } else {
+          clases.push('atenuado');
+        }
+      }
+      if (esNuevo) clases.push('entrando');
+      grupo.setAttribute('class', clases.join(' '));
+
+      while (grupo.firstChild) grupo.removeChild(grupo.firstChild);
+
+      grupo.appendChild(crear('rect', {
+        x: -6, y: -6, width: ancho + 12, height: alto + 12, rx: 17
+      }, 'nodo-brillo'));
+      grupo.appendChild(crear('rect', {
+        x: -3.5, y: -3.5, width: ancho + 7, height: alto + 7, rx: 15
+      }, 'nodo-anillo'));
+      grupo.appendChild(crear('rect', {
+        x: 3, y: 5, width: ancho, height: alto, rx: 12
+      }, 'nodo-sombra'));
+      grupo.appendChild(crear('rect', {
+        x: 0, y: 0, width: ancho, height: alto, rx: 12
+      }, 'nodo-caja'));
+
+      var self = this;
+      compuesto.partes.forEach(function (parte) {
+        self.pintarParte(grupo, parte, ancho, padX, nodo, respuesta);
+      });
+
+      if (nodo.preguntaId && respuesta != null) {
+        grupo.appendChild(this.construirPapelera(ancho, nodo));
+      }
+      if (Object.prototype.hasOwnProperty.call(contexto.estado.fijados, nodo.id)) {
+        grupo.appendChild(this.construirChincheta());
+      }
+
+      var entradasVisibles = nodo.entradas.filter(function (arista) {
+        return contexto.aristasIds.has(arista.id);
+      });
+      if (entradasVisibles.length > 1) {
+        grupo.appendChild(crear('path', {
+          d: 'M ' + (ancho / 2 - 16) + ' -9 Q ' + (ancho / 2) + ' -20 '
+            + (ancho / 2 + 16) + ' -9'
+        }, 'convergencia-puerto'));
+        grupo.appendChild(texto('&', ancho / 2, -22, 'convergencia-glifo'));
+      }
+    },
+
+    pintarParte: function (grupo, parte, ancho, padX, nodo, respuesta) {
+      var i;
+
+      if (parte.k === 'banda') {
+        grupo.appendChild(crear('path', { d: cajaSuperior(ancho, parte.alto, 12) },
+          'nodo-encabezado-fondo'));
+        grupo.appendChild(crear('line', {
+          x1: 0, y1: parte.alto, x2: ancho, y2: parte.alto
+        }, 'nodo-separador'));
+        grupo.appendChild(texto(parte.rotulo, padX, parte.alto / 2, 'nodo-etiqueta-tipo'));
+        grupo.appendChild(texto(parte.texto, padX + parte.desplazamiento, parte.alto / 2,
+          'nodo-encabezado-texto' + (parte.sinNombre ? ' sin-nombre' : '')));
+        // Puntos dorados de tradición; dejan libre la esquina de la papelera.
+        (parte.tradiciones || []).slice(0, 4).forEach(function (tradicion, indice) {
+          grupo.appendChild(crear('circle', {
+            cx: ancho - padX - 24 - indice * 9, cy: parte.alto / 2, r: 3
+          }, 'marca-tradicion' + (tradicion.is_tentative ? ' tentativa' : '')));
+        });
+
+      } else if (parte.k === 'tipo') {
+        grupo.appendChild(texto(parte.texto, padX, parte.y + 6, 'nodo-etiqueta-tipo'));
+
+      } else if (parte.k === 'titulo') {
+        for (i = 0; i < parte.lineas.length; i++) {
+          grupo.appendChild(texto(parte.lineas[i], padX,
+            parte.y + parte.lh / 2 + i * parte.lh,
+            'nodo-titulo' + (parte.sinNombre ? ' sin-nombre' : '')));
+        }
+
+      } else if (parte.k === 'formal' || parte.k === 'coloquial') {
+        var clase = parte.k === 'formal' ? 'nodo-pregunta' : 'nodo-coloquial';
+        for (i = 0; i < parte.lineas.length; i++) {
+          grupo.appendChild(texto(parte.lineas[i], padX,
+            parte.y + parte.lh / 2 + i * parte.lh, clase));
+        }
+
+      } else if (parte.k === 'nota') {
+        for (i = 0; i < parte.lineas.length; i++) {
+          grupo.appendChild(texto(parte.lineas[i], padX,
+            parte.y + parte.lh / 2 + i * parte.lh, 'nodo-nota'));
+        }
+
+      } else if (parte.k === 'botones') {
+        var alturas = Arbol.Layout.alturas;
+        parte.filas.forEach(function (fila, indiceFila) {
+          var y = parte.y + indiceFila * (alturas.boton + alturas.gapBoton);
+          fila.forEach(function (boton) {
+            var g = crear('g', {
+              'data-clave': boton.clave,
+              'data-pregunta': nodo.preguntaId
+            }, 'opcion' + (respuesta === boton.clave ? ' elegida' : ''));
+            g.appendChild(crear('rect', {
+              x: padX + boton.x, y: y, width: boton.ancho, height: alturas.boton, rx: 8
+            }, 'opcion-caja'));
+            var centro = padX + boton.x + (boton.glosa ? boton.ancho - 14 : boton.ancho) / 2;
+            g.appendChild(texto(boton.texto, centro, y + alturas.boton / 2, 'opcion-texto'));
+            if (boton.glosa) {
+              var marca = texto('ⓘ', padX + boton.x + boton.ancho - 16,
+                y + alturas.boton / 2, 'opcion-glosa');
+              var tituloGlosa = crear('title');
+              tituloGlosa.textContent = boton.glosa;
+              marca.appendChild(tituloGlosa);
+              g.appendChild(marca);
+            }
+            grupo.appendChild(g);
+          });
+        });
+
+      } else if (parte.k === 'chipRespuesta') {
+        grupo.appendChild(crear('rect', {
+          x: padX, y: parte.y, width: parte.ancho, height: parte.alto, rx: 8
+        }, 'respuesta-chip-caja'));
+        grupo.appendChild(texto(parte.texto, padX + 11, parte.y + parte.alto / 2,
+          'respuesta-chip-texto'));
+
+      } else if (parte.k === 'chips') {
+        var alturaChip = Arbol.Layout.alturas.chipTradicion;
+        var gapChip = Arbol.Layout.alturas.gapChip;
+        var destacadas = this.contexto.tradicionesDestacadas || new Set();
+        parte.filas.forEach(function (fila, indiceFila) {
+          var y = parte.y + indiceFila * (alturaChip + gapChip);
+          fila.forEach(function (chip) {
+            var clases = 'tradicion-chip-caja'
+              + (chip.tentativa ? ' tentativa' : '')
+              + (destacadas.has(chip.nombre) ? ' destacada' : '');
+            grupo.appendChild(crear('rect', {
+              x: padX + chip.x, y: y, width: chip.ancho, height: alturaChip, rx: 11
+            }, clases));
+            grupo.appendChild(texto(chip.texto, padX + chip.x + 9, y + alturaChip / 2,
+              'tradicion-chip-texto'));
+          });
+        });
+      }
+    },
+
+    construirPapelera: function (ancho, nodo) {
+      var g = crear('g', {
+        transform: 'translate(' + (ancho - 30) + ',7)',
+        'data-papelera': nodo.preguntaId
+      }, 'papelera');
+      g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'papelera-caja'));
+      g.appendChild(crear('path', {
+        d: 'M 6 7 H 16 M 8 7 V 15 M 11 7 V 15 M 14 7 V 15 M 8.5 5 H 13.5'
+      }, 'papelera-icono'));
+      var titulo = crear('title');
+      titulo.textContent = 'Deshacer esta respuesta y podar su rama';
+      g.appendChild(titulo);
+      return g;
+    },
+
+    construirChincheta: function () {
+      var g = crear('g', { transform: 'translate(8,8)' }, 'chincheta');
+      g.appendChild(crear('circle', { cx: 4, cy: 4, r: 3.4 }));
+      g.appendChild(crear('rect', { x: 3.2, y: 4, width: 1.6, height: 7, rx: 0.8 }));
+      var titulo = crear('title');
+      titulo.textContent = 'Nodo anclado manualmente';
+      g.appendChild(titulo);
+      return g;
+    },
+
+    /* ------------------------------------------------ animación y aristas */
+
+    animarPosiciones: function () {
+      var self = this;
+      var disposicion = this.contexto.disposicion;
+      var inicio = new Map();
+      var hayMovimiento = false;
+
+      disposicion.forEach(function (caja, id) {
+        var actual = self.posiciones.get(id);
+        if (!actual) {
+          self.posiciones.set(id, { x: caja.x, y: caja.y });
+          inicio.set(id, { x: caja.x, y: caja.y });
+        } else {
+          inicio.set(id, { x: actual.x, y: actual.y });
+          if (Math.abs(actual.x - caja.x) > 0.5 || Math.abs(actual.y - caja.y) > 0.5) {
+            hayMovimiento = true;
+          }
+        }
+      });
+
+      if (this.animacion) { global.cancelAnimationFrame(this.animacion); this.animacion = null; }
+
+      if (!hayMovimiento || this.reducirMovimiento()) {
+        disposicion.forEach(function (caja, id) { self.posiciones.set(id, { x: caja.x, y: caja.y }); });
+        this.aplicarPosiciones();
+        this.dibujarAristas();
+        return;
+      }
+
+      var t0 = null;
+      function paso(marca) {
+        if (t0 === null) t0 = marca;
+        var avance = Math.min(1, (marca - t0) / DURACION);
+        var e = suavizar(avance);
+        disposicion.forEach(function (caja, id) {
+          var desde = inicio.get(id);
+          self.posiciones.set(id, {
+            x: desde.x + (caja.x - desde.x) * e,
+            y: desde.y + (caja.y - desde.y) * e
+          });
+        });
+        self.aplicarPosiciones();
+        self.dibujarAristas();
+        if (avance < 1) self.animacion = global.requestAnimationFrame(paso);
+        else self.animacion = null;
+      }
+      this.animacion = global.requestAnimationFrame(paso);
+    },
+
+    reducirMovimiento: function () {
+      return global.matchMedia
+        && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    },
+
+    aplicarPosiciones: function () {
+      var self = this;
+      this.nodosDOM.forEach(function (grupo, id) {
+        var punto = self.posiciones.get(id);
+        if (!punto) return;
+        grupo.setAttribute('transform', 'translate(' + punto.x + ',' + punto.y + ')');
+      });
+    },
+
+    puntoSalida: function (id) {
+      var punto = this.posiciones.get(id);
+      var caja = this.contexto.disposicion.get(id);
+      if (!punto || !caja) return null;
+      return { x: punto.x + caja.ancho / 2, y: punto.y + caja.alto };
+    },
+
+    puntoEntrada: function (id) {
+      var punto = this.posiciones.get(id);
+      var caja = this.contexto.disposicion.get(id);
+      if (!punto || !caja) return null;
+      return { x: punto.x + caja.ancho / 2, y: punto.y };
+    },
+
+    dibujarAristas: function () {
+      var self = this;
+      var contexto = this.contexto;
+      var vistas = new Set();
+
+      contexto.aristasIds.forEach(function (aristaId) {
+        var arista = contexto.grafo.aristas.get(aristaId);
+        if (!arista) return;
+        var desde = self.puntoSalida(arista.desde);
+        var hasta = self.puntoEntrada(arista.hasta);
+        if (!desde || !hasta) return;
+        vistas.add(aristaId);
+
+        var grupo = self.aristasDOM.get(aristaId);
+        if (!grupo) {
+          grupo = crear('g', { 'data-id': aristaId }, 'arista-grupo');
+          grupo.appendChild(crear('path', {}, 'arista'));
+          if (arista.tipo === 'respuesta' && arista.etiqueta) {
+            grupo.appendChild(crear('rect', {}, 'arista-etiqueta-caja'));
+            grupo.appendChild(texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto'));
+          }
+          self.capaAristas.appendChild(grupo);
+          self.aristasDOM.set(aristaId, grupo);
+        }
+
+        var separacion = Math.max(30, (hasta.y - desde.y) * 0.42);
+        var d = 'M ' + desde.x + ' ' + desde.y
+          + ' C ' + desde.x + ' ' + (desde.y + separacion)
+          + ', ' + hasta.x + ' ' + (hasta.y - separacion)
+          + ', ' + hasta.x + ' ' + hasta.y;
+        var trazo = grupo.querySelector('.arista');
+        trazo.setAttribute('d', d);
+
+        var clases = ['arista-grupo'];
+        var clasesTrazo = ['arista'];
+        if (arista.tipo === 'eje') clasesTrazo.push('eje');
+        var elegida = arista.tipo === 'respuesta'
+          && contexto.respuestas[arista.preguntaId] === arista.clave;
+        if (contexto.camino) {
+          if (contexto.camino.aristas.has(aristaId)) {
+            clases.push('camino');
+            clasesTrazo.push('camino');
+            if (contexto.camino.aristasTentativas.has(aristaId)) clasesTrazo.push('tentativa');
+          } else {
+            clases.push('atenuada');
+            clasesTrazo.push('atenuada');
+          }
+        } else if (elegida) {
+          clases.push('elegida');
+          clasesTrazo.push('elegida');
+        }
+        grupo.setAttribute('class', clases.join(' '));
+        trazo.setAttribute('class', clasesTrazo.join(' '));
+
+        var caja = grupo.querySelector('.arista-etiqueta-caja');
+        if (caja) {
+          var etiqueta = grupo.querySelector('.arista-etiqueta-texto');
+          var mx = (desde.x + 3 * desde.x + 3 * hasta.x + hasta.x) / 8;
+          var my = (desde.y + 3 * (desde.y + separacion) + 3 * (hasta.y - separacion) + hasta.y) / 8;
+          var anchoTexto = Arbol.Layout.medir(arista.etiqueta, '600 11px ' + Arbol.Layout.PILA);
+          caja.setAttribute('x', mx - anchoTexto / 2 - 8);
+          caja.setAttribute('y', my - 10);
+          caja.setAttribute('width', anchoTexto + 16);
+          caja.setAttribute('height', 20);
+          etiqueta.setAttribute('x', mx);
+          etiqueta.setAttribute('y', my);
+        }
+      });
+
+      this.aristasDOM.forEach(function (grupo, id) {
+        if (vistas.has(id)) return;
+        grupo.remove();
+        self.aristasDOM.delete(id);
+      });
+    },
+
+    /* --------------------------------------------------------- minimapa -- */
+
+    limitesMundo: function () {
+      var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      var self = this;
+      this.contexto.disposicion.forEach(function (caja, id) {
+        var punto = self.posiciones.get(id) || caja;
+        minX = Math.min(minX, punto.x);
+        minY = Math.min(minY, punto.y);
+        maxX = Math.max(maxX, punto.x + caja.ancho);
+        maxY = Math.max(maxY, punto.y + caja.alto);
+      });
+      if (minX === Infinity) return { minX: 0, minY: 0, maxX: 1, maxY: 1 };
+      return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+    },
+
+    dibujarMinimapa: function () {
+      if (!this.minimapaNodos) return;
+      var limites = this.limitesMundo();
+      var ancho = limites.maxX - limites.minX || 1;
+      var alto = limites.maxY - limites.minY || 1;
+      var relleno = ancho * 0.06;
+      this.minimapaCaja = {
+        x: limites.minX - relleno,
+        y: limites.minY - relleno,
+        ancho: ancho + relleno * 2,
+        alto: alto + relleno * 2
+      };
+      this.minimapaSVG.setAttribute('viewBox',
+        this.minimapaCaja.x + ' ' + this.minimapaCaja.y + ' '
+        + this.minimapaCaja.ancho + ' ' + this.minimapaCaja.alto);
+      this.minimapaSVG.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+      while (this.minimapaNodos.firstChild) {
+        this.minimapaNodos.removeChild(this.minimapaNodos.firstChild);
+      }
+      var self = this;
+      var contexto = this.contexto;
+      contexto.disposicion.forEach(function (caja, id) {
+        var punto = self.posiciones.get(id) || caja;
+        var clase = '';
+        var nodo = contexto.grafo.nodos.get(id);
+        if (nodo && (nodo.tipo === 'pregunta' || nodo.tipo === 'postura')) clase = 'eje';
+        if (contexto.camino && contexto.camino.nodos.has(id)) clase = 'camino';
+        if (contexto.estado.seleccionado === id) clase = 'seleccionado';
+        self.minimapaNodos.appendChild(crear('rect', {
+          x: punto.x, y: punto.y, width: caja.ancho, height: caja.alto, rx: 8
+        }, clase));
+      });
+      this.actualizarMinimapaVista();
+    },
+
+    actualizarMinimapaVista: function () {
+      if (!this.minimapaVista || !this.minimapaCaja) return;
+      var rect = this.svg.getBoundingClientRect();
+      var k = this.camara.k;
+      this.minimapaVista.setAttribute('x', -this.camara.x / k);
+      this.minimapaVista.setAttribute('y', -this.camara.y / k);
+      this.minimapaVista.setAttribute('width', rect.width / k);
+      this.minimapaVista.setAttribute('height', rect.height / k);
+    },
+
+    centrarDesdeMinimapa: function (evento) {
+      if (!this.minimapaCaja) return;
+      var caja = this.minimapaSVG.getBoundingClientRect();
+      var escala = Math.min(caja.width / this.minimapaCaja.ancho,
+        caja.height / this.minimapaCaja.alto);
+      var offsetX = (caja.width - this.minimapaCaja.ancho * escala) / 2;
+      var offsetY = (caja.height - this.minimapaCaja.alto * escala) / 2;
+      var mundoX = (evento.clientX - caja.left - offsetX) / escala + this.minimapaCaja.x;
+      var mundoY = (evento.clientY - caja.top - offsetY) / escala + this.minimapaCaja.y;
+      var lienzo = this.svg.getBoundingClientRect();
+      this.fijarCamara({
+        k: this.camara.k,
+        x: lienzo.width / 2 - mundoX * this.camara.k,
+        y: lienzo.height / 2 - mundoY * this.camara.k
+      });
+    },
+
+    /* --------------------------------------------------------- tooltip --- */
+
+    mostrarTooltip: function (contenido, clienteX, clienteY) {
+      if (!contenido) return;
+      this.tooltip.innerHTML = contenido;
+      this.tooltip.classList.add('visible');
+      this.tooltip.setAttribute('aria-hidden', 'false');
+      var caja = this.tooltip.getBoundingClientRect();
+      var maxX = global.innerWidth - caja.width - 16;
+      var maxY = global.innerHeight - caja.height - 16;
+      this.tooltip.style.left = Math.max(12, Math.min(maxX, clienteX + 18)) + 'px';
+      this.tooltip.style.top = Math.max(12, Math.min(maxY, clienteY + 18)) + 'px';
+    },
+
+    ocultarTooltip: function () {
+      this.tooltip.classList.remove('visible');
+      this.tooltip.setAttribute('aria-hidden', 'true');
+    },
+
+    /* ---------------------------------------------------------- eventos -- */
+
+    registrarEventos: function () {
+      var self = this;
+
+      this.svg.addEventListener('wheel', function (evento) {
+        evento.preventDefault();
+        var caja = self.svg.getBoundingClientRect();
+        var cx = evento.clientX - caja.left;
+        var cy = evento.clientY - caja.top;
+        var factor = Math.pow(1.0016, -evento.deltaY * (evento.deltaMode === 1 ? 16 : 1));
+        var nuevo = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, self.camara.k * factor));
+        var relacion = nuevo / self.camara.k;
+        self.fijarCamara({
+          k: nuevo,
+          x: cx - (cx - self.camara.x) * relacion,
+          y: cy - (cy - self.camara.y) * relacion
+        });
+      }, { passive: false });
+
+      this.svg.addEventListener('pointerdown', function (evento) {
+        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
+        if (evento.target.closest && (evento.target.closest('.opcion')
+          || evento.target.closest('.papelera'))) return;
+
+        if (nodoDOM) {
+          var id = nodoDOM.getAttribute('data-id');
+          var punto = self.posiciones.get(id);
+          self.arrastre = {
+            id: id,
+            inicioCliente: { x: evento.clientX, y: evento.clientY },
+            inicioNodo: { x: punto.x, y: punto.y },
+            movido: false,
+            ctrl: evento.ctrlKey || evento.metaKey
+          };
+        } else {
+          self.panorama = {
+            inicioCliente: { x: evento.clientX, y: evento.clientY },
+            inicioCamara: { x: self.camara.x, y: self.camara.y },
+            movido: false
+          };
+          self.svg.classList.add('arrastrando');
+        }
+        self.svg.setPointerCapture(evento.pointerId);
+      });
+
+      this.svg.addEventListener('pointermove', function (evento) {
+        if (self.panorama) {
+          var dxLienzo = evento.clientX - self.panorama.inicioCliente.x;
+          var dyLienzo = evento.clientY - self.panorama.inicioCliente.y;
+          if (Math.abs(dxLienzo) + Math.abs(dyLienzo) >= UMBRAL_ARRASTRE) {
+            self.panorama.movido = true;
+          }
+          self.fijarCamara({
+            k: self.camara.k,
+            x: self.panorama.inicioCamara.x + dxLienzo,
+            y: self.panorama.inicioCamara.y + dyLienzo
+          });
+          return;
+        }
+        if (!self.arrastre) return;
+        var dx = evento.clientX - self.arrastre.inicioCliente.x;
+        var dy = evento.clientY - self.arrastre.inicioCliente.y;
+        if (!self.arrastre.movido
+          && Math.abs(dx) + Math.abs(dy) < UMBRAL_ARRASTRE) return;
+        self.arrastre.movido = true;
+        self.svg.classList.add('moviendo-nodo');
+        self.ocultarTooltip();
+        self.posiciones.set(self.arrastre.id, {
+          x: self.arrastre.inicioNodo.x + dx / self.camara.k,
+          y: self.arrastre.inicioNodo.y + dy / self.camara.k
+        });
+        self.aplicarPosiciones();
+        self.dibujarAristas();
+      });
+
+      this.svg.addEventListener('pointerup', function (evento) {
+        if (self.svg.hasPointerCapture(evento.pointerId)) {
+          self.svg.releasePointerCapture(evento.pointerId);
+        }
+        self.svg.classList.remove('arrastrando', 'moviendo-nodo');
+        if (self.panorama) {
+          // Un desplazamiento del lienzo no debe deseleccionar el nodo activo.
+          self.ignorarSiguienteClic = self.panorama.movido;
+          self.panorama = null;
+          return;
+        }
+        if (!self.arrastre) return;
+        var arrastre = self.arrastre;
+        self.arrastre = null;
+        if (arrastre.movido) {
+          var punto = self.posiciones.get(arrastre.id);
+          if (self.opciones.alFijar) self.opciones.alFijar(arrastre.id, punto);
+          self.dibujarMinimapa();
+        }
+      });
+
+      this.svg.addEventListener('pointercancel', function () {
+        self.arrastre = null;
+        self.panorama = null;
+        self.svg.classList.remove('arrastrando', 'moviendo-nodo');
+      });
+
+      this.svg.addEventListener('click', function (evento) {
+        if (self.ignorarSiguienteClic) { self.ignorarSiguienteClic = false; return; }
+        var opcion = evento.target.closest ? evento.target.closest('.opcion') : null;
+        if (opcion) {
+          evento.stopPropagation();
+          if (self.opciones.alResponder) {
+            self.opciones.alResponder(opcion.getAttribute('data-pregunta'),
+              opcion.getAttribute('data-clave'));
+          }
+          return;
+        }
+        var papelera = evento.target.closest ? evento.target.closest('.papelera') : null;
+        if (papelera) {
+          evento.stopPropagation();
+          if (self.opciones.alBorrar) {
+            self.opciones.alBorrar(papelera.getAttribute('data-papelera'));
+          }
+          return;
+        }
+        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
+        if (nodoDOM) {
+          var id = nodoDOM.getAttribute('data-id');
+          if (evento.ctrlKey || evento.metaKey) {
+            if (self.opciones.alResaltar) self.opciones.alResaltar(id);
+          } else if (self.opciones.alSeleccionar) {
+            self.opciones.alSeleccionar(id);
+          }
+          return;
+        }
+        if (self.opciones.alSeleccionar) self.opciones.alSeleccionar(null);
+      });
+
+      this.svg.addEventListener('dblclick', function (evento) {
+        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
+        if (!nodoDOM) return;
+        evento.preventDefault();
+        self.encuadrarNodoYDescendientes(nodoDOM.getAttribute('data-id'));
+      });
+
+      this.svg.addEventListener('mousemove', function (evento) {
+        if (self.arrastre || self.panorama) return;
+        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
+        if (!nodoDOM) { self.ocultarTooltip(); return; }
+        var id = nodoDOM.getAttribute('data-id');
+        // Estado 3: la pregunta formal completa solo reaparece con el nodo
+        // seleccionado y el cursor encima (especificación §5.1).
+        if (!self.contexto || self.contexto.estado.seleccionado !== id) {
+          self.ocultarTooltip();
+          return;
+        }
+        var contenido = self.opciones.tooltipHTML
+          ? self.opciones.tooltipHTML(self.contexto.grafo.nodos.get(id))
+          : null;
+        self.mostrarTooltip(contenido, evento.clientX, evento.clientY);
+      });
+
+      this.svg.addEventListener('mouseleave', function () { self.ocultarTooltip(); });
+
+      if (this.minimapaSVG) {
+        var arrastrandoMinimapa = false;
+        this.minimapaSVG.addEventListener('pointerdown', function (evento) {
+          arrastrandoMinimapa = true;
+          this.setPointerCapture(evento.pointerId);
+          self.centrarDesdeMinimapa(evento);
+        });
+        this.minimapaSVG.addEventListener('pointermove', function (evento) {
+          if (arrastrandoMinimapa) self.centrarDesdeMinimapa(evento);
+        });
+        this.minimapaSVG.addEventListener('pointerup', function (evento) {
+          arrastrandoMinimapa = false;
+          if (this.hasPointerCapture(evento.pointerId)) this.releasePointerCapture(evento.pointerId);
+        });
+      }
+
+      global.addEventListener('resize', function () { self.actualizarMinimapaVista(); });
+    }
+  };
+
+  Arbol.Vista = Vista;
+
+})(window);

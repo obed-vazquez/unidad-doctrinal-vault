@@ -187,10 +187,10 @@ digraph posturas_creencias {
     Q12 -> P22 [label="Sí"];
     Q13 -> P23 [label="Sí"];
     Q13 -> P26 [label="No"];
-    Q13 -> P27 [label="Sí"];
-    Q13 -> P28 [label="No"];
     Q14 -> P24 [label="Sí"];
     Q14 -> P25 [label="No"];
+    Q15 -> P27 [label="Sí"];
+    Q15 -> P28 [label="No"];
     Q16 -> P29 [label="Sí"];
     Q16 -> P32 [label="No"];
     Q17 -> P30 [label="Sí"];

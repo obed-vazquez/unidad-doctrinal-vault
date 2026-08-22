@@ -59,15 +59,14 @@ Q12: Cristo-creaturismo* - ¿Era Jesucristo inferior y subordinado a Dios?
 Q13: - - ¿Era Jesucristo inicialmente un ser divino?
   A: Sí -> Q14
   B: No -> Q15
-  C: Sí -> [OUT_P27]
-  D: No -> Q16
 
 Q14: Arrianismo - ¿Es Jesús identificado como el Arcángel Miguel?
   A: Sí -> [OUT_P24]
   B: No -> [OUT_P25]
 
 Q15: Unitarismo - ¿Dios adoptó a Jesucristo como hijo posteriormente?
-  A: Sin ruta documentada -> [OUT_SIN_RUTA_Q15]
+  A: Sí -> [OUT_P27]
+  B: No -> Q16
 
 Q16: Unitarismo Clasico - ¿Jesucristo llegó a morir?
   A: Sí -> Q17
@@ -442,7 +441,3 @@ R3: Ateísmo cosmológico* - La postura «Ateísmo cosmológico*» abre varios e
 [OUT_P101]: -
   description: Postura terminal extraída del documento fuente.
   code: OUT_P101
-
-[OUT_SIN_RUTA_Q15]: Sin ruta documentada desde ¿Dios adoptó a Jesucristo como hijo posteriormente?
-  description: El documento no especifica una respuesta para esta pregunta.
-  code: OUT_SIN_RUTA_Q15

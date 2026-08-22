@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árbol de posturas y creencias</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/canvas.css">
+<link rel="stylesheet" href="css/nodes.css">
+<link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+<div id="aplicacion">
+
+  <svg id="lienzo" xmlns="http://www.w3.org/2000/svg" role="application"
+       aria-label="Árbol interactivo de posturas y creencias">
+    <defs>
+      <pattern id="rejilla" width="72" height="72" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="1.1" class="rejilla-punto"></circle>
+      </pattern>
+      <marker id="punta" viewBox="0 0 10 10" refX="8.5" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha"></path>
+      </marker>
+      <marker id="punta-eje" viewBox="0 0 10 10" refX="8.5" refY="5"
+              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha-eje"></path>
+      </marker>
+      <marker id="punta-camino" viewBox="0 0 10 10" refX="8.5" refY="5"
+              markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha-camino"></path>
+      </marker>
+    </defs>
+    <rect id="fondo-rejilla" x="0" y="0" width="100%" height="100%" fill="url(#rejilla)"></rect>
+    <g id="mundo">
+      <g id="capa-aristas"></g>
+      <g id="capa-nodos"></g>
+    </g>
+  </svg>
+
+  <header id="barra">
+    <div class="barra-marca">
+      <span class="barra-titulo">Árbol de posturas y creencias</span>
+      <span class="barra-contador" id="contador">—</span>
+    </div>
+    <div class="barra-acciones">
+      <button type="button" class="boton" id="btn-ajustar" title="Ajustar el árbol a la ventana (F)">
+        <span class="icono">⤢</span><span class="rotulo">Ajustar</span>
+      </button>
+      <button type="button" class="boton" id="btn-reorganizar" title="Restaurar las posiciones automáticas (R)">
+        <span class="icono">↻</span><span class="rotulo">Reorganizar</span>
+      </button>
+      <button type="button" class="boton alternable" id="btn-completo" title="Mostrar todas las ramas sin responder (A)">
+        <span class="icono">◫</span><span class="rotulo">Árbol completo</span>
+      </button>
+      <span class="barra-separador"></span>
+      <button type="button" class="boton alternable" id="btn-creencias" title="Explorador de creencias (E)">
+        <span class="icono">✦</span><span class="rotulo">Creencias</span>
+      </button>
+      <button type="button" class="boton alternable" id="btn-comparar" title="Razonar y comparar (L)">
+        <span class="icono">☰</span><span class="rotulo">Razonar y comparar</span>
+      </button>
+      <span class="barra-separador"></span>
+      <button type="button" class="boton" id="btn-compartir" title="Copiar enlace con esta vista">
+        <span class="icono">⇗</span><span class="rotulo">Compartir</span>
+      </button>
+      <button type="button" class="boton" id="btn-tema" title="Cambiar entre tema oscuro y claro (T)">
+        <span class="icono">◐</span>
+      </button>
+      <button type="button" class="boton peligro" id="btn-reiniciar" title="Borrar respuestas, resaltados y anclajes">
+        <span class="icono">⌫</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="minimapa" aria-hidden="true">
+    <svg id="minimapa-svg" xmlns="http://www.w3.org/2000/svg">
+      <g id="minimapa-nodos"></g>
+      <rect id="minimapa-vista" x="0" y="0" width="10" height="10"></rect>
+    </svg>
+    <div class="minimapa-zoom"><span id="minimapa-escala">100 %</span></div>
+  </div>
+
+  <div id="pista">
+    <kbd>Rueda</kbd> zoom · <kbd>Arrastrar</kbd> mover · <kbd>Doble clic</kbd> encuadrar ·
+    <kbd>Ctrl</kbd>+<kbd>Clic</kbd> resaltar
+  </div>
+
+  <aside id="panel" class="cerrado" aria-label="Panel de detalle">
+    <button type="button" id="panel-cerrar" title="Cerrar panel">✕</button>
+    <nav class="panel-pestanas" role="tablist">
+      <button type="button" class="pestana activa" data-pestana="detalle" role="tab">Detalle</button>
+      <button type="button" class="pestana" data-pestana="creencias" role="tab">Creencias</button>
+      <button type="button" class="pestana" data-pestana="comparar" role="tab">Razonar</button>
+    </nav>
+
+    <section class="panel-cuerpo activa" data-cuerpo="detalle" id="cuerpo-detalle">
+      <p class="panel-vacio">Selecciona un nodo del árbol para ver su ficha completa.</p>
+    </section>
+
+    <section class="panel-cuerpo" data-cuerpo="creencias" id="cuerpo-creencias">
+      <div class="buscador">
+        <input type="search" id="buscador-tradiciones" placeholder="Buscar tradición, religión o sistema…"
+               autocomplete="off" spellcheck="false">
+      </div>
+      <div class="panel-controles">
+        <button type="button" class="mini-boton" id="btn-limpiar-creencias">Limpiar selección</button>
+        <button type="button" class="mini-boton destacado" id="btn-ir-comparar">Razonar y comparar →</button>
+      </div>
+      <div id="ficha-creencias"></div>
+      <h3 class="panel-subtitulo">Tradiciones y sistemas de creencias</h3>
+      <div id="lista-tradiciones"></div>
+      <h3 class="panel-subtitulo">Posturas sin afiliación</h3>
+      <p class="panel-nota" id="nota-sin-afiliacion"></p>
+      <div id="lista-posturas-sueltas"></div>
+    </section>
+
+    <section class="panel-cuerpo" data-cuerpo="comparar" id="cuerpo-comparar">
+      <div class="panel-controles">
+        <label class="interruptor">
+          <input type="checkbox" id="chk-desacuerdos"> Solo desacuerdos
+        </label>
+        <label class="interruptor">
+          Profundidad
+          <select id="sel-profundidad">
+            <option value="0">Toda</option>
+            <option value="3">3 niveles</option>
+            <option value="5">5 niveles</option>
+            <option value="8">8 niveles</option>
+          </select>
+        </label>
+      </div>
+      <div class="panel-controles">
+        <button type="button" class="mini-boton" id="btn-copiar">Copiar</button>
+        <button type="button" class="mini-boton" id="btn-csv">Exportar CSV</button>
+        <button type="button" class="mini-boton" id="btn-json">Exportar JSON</button>
+      </div>
+      <div id="salida-comparar"></div>
+    </section>
+  </aside>
+
+  <div id="tooltip" role="tooltip" aria-hidden="true"></div>
+  <div id="aviso" role="status" aria-live="polite"></div>
+  <div id="cargando"><div class="girador"></div><p>Cargando el árbol…</p></div>
+
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/search.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/router.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -43,9 +43,10 @@ Consecuencias para quien lea o edite el archivo:
 ## Generar diagramas
 
 Doble clic en **[Generar-Diagramas.cmd](diagramas/Generar-Diagramas.cmd)**. Regenera
-`recursos/diagramas` (Mermaid, DrawDecisionTree, Graphviz e imagen SVG) a partir de
-este documento, instalando Graphviz solo si hace falta, y abre la imagen al terminar.
-No necesita edición manual ni comandos.
+`recursos/diagramas` (Mermaid, DrawDecisionTree, Graphviz, imagen SVG y los datos del
+visor interactivo) a partir de este documento, instalando Graphviz solo si hace falta,
+y abre la imagen al terminar. No necesita edición manual ni comandos.
+El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/index.html)**.
 
 Opciones avanzadas (rutas, formato, resolución, `-Strict`):
 `Get-Help .\scripts\convertir-posturas-creencias.ps1 -Full`.

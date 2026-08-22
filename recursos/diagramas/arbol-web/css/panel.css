@@ -1,0 +1,301 @@
+/* Panel lateral: ficha de detalle, explorador de creencias y vista de lista
+   del Modo de Razonamiento y Comparación. */
+
+#panel {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  bottom: 14px;
+  width: 396px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--sombra);
+  z-index: 25;
+  transition: transform var(--transicion), opacity var(--transicion);
+}
+#panel.cerrado { transform: translateX(calc(100% + 22px)); opacity: 0; pointer-events: none; }
+#panel { padding-top: 58px; }
+
+/* Modo de Razonamiento y Comparación: la lista necesita ancho, pero el grafo
+   sigue detrás para poder volver a él con el mismo botón. */
+#panel.ancho { width: min(760px, 62vw); }
+
+#panel-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  color: var(--texto-tenue);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+#panel-cerrar:hover { color: var(--peligro); border-color: var(--peligro); }
+
+.panel-pestanas {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 4px;
+}
+.pestana {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radio-chico);
+  background: transparent;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.pestana:hover { color: var(--texto); }
+.pestana.activa { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
+
+.panel-cuerpo {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 16px 18px;
+  scrollbar-width: thin;
+}
+.panel-cuerpo.activa { display: block; }
+.panel-cuerpo::-webkit-scrollbar { width: 9px; }
+.panel-cuerpo::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 9px; }
+
+.panel-vacio { color: var(--texto-tenue); font-size: 13px; line-height: 1.6; }
+.panel-nota { color: var(--texto-tenue); font-size: 11.5px; line-height: 1.55; margin: 0 0 8px; }
+.panel-subtitulo {
+  margin: 20px 0 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+/* ---------------------------------------------------------------- detalle */
+
+.ficha-tipo {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+.ficha-tipo.eje { border-color: var(--eje-borde); color: var(--eje-texto); }
+.ficha-titulo { margin: 0 0 4px; font-size: 19px; font-weight: 700; line-height: 1.25; color: var(--texto); }
+.ficha-titulo.sin-nombre { color: var(--texto-tenue); font-style: italic; font-weight: 500; }
+.ficha-formal { margin: 10px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--texto); }
+.ficha-coloquial { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; font-style: italic; color: var(--texto-medio); }
+
+.ficha-datos { margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; }
+.ficha-datos dt { color: var(--texto-tenue); font-size: 11.5px; }
+.ficha-datos dd { margin: 0; color: var(--texto-medio); font-size: 11.5px; }
+
+.ficha-opciones { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.ficha-opciones li {
+  padding: 8px 10px;
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  font-size: 12.5px;
+  color: var(--texto-medio);
+}
+.ficha-opciones li.elegida { border-color: var(--acento); background: var(--acento-suave); color: var(--texto); }
+.ficha-opciones b { color: var(--texto); }
+.ficha-opciones .glosa { display: block; margin-top: 3px; font-size: 11.5px; color: var(--texto-tenue); }
+
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie-alta);
+  font-size: 11.5px;
+  color: var(--texto-medio);
+  cursor: pointer;
+}
+.etiqueta:hover { border-color: var(--dorado); color: var(--dorado); }
+.etiqueta.tentativa { border-style: dashed; }
+.etiqueta.activa { background: var(--dorado-suave); border-color: var(--dorado); color: var(--dorado); }
+
+.enlace-nota {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--acento);
+  font-size: 12px;
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
+
+/* ------------------------------------------------------------- buscador */
+
+.buscador { position: sticky; top: 0; padding: 6px 0 10px; background: linear-gradient(var(--superficie) 76%, transparent); }
+#buscador-tradiciones {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  color: var(--texto);
+  font: inherit;
+  font-size: 13px;
+}
+#buscador-tradiciones:focus { outline: none; border-color: var(--acento); }
+
+.panel-controles { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.mini-boton {
+  padding: 5px 10px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  color: var(--texto-medio);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.mini-boton:hover { border-color: var(--acento); color: var(--acento); }
+.mini-boton.destacado { border-color: var(--acento); color: var(--acento); }
+.interruptor { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--texto-medio); }
+.interruptor select {
+  border: 1px solid var(--borde);
+  border-radius: 5px;
+  background: var(--superficie-alta);
+  color: var(--texto-medio);
+  font: inherit;
+  font-size: 11.5px;
+  padding: 2px 4px;
+}
+
+.tradicion {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.tradicion:hover { border-color: var(--dorado); }
+.tradicion.activa { border-color: var(--dorado); background: var(--dorado-suave); }
+.tradicion input { margin: 2px 0 0; accent-color: var(--dorado); }
+.tradicion-nombre { font-size: 13px; color: var(--texto); font-weight: 600; }
+.tradicion-nombre.tentativa::after {
+  content: "adhesión tentativa";
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: 1px dashed var(--dorado);
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--dorado);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tradicion-meta { display: block; margin-top: 2px; font-size: 11px; color: var(--texto-tenue); line-height: 1.45; }
+
+.ficha-sujeto {
+  padding: 11px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--dorado);
+  border-radius: var(--radio-chico);
+  background: var(--dorado-suave);
+}
+.ficha-sujeto .ficha-opciones li { cursor: pointer; }
+.ficha-sujeto .ficha-opciones li:hover { border-color: var(--dorado); }
+.ficha-sujeto .panel-subtitulo { margin-top: 12px; }
+
+/* --------------------------------------------------- razonar y comparar */
+
+.lista-razonamiento { list-style: none; margin: 0; padding: 0; }
+.lista-razonamiento ul { list-style: none; margin: 0; padding-left: 14px; border-left: 1px dashed var(--borde); }
+.paso {
+  padding: 8px 0 8px 10px;
+  border-bottom: 1px solid var(--borde-suave);
+}
+.paso-cabecera { display: flex; align-items: baseline; gap: 8px; }
+.paso-plegar {
+  border: none;
+  background: none;
+  color: var(--texto-tenue);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  padding: 0;
+  width: 12px;
+}
+.paso-postura { font-size: 10.5px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--texto-tenue); }
+.paso-id { font-size: 10px; color: var(--texto-tenue); opacity: 0.75; }
+.paso-formal { margin: 3px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--texto); }
+.paso-coloquial { margin: 2px 0 0; font-size: 11.5px; font-style: italic; color: var(--texto-medio); }
+.paso-respuestas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.paso.plegado > ul, .paso.plegado .paso-formal, .paso.plegado .paso-coloquial { display: none; }
+
+.respuesta-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: 11px;
+  background: var(--superficie-alta);
+  color: var(--texto-medio);
+}
+.respuesta-marca .sujeto { color: var(--texto-tenue); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.respuesta-marca.consenso { border-color: var(--consenso); color: var(--consenso); }
+.respuesta-marca.divergencia { border-color: var(--divergencia); color: var(--divergencia); }
+.respuesta-marca.ambigua { border-style: dashed; }
+.respuesta-marca.ausente { opacity: 0.5; }
+
+.tabla-comparativa { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11.5px; }
+.tabla-comparativa th, .tabla-comparativa td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--borde-suave);
+  text-align: left;
+  vertical-align: top;
+}
+.tabla-comparativa th { color: var(--texto-tenue); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; }
+.tabla-comparativa tr.divergente td { background: rgba(240, 97, 109, 0.07); }
+.tabla-comparativa tr.consenso td { background: rgba(63, 185, 80, 0.06); }
+.tabla-comparativa td.pregunta { color: var(--texto); max-width: 210px; }
+.tabla-comparativa td.pregunta small { display: block; color: var(--texto-tenue); font-style: italic; }
+
+.resumen-comparacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--borde-suave);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  font-size: 11.5px;
+  color: var(--texto-medio);
+}
+.resumen-comparacion b { color: var(--texto); }
+
+@media (max-width: 860px) {
+  #panel { left: 14px; width: auto; }
+}

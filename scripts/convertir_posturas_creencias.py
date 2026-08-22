@@ -15,12 +15,15 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
+import os
 import re
 import shutil
 import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
@@ -38,6 +41,19 @@ QUESTION_COLORS = ("#FFF3CD", "#8A6D3B", "#2F250D")
 POSTURE_COLORS = ("#E7F1FF", "#2E6DA4", "#102A43")
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 LIST_ITEM = re.compile(r"^(?P<indent>[ \t]*)-\s+(?P<text>.+?)\s*$")
+
+# --- Modelo de datos del visor web (arbol-web) --------------------------------
+JSON_SCHEMA_VERSION = "1.0.0"
+WEB_APP_DIRECTORY = "arbol-web"
+WEB_DATA_DIRECTORY = "datos"
+WEB_DATA_GLOBAL = "__ARBOL_POSTURAS__"
+# Un {grupo} con esta cantidad de palabras o más se lee como nota descriptiva
+# ("No se identifica quién que sostenga esta postura") y no como tradición.
+NOTE_MIN_WORDS = 5
+GROUP = re.compile(r"\{([^{}]*)\}")
+EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
+TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
+ANSWER_HEAD = re.compile(r"^(s[íi]|no)\b[\s,;:.—–-]*(.*)$", re.IGNORECASE | re.DOTALL)
 
 
 @dataclass
@@ -58,6 +74,9 @@ class Posture:
     label: str
     aliases: set[str]
     questions: list[str] = field(default_factory=list)
+    # Texto tal como aparece en el Markdown: conserva los [[wikilinks]] y los
+    # {grupos} que `label` ya normalizó. Solo lo consume la salida JSON.
+    raw: str = ""
 
 
 @dataclass
@@ -95,6 +114,7 @@ class Model:
             id=posture_id,
             label=cleaned,
             aliases=alias_keys(cleaned),
+            raw=" ".join(label.strip().split()),
         )
         return posture_id
 
@@ -620,6 +640,306 @@ def render_graphviz(model: Model, source_name: str) -> str:
     return "\n".join(lines)
 
 
+def plain_text(value: str) -> str:
+    """Texto listo para la interfaz: sin wikilinks, sin negritas, sin dobles espacios."""
+
+    return display_text(EMPHASIS.sub(r"\1", value))
+
+
+def strip_groups(value: str) -> str:
+    return " ".join(GROUP.sub(" ", value).split())
+
+
+def capitalize_first(value: str) -> str:
+    return value[:1].upper() + value[1:] if value else value
+
+
+def tradition_aliases(canonical_name: str) -> list[str]:
+    """Deriva los alias de búsqueda de un nombre con sinónimos separados por «/».
+
+    En este recurso «/» significa sinonimia, no enumeración: `Islam Suní/Chiita`
+    es una sola tradición que puede buscarse como «Islam Suní» o «Islam Chiita».
+    """
+
+    base = TRAILING_PARENTHESIS.sub("", canonical_name).strip()
+    parts = [part.strip() for part in base.split("/") if part.strip()]
+    if len(parts) < 2:
+        return []
+
+    prefix = parts[0].split()[:-1]
+    aliases = [parts[0]]
+    for part in parts[1:]:
+        words = part.split()
+        aliases.append(" ".join(prefix + words) if len(words) == 1 and prefix else part)
+
+    result: list[str] = []
+    for alias in aliases:
+        alias = capitalize_first(alias)
+        if alias and alias != canonical_name and alias not in result:
+            result.append(alias)
+    return result
+
+
+def parse_groups(raw_label: str) -> tuple[list[dict], list[str]]:
+    """Separa los `{...}` de una postura en tradiciones y notas descriptivas."""
+
+    traditions: list[dict] = []
+    notes: list[str] = []
+    for match in GROUP.finditer(raw_label):
+        inner = plain_text(match.group(1))
+        if not inner:
+            continue
+        is_tentative = inner.endswith("?")
+        name = inner[:-1].strip() if is_tentative else inner
+        if not name:
+            continue
+        if len(name.split()) >= NOTE_MIN_WORDS:
+            notes.append(inner)
+            continue
+        canonical = capitalize_first(name)
+        traditions.append(
+            {
+                "name": canonical,
+                "is_tentative": is_tentative,
+                "is_note": False,
+                "aliases": tradition_aliases(canonical),
+            }
+        )
+    return traditions, notes
+
+
+def split_answer(label: str) -> tuple[str, str | None]:
+    """Separa la respuesta corta (Sí / No) de su glosa aclaratoria."""
+
+    text = plain_text(label)
+    match = ANSWER_HEAD.match(text)
+    if not match:
+        return text, None
+    short = "Sí" if match.group(1).lower().startswith("s") else "No"
+    rest = match.group(2).strip()
+    if rest.startswith("(") and rest.endswith(")"):
+        rest = rest[1:-1].strip()
+    return short, rest or None
+
+
+def find_repository_root(source_path: Path) -> Path:
+    for candidate in [source_path.resolve(), *source_path.resolve().parents]:
+        if (candidate / ".git").exists():
+            return candidate
+    return source_path.resolve().parent.parent
+
+
+def resolve_note_path(target: str, repository_root: Path) -> Path | None:
+    """Localiza la nota de Obsidian a la que apunta un [[wikilink]]."""
+
+    stem = target.split("#")[0].split("|")[0].strip()
+    if not stem:
+        return None
+    direct = repository_root / f"{stem}.md"
+    if direct.is_file():
+        return direct
+    for candidate in repository_root.rglob(f"{Path(stem).name}.md"):
+        if ".git" not in candidate.parts:
+            return candidate
+    return None
+
+
+def parse_wikilinks(raw_label: str, repository_root: Path, web_directory: Path) -> list[dict]:
+    links: list[dict] = []
+    for match in WIKILINK.finditer(raw_label):
+        target = match.group(1).strip()
+        label = (match.group(2) or match.group(1)).strip()
+        note = resolve_note_path(target, repository_root)
+        relative_href = None
+        vault_path = None
+        if note is not None:
+            relative_href = Path(os.path.relpath(note, web_directory)).as_posix()
+            vault_path = note.relative_to(repository_root).as_posix()
+        links.append(
+            {
+                "target": target,
+                "label": label,
+                "href": relative_href,
+                "vault_path": vault_path,
+            }
+        )
+    return links
+
+
+def build_web_model(
+    model: Model, source_path: Path, json_path: Path
+) -> dict:
+    """Convierte el modelo interno en el JSON que consume `arbol-web`."""
+
+    repository_root = find_repository_root(source_path)
+    web_directory = json_path.resolve().parent.parent
+
+    postures: dict[str, dict] = {}
+    for posture_id, posture in model.postures.items():
+        traditions, notes = parse_groups(posture.raw)
+        label = plain_text(strip_groups(posture.raw))
+        postures[posture_id] = {
+            "id": posture_id,
+            "label": label,
+            "is_unnamed": label in {"?", "-", ""},
+            "is_suggested": label.endswith("*"),
+            "is_uncertain": label.endswith("?") and label != "?",
+            "traditions": traditions,
+            "notes": notes,
+            "wikilinks": parse_wikilinks(posture.raw, repository_root, web_directory),
+            "question_axes": list(posture.questions),
+        }
+
+    origins: dict[str, list[str]] = defaultdict(list)
+    for posture_id, posture in model.postures.items():
+        for question_id in posture.questions:
+            origins[question_id].append(posture_id)
+
+    root_postures: list[str] = []
+    synthetic = 0
+    for question_id in model.root_questions:
+        if origins.get(question_id):
+            continue
+        hints = model.questions[question_id].posture_hints
+        if not hints:
+            continue
+        synthetic += 1
+        synthetic_id = f"PR{synthetic}"
+        label = plain_text(strip_groups(hints[0]))
+        postures[synthetic_id] = {
+            "id": synthetic_id,
+            "label": label,
+            "is_unnamed": label in {"?", "-", ""},
+            "is_suggested": label.endswith("*"),
+            "is_uncertain": False,
+            "traditions": [],
+            "notes": [],
+            "wikilinks": [],
+            "question_axes": [question_id],
+            "is_root": True,
+        }
+        origins[question_id].append(synthetic_id)
+        root_postures.append(synthetic_id)
+
+    questions: dict[str, dict] = {}
+    for question_id, question in model.questions.items():
+        ordered = order_origins(question, origins.get(question_id, []), model)
+        answers = []
+        for index, answer in enumerate(question.answers):
+            short, gloss = split_answer(answer.label)
+            answers.append(
+                {
+                    "key": CHOICES[index] if index < len(CHOICES) else f"A{index}",
+                    "label": short,
+                    "full_label": plain_text(answer.label),
+                    "gloss": gloss,
+                    "target_posture_id": answer.target_posture,
+                    "source_line": answer.source_line,
+                }
+            )
+        questions[question_id] = {
+            "id": question_id,
+            "formal_text": plain_text(question.formal_text),
+            "colloquial_hint": plain_text(question.colloquial_hint)
+            if question.colloquial_hint
+            else None,
+            "full_text": plain_text(question.text),
+            "source_line": question.source_line,
+            "origin_posture_ids": ordered,
+            "is_convergence": len(ordered) > 1,
+            "answers": answers,
+        }
+
+    traditions_index = build_traditions_index(postures)
+
+    return {
+        "version": JSON_SCHEMA_VERSION,
+        "generated_at": datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z"),
+        "source_document": source_path.name,
+        "root_questions": list(model.root_questions),
+        "root_postures": root_postures,
+        "questions": questions,
+        "postures": postures,
+        "traditions_index": traditions_index,
+        "stats": {
+            "questions": len(questions),
+            "postures": len(postures),
+            "traditions": len(traditions_index),
+            "unnamed_postures": sum(1 for p in postures.values() if p["is_unnamed"]),
+            "convergences": sum(1 for q in questions.values() if q["is_convergence"]),
+            "source_lines": len(source_path.read_text(encoding="utf-8").splitlines()),
+        },
+    }
+
+
+def order_origins(question: Question, origin_ids: list[str], model: Model) -> list[str]:
+    """Respeta el orden en que el Markdown escribió `A & B -> ¿pregunta?`."""
+
+    if len(origin_ids) < 2:
+        return list(origin_ids)
+    pending = list(origin_ids)
+    ordered: list[str] = []
+    for hint in question.posture_hints:
+        key = normalize_name(hint)
+        for posture_id in list(pending):
+            if key in model.postures[posture_id].aliases:
+                ordered.append(posture_id)
+                pending.remove(posture_id)
+                break
+    return ordered + pending
+
+
+def build_traditions_index(postures: dict[str, dict]) -> dict[str, dict]:
+    """Índice canónico de tradiciones; las notas descriptivas quedan fuera."""
+
+    index: dict[str, dict] = {}
+    tentative_flags: dict[str, list[bool]] = defaultdict(list)
+    for posture_id, posture in postures.items():
+        for tradition in posture["traditions"]:
+            name = tradition["name"]
+            entry = index.setdefault(
+                name,
+                {
+                    "canonical_name": name,
+                    "aliases": list(tradition["aliases"]),
+                    "posture_ids": [],
+                    "tentative": False,
+                },
+            )
+            for alias in tradition["aliases"]:
+                if alias not in entry["aliases"]:
+                    entry["aliases"].append(alias)
+            if posture_id not in entry["posture_ids"]:
+                entry["posture_ids"].append(posture_id)
+            tentative_flags[name].append(tradition["is_tentative"])
+
+    for name, flags in tentative_flags.items():
+        index[name]["tentative"] = all(flags)
+    return {name: index[name] for name in sorted(index, key=str.casefold)}
+
+
+def render_web_json(web_model: dict) -> str:
+    return json.dumps(web_model, ensure_ascii=False, indent=2) + "\n"
+
+
+def render_web_json_module(web_model: dict, json_name: str) -> str:
+    """Copia del JSON como script clásico, para abrir la página con `file://`.
+
+    Los navegadores bloquean `fetch()` sobre `file://`, así que el visor carga
+    este archivo cuando la petición al `.json` no está permitida.
+    """
+
+    payload = json.dumps(web_model, ensure_ascii=False, indent=2)
+    return (
+        "/* Generado por scripts/convertir_posturas_creencias.py; no editar a mano. */\n"
+        f"/* Copia ejecutable de {json_name} para abrir el visor con file://. */\n"
+        f"window.{WEB_DATA_GLOBAL} = {payload};\n"
+    )
+
+
 def render_image(
     graphviz_path: Path, image_path: Path, image_format: str, dpi: int
 ) -> None:
@@ -659,6 +979,16 @@ def default_image_path(input_path: Path, image_format: str) -> Path:
     return input_path.parent / "diagramas" / f"{input_path.stem}.{image_format}"
 
 
+def default_json_path(input_path: Path) -> Path:
+    return (
+        input_path.parent
+        / "diagramas"
+        / WEB_APP_DIRECTORY
+        / WEB_DATA_DIRECTORY
+        / f"{input_path.stem}.json"
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
@@ -688,6 +1018,22 @@ def parse_args() -> argparse.Namespace:
         "--imagen",
         type=Path,
         help="Ruta de la imagen renderizada (por defecto: recursos/diagramas, .svg).",
+    )
+    parser.add_argument(
+        "--json",
+        dest="json_path",
+        type=Path,
+        help=(
+            "Ruta del modelo de datos del visor web (por defecto: "
+            f"recursos/diagramas/{WEB_APP_DIRECTORY}/{WEB_DATA_DIRECTORY}, .json). "
+            "Junto al .json se escribe un .js equivalente para abrir el visor con file://."
+        ),
+    )
+    parser.add_argument(
+        "--sin-json",
+        dest="sin_json",
+        action="store_true",
+        help="No genera el modelo de datos del visor web.",
     )
     parser.add_argument(
         "--formato",
@@ -738,9 +1084,13 @@ def main() -> int:
     graphviz_path = args.graphviz or default_graphviz
     image_path = args.imagen or default_image_path(input_path, image_format)
 
+    json_path = args.json_path or default_json_path(input_path)
+
     outputs = [mermaid_path, dag_path, graphviz_path]
     if not args.sin_imagen:
         outputs.append(image_path)
+    if not args.sin_json:
+        outputs.append(json_path)
     if len({path.resolve() for path in outputs}) != len(outputs):
         print("Error: cada salida debe tener una ruta distinta.", file=sys.stderr)
         return 2
@@ -766,6 +1116,18 @@ def main() -> int:
     print(f"Mermaid: {mermaid_path}")
     print(f"DrawDecisionTree: {dag_path}")
     print(f"Graphviz: {graphviz_path}")
+
+    if args.sin_json:
+        print("Visor web: omitido (--sin-json).")
+    else:
+        web_model = build_web_model(model, input_path, json_path)
+        json_module_path = json_path.with_suffix(".js")
+        json_path.write_text(render_web_json(web_model), encoding="utf-8", newline="\n")
+        json_module_path.write_text(
+            render_web_json_module(web_model, json_path.name), encoding="utf-8", newline="\n"
+        )
+        print(f"Visor web (datos): {json_path}")
+        print(f"Visor web (respaldo file://): {json_module_path}")
 
     if args.sin_imagen:
         print("Imagen: omitida (--sin-imagen).")
