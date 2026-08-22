@@ -309,6 +309,20 @@ comprobar('el nodo de la pregunta podada sobrevive como hoja sin responder',
   trasPodar.has('P:Q3') && Arbol.Estado.respuestas.Q3 === undefined);
 comprobar('las respuestas anteriores a la poda no se tocan',
   Arbol.Estado.respuestas.Q1 === 'A' && Arbol.Estado.respuestas.Q2 === 'B');
+comprobar('la poda arrastra también las respuestas del subárbol',
+  Arbol.Estado.respuestas.Q4 === undefined && Arbol.Estado.respuestas.Q5 === undefined,
+  Object.keys(Arbol.Estado.respuestas).join(','));
+
+// Sin la cascada, volver a responder la misma pregunta resucitaba la rama
+// entera con todas sus respuestas viejas intactas.
+Arbol.Estado.respuestas.Q3 = 'B';
+const trasReResponder = Arbol.Estado.visibles();
+comprobar('al volver a responder, la rama no revive expandida',
+  !trasReResponder.has('T:P6'), trasReResponder.size + ' nodos');
+Arbol.Estado.respuestas.Q3 = 'A';
+comprobar('responder la opción contraria tampoco revive la rama anterior',
+  !Arbol.Estado.visibles().has('T:P6'));
+delete Arbol.Estado.respuestas.Q3;
 comprobar('los anclajes, resaltados y la selección de lo podado se limpian',
   !Arbol.Estado.fijados['T:P6'] && !Arbol.Estado.resaltados.has('T:P6')
   && Arbol.Estado.seleccionado === null);

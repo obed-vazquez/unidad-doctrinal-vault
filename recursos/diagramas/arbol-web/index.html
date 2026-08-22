@@ -53,12 +53,24 @@
       <button type="button" class="boton alternable" id="btn-completo" title="Mostrar todas las ramas sin responder (A)">
         <span class="icono">◫</span><span class="rotulo">Árbol completo</span>
       </button>
+      <span class="barra-separador" id="sep-resaltados" hidden></span>
+      <button type="button" class="boton resalte" id="btn-resaltados" hidden
+              title="Encuadrar todos los nodos resaltados (H)">
+        <span class="icono">◈</span><span class="rotulo"><span id="conteo-resaltados">0</span> resaltados</span>
+      </button>
+      <button type="button" class="boton resalte" id="btn-limpiar-resaltados" hidden
+              title="Quitar todos los resaltados">
+        <span class="icono">✕</span>
+      </button>
       <span class="barra-separador"></span>
       <button type="button" class="boton alternable" id="btn-creencias" title="Explorador de creencias (E)">
         <span class="icono">✦</span><span class="rotulo">Creencias</span>
       </button>
-      <button type="button" class="boton alternable" id="btn-comparar" title="Razonar y comparar (L)">
-        <span class="icono">☰</span><span class="rotulo">Razonar y comparar</span>
+      <button type="button" class="boton alternable" id="btn-comparar" title="Comparar creencias en forma de lista (L)">
+        <span class="icono">☰</span><span class="rotulo">Comparar</span>
+      </button>
+      <button type="button" class="boton" id="btn-razonar" title="Razonar: en construcción">
+        <span class="icono">✎</span><span class="rotulo">Razonar</span>
       </button>
       <span class="barra-separador"></span>
       <button type="button" class="boton" id="btn-compartir" title="Copiar enlace con esta vista">
@@ -67,8 +79,11 @@
       <button type="button" class="boton" id="btn-tema" title="Cambiar entre tema oscuro y claro (T)">
         <span class="icono">◐</span>
       </button>
-      <button type="button" class="boton peligro" id="btn-reiniciar" title="Borrar respuestas, resaltados y anclajes">
-        <span class="icono">⌫</span>
+      <button type="button" class="boton peligro" id="btn-reiniciar"
+              title="Borrar respuestas, resaltados y anclajes">
+        <svg class="icono-basurero" viewBox="0 0 22 20" aria-hidden="true">
+          <path d="M 6 7 H 16 M 8 7 V 15 M 11 7 V 15 M 14 7 V 15 M 8.5 5 H 13.5"></path>
+        </svg>
       </button>
     </div>
   </header>
@@ -82,7 +97,7 @@
   </div>
 
   <div id="pista">
-    <kbd>Rueda</kbd> zoom · <kbd>Arrastrar</kbd> mover · <kbd>Doble clic</kbd> encuadrar ·
+    <kbd>Rueda</kbd> zoom · <kbd>Arrastrar</kbd> mover o anclar · <kbd>Doble clic</kbd> ficha completa ·
     <kbd>Ctrl</kbd>+<kbd>Clic</kbd> resaltar
   </div>
 
@@ -91,7 +106,7 @@
     <nav class="panel-pestanas" role="tablist">
       <button type="button" class="pestana activa" data-pestana="detalle" role="tab">Detalle</button>
       <button type="button" class="pestana" data-pestana="creencias" role="tab">Creencias</button>
-      <button type="button" class="pestana" data-pestana="comparar" role="tab">Razonar</button>
+      <button type="button" class="pestana" data-pestana="comparar" role="tab">Comparar</button>
     </nav>
 
     <section class="panel-cuerpo activa" data-cuerpo="detalle" id="cuerpo-detalle">
@@ -105,7 +120,7 @@
       </div>
       <div class="panel-controles">
         <button type="button" class="mini-boton" id="btn-limpiar-creencias">Limpiar selección</button>
-        <button type="button" class="mini-boton destacado" id="btn-ir-comparar">Razonar y comparar →</button>
+        <button type="button" class="mini-boton destacado" id="btn-ir-comparar">Comparar →</button>
       </div>
       <div id="ficha-creencias"></div>
       <h3 class="panel-subtitulo">Tradiciones y sistemas de creencias</h3>
@@ -138,6 +153,17 @@
       <div id="salida-comparar"></div>
     </section>
   </aside>
+
+  <div id="dialogo" class="oculto" role="dialog" aria-modal="true" aria-labelledby="dialogo-titulo">
+    <div class="dialogo-caja">
+      <h2 id="dialogo-titulo"></h2>
+      <p id="dialogo-texto"></p>
+      <div class="dialogo-acciones">
+        <button type="button" class="mini-boton" id="dialogo-cancelar">Cancelar</button>
+        <button type="button" class="mini-boton peligro" id="dialogo-aceptar">Eliminar</button>
+      </div>
+    </div>
+  </div>
 
   <div id="tooltip" role="tooltip" aria-hidden="true"></div>
   <div id="aviso" role="status" aria-live="polite"></div>

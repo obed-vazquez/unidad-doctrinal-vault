@@ -172,6 +172,27 @@
     return resultado;
   }
 
+  /* Borra, sobre el objeto recibido, toda respuesta cuya pregunta ya no es
+     alcanzable desde la raíz. Itera hasta el punto fijo porque cada respuesta
+     que se cae puede dejar huérfanas a otras más profundas.
+     Devuelve la lista de preguntas podadas. */
+  function podarInalcanzables(grafo, respuestas) {
+    var podadas = [];
+    var seguir = true;
+    while (seguir) {
+      seguir = false;
+      var visibles = nodosVisibles(grafo, respuestas, false);
+      Object.keys(respuestas).forEach(function (preguntaId) {
+        var anfitrion = grafo.anfitrionDePregunta(preguntaId);
+        if (visibles.has(anfitrion)) return;
+        delete respuestas[preguntaId];
+        podadas.push(preguntaId);
+        seguir = true;
+      });
+    }
+    return podadas;
+  }
+
   /* ------------------------------------------------------------ estado --- */
 
   var Estado = {
@@ -233,22 +254,47 @@
       this.emitir('respuesta');
     },
 
-    /* Papelera: deshace la respuesta del nodo. La visibilidad se recalcula
-       desde la raíz, así que el subárbol dependiente desaparece solo y los
-       nodos que siguen alcanzados por otra rama sobreviven. */
+    /* Cuántas respuestas se perderían al podar desde esta pregunta. Sirve para
+       que el diálogo de confirmación diga exactamente qué se va a borrar. */
+    alcanceDePoda: function (preguntaId) {
+      var copia = {};
+      var clave;
+      for (clave in this.respuestas) copia[clave] = this.respuestas[clave];
+      delete copia[preguntaId];
+      var podadas = podarInalcanzables(this.grafo, copia);
+      return { respuestas: podadas.length + 1, descendientes: podadas };
+    },
+
+    /* Papelera: deshace la respuesta del nodo y borra también las respuestas
+       del subárbol que dependía de ella. Sin esa cascada, las respuestas
+       descendientes seguían guardadas y la rama entera reaparecía intacta al
+       volver a responder la misma pregunta. Los nodos que siguen alcanzados
+       por otra rama conservan su respuesta. */
     borrarRespuesta: function (preguntaId) {
       delete this.respuestas[preguntaId];
       delete this.superpuestas[preguntaId];
-      var visibles = this.visibles();
+      podarInalcanzables(this.grafo, this.respuestas);
+
+      var visibles = nodosVisibles(this.grafo, this.respuestas, false);
       var self = this;
       Object.keys(this.fijados).forEach(function (id) {
         if (!visibles.has(id)) delete self.fijados[id];
       });
-      this.resaltados.forEach(function (id) {
+      Array.from(this.resaltados).forEach(function (id) {
         if (!visibles.has(id)) self.resaltados.delete(id);
       });
       if (this.seleccionado && !visibles.has(this.seleccionado)) this.seleccionado = null;
       this.emitir('respuesta');
+    },
+
+    desanclar: function (nodoId) {
+      delete this.fijados[nodoId];
+      this.emitir('fijado');
+    },
+
+    limpiarResaltados: function () {
+      this.resaltados = new Set();
+      this.emitir('resaltado');
     },
 
     alternarResaltado: function (nodoId) {
@@ -309,6 +355,11 @@
       } catch (error) { /* modo privado o cuota llena: seguimos sin persistir */ }
     },
 
+    /* Borra lo persistido. Lo usan «Reiniciar» y el arranque con ?limpio=1. */
+    olvidar: function () {
+      try { global.localStorage.removeItem(CLAVE_ALMACEN); } catch (error) { /* nada que hacer */ }
+    },
+
     cargar: function () {
       var crudo = null;
       try { crudo = global.localStorage.getItem(CLAVE_ALMACEN); } catch (error) { return; }
@@ -357,6 +408,7 @@
   };
 
   Arbol.CLAVE_ALMACEN = CLAVE_ALMACEN;
+  Arbol.podarInalcanzables = podarInalcanzables;
   Arbol.construirGrafo = construirGrafo;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;

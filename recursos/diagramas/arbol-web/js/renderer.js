@@ -43,6 +43,21 @@
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   }
 
+  /* Punto medio de la caja en el lado pedido, más la normal que sale de él:
+     las manijas de la curva de Bézier se tiran en esa dirección. */
+  function puntoDeLado(punto, caja, lado) {
+    if (lado === 'abajo') {
+      return { x: punto.x + caja.ancho / 2, y: punto.y + caja.alto, nx: 0, ny: 1 };
+    }
+    if (lado === 'arriba') {
+      return { x: punto.x + caja.ancho / 2, y: punto.y, nx: 0, ny: -1 };
+    }
+    if (lado === 'derecha') {
+      return { x: punto.x + caja.ancho, y: punto.y + caja.alto / 2, nx: 1, ny: 0 };
+    }
+    return { x: punto.x, y: punto.y + caja.alto / 2, nx: -1, ny: 0 };
+  }
+
   var Vista = {
     svg: null,
     mundo: null,
@@ -173,6 +188,21 @@
       this.encuadrar(ids, true);
     },
 
+    /* Deja el nodo centrado en la parte del lienzo que el panel no tapa,
+       conservando el nivel de zoom actual. */
+    centrarEnNodo: function (nodoId) {
+      var caja = this.contexto.disposicion.get(nodoId);
+      if (!caja) return;
+      var rect = this.svg.getBoundingClientRect();
+      var margenDer = (this.opciones.margenDerecho && this.opciones.margenDerecho()) || 40;
+      var k = this.camara.k;
+      this.animarCamara({
+        k: k,
+        x: (rect.width - margenDer) / 2 - (caja.x + caja.ancho / 2) * k,
+        y: rect.height / 2 - (caja.y + caja.alto / 2) * k
+      });
+    },
+
     /* ------------------------------------------------------------ render - */
 
     render: function (contexto) {
@@ -261,7 +291,7 @@
         grupo.appendChild(this.construirPapelera(ancho, nodo));
       }
       if (Object.prototype.hasOwnProperty.call(contexto.estado.fijados, nodo.id)) {
-        grupo.appendChild(this.construirChincheta());
+        grupo.appendChild(this.construirChincheta(nodo));
       }
 
       var entradasVisibles = nodo.entradas.filter(function (arista) {
@@ -285,8 +315,9 @@
         grupo.appendChild(crear('line', {
           x1: 0, y1: parte.alto, x2: ancho, y2: parte.alto
         }, 'nodo-separador'));
-        grupo.appendChild(texto(parte.rotulo, padX, parte.alto / 2, 'nodo-etiqueta-tipo'));
-        grupo.appendChild(texto(parte.texto, padX + parte.desplazamiento, parte.alto / 2,
+        var base = padX + (parte.sangria || 0);
+        grupo.appendChild(texto(parte.rotulo, base, parte.alto / 2, 'nodo-etiqueta-tipo'));
+        grupo.appendChild(texto(parte.texto, base + parte.desplazamiento, parte.alto / 2,
           'nodo-encabezado-texto' + (parte.sinNombre ? ' sin-nombre' : '')));
         // Puntos dorados de tradición; dejan libre la esquina de la papelera.
         (parte.tradiciones || []).slice(0, 4).forEach(function (tradicion, indice) {
@@ -296,7 +327,8 @@
         });
 
       } else if (parte.k === 'tipo') {
-        grupo.appendChild(texto(parte.texto, padX, parte.y + 6, 'nodo-etiqueta-tipo'));
+        grupo.appendChild(texto(parte.texto, padX + (parte.sangria || 0), parte.y + 6,
+          'nodo-etiqueta-tipo'));
 
       } else if (parte.k === 'titulo') {
         for (i = 0; i < parte.lineas.length; i++) {
@@ -386,12 +418,20 @@
       return g;
     },
 
-    construirChincheta: function () {
-      var g = crear('g', { transform: 'translate(8,8)' }, 'chincheta');
-      g.appendChild(crear('circle', { cx: 4, cy: 4, r: 3.4 }));
-      g.appendChild(crear('rect', { x: 3.2, y: 4, width: 1.6, height: 7, rx: 0.8 }));
+    /* Chincheta de tachuela, contrapuesta a la papelera. Al pulsarla el nodo
+       suelta el anclaje y vuelve a su posición automática. */
+    construirChincheta: function (nodo) {
+      var g = crear('g', {
+        transform: 'translate(8,7)',
+        'data-desanclar': nodo.id
+      }, 'chincheta');
+      g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'chincheta-caja'));
+      g.appendChild(crear('path', {
+        d: 'M 8 4 H 14 L 13 5 V 9 L 15.5 11.5 H 6.5 L 9 9 V 5 Z'
+      }, 'chincheta-cabeza'));
+      g.appendChild(crear('path', { d: 'M 11 11.5 V 16' }, 'chincheta-aguja'));
       var titulo = crear('title');
-      titulo.textContent = 'Nodo anclado manualmente';
+      titulo.textContent = 'Anclado a mano. Pulsa para soltarlo y devolverlo a su posición automática.';
       g.appendChild(titulo);
       return g;
     },
@@ -460,18 +500,35 @@
       });
     },
 
-    puntoSalida: function (id) {
-      var punto = this.posiciones.get(id);
-      var caja = this.contexto.disposicion.get(id);
-      if (!punto || !caja) return null;
-      return { x: punto.x + caja.ancho / 2, y: punto.y + caja.alto };
-    },
+    /* Elige por qué lado sale y entra cada arista según la posición relativa
+       de las dos cajas. Con los puntos fijos abajo→arriba, arrastrar un nodo
+       a un costado o por encima de su padre dejaba el trazo pasando por
+       detrás de los recuadros. */
+    anclas: function (desdeId, hastaId) {
+      var puntoA = this.posiciones.get(desdeId);
+      var cajaA = this.contexto.disposicion.get(desdeId);
+      var puntoB = this.posiciones.get(hastaId);
+      var cajaB = this.contexto.disposicion.get(hastaId);
+      if (!puntoA || !cajaA || !puntoB || !cajaB) return null;
 
-    puntoEntrada: function (id) {
-      var punto = this.posiciones.get(id);
-      var caja = this.contexto.disposicion.get(id);
-      if (!punto || !caja) return null;
-      return { x: punto.x + caja.ancho / 2, y: punto.y };
+      var dx = (puntoB.x + cajaB.ancho / 2) - (puntoA.x + cajaA.ancho / 2);
+      var dy = (puntoB.y + cajaB.alto / 2) - (puntoA.y + cajaA.alto / 2);
+      var holguraX = (cajaA.ancho + cajaB.ancho) / 2;
+      var holguraY = (cajaA.alto + cajaB.alto) / 2;
+
+      var ladoA;
+      var ladoB;
+      if (Math.abs(dx) / holguraX > Math.abs(dy) / holguraY) {
+        ladoA = dx > 0 ? 'derecha' : 'izquierda';
+        ladoB = dx > 0 ? 'izquierda' : 'derecha';
+      } else {
+        ladoA = dy > 0 ? 'abajo' : 'arriba';
+        ladoB = dy > 0 ? 'arriba' : 'abajo';
+      }
+      return {
+        desde: puntoDeLado(puntoA, cajaA, ladoA),
+        hasta: puntoDeLado(puntoB, cajaB, ladoB)
+      };
     },
 
     dibujarAristas: function () {
@@ -482,9 +539,10 @@
       contexto.aristasIds.forEach(function (aristaId) {
         var arista = contexto.grafo.aristas.get(aristaId);
         if (!arista) return;
-        var desde = self.puntoSalida(arista.desde);
-        var hasta = self.puntoEntrada(arista.hasta);
-        if (!desde || !hasta) return;
+        var extremos = self.anclas(arista.desde, arista.hasta);
+        if (!extremos) return;
+        var desde = extremos.desde;
+        var hasta = extremos.hasta;
         vistas.add(aristaId);
 
         var grupo = self.aristasDOM.get(aristaId);
@@ -499,10 +557,15 @@
           self.aristasDOM.set(aristaId, grupo);
         }
 
-        var separacion = Math.max(30, (hasta.y - desde.y) * 0.42);
+        var distancia = Math.sqrt(Math.pow(hasta.x - desde.x, 2)
+          + Math.pow(hasta.y - desde.y, 2));
+        var tiron = Math.max(28, Math.min(150, distancia * 0.42));
+        var c1x = desde.x + desde.nx * tiron;
+        var c1y = desde.y + desde.ny * tiron;
+        var c2x = hasta.x + hasta.nx * tiron;
+        var c2y = hasta.y + hasta.ny * tiron;
         var d = 'M ' + desde.x + ' ' + desde.y
-          + ' C ' + desde.x + ' ' + (desde.y + separacion)
-          + ', ' + hasta.x + ' ' + (hasta.y - separacion)
+          + ' C ' + c1x + ' ' + c1y + ', ' + c2x + ' ' + c2y
           + ', ' + hasta.x + ' ' + hasta.y;
         var trazo = grupo.querySelector('.arista');
         trazo.setAttribute('d', d);
@@ -531,8 +594,9 @@
         var caja = grupo.querySelector('.arista-etiqueta-caja');
         if (caja) {
           var etiqueta = grupo.querySelector('.arista-etiqueta-texto');
-          var mx = (desde.x + 3 * desde.x + 3 * hasta.x + hasta.x) / 8;
-          var my = (desde.y + 3 * (desde.y + separacion) + 3 * (hasta.y - separacion) + hasta.y) / 8;
+          // Punto medio real de la cúbica: (P0 + 3·C1 + 3·C2 + P3) / 8.
+          var mx = (desde.x + 3 * c1x + 3 * c2x + hasta.x) / 8;
+          var my = (desde.y + 3 * c1y + 3 * c2y + hasta.y) / 8;
           var anchoTexto = Arbol.Layout.medir(arista.etiqueta, '600 11px ' + Arbol.Layout.PILA);
           caja.setAttribute('x', mx - anchoTexto / 2 - 8);
           caja.setAttribute('y', my - 10);
@@ -671,7 +735,10 @@
       this.svg.addEventListener('pointerdown', function (evento) {
         var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
         if (evento.target.closest && (evento.target.closest('.opcion')
-          || evento.target.closest('.papelera'))) return;
+          || evento.target.closest('.papelera')
+          || evento.target.closest('.chincheta'))) return;
+        // Con Ctrl pulsado el gesto es «resaltar», no «arrastrar».
+        if ((evento.ctrlKey || evento.metaKey) && nodoDOM) return;
 
         if (nodoDOM) {
           var id = nodoDOM.getAttribute('data-id');
@@ -753,6 +820,20 @@
 
       this.svg.addEventListener('click', function (evento) {
         if (self.ignorarSiguienteClic) { self.ignorarSiguienteClic = false; return; }
+        var nodoBajoCursor = evento.target.closest ? evento.target.closest('.nodo') : null;
+
+        // Ctrl + clic resalta ANTES que cualquier otra cosa: sin esta
+        // precedencia, pulsar sobre un botón de respuesta contestaba la
+        // pregunta en lugar de marcar el nodo.
+        if ((evento.ctrlKey || evento.metaKey) && nodoBajoCursor) {
+          evento.preventDefault();
+          evento.stopPropagation();
+          if (self.opciones.alResaltar) {
+            self.opciones.alResaltar(nodoBajoCursor.getAttribute('data-id'));
+          }
+          return;
+        }
+
         var opcion = evento.target.closest ? evento.target.closest('.opcion') : null;
         if (opcion) {
           evento.stopPropagation();
@@ -770,13 +851,17 @@
           }
           return;
         }
-        var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
-        if (nodoDOM) {
-          var id = nodoDOM.getAttribute('data-id');
-          if (evento.ctrlKey || evento.metaKey) {
-            if (self.opciones.alResaltar) self.opciones.alResaltar(id);
-          } else if (self.opciones.alSeleccionar) {
-            self.opciones.alSeleccionar(id);
+        var chincheta = evento.target.closest ? evento.target.closest('.chincheta') : null;
+        if (chincheta) {
+          evento.stopPropagation();
+          if (self.opciones.alDesanclar) {
+            self.opciones.alDesanclar(chincheta.getAttribute('data-desanclar'));
+          }
+          return;
+        }
+        if (nodoBajoCursor) {
+          if (self.opciones.alSeleccionar) {
+            self.opciones.alSeleccionar(nodoBajoCursor.getAttribute('data-id'));
           }
           return;
         }
@@ -787,7 +872,10 @@
         var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
         if (!nodoDOM) return;
         evento.preventDefault();
-        self.encuadrarNodoYDescendientes(nodoDOM.getAttribute('data-id'));
+        self.ocultarTooltip();
+        if (self.opciones.alDobleClic) {
+          self.opciones.alDobleClic(nodoDOM.getAttribute('data-id'));
+        }
       });
 
       this.svg.addEventListener('mousemove', function (evento) {

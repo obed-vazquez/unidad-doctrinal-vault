@@ -67,6 +67,11 @@
 
     if (parametros.get('full') !== null) lectura.completo = parametros.get('full') === '1';
 
+    // `?limpio=1` ignora lo guardado en localStorage para esta carga. Sirve
+    // para compartir un enlace que se vea igual en cualquier navegador y para
+    // arrancar de cero sin tocar el almacenamiento a mano.
+    lectura.limpio = parametros.get('limpio') === '1';
+
     var camara = parametros.get('cam');
     if (camara) {
       var numeros = camara.split(',').map(Number);

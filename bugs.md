@@ -1,0 +1,18 @@
+## Bugs:
+- cuando se da click al boton de basura (delete) se borra la branch sin confirmación, pero cuando se dá click de nuevo a la misma respuesta la rama entera se vuelve amostrar completamente expandida hasta donde se habia expandido antes de dale al botón, de hecho aun que se cambie la respuesta por la opuesta, la rama de la primera respuesta se vuelve a mostrar. El comportamiento esperado es que al dar click al boton el sistema debe generar un dialogo de confirmación y al obtener respuesta positiva debe borrar el estado de la branch por completo para que no se vuelva a regenerar al darle click a la misma respuesta (o a la opuesta).
+- puedes analizar el archivo de requirement para esta funcionalidad, pero es esperado que al dar ctrl+click a un nodo este se resalte:
+
+      Me gustaría que el usuario pudiera dar ctrl+click a algun nodo y que ese nodo se quedara highlight'eado para que el usuario pueda highlight'ear varios nodos y poderlos ver todos en el diagrama al mismo tiempo.
+
+  - No solo eso sino que el documento especifica mas funcionalidades en cuanto a los nodos de este estilo. 
+- Me gustó que se pusiera el icono de anclado manualmente, el problema es que 1) no parece icono de anclaje (supongo que un pin podría servir) y 2) debería poder quitarse y que el nodo vuelva a su posición original, (esto último es mejora, pero lo agrego aquí mismo por la relacion con el tema). Además, estaría bien que el icono quedara arriba a la izquierda contrapuesto al de eliminar (trash) que está arriba a la derecha.
+- Por alguna razon el explorador guarda el estado aun cuando se elimina el path del URL, sabes por qué será? esto ocurre aun en modo incognito y al dar ctlr+F5. Lo unico que parece arreglarlo es abrir otra ventana en incognito. Quizas es por que estoy usando el "Open with live server" del plugin de VSCode para abrirlo, no estoy seguro de que este causandolo.
+- Hay un efecto de on_hover del borde de las tarjetas. al parecer el nodo raiz siempre se queda así, espero que este on_hover no sea el que se suponia que iba a ser el resaltado para los nodos.
+- El doble click no hace nada. Segun la especificacion deberia encuadrarlo pero me gustaría mas que mostrara todo el detalle de la tarjeta (todos los detalles)
+- Al cerrar el panel de razonar y comparar el boton de razonar y comparar se queda "encendido", como si no detectara que ya se cerro el panel y al darle click para "apagarlo" el panel se vuelve a abrir (parece que solo el color de encendido es el que falta que actualice al cerrar el panel con la x en lugar de dar click en esos menus, y esto es probable que siempre ocurra pues el panel tapa los menus).
+
+
+## Mejoras:
+- Es posible hacer que la flecha que une a los nodos y preguntas se mueva cuando el usuario mueve los nodos? actualmente la flecha queda por detras de los recuardos que liga en ciertas posiciones, pero si  la flecha buscase los puntos más cercanos entre ambos se vería mejor.
+- Fuera del error La funcionalidad de Razonar y Comparar está perfecta, pero con el nombre de Razonar se me viene a la mente otra cosa que me gustaría integrar en el futuro, me gustaría que se llamase de otra manera, sugiereme algo, se me ocurre Adherencia de Sistema de Creencias y Comparativa, pero parece muy grande suena mejor Solo **Comparar**. También me gustaría dejar el nombre de Razonar para otra cosa, quizas podemos dejar otro boton en algún otro lado y cuando el usuario le dé click que aparezca un "Espera pronto esta funcionalidad.", o una frase más correcta para lo que quiero expresar.
+- Me gustaría que el botón de borrar respuestas resaltados y anclajes quede con un boton de basurero (igual al de los nodos) y que pida confirmación.

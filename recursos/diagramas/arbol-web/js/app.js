@@ -70,6 +70,39 @@
     }, 2600);
   }
 
+  /* Confirmación modal propia: `window.confirm` bloquea el hilo y desentona
+     con el resto de la interfaz. Devuelve una promesa con la decisión. */
+  function confirmar(opciones) {
+    return new Promise(function (resolver) {
+      dom.dialogoTitulo.textContent = opciones.titulo;
+      dom.dialogoTexto.innerHTML = opciones.texto;
+      dom.dialogoAceptar.textContent = opciones.aceptar || 'Eliminar';
+      dom.dialogo.classList.remove('oculto');
+      dom.dialogoAceptar.focus();
+
+      function cerrar(decision) {
+        dom.dialogo.classList.add('oculto');
+        dom.dialogoAceptar.removeEventListener('click', aceptar);
+        dom.dialogoCancelar.removeEventListener('click', cancelar);
+        dom.dialogo.removeEventListener('click', fuera);
+        document.removeEventListener('keydown', tecla);
+        resolver(decision);
+      }
+      function aceptar() { cerrar(true); }
+      function cancelar() { cerrar(false); }
+      function fuera(evento) { if (evento.target === dom.dialogo) cerrar(false); }
+      function tecla(evento) {
+        if (evento.key === 'Escape') { evento.stopPropagation(); cerrar(false); }
+        if (evento.key === 'Enter') { evento.preventDefault(); cerrar(true); }
+      }
+
+      dom.dialogoAceptar.addEventListener('click', aceptar);
+      dom.dialogoCancelar.addEventListener('click', cancelar);
+      dom.dialogo.addEventListener('click', fuera);
+      document.addEventListener('keydown', tecla);
+    });
+  }
+
   function descargar(nombre, contenido, tipo) {
     var blob = new Blob([contenido], { type: tipo + ';charset=utf-8' });
     var url = URL.createObjectURL(blob);
@@ -181,7 +214,7 @@
     var visibles = Estado.visibles();
     var aristasIds = Estado.aristasDe(visibles);
 
-    var contextoMedida = { datos: Estado.datos };
+    var contextoMedida = { datos: Estado.datos, fijados: Estado.fijados };
     var tamanos = new Map();
     visibles.forEach(function (id) {
       var nodo = Estado.grafo.nodos.get(id);
@@ -197,6 +230,7 @@
     Vista.render({
       grafo: Estado.grafo,
       datos: Estado.datos,
+      fijados: Estado.fijados,
       estado: Estado,
       visibles: visibles,
       aristasIds: aristasIds,
@@ -218,7 +252,15 @@
       + respondidas + ' de ' + Object.keys(Estado.datos.questions).length + ' preguntas';
     dom.btnCompleto.classList.toggle('activo', Estado.arbolCompleto);
     dom.btnCreencias.classList.toggle('activo', Estado.modo === 'explorador');
-    dom.btnComparar.classList.toggle('activo', Estado.vista === 'lista');
+    // El botón solo está «encendido» si la vista de lista se está viendo de
+    // verdad; cerrar el panel con la ✕ también lo apaga.
+    dom.btnComparar.classList.toggle('activo', Estado.vista === 'lista' && Estado.panelAbierto);
+
+    var cuantosResaltados = Estado.resaltados.size;
+    dom.conteoResaltados.textContent = String(cuantosResaltados);
+    dom.btnResaltados.hidden = cuantosResaltados === 0;
+    dom.btnLimpiarResaltados.hidden = cuantosResaltados === 0;
+    dom.sepResaltados.hidden = cuantosResaltados === 0;
     dom.panel.classList.toggle('cerrado', !Estado.panelAbierto);
     dom.panel.classList.toggle('ancho', Estado.vista === 'lista' && Estado.panelAbierto);
     Array.prototype.forEach.call(dom.pestanas, function (boton) {
@@ -304,10 +346,48 @@
       partes.push('<p class="panel-nota">Sin tradición registrada en el documento fuente.</p>');
     }
 
+    var entradas = nodo.entradas.filter(function (arista) {
+      return arista.tipo === 'respuesta';
+    });
+    if (entradas.length) {
+      partes.push('<h3 class="panel-subtitulo">Cómo se llega aquí</h3>');
+      partes.push('<ul class="ficha-opciones">' + entradas.map(function (arista) {
+        var origen = Estado.grafo.nodos.get(arista.desde);
+        var preguntaOrigen = Estado.datos.questions[arista.preguntaId];
+        var elegidaAqui = respuestas[arista.preguntaId] === arista.clave;
+        return '<li class="' + (elegidaAqui ? 'elegida' : '') + '">'
+          + '<b>' + escapar(arista.etiqueta) + '</b> a «'
+          + escapar(preguntaOrigen ? (preguntaOrigen.colloquial_hint
+            || preguntaOrigen.formal_text) : arista.preguntaId) + '»'
+          + '<span class="glosa">desde '
+          + escapar(origen && origen.postura ? Layout.rotuloPostura(origen.postura)
+            : arista.desde)
+          + (arista.glosa ? ' · ' + escapar(arista.glosa) : '') + '</span></li>';
+      }).join('') + '</ul>');
+    }
+
+    var ejes = (postura && postura.question_axes) || [];
+    if (ejes.length) {
+      partes.push('<h3 class="panel-subtitulo">Ejes que abre esta postura</h3>');
+      partes.push('<ul class="ficha-opciones">' + ejes.map(function (qid) {
+        var eje = datos.questions[qid];
+        return '<li><b>' + escapar(qid) + '</b> '
+          + escapar(eje ? (eje.colloquial_hint || eje.formal_text) : '')
+          + (eje && eje.is_convergence
+            ? '<span class="glosa">Compartida con otra postura (convergencia).</span>' : '')
+          + '</li>';
+      }).join('') + '</ul>');
+    }
+
     var notas = (postura && postura.notes) || [];
     if (notas.length) {
       partes.push('<h3 class="panel-subtitulo">Notas del documento</h3>');
       partes.push('<p class="panel-nota">' + escapar(notas.join(' · ')) + '</p>');
+    }
+
+    if (nodo.pregunta && nodo.pregunta.full_text !== nodo.pregunta.formal_text) {
+      partes.push('<h3 class="panel-subtitulo">Texto original en el documento</h3>');
+      partes.push('<p class="panel-nota">' + escapar(nodo.pregunta.full_text) + '</p>');
     }
 
     var enlaces = (postura && postura.wikilinks) || [];
@@ -326,11 +406,12 @@
       partes.push('<dt>Pregunta</dt><dd>' + escapar(nodo.pregunta.id) + '</dd>');
       partes.push('<dt>Línea fuente</dt><dd>' + escapar(nodo.pregunta.source_line) + '</dd>');
     }
-    if (postura && (postura.question_axes || []).length) {
-      partes.push('<dt>Ejes que abre</dt><dd>' + escapar(postura.question_axes.join(', ')) + '</dd>');
-    }
+    partes.push('<dt>Nodo</dt><dd>' + escapar(nodo.id) + '</dd>');
     partes.push('<dt>Anclado</dt><dd>'
-      + (Object.prototype.hasOwnProperty.call(Estado.fijados, nodo.id) ? 'sí' : 'no') + '</dd>');
+      + (Object.prototype.hasOwnProperty.call(Estado.fijados, nodo.id)
+        ? 'sí (pulsa la chincheta para soltarlo)' : 'no') + '</dd>');
+    partes.push('<dt>Resaltado</dt><dd>'
+      + (Estado.resaltados.has(nodo.id) ? 'sí (Ctrl + clic para quitarlo)' : 'no') + '</dd>');
     partes.push('</dl>');
 
     return partes.join('');
@@ -623,6 +704,31 @@
 
   /* ----------------------------------------------------------- acciones -- */
 
+  function pedirPoda(preguntaId) {
+    var pregunta = Estado.datos.questions[preguntaId];
+    if (!pregunta) return;
+    var alcance = Estado.alcanceDePoda(preguntaId);
+    var descendientes = alcance.descendientes.length;
+    var detalle = descendientes
+      ? ' Con ella se borran <b>' + descendientes + ' respuesta'
+        + (descendientes === 1 ? '' : 's') + '</b> más del subárbol que colgaba de ahí.'
+      : ' No hay respuestas más abajo que dependan de ella.';
+
+    confirmar({
+      titulo: 'Deshacer esta respuesta',
+      texto: '«' + escapar(pregunta.colloquial_hint || pregunta.formal_text) + '»'
+        + ' volverá a quedar sin responder.' + detalle
+        + ' La rama no reaparecerá al volver a responder.',
+      aceptar: 'Podar la rama'
+    }).then(function (aceptado) {
+      if (!aceptado) return;
+      Estado.borrarRespuesta(preguntaId);
+      avisar(descendientes
+        ? 'Rama podada: ' + (descendientes + 1) + ' respuestas olvidadas.'
+        : 'Respuesta deshecha.');
+    });
+  }
+
   function trasCambiarSujetos() {
     Estado.modo = Estado.tradiciones.length || Estado.posturasSueltas.length
       ? 'explorador' : 'libre';
@@ -648,6 +754,7 @@
   function abrirPestana(nombre) {
     Estado.pestana = nombre;
     Estado.panelAbierto = true;
+    if (nombre !== 'comparar' && Estado.vista === 'lista') Estado.vista = 'grafo';
     Estado.emitir('panel');
   }
 
@@ -683,8 +790,28 @@
     });
 
     dom.btnComparar.addEventListener('click', function () {
-      Estado.vista = Estado.vista === 'lista' ? 'grafo' : 'lista';
-      abrirPestana(Estado.vista === 'lista' ? 'comparar' : 'detalle');
+      var estaVisible = Estado.vista === 'lista' && Estado.panelAbierto;
+      if (estaVisible) {
+        Estado.vista = 'grafo';
+        Estado.panelAbierto = false;
+        Estado.emitir('panel');
+        return;
+      }
+      Estado.vista = 'lista';
+      abrirPestana('comparar');
+    });
+
+    dom.btnRazonar.addEventListener('click', function () {
+      avisar('«Razonar» está en construcción; llegará en una próxima versión.');
+    });
+
+    dom.btnResaltados.addEventListener('click', function () {
+      if (!Estado.resaltados.size) return;
+      Vista.encuadrar(Array.from(Estado.resaltados), true);
+    });
+
+    dom.btnLimpiarResaltados.addEventListener('click', function () {
+      Estado.limpiarResaltados();
     });
 
     dom.btnCompartir.addEventListener('click', function () {
@@ -698,13 +825,31 @@
     });
 
     dom.btnReiniciar.addEventListener('click', function () {
-      Estado.reiniciar();
-      avisar('Árbol reiniciado.');
-      global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
+      var cuantas = Object.keys(Estado.respuestas).length;
+      var cuantosAnclajes = Object.keys(Estado.fijados).length;
+      confirmar({
+        titulo: 'Reiniciar el árbol',
+        texto: 'Se borran <b>' + cuantas + ' respuesta' + (cuantas === 1 ? '' : 's') + '</b>, '
+          + '<b>' + Estado.resaltados.size + ' resaltado'
+          + (Estado.resaltados.size === 1 ? '' : 's') + '</b> y '
+          + '<b>' + cuantosAnclajes + ' anclaje'
+          + (cuantosAnclajes === 1 ? '' : 's') + '</b>, también los guardados en '
+          + 'este navegador. El tema y el documento no se tocan.',
+        aceptar: 'Borrar todo'
+      }).then(function (aceptado) {
+        if (!aceptado) return;
+        Estado.olvidar();
+        Estado.reiniciar();
+        avisar('Árbol reiniciado.');
+        global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
+      });
     });
 
     dom.panelCerrar.addEventListener('click', function () {
       Estado.panelAbierto = false;
+      // Cerrar el panel también abandona la vista de lista; si no, el botón
+      // «Comparar» seguía encendido sin nada que comparar a la vista.
+      if (Estado.pestana === 'comparar') Estado.vista = 'grafo';
       Estado.emitir('panel');
     });
 
@@ -799,6 +944,7 @@
       else if (tecla === 'e') { dom.btnCreencias.click(); }
       else if (tecla === 'l') { dom.btnComparar.click(); }
       else if (tecla === 't') { dom.btnTema.click(); }
+      else if (tecla === 'h' && Estado.resaltados.size) { dom.btnResaltados.click(); }
       else if (evento.key === 'Escape') {
         if (Estado.seleccionado) Estado.seleccionar(null);
         else if (Estado.panelAbierto) { Estado.panelAbierto = false; Estado.emitir('panel'); }
@@ -813,6 +959,11 @@
       contador: document.getElementById('contador'),
       aviso: document.getElementById('aviso'),
       cargando: document.getElementById('cargando'),
+      dialogo: document.getElementById('dialogo'),
+      dialogoTitulo: document.getElementById('dialogo-titulo'),
+      dialogoTexto: document.getElementById('dialogo-texto'),
+      dialogoAceptar: document.getElementById('dialogo-aceptar'),
+      dialogoCancelar: document.getElementById('dialogo-cancelar'),
       panel: document.getElementById('panel'),
       panelCerrar: document.getElementById('panel-cerrar'),
       pestanas: document.querySelectorAll('.pestana'),
@@ -834,6 +985,11 @@
       btnCompartir: document.getElementById('btn-compartir'),
       btnTema: document.getElementById('btn-tema'),
       btnReiniciar: document.getElementById('btn-reiniciar'),
+      btnResaltados: document.getElementById('btn-resaltados'),
+      btnLimpiarResaltados: document.getElementById('btn-limpiar-resaltados'),
+      conteoResaltados: document.getElementById('conteo-resaltados'),
+      sepResaltados: document.getElementById('sep-resaltados'),
+      btnRazonar: document.getElementById('btn-razonar'),
       btnLimpiarCreencias: document.getElementById('btn-limpiar-creencias'),
       btnIrComparar: document.getElementById('btn-ir-comparar'),
       btnCopiar: document.getElementById('btn-copiar'),
@@ -856,9 +1012,13 @@
   function iniciar(datos) {
     Estado.datos = datos;
     Estado.grafo = Arbol.construirGrafo(datos);
-    Estado.cargar();
 
     var lectura = Router.leer();
+    // El estado vive en localStorage (§8.1), así que sobrevive a recargas y a
+    // borrar la consulta de la barra de direcciones. `?limpio=1` lo salta.
+    if (lectura.limpio) Estado.olvidar();
+    else Estado.cargar();
+
     var aplicado = Router.aplicar(lectura, Estado);
     Estado.sanear();
     aplicarTema();
@@ -877,10 +1037,23 @@
 
     Vista.iniciar({
       alResponder: function (preguntaId, clave) { Estado.responder(preguntaId, clave); },
-      alBorrar: function (preguntaId) { Estado.borrarRespuesta(preguntaId); },
+      alBorrar: pedirPoda,
       alSeleccionar: function (nodoId) { Estado.seleccionar(nodoId); },
+      // Doble clic: abre la ficha completa del nodo y lo centra en el hueco
+      // que deja el panel.
+      alDobleClic: function (nodoId) {
+        Estado.seleccionado = nodoId;
+        Estado.panelAbierto = true;
+        Estado.pestana = 'detalle';
+        Estado.emitir('seleccion');
+        Vista.centrarEnNodo(nodoId);
+      },
       alResaltar: function (nodoId) { Estado.alternarResaltado(nodoId); },
       alFijar: function (nodoId, punto) { Estado.fijar(nodoId, punto); },
+      alDesanclar: function (nodoId) {
+        Estado.desanclar(nodoId);
+        avisar('Nodo devuelto a su posición automática.');
+      },
       alCambiarCamara: function (camara) { Estado.camara = camara; },
       tooltipHTML: tooltipDeNodo,
       margenDerecho: function () {

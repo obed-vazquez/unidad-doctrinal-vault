@@ -43,7 +43,10 @@
   stroke-width: 1.4;
   transition: stroke 180ms ease, fill 180ms ease;
 }
-.nodo:hover .nodo-caja { stroke: var(--acento); }
+/* El hover es un realce discreto del borde neutro. El azul queda reservado a
+   la selección y el violeta al resaltado, para que los tres estados no se
+   confundan entre sí. */
+.nodo:hover .nodo-caja { stroke: var(--texto-tenue); }
 .nodo-encabezado-fondo { fill: var(--nodo-encabezado); }
 .nodo-separador { stroke: var(--nodo-borde); stroke-width: 1; opacity: 0.75; }
 .nodo-encabezado-texto { fill: var(--nodo-encabezado-texto); font-size: 13px; font-weight: 600; }
@@ -70,7 +73,11 @@
 .nodo.tipo-pregunta .nodo-encabezado-texto { fill: var(--eje-texto); }
 .nodo.tipo-pregunta .nodo-etiqueta-tipo { fill: var(--eje-texto); opacity: 0.75; }
 
-.nodo.raiz .nodo-caja { stroke: var(--acento); stroke-width: 2; }
+/* La raíz se distingue por su rótulo ORIGEN y una cabecera algo más marcada,
+   no por un borde de color: un borde permanente se leía como un hover pegado. */
+.nodo.raiz .nodo-encabezado-fondo { fill: var(--acento-suave); }
+.nodo.raiz .nodo-encabezado-texto { fill: var(--acento); }
+.nodo.raiz .nodo-etiqueta-tipo { fill: var(--acento); }
 
 /* Estado 3: seleccionado (anillo de foco). */
 .nodo.seleccionado .nodo-caja { stroke: var(--acento); stroke-width: 2.2; }
@@ -127,8 +134,13 @@
 .papelera:hover .papelera-caja { fill: rgba(240, 97, 109, 0.18); stroke: var(--peligro); }
 .papelera:hover .papelera-icono { stroke: var(--peligro); }
 
-.chincheta { fill: var(--texto-tenue); }
-.nodo.fijado .chincheta { fill: var(--acento); }
+.chincheta { cursor: pointer; }
+.chincheta-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1; }
+.chincheta-cabeza { fill: var(--acento); stroke: none; }
+.chincheta-aguja { fill: none; stroke: var(--acento); stroke-width: 1.5; stroke-linecap: round; }
+.chincheta:hover .chincheta-caja { fill: var(--acento); stroke: var(--acento); }
+.chincheta:hover .chincheta-cabeza { fill: var(--superficie-solida); }
+.chincheta:hover .chincheta-aguja { stroke: var(--superficie-solida); }
 
 .convergencia-glifo { fill: var(--eje-texto); font-size: 12px; font-weight: 800; text-anchor: middle; }
 .convergencia-puerto { fill: none; stroke: var(--eje-borde); stroke-width: 1.6; }
