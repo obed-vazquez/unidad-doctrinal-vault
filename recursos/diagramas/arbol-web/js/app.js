@@ -865,10 +865,113 @@
     trasCambiarSujetos();
   }
 
+  function tradicionesDePostura(postura) {
+    var nombres = [];
+    var indice = Estado.datos && Estado.datos.traditions_index;
+    (postura.traditions || []).forEach(function (tradicion) {
+      if (!tradicion.name || !indice || !indice[tradicion.name]) return;
+      if (nombres.indexOf(tradicion.name) === -1) nombres.push(tradicion.name);
+    });
+    return nombres;
+  }
+
+  function aporteCreenciasDeNodo(nodo) {
+    var postura = nodo && nodo.postura;
+    if (!postura) return null;
+    var nombres = tradicionesDePostura(postura);
+    if (nombres.length) return { tradiciones: nombres, posturasSueltas: [] };
+    if (!postura.is_unnamed && !postura.is_root) {
+      return { tradiciones: [], posturasSueltas: [postura.id] };
+    }
+    return null;
+  }
+
+  function aporteCreenciasCercano(nodo) {
+    var visto = new Set();
+    var actual = nodo;
+    var camino = Estado.caminoElegido();
+    while (actual && !visto.has(actual.id)) {
+      visto.add(actual.id);
+      var aporte = aporteCreenciasDeNodo(actual);
+      if (aporte) return aporte;
+      var siguiente = null;
+      var i;
+      for (i = 0; i < (actual.entradas || []).length; i++) {
+        var padreId = actual.entradas[i].desde;
+        if (camino.has(padreId)) {
+          siguiente = Estado.grafo.nodos.get(padreId);
+          break;
+        }
+      }
+      if (!siguiente && actual.entradas && actual.entradas.length) {
+        siguiente = Estado.grafo.nodos.get(actual.entradas[0].desde);
+      }
+      actual = siguiente;
+    }
+    return null;
+  }
+
+  function aplicarAporteCreencias(aporte) {
+    if (!aporte) {
+      Estado.tradiciones = [];
+      Estado.posturasSueltas = [];
+      return;
+    }
+    Estado.tradiciones = aporte.tradiciones.slice();
+    Estado.posturasSueltas = aporte.posturasSueltas.slice();
+    if (Estado.panelAbierto && Estado.pestana === 'creencias'
+      && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
+      Estado.modo = 'explorador';
+    }
+  }
+
+  function preseleccionarPosturaEnCreencias(nodo) {
+    if (!nodo) return;
+    aplicarAporteCreencias(aporteCreenciasCercano(nodo));
+  }
+
+  function hojaDelRecorrido() {
+    var camino = Estado.caminoElegido();
+    if (!camino || !camino.size) return null;
+    var hojas = [];
+    camino.forEach(function (id) {
+      var nodo = Estado.grafo.nodos.get(id);
+      if (!nodo) return;
+      var tieneHijoEnCamino = nodo.salidas.some(function (arista) {
+        return camino.has(arista.hasta);
+      });
+      if (!tieneHijoEnCamino) hojas.push(nodo);
+    });
+    if (!hojas.length) return null;
+    var respuestas = Estado.respuestasEfectivas();
+    hojas.sort(function (a, b) {
+      var esperaA = a.pregunta && respuestas[a.pregunta.id] == null ? 1 : 0;
+      var esperaB = b.pregunta && respuestas[b.pregunta.id] == null ? 1 : 0;
+      if (esperaB !== esperaA) return esperaB - esperaA;
+      var pasosA = pasosDesdeRaiz(a.id);
+      var pasosB = pasosDesdeRaiz(b.id);
+      if (pasosA == null) pasosA = -1;
+      if (pasosB == null) pasosB = -1;
+      if (pasosB !== pasosA) return pasosB - pasosA;
+      return a.id < b.id ? -1 : 1;
+    });
+    return hojas[0];
+  }
+
+  function sincronizarHojaCuestionario() {
+    if (Estado.divulgacion !== 'cuestionario') return;
+    var hoja = hojaDelRecorrido();
+    if (hoja) preseleccionarPosturaEnCreencias(hoja);
+  }
+
   function abrirPestana(nombre) {
     Estado.pestana = nombre;
     Estado.panelAbierto = true;
     if (nombre !== 'comparar' && Estado.vista === 'lista') Estado.vista = 'grafo';
+    if (nombre === 'creencias'
+      && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
+      Estado.modo = 'explorador';
+    }
     Estado.emitir('panel');
   }
 
@@ -1270,8 +1373,14 @@
       alResponder: function (preguntaId, clave) { Estado.responder(preguntaId, clave); },
       alBorrar: pedirPoda,
       alExpandir: function (nodoId) { Estado.alternarExpandido(nodoId); },
-      alSeleccionar: function (nodoId) { Estado.seleccionar(nodoId); },
+      alSeleccionar: function (nodoId) {
+        var nodo = nodoId ? Estado.grafo.nodos.get(nodoId) : null;
+        preseleccionarPosturaEnCreencias(nodo);
+        Estado.seleccionar(nodoId);
+      },
       alDobleClic: function (nodoId) {
+        var nodo = nodoId ? Estado.grafo.nodos.get(nodoId) : null;
+        preseleccionarPosturaEnCreencias(nodo);
         Estado.seleccionado = nodoId;
         Estado.panelAbierto = true;
         Estado.pestana = 'detalle';
@@ -1291,9 +1400,15 @@
       }
     });
 
-    Estado.suscribir(function () { refrescar(); });
+    Estado.suscribir(function (motivo) {
+      if (motivo === 'respuesta' || motivo === 'divulgacion') {
+        sincronizarHojaCuestionario();
+      }
+      refrescar();
+    });
     registrarEventos();
 
+    sincronizarHojaCuestionario();
     refrescar();
 
     // La URL manda sobre localStorage, y localStorage sobre el encuadre inicial.

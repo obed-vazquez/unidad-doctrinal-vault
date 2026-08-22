@@ -283,16 +283,17 @@
       if (estado.seleccionado === nodo.id) clases.push('seleccionado');
       if (estado.resaltados.has(nodo.id)) clases.push('resaltado');
       if (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id)) clases.push('fijado');
+      var resaltado = estado.resaltados.has(nodo.id);
       if (camino) {
         if (camino.nodos.has(nodo.id)) {
           clases.push('camino');
           if (camino.destinosTentativos && camino.destinosTentativos.has(nodo.id)) {
             clases.push('tentativa');
           }
-        } else {
+        } else if (!resaltado) {
           clases.push('atenuado');
         }
-      } else if (this.debeAtenuarRecorrido() && contexto.caminoUsuario
+      } else if (!resaltado && this.debeAtenuarRecorrido() && contexto.caminoUsuario
         && contexto.caminoUsuario.size > 1 && !contexto.caminoUsuario.has(nodo.id)) {
         clases.push('atenuado');
       }
@@ -754,6 +755,7 @@
         if (nodo && (nodo.tipo === 'pregunta' || nodo.tipo === 'postura')) clase = 'eje';
         if (contexto.camino && contexto.camino.nodos.has(id)) clase = 'camino';
         if (contexto.estado.seleccionado === id) clase = 'seleccionado';
+        if (contexto.estado.resaltados.has(id)) clase = 'resaltado';
         self.minimapaNodos.appendChild(crear('rect', {
           x: punto.x, y: punto.y, width: caja.ancho, height: caja.alto, rx: 8
         }, clase));

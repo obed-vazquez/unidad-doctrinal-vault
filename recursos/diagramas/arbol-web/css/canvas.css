@@ -157,6 +157,7 @@ html, body {
 #minimapa-nodos rect.eje { fill: var(--eje-borde); }
 #minimapa-nodos rect.camino { fill: var(--dorado); }
 #minimapa-nodos rect.seleccionado { fill: var(--acento); }
+#minimapa-nodos rect.resaltado { fill: var(--resalte); }
 #minimapa-vista {
   fill: var(--acento-suave);
   stroke: var(--acento);

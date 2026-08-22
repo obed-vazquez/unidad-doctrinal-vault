@@ -31,6 +31,7 @@
 
 .nodo { cursor: pointer; }
 .nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
+.nodo.atenuado.resaltado { opacity: 1; }
 .nodo.entrando { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 .nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 .nodo.saliendo { animation: rama-sale 280ms ease both; pointer-events: none; }
@@ -107,20 +108,32 @@
 }
 .nodo.seleccionado .nodo-anillo { opacity: 0.42; }
 
-/* Estado + resaltado permanente (Ctrl + clic). */
+/* Camino iluminado del explorador de creencias (por debajo del Ctrl + clic). */
+.nodo.camino .nodo-caja { stroke: var(--dorado); stroke-width: 2.2; }
+.nodo.camino .nodo-brillo { stroke: var(--dorado); opacity: 0.4; }
+.nodo.camino.tentativa .nodo-brillo { stroke-dasharray: 8 5; }
+
+/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y selección. */
 .nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
-.nodo.resaltado .nodo-brillo { opacity: 0.55; animation: pulso-resalte 900ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.nodo.resaltado .nodo-brillo,
+.nodo.camino.resaltado .nodo-brillo,
+.nodo.seleccionado.resaltado .nodo-brillo {
+  fill: var(--resalte);
+  stroke: var(--resalte-suave);
+  opacity: 0.55;
+  animation: pulso-resalte 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
 @keyframes pulso-resalte {
   0% { opacity: 0; }
   35% { opacity: 0.9; }
   100% { opacity: 0.55; }
 }
-.nodo.resaltado .nodo-caja { stroke: var(--resalte); }
-
-/* Camino iluminado del explorador de creencias. */
-.nodo.camino .nodo-caja { stroke: var(--dorado); stroke-width: 2.2; }
-.nodo.camino .nodo-brillo { stroke: var(--dorado); opacity: 0.4; }
-.nodo.camino.tentativa .nodo-brillo { stroke-dasharray: 8 5; }
+.nodo.resaltado .nodo-caja,
+.nodo.camino.resaltado .nodo-caja,
+.nodo.seleccionado.resaltado .nodo-caja {
+  stroke: var(--resalte);
+  stroke-width: 2.6;
+}
 
 /* ----------------------------------------------------------------- botones */
 
