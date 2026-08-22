@@ -1,18 +1,26 @@
 ## Bugs:
-- cuando se da click al boton de basura (delete) se borra la branch sin confirmación, pero cuando se dá click de nuevo a la misma respuesta la rama entera se vuelve amostrar completamente expandida hasta donde se habia expandido antes de dale al botón, de hecho aun que se cambie la respuesta por la opuesta, la rama de la primera respuesta se vuelve a mostrar. El comportamiento esperado es que al dar click al boton el sistema debe generar un dialogo de confirmación y al obtener respuesta positiva debe borrar el estado de la branch por completo para que no se vuelva a regenerar al darle click a la misma respuesta (o a la opuesta).
-- puedes analizar el archivo de requirement para esta funcionalidad, pero es esperado que al dar ctrl+click a un nodo este se resalte:
 
-      Me gustaría que el usuario pudiera dar ctrl+click a algun nodo y que ese nodo se quedara highlight'eado para que el usuario pueda highlight'ear varios nodos y poderlos ver todos en el diagrama al mismo tiempo.
+- El doble click sigue sin funcionar... se supone que tiene que mostrar el panel de detalle? Porque no abre el panel, de hecho aunque abra el panel y DESPUÉS le dé click a una tarjeta no muestra el detalle, esa pestaña de detalle siempre está vacía.
+  - Detalle del bug original:
 
-  - No solo eso sino que el documento especifica mas funcionalidades en cuanto a los nodos de este estilo. 
-- Me gustó que se pusiera el icono de anclado manualmente, el problema es que 1) no parece icono de anclaje (supongo que un pin podría servir) y 2) debería poder quitarse y que el nodo vuelva a su posición original, (esto último es mejora, pero lo agrego aquí mismo por la relacion con el tema). Además, estaría bien que el icono quedara arriba a la izquierda contrapuesto al de eliminar (trash) que está arriba a la derecha.
-- Por alguna razon el explorador guarda el estado aun cuando se elimina el path del URL, sabes por qué será? esto ocurre aun en modo incognito y al dar ctlr+F5. Lo unico que parece arreglarlo es abrir otra ventana en incognito. Quizas es por que estoy usando el "Open with live server" del plugin de VSCode para abrirlo, no estoy seguro de que este causandolo.
-- Hay un efecto de on_hover del borde de las tarjetas. al parecer el nodo raiz siempre se queda así, espero que este on_hover no sea el que se suponia que iba a ser el resaltado para los nodos.
-- El doble click no hace nada. Segun la especificacion deberia encuadrarlo pero me gustaría mas que mostrara todo el detalle de la tarjeta (todos los detalles)
-- Al cerrar el panel de razonar y comparar el boton de razonar y comparar se queda "encendido", como si no detectara que ya se cerro el panel y al darle click para "apagarlo" el panel se vuelve a abrir (parece que solo el color de encendido es el que falta que actualice al cerrar el panel con la x en lugar de dar click en esos menus, y esto es probable que siempre ocurra pues el panel tapa los menus).
+
+    El doble click no hace nada. Según la especificacion deberia encuadrarlo, pero me gustaría más que mostrara todo el detalle de la tarjeta (todos los detalles)
+
+  - Si esto es así entonces, tanto la funcionalidad de `detalle` como `Creencias` y `Comparar` se encuentran dentro del mismo panel, siendo así deberían estar de cierta manera agrupadas en los controles y todas se deberían limpiar (el resaltado de habilitado cuando el panel está abierto) si el panel se cierra.
+  - Actualmente no se está limpiando el boton de `Creencias`, el de `Comparar` ya se limpia correctamnete pero el de creencias sigue presentando el error.  
+  - El path de la URL sigue sin poderse cambiar, la unica forma de corregirlo es cerrar la ventana de incognito (cerrar todas las ventanas) e iniciar un modo incognito nuevo.
+  - Detalle del bug original:
+
+
+    Por alguna razon el explorador guarda el estado aun cuando se elimina el path del URL, sabes por qué será? esto ocurre aun en modo incognito y al dar ctlr+F5. Lo unico que parece arreglarlo es abrir otra ventana en incognito. Quizas es por que estoy usando el "Open with live server" del plugin de VSCode para abrirlo, no estoy seguro de que este causandolo.
+
+- El highlight (ctrl+Click) en color morado desentona mucho, quizás modificar un poco el tono. También falta brillo o subrayado, pues si se hace mucho zoom out el highlight no se nota tanto.
+- El boton de borrar todo el arbol (trash) Es muy pequeño, apenas se vé supongo que podemos hacerlo mas grande, o podemos hacer toda la barra superior un poco mas grande para que crezca ese también.
 
 
 ## Mejoras:
-- Es posible hacer que la flecha que une a los nodos y preguntas se mueva cuando el usuario mueve los nodos? actualmente la flecha queda por detras de los recuardos que liga en ciertas posiciones, pero si  la flecha buscase los puntos más cercanos entre ambos se vería mejor.
-- Fuera del error La funcionalidad de Razonar y Comparar está perfecta, pero con el nombre de Razonar se me viene a la mente otra cosa que me gustaría integrar en el futuro, me gustaría que se llamase de otra manera, sugiereme algo, se me ocurre Adherencia de Sistema de Creencias y Comparativa, pero parece muy grande suena mejor Solo **Comparar**. También me gustaría dejar el nombre de Razonar para otra cosa, quizas podemos dejar otro boton en algún otro lado y cuando el usuario le dé click que aparezca un "Espera pronto esta funcionalidad.", o una frase más correcta para lo que quiero expresar.
-- Me gustaría que el botón de borrar respuestas resaltados y anclajes quede con un boton de basurero (igual al de los nodos) y que pida confirmación.
+
+- Me gustaría que el botón de selección de respuesta (Sí / No) no ocultara la otra, cuando se le dá click en `Sí` a una pregunta y se expande la rama de esa tarjeta, me gustaría que el `No` no se ocultase, sino que quedase dimmeado de manera que si el usuario da click en el otro (en este ejemplo el botón `No`), el sistema mostrará la rama opuesta (algo parecido a dar click en trash y luego cambiar de respuesta).
+- El panel de Detalle / Creencias / Comparar esta bien, pero en la sección de creencias sería mucho mejor reducir el nivel de información de las tarjetas, veo que tienes algunos mensajes debajo de las tarjetas, pero sería buena idea tener un checkbox habilitado por defecto como "modo compacto" para que cupiesen muchas más tarjetas, actualmente hay pocas religiones, pero cuando esto se empiece a llenar, ese panel va a estar repleto de tarjetas en esa zona y muchas más de posturas. Parece buena idea compactarlas lo más posible.
+  - Siguiendo con ese espíritu, parece buena idea no solo tener 1 sola tarjeta por renglón, sino poder tener varias si el espacio lo permite, por ejemplo si son nombres pequeños y hace que quepan en una sola linea supongo que sería buena idea que el modo compacto ponga varias tarjetas en una sola línea.
+  - Con ese mismo espíritu, parece buena idea dejar al usuario que redimencione el panel para que pueda ver más cosas en los filtros si lo desea mientras lo está rellenando.

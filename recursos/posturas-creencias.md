@@ -204,6 +204,7 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
   - No: Ateísmo cosmológico*
     - Ateísmo cosmológico* -> ¿La materia/realidad física es eterna y no fue creada por un Dios?
       - Sí: Materialismo cosmológico
+      - No: ?
     -  Ateísmo cosmológico* -> ¿Es el universo mismo, en su totalidad, de naturaleza divina?
       - Sí: Panteísmo / Panenteísmo*
       - No: ?
