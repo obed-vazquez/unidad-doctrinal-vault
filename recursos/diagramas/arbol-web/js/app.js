@@ -251,7 +251,7 @@
     dom.contador.textContent = visibles.size + ' de ' + totalNodos + ' nodos · '
       + respondidas + ' de ' + Object.keys(Estado.datos.questions).length + ' preguntas';
     dom.btnCompleto.classList.toggle('activo', Estado.arbolCompleto);
-    dom.btnCreencias.classList.toggle('activo', Estado.modo === 'explorador');
+    dom.btnCreencias.classList.toggle('activo', Estado.modo === 'explorador' && Estado.panelAbierto);
     // El botón solo está «encendido» si la vista de lista se está viendo de
     // verdad; cerrar el panel con la ✕ también lo apaga.
     dom.btnComparar.classList.toggle('activo', Estado.vista === 'lista' && Estado.panelAbierto);
@@ -1016,7 +1016,10 @@
     var lectura = Router.leer();
     // El estado vive en localStorage (§8.1), así que sobrevive a recargas y a
     // borrar la consulta de la barra de direcciones. `?limpio=1` lo salta.
-    if (lectura.limpio) Estado.olvidar();
+    // Si la URL no lleva ningún parámetro, el usuario borró la consulta a mano
+    // y espera arrancar de cero: tratamos ese caso como limpio.
+    var sinParametros = !global.location.search || global.location.search === '?';
+    if (lectura.limpio || sinParametros) Estado.olvidar();
     else Estado.cargar();
 
     var aplicado = Router.aplicar(lectura, Estado);

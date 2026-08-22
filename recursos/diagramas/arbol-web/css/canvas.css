@@ -83,14 +83,15 @@ html, body {
 .boton:hover { background: var(--acento-suave); color: var(--texto); border-color: var(--acento); }
 .boton .icono { font-size: 13px; }
 .icono-basurero {
-  width: 15px;
-  height: 14px;
+  width: 19px;
+  height: 17px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linecap: round;
 }
 .boton.activo { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
+.boton.peligro { padding: 4px 4px; }
 .boton.peligro:hover { background: rgba(240, 97, 109, 0.16); border-color: var(--peligro); color: var(--peligro); }
 .boton.resalte { background: var(--resalte-suave); border-color: var(--resalte); color: var(--resalte); }
 .boton.resalte:hover { background: var(--resalte-suave); border-color: var(--resalte); color: var(--texto); }

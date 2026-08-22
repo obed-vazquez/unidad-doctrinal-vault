@@ -73,6 +73,7 @@
     animacion: null,
     arrastre: null,
     panorama: null,
+    _clicDiferido: null,
 
     iniciar: function (opciones) {
       this.opciones = opciones || {};
@@ -860,11 +861,20 @@
           return;
         }
         if (nodoBajoCursor) {
-          if (self.opciones.alSeleccionar) {
-            self.opciones.alSeleccionar(nodoBajoCursor.getAttribute('data-id'));
-          }
+          // Diferimos la selección para que un doble clic pueda cancelarla y
+          // disparar alDobleClic sin que el primer clic provoque un refresco
+          // completo del DOM que descoloca el segundo evento.
+          // El usuario reporta que sigue sin funcionar el doble click
+          var idCapturado = nodoBajoCursor.getAttribute('data-id');
+          global.clearTimeout(self._clicDiferido);
+          self._clicDiferido = global.setTimeout(function () {
+            if (self.opciones.alSeleccionar) {
+              self.opciones.alSeleccionar(idCapturado);
+            }
+          }, 250);
           return;
         }
+        global.clearTimeout(self._clicDiferido);
         if (self.opciones.alSeleccionar) self.opciones.alSeleccionar(null);
       });
 
@@ -872,6 +882,9 @@
         var nodoDOM = evento.target.closest ? evento.target.closest('.nodo') : null;
         if (!nodoDOM) return;
         evento.preventDefault();
+        // Cancelamos la selección diferida del clic simple: el doble clic
+        // hace su propia selección + centrado.
+        global.clearTimeout(self._clicDiferido);
         self.ocultarTooltip();
         if (self.opciones.alDobleClic) {
           self.opciones.alDobleClic(nodoDOM.getAttribute('data-id'));

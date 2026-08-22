@@ -91,7 +91,7 @@
 .nodo.seleccionado .nodo-anillo { opacity: 0.42; }
 
 /* Estado + resaltado permanente (Ctrl + clic). */
-.nodo-brillo { fill: none; stroke: var(--resalte); stroke-width: 3.4; opacity: 0; transition: opacity 200ms ease; }
+.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; transition: opacity 200ms ease; }
 .nodo.resaltado .nodo-brillo { opacity: 0.55; }
 .nodo.resaltado .nodo-caja { stroke: var(--resalte); }
 
