@@ -66,8 +66,8 @@
       eliminar: 'Eliminar',
       cargando: 'Cargando el árbol…',
       panelVacio: 'Selecciona un nodo del árbol para ver su ficha completa.',
-      bienvenida: 'El corazón tiene razones que la razón ignora.',
-      bienvenidaFuente: 'Blaise Pascal',
+      bienvenida: 'Lo importante es no dejar de hacerse preguntas. La curiosidad tiene su propia razón de existir.',
+      bienvenidaFuente: 'Albert Einstein',
       tambien: 'También: {lista}',
       posturasSostenidas: '{n} postura sostenida',
       posturasSostenidasPlural: '{n} posturas sostenidas',
@@ -168,8 +168,8 @@
       eliminar: 'Delete',
       cargando: 'Loading the tree…',
       panelVacio: 'Select a node in the tree to see its full card.',
-      bienvenida: 'The heart has its reasons which reason knows nothing of.',
-      bienvenidaFuente: 'Blaise Pascal',
+      bienvenida: 'The important thing is not to stop questioning. Curiosity has its own reason for existing.',
+      bienvenidaFuente: 'Albert Einstein',
       tambien: 'Also: {lista}',
       posturasSostenidas: '{n} posture held',
       posturasSostenidasPlural: '{n} postures held',
@@ -309,11 +309,6 @@
      de una escuela ni lemas de un sistema. Se rotan en cada carga. */
   var FRASES_BIENVENIDA = [
     {
-      es: 'El corazón tiene razones que la razón ignora.',
-      en: 'The heart has its reasons which reason knows nothing of.',
-      fuente: 'Blaise Pascal'
-    },
-    {
       es: 'El asombro es el principio de la filosofía.',
       en: 'Wonder is the beginning of philosophy.',
       fuente: 'Platón'
@@ -321,11 +316,6 @@
     {
       es: 'Todos los hombres desean por naturaleza saber.',
       en: 'All men by nature desire to know.',
-      fuente: 'Aristóteles'
-    },
-    {
-      es: 'Platón es mi amigo, pero más amiga es la verdad.',
-      en: 'Plato is dear to me, but dearer still is truth.',
       fuente: 'Aristóteles'
     },
     {
@@ -359,9 +349,39 @@
       fuente: 'San Agustín'
     },
     {
-      es: 'La verdad está en el fondo del pozo.',
-      en: 'Truth lies at the bottom of the well.',
-      fuente: 'Demócrito'
+      es: 'El primer principio es no engañarte a ti mismo; y tú eres la persona más fácil de engañar.',
+      en: 'The first principle is that you must not fool yourself—and you are the easiest person to fool.',
+      fuente: 'Richard Feynman'
+    },
+    {
+      es: 'No leas para contradecir ni para dar por sentado, sino para sopesar y considerar.',
+      en: 'Read not to contradict and confute, nor to believe and take for granted, but to weigh and consider.',
+      fuente: 'Francis Bacon'
+    },
+    {
+      es: 'La lectura proporciona a la mente materiales de conocimiento; es el pensamiento el que hace nuestro lo leído.',
+      en: 'Reading furnishes the mind only with materials of knowledge; it is thinking that makes what we read ours.',
+      fuente: 'John Locke'
+    },
+    {
+      es: 'Lo importante es no dejar de hacerse preguntas. La curiosidad tiene su propia razón de existir.',
+      en: 'The important thing is not to stop questioning. Curiosity has its own reason for existing.',
+      fuente: 'Albert Einstein'
+    },
+    {
+      es: 'Mientras vivas, sigue aprendiendo a vivir.',
+      en: 'As long as you live, keep learning how to live.',
+      fuente: 'Séneca'
+    },
+    {
+      es: '¿No es acaso un placer aprender con perseverancia y poner en práctica lo aprendido?',
+      en: 'Is it not pleasant to learn with constant perseverance and application?',
+      fuente: 'Confucio'
+    },
+    {
+      es: 'Cuanto más aprendemos sobre el mundo y más profundo es nuestro aprendizaje, más consciente, específico y articulado será nuestro conocimiento de lo que no sabemos.',
+      en: 'The more we learn about the world, and the deeper our learning, the more conscious, specific, and articulate will be our knowledge of what we do not know.',
+      fuente: 'Karl Popper'
     }
   ];
 

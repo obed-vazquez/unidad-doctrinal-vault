@@ -484,6 +484,31 @@ html, body {
 }
 @keyframes girar { to { transform: rotate(360deg); } }
 
+/* Sombra de la cita: se proyecta sobre el lienzo (misma capa que el texto,
+   detrás del SVG) y el nodo raíz la corta. */
+:root {
+  --bienvenida-sombra:
+    drop-shadow(0 10px 8px rgba(0, 0, 0, 0.28))
+    drop-shadow(0 42px 26px rgba(0, 0, 0, 0.4));
+  --bienvenida-sombra-rincón:
+    drop-shadow(0 6px 6px rgba(0, 0, 0, 0.22))
+    drop-shadow(0 16px 12px rgba(0, 0, 0, 0.28));
+  --bienvenida-sombra-apagada:
+    drop-shadow(0 10px 8px rgba(0, 0, 0, 0))
+    drop-shadow(0 42px 26px rgba(0, 0, 0, 0));
+}
+:root[data-tema="claro"] {
+  --bienvenida-sombra:
+    drop-shadow(0 8px 6px rgba(31, 45, 65, 0.12))
+    drop-shadow(0 36px 22px rgba(31, 45, 65, 0.18));
+  --bienvenida-sombra-rincón:
+    drop-shadow(0 5px 5px rgba(31, 45, 65, 0.1))
+    drop-shadow(0 14px 10px rgba(31, 45, 65, 0.14));
+  --bienvenida-sombra-apagada:
+    drop-shadow(0 8px 6px rgba(31, 45, 65, 0))
+    drop-shadow(0 36px 22px rgba(31, 45, 65, 0));
+}
+
 #bienvenida {
   position: absolute;
   inset: 0;
@@ -502,7 +527,8 @@ html, body {
   text-align: center;
   opacity: 0;
   transform: translate3d(0, 28px, 0) scale(0.92);
-  will-change: transform, opacity;
+  filter: var(--bienvenida-sombra-apagada);
+  will-change: transform, opacity, filter;
   backface-visibility: hidden;
 }
 /* La secuencia la marca JS con clases: si tres @keyframes viven en el
@@ -510,9 +536,11 @@ html, body {
 #bienvenida.entra figure {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
+  filter: var(--bienvenida-sombra);
   transition:
     opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
-    transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+    transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    filter 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
 }
 #bienvenida.en-esquina figure,
 #bienvenida.sale figure {
@@ -522,11 +550,15 @@ html, body {
 }
 #bienvenida.en-esquina figure {
   opacity: 1;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 1, 1);
+  filter: var(--bienvenida-sombra-rincón);
+  transition:
+    transform 0.8s cubic-bezier(0.4, 0, 1, 1),
+    filter 0.8s ease;
 }
 #bienvenida.sale figure {
   opacity: 0;
-  transition: opacity 0.8s ease;
+  filter: var(--bienvenida-sombra-apagada);
+  transition: opacity 0.8s ease, filter 0.8s ease;
 }
 #bienvenida blockquote {
   margin: 0;
