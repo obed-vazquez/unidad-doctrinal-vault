@@ -317,7 +317,7 @@
     modo: 'libre',           // 'libre' | 'explorador'  (explorador de creencias)
     vista: 'grafo',          // 'grafo' | 'lista'
     panelAbierto: false,
-    pestana: 'detalle',
+    pestana: 'creencias',   // detalle | creencias | comparar | analisis
     panelAncho: 540,
     compactoCreencias: true,
 

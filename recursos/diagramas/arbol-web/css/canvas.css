@@ -73,26 +73,6 @@ html, body {
 .barra-acciones { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .barra-separador { width: 1px; height: 20px; background: var(--borde); }
 
-.selector-modo {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
-  color: var(--texto-medio);
-}
-.selector-modo .rotulo { white-space: nowrap; }
-.selector-modo select {
-  border: 1px solid var(--borde);
-  border-radius: var(--radio-chico);
-  background: var(--superficie-alta);
-  color: var(--texto);
-  font: inherit;
-  font-size: 12px;
-  padding: 5px 8px;
-  cursor: pointer;
-}
-.selector-modo select:focus { outline: none; border-color: var(--acento); }
-
 .boton {
   display: inline-flex;
   align-items: center;
@@ -110,6 +90,18 @@ html, body {
 }
 .boton:hover { background: var(--acento-suave); color: var(--texto); border-color: var(--acento); }
 .boton .icono { font-size: 13px; }
+/* Valor vigente de un menú (p. ej. el recorrido): sobrevive al rótulo, que las
+   pantallas estrechas esconden, porque sin él el botón no dice en qué modo está. */
+.boton .valor {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
 .boton.icono-solo {
   width: 32px;
   height: 32px;
@@ -179,6 +171,7 @@ html, body {
   top: calc(100% + 6px);
   right: 0;
   min-width: 220px;
+  max-width: calc(100vw - 40px);
   padding: 6px;
   border: 1px solid var(--borde);
   border-radius: var(--radio-chico);
@@ -187,9 +180,12 @@ html, body {
   z-index: 32;
   display: none;
 }
+.menu-desplegable.menu-izquierda .menu-lista { right: auto; left: 0; }
 .menu-desplegable.abierto .menu-lista { display: grid; gap: 2px; }
 .menu-lista button {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   text-align: left;
   padding: 8px 10px;
@@ -202,6 +198,18 @@ html, body {
   cursor: pointer;
 }
 .menu-lista button:hover { background: var(--acento-suave); color: var(--acento); }
+/* Opción vigente del menú: la marca ocupa una columna fija para que los
+   rótulos no bailen entre una opción y otra. */
+.menu-lista button::before {
+  content: "✓";
+  width: 10px;
+  font-size: 11px;
+  color: var(--acento);
+  opacity: 0;
+}
+.menu-lista button.activo { color: var(--acento); }
+.menu-lista button.activo::before { opacity: 1; }
+.menu-lista button:not([data-recorrido])::before { display: none; }
 #rotulo-idioma { font-size: 11px; font-weight: 700; letter-spacing: 0.4px; }
 .boton.activo { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
 .boton.peligro { padding: 0; width: 32px; height: 32px; justify-content: center; }
@@ -213,7 +221,6 @@ html, body {
 
 @media (max-width: 1180px) and (min-width: 861px) {
   .boton .rotulo { display: none; }
-  .selector-modo .rotulo { display: none; }
 }
 
 @media (max-width: 860px) {
@@ -248,12 +255,6 @@ html, body {
     gap: 6px;
   }
   .barra-separador { display: none; }
-  .selector-modo {
-    flex: 1 1 100%;
-    order: -1;
-  }
-  .selector-modo .rotulo { display: inline; }
-  .selector-modo select { flex: 1; min-width: 0; }
   .boton {
     min-width: 40px;
     min-height: 40px;
@@ -265,6 +266,13 @@ html, body {
     width: 40px;
     height: 40px;
   }
+  /* El recorrido manda sobre el resto del árbol: en móvil conserva su rótulo
+     y abre en fila propia para que su menú no se salga de la pantalla. */
+  #menu-recorrido { flex: 1 1 100%; }
+  #menu-recorrido .boton { width: 100%; justify-content: flex-start; gap: 8px; }
+  #menu-recorrido .boton .rotulo { display: inline; }
+  #menu-recorrido .menu-lista { left: 0; right: 0; min-width: 0; max-width: none; }
+  #menu-exportar .menu-lista { max-width: calc(100vw - 32px); }
   #minimapa { display: none; }
 }
 

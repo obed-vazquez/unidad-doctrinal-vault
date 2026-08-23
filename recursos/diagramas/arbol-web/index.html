@@ -49,6 +49,20 @@
       <span class="barra-contador" id="contador">—</span>
     </div>
     <div class="barra-acciones">
+      <div class="menu-desplegable menu-izquierda" id="menu-recorrido">
+        <button type="button" class="boton" id="btn-recorrido" data-i18n-title="recorridoTitle"
+                title="Cómo se revelan las ramas (A para ciclar)"
+                aria-haspopup="menu" aria-expanded="false">
+          <span class="icono">◇</span><span class="rotulo" data-i18n="recorrido">Recorrido</span>
+          <span class="valor" id="valor-recorrido">Cuestionario</span>
+        </button>
+        <div class="menu-lista" role="menu">
+          <button type="button" role="menuitemradio" data-recorrido="cuestionario" data-i18n="cuestionario">Cuestionario</button>
+          <button type="button" role="menuitemradio" data-recorrido="limpio" data-i18n="limpio">Limpio</button>
+          <button type="button" role="menuitemradio" data-recorrido="exploracion" data-i18n="exploracion">Exploración libre</button>
+          <button type="button" role="menuitemradio" data-recorrido="completo" data-i18n="completo">Árbol completo</button>
+        </div>
+      </div>
       <button type="button" class="boton" id="btn-ajustar" data-i18n-title="ajustarTitle"
               title="Ajustar el árbol a la ventana (F)">
         <span class="icono">⤢</span><span class="rotulo" data-i18n="ajustar">Ajustar</span>
@@ -57,16 +71,6 @@
               title="Restaurar las posiciones automáticas (R)">
         <span class="icono">↻</span><span class="rotulo" data-i18n="reorganizar">Reorganizar</span>
       </button>
-      <label class="selector-modo" data-i18n-title="recorridoTitle"
-             title="Cómo se revelan las ramas (A para ciclar)">
-        <span class="rotulo" data-i18n="recorrido">Recorrido</span>
-        <select id="sel-recorrido">
-          <option value="cuestionario" data-i18n="cuestionario">Cuestionario</option>
-          <option value="limpio" data-i18n="limpio">Limpio</option>
-          <option value="exploracion" data-i18n="exploracion">Exploración libre</option>
-          <option value="completo" data-i18n="completo">Árbol completo</option>
-        </select>
-      </label>
       <span class="barra-separador" id="sep-resaltados" hidden></span>
       <button type="button" class="boton resalte" id="btn-resaltados" hidden
               data-i18n-title="encuadrarResaltados"
@@ -79,28 +83,19 @@
       </button>
       <span class="barra-separador"></span>
       <button type="button" class="boton alternable" id="btn-creencias"
-              data-i18n-title="creenciasTitle" title="Explorador de creencias (E)">
+              data-i18n-title="creenciasTitle" title="Explorador de creencias (C)"
+              aria-pressed="false">
         <span class="icono">✦</span><span class="rotulo" data-i18n="creencias">Creencias</span>
       </button>
-      <button type="button" class="boton alternable" id="btn-comparar"
-              data-i18n-title="compararTitle" title="Comparar creencias en forma de lista (C)">
-        <span class="icono">☰</span><span class="rotulo" data-i18n="comparar">Comparar</span>
-      </button>
-      <button type="button" class="boton" id="btn-razonar"
-              data-i18n-title="razonarTitle" title="Razonar: en construcción">
-        <span class="icono">✎</span><span class="rotulo" data-i18n="razonar">Razonar</span>
-      </button>
       <span class="barra-separador"></span>
-      <button type="button" class="boton" id="btn-compartir"
-              data-i18n-title="compartirTitle" title="Copiar enlace con esta vista">
-        <span class="icono">⇗</span><span class="rotulo" data-i18n="compartir">Compartir</span>
-      </button>
       <div class="menu-desplegable" id="menu-exportar">
         <button type="button" class="boton" id="btn-exportar"
-                data-i18n-title="exportarTitle" title="Exportar">
+                data-i18n-title="exportarTitle" title="Exportar, compartir o descargar una imagen"
+                aria-haspopup="menu" aria-expanded="false">
           <span class="icono">⇩</span><span class="rotulo" data-i18n="exportar">Exportar</span>
         </button>
         <div class="menu-lista" role="menu">
+          <button type="button" data-export="url" data-i18n="exportarUrl">Compartir vista actual (URL)</button>
           <button type="button" data-export="md" data-i18n="exportarMd">Markdown (propuesta)</button>
           <button type="button" data-export="svg" data-i18n="exportarSvg">Imagen SVG</button>
           <button type="button" data-export="png" data-i18n="exportarPng">Imagen PNG</button>
@@ -156,16 +151,22 @@
     <div id="panel-asa" data-i18n-title="panelAsa" title="Arrastrar para cambiar el ancho"></div>
     <button type="button" id="panel-cerrar" data-i18n-title="panelCerrar" title="Cerrar panel">✕</button>
     <nav class="panel-pestanas" role="tablist">
-      <button type="button" class="pestana activa" data-pestana="detalle" role="tab" data-i18n="detalle">Detalle</button>
-      <button type="button" class="pestana" data-pestana="creencias" role="tab" data-i18n="creencias">Creencias</button>
+      <button type="button" class="pestana" data-pestana="detalle" role="tab" data-i18n="detalle">Detalle</button>
+      <button type="button" class="pestana activa" data-pestana="creencias" role="tab" data-i18n="creencias">Creencias</button>
       <button type="button" class="pestana" data-pestana="comparar" role="tab" data-i18n="compararTab">Comparar</button>
+      <button type="button" class="pestana" data-pestana="analisis" role="tab" data-i18n="analisis">Análisis profundo</button>
     </nav>
 
-    <section class="panel-cuerpo activa" data-cuerpo="detalle" id="cuerpo-detalle">
-      <p class="panel-vacio" data-i18n="panelVacio">Selecciona un nodo del árbol para ver su ficha completa.</p>
+    <section class="panel-cuerpo" data-cuerpo="detalle" id="cuerpo-detalle">
+      <div class="panel-controles">
+        <button type="button" class="mini-boton destacado" id="btn-analizar-detalle" data-i18n="irAnalizar">Analizar →</button>
+      </div>
+      <div id="ficha-detalle">
+        <p class="panel-vacio" data-i18n="panelVacio">Selecciona un nodo del árbol para ver su ficha completa.</p>
+      </div>
     </section>
 
-    <section class="panel-cuerpo" data-cuerpo="creencias" id="cuerpo-creencias">
+    <section class="panel-cuerpo activa" data-cuerpo="creencias" id="cuerpo-creencias">
       <div class="buscador">
         <input type="search" id="buscador-tradiciones"
                data-i18n-placeholder="buscarPlaceholder"
@@ -205,8 +206,19 @@
         <button type="button" class="mini-boton" id="btn-copiar" data-i18n="copiar">Copiar</button>
         <button type="button" class="mini-boton" id="btn-csv" data-i18n="csv">Exportar CSV</button>
         <button type="button" class="mini-boton" id="btn-json" data-i18n="json">Exportar JSON</button>
+        <button type="button" class="mini-boton destacado" id="btn-analizar-comparar" data-i18n="irAnalizar">Analizar →</button>
       </div>
       <div id="salida-comparar"></div>
+    </section>
+
+    <section class="panel-cuerpo" data-cuerpo="analisis" id="cuerpo-analisis">
+      <div class="en-construccion">
+        <span class="en-construccion-icono" aria-hidden="true">⚗</span>
+        <h3 data-i18n="analisisConstruccion">En construcción</h3>
+        <p data-i18n="analisisConstruccionNota">El análisis profundo cruzará el recorrido con las
+          posturas del árbol para señalar tensiones, implicaciones y compromisos. Llegará en una
+          próxima versión.</p>
+      </div>
     </section>
   </aside>
 

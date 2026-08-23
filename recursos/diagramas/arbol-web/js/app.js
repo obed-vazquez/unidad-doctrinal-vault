@@ -352,15 +352,29 @@
     Router.escribir(Estado);
   }
 
+  /* Pestañas que piden más ancho: las dos que despliegan tablas y listas. */
+  var PESTANAS_ANCHAS = { comparar: true, analisis: true };
+
+  function sincronizarMenuRecorrido() {
+    if (dom.valorRecorrido) dom.valorRecorrido.textContent = t(Estado.divulgacion);
+    if (!dom.menuRecorrido) return;
+    Array.prototype.forEach.call(dom.menuRecorrido.querySelectorAll('[data-recorrido]'),
+      function (opcion) {
+        var activa = opcion.getAttribute('data-recorrido') === Estado.divulgacion;
+        opcion.classList.toggle('activo', activa);
+        opcion.setAttribute('aria-checked', activa ? 'true' : 'false');
+      });
+  }
+
   function actualizarBarra(visibles) {
     var totalNodos = Estado.grafo.nodos.size;
     var respondidas = Object.keys(Estado.respuestasEfectivas()).length;
     dom.contador.textContent = visibles.size + ' de ' + totalNodos + ' nodos · '
       + respondidas + ' de ' + Object.keys(Estado.datos.questions).length + ' preguntas';
-    dom.btnCreencias.classList.toggle('activo', Estado.modo === 'explorador' && Estado.panelAbierto);
-    // El botón solo está «encendido» si la vista de lista se está viendo de
-    // verdad; cerrar el panel con la ✕ también lo apaga.
-    dom.btnComparar.classList.toggle('activo', Estado.vista === 'lista' && Estado.panelAbierto);
+    // «Creencias» es el único interruptor del panel: se enciende con él abierto
+    // en cualquiera de sus pestañas y se apaga al cerrarlo, también con la ✕.
+    dom.btnCreencias.classList.toggle('activo', Estado.panelAbierto);
+    dom.btnCreencias.setAttribute('aria-pressed', Estado.panelAbierto ? 'true' : 'false');
 
     var cuantosResaltados = Estado.resaltados.size;
     dom.conteoResaltados.textContent = String(cuantosResaltados);
@@ -368,10 +382,11 @@
     dom.btnLimpiarResaltados.hidden = cuantosResaltados === 0;
     dom.sepResaltados.hidden = cuantosResaltados === 0;
     dom.panel.classList.toggle('cerrado', !Estado.panelAbierto);
-    dom.panel.classList.toggle('ancho', Estado.vista === 'lista' && Estado.panelAbierto);
+    dom.panel.classList.toggle('ancho',
+      !!(Estado.panelAbierto && PESTANAS_ANCHAS[Estado.pestana]));
     sincronizarAltoBarra();
     document.documentElement.style.setProperty('--panel-ancho', Estado.panelAncho + 'px');
-    if (dom.selRecorrido) dom.selRecorrido.value = Estado.divulgacion;
+    sincronizarMenuRecorrido();
     if (dom.btnCompacto) {
       dom.btnCompacto.classList.toggle('activo', !!Estado.compactoCreencias);
       dom.btnCompacto.setAttribute('aria-pressed', Estado.compactoCreencias ? 'true' : 'false');
@@ -1067,7 +1082,7 @@
 
   function actualizarPanel() {
     var nodo = Estado.seleccionado ? Estado.grafo.nodos.get(Estado.seleccionado) : null;
-    dom.cuerpoDetalle.innerHTML = fichaDeNodo(nodo);
+    dom.fichaDetalle.innerHTML = fichaDeNodo(nodo);
     pintarListaCreencias();
     pintarComparacion();
   }
@@ -1240,11 +1255,19 @@
   function abrirPestana(nombre) {
     Estado.pestana = nombre;
     Estado.panelAbierto = true;
-    if (nombre !== 'comparar' && Estado.vista === 'lista') Estado.vista = 'grafo';
+    // `vista` sigue siendo lo que viaja en el enlace; la pestaña la gobierna.
+    Estado.vista = nombre === 'comparar' ? 'lista' : 'grafo';
     if (nombre === 'creencias'
       && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
       Estado.modo = 'explorador';
     }
+    Estado.emitir('panel');
+  }
+
+  function cerrarPanel() {
+    Estado.panelAbierto = false;
+    Estado.vista = 'grafo';
+    Estado.modo = 'libre';
     Estado.emitir('panel');
   }
 
@@ -1365,9 +1388,16 @@
 
   function ciclarDivulgacion() {
     var indice = ORDEN_DIVULGACION.indexOf(Estado.divulgacion);
-    var siguiente = ORDEN_DIVULGACION[(indice + 1) % ORDEN_DIVULGACION.length];
-    Estado.fijarDivulgacion(siguiente);
-    avisar('Recorrido: ' + siguiente.replace('exploracion', 'exploración libre'));
+    fijarRecorrido(ORDEN_DIVULGACION[(indice + 1) % ORDEN_DIVULGACION.length]);
+  }
+
+  function fijarRecorrido(valor) {
+    if (!valor || valor === Estado.divulgacion) return;
+    Estado.fijarDivulgacion(valor);
+    avisar(t('recorridoAviso', { nombre: t(Estado.divulgacion) }));
+    if (Estado.divulgacion === 'completo') {
+      global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
+    }
   }
 
   function reconstruirModelo() {
@@ -1454,6 +1484,40 @@
 
   /* ------------------------------------------------------------ eventos -- */
 
+  /* Menús desplegables de la barra (recorrido, exportar): uno abierto a la
+     vez, y cualquier clic fuera o Escape los cierra. */
+  var menus = [];
+
+  function cerrarMenus() {
+    menus.forEach(function (menu) {
+      menu.classList.remove('abierto');
+      var boton = menu.querySelector('.boton');
+      if (boton) boton.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function hayMenuAbierto() {
+    return menus.some(function (menu) { return menu.classList.contains('abierto'); });
+  }
+
+  function registrarMenu(contenedor, boton, atributo, alElegir) {
+    if (!contenedor || !boton) return;
+    menus.push(contenedor);
+    boton.addEventListener('click', function (evento) {
+      evento.stopPropagation();
+      var abrir = !contenedor.classList.contains('abierto');
+      cerrarMenus();
+      contenedor.classList.toggle('abierto', abrir);
+      boton.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    });
+    contenedor.addEventListener('click', function (evento) {
+      var opcion = evento.target.closest ? evento.target.closest('[' + atributo + ']') : null;
+      if (!opcion) return;
+      cerrarMenus();
+      alElegir(opcion.getAttribute(atributo));
+    });
+  }
+
   function registrarEventos() {
     dom.btnAjustar.addEventListener('click', function () { Vista.encuadrar(null, true); });
 
@@ -1462,41 +1526,16 @@
       avisar('Posiciones automáticas restauradas.');
     });
 
-    dom.selRecorrido.addEventListener('change', function () {
-      Estado.fijarDivulgacion(dom.selRecorrido.value);
-      if (Estado.divulgacion === 'completo') {
-        global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
-      }
-    });
+    registrarMenu(dom.menuRecorrido, dom.btnRecorrido, 'data-recorrido', fijarRecorrido);
 
+    // Un solo interruptor para el panel: abre en «Creencias» y cierra desde
+    // cualquier pestaña.
     dom.btnCreencias.addEventListener('click', function () {
-      var abierto = Estado.panelAbierto && Estado.pestana === 'creencias';
-      if (abierto) {
-        Estado.panelAbierto = false;
-        Estado.modo = 'libre';
-        Estado.emitir('panel');
-        return;
-      }
+      if (Estado.panelAbierto) { cerrarPanel(); return; }
       if (Estado.tradiciones.length || Estado.posturasSueltas.length) {
         Estado.modo = 'explorador';
       }
       abrirPestana('creencias');
-    });
-
-    dom.btnComparar.addEventListener('click', function () {
-      var estaVisible = Estado.vista === 'lista' && Estado.panelAbierto;
-      if (estaVisible) {
-        Estado.vista = 'grafo';
-        Estado.panelAbierto = false;
-        Estado.emitir('panel');
-        return;
-      }
-      Estado.vista = 'lista';
-      abrirPestana('comparar');
-    });
-
-    dom.btnRazonar.addEventListener('click', function () {
-      avisar('«Razonar» está en construcción; llegará en una próxima versión.');
     });
 
     dom.btnResaltados.addEventListener('click', function () {
@@ -1508,11 +1547,11 @@
       Estado.limpiarResaltados();
     });
 
-    dom.btnCompartir.addEventListener('click', function () {
-      copiar(Router.enlace(Estado));
-    });
-
-    function exportarImagen(tipo) {
+    function exportar(tipo) {
+      if (tipo === 'url') {
+        copiar(Router.enlace(Estado));
+        return;
+      }
       if (tipo === 'md') {
         descargar('propuesta-posturas-creencias.md', Edits.aMarkdown(Estado.datos), 'text/markdown');
         avisar('Markdown generado para enviarlo al equipo de mantenimiento.');
@@ -1538,21 +1577,15 @@
       }
     }
 
-    if (dom.btnExportar && dom.menuExportar) {
-      dom.btnExportar.addEventListener('click', function (evento) {
-        evento.stopPropagation();
-        dom.menuExportar.classList.toggle('abierto');
-      });
-      dom.menuExportar.addEventListener('click', function (evento) {
-        var boton = evento.target.closest ? evento.target.closest('[data-export]') : null;
-        if (!boton) return;
-        exportarImagen(boton.getAttribute('data-export'));
-        dom.menuExportar.classList.remove('abierto');
-      });
-      document.addEventListener('click', function () {
-        dom.menuExportar.classList.remove('abierto');
-      });
-    }
+    registrarMenu(dom.menuExportar, dom.btnExportar, 'data-export', exportar);
+    // En captura y sobre pointerdown: el lienzo detiene la propagación de
+    // algunos clics, y con `click` los menús se quedaban abiertos tras tocar
+    // un control de las tarjetas.
+    document.addEventListener('pointerdown', function (evento) {
+      var dentro = evento.target && evento.target.closest
+        && evento.target.closest('.menu-desplegable');
+      if (!dentro) cerrarMenus();
+    }, true);
 
     dom.btnIdioma.addEventListener('click', function () {
       I18n.alternar();
@@ -1627,12 +1660,7 @@
       });
     });
 
-    dom.panelCerrar.addEventListener('click', function () {
-      Estado.panelAbierto = false;
-      if (Estado.pestana === 'comparar') Estado.vista = 'grafo';
-      Estado.modo = 'libre';
-      Estado.emitir('panel');
-    });
+    dom.panelCerrar.addEventListener('click', cerrarPanel);
 
     Array.prototype.forEach.call(dom.pestanas, function (boton) {
       boton.addEventListener('click', function () {
@@ -1679,8 +1707,11 @@
     });
 
     dom.btnIrComparar.addEventListener('click', function () {
-      Estado.vista = 'lista';
       abrirPestana('comparar');
+    });
+
+    [dom.btnAnalizarDetalle, dom.btnAnalizarComparar].forEach(function (boton) {
+      if (boton) boton.addEventListener('click', function () { abrirPestana('analisis'); });
     });
 
     dom.cuerpoDetalle.addEventListener('click', function (evento) {
@@ -1741,17 +1772,13 @@
       if (tecla === 'f') { Vista.encuadrar(null, true); }
       else if (tecla === 'r') { dom.btnReorganizar.click(); }
       else if (tecla === 'a') { ciclarDivulgacion(); }
-      else if (tecla === 'e') { dom.btnCreencias.click(); }
-      else if (tecla === 'c') { dom.btnComparar.click(); }
+      else if (tecla === 'c') { dom.btnCreencias.click(); }
       else if (tecla === 't') { dom.btnTema.click(); }
       else if (tecla === 'h' && Estado.resaltados.size) { dom.btnResaltados.click(); }
       else if (evento.key === 'Escape') {
-        if (Estado.seleccionado) Estado.seleccionar(null);
-        else if (Estado.panelAbierto) {
-          Estado.panelAbierto = false;
-          Estado.modo = 'libre';
-          Estado.emitir('panel');
-        }
+        if (hayMenuAbierto()) cerrarMenus();
+        else if (Estado.seleccionado) Estado.seleccionar(null);
+        else if (Estado.panelAbierto) cerrarPanel();
       }
     });
   }
@@ -1773,6 +1800,7 @@
       pestanas: document.querySelectorAll('.pestana'),
       cuerpos: document.querySelectorAll('.panel-cuerpo'),
       cuerpoDetalle: document.getElementById('cuerpo-detalle'),
+      fichaDetalle: document.getElementById('ficha-detalle'),
       buscador: document.getElementById('buscador-tradiciones'),
       fichaCreencias: document.getElementById('ficha-creencias'),
       listaTradiciones: document.getElementById('lista-tradiciones'),
@@ -1783,10 +1811,10 @@
       selProfundidad: document.getElementById('sel-profundidad'),
       btnAjustar: document.getElementById('btn-ajustar'),
       btnReorganizar: document.getElementById('btn-reorganizar'),
-      selRecorrido: document.getElementById('sel-recorrido'),
+      menuRecorrido: document.getElementById('menu-recorrido'),
+      btnRecorrido: document.getElementById('btn-recorrido'),
+      valorRecorrido: document.getElementById('valor-recorrido'),
       btnCreencias: document.getElementById('btn-creencias'),
-      btnComparar: document.getElementById('btn-comparar'),
-      btnCompartir: document.getElementById('btn-compartir'),
       btnExportar: document.getElementById('btn-exportar'),
       menuExportar: document.getElementById('menu-exportar'),
       btnIdioma: document.getElementById('btn-idioma'),
@@ -1800,9 +1828,10 @@
       btnLimpiarResaltados: document.getElementById('btn-limpiar-resaltados'),
       conteoResaltados: document.getElementById('conteo-resaltados'),
       sepResaltados: document.getElementById('sep-resaltados'),
-      btnRazonar: document.getElementById('btn-razonar'),
       btnLimpiarCreencias: document.getElementById('btn-limpiar-creencias'),
       btnIrComparar: document.getElementById('btn-ir-comparar'),
+      btnAnalizarDetalle: document.getElementById('btn-analizar-detalle'),
+      btnAnalizarComparar: document.getElementById('btn-analizar-comparar'),
       btnCompacto: document.getElementById('btn-compacto'),
       panelAsa: document.getElementById('panel-asa'),
       btnCopiar: document.getElementById('btn-copiar'),
@@ -1839,6 +1868,10 @@
 
     var aplicado = Router.aplicar(lectura, Estado);
     Estado.sanear();
+    // «Comparar» no es una pestaña de entrada: se llega a ella desde el panel.
+    // Una sesión guardada ahí (o un enlace con vista=lista) abre en «Creencias».
+    if (Estado.pestana === 'comparar' || !Estado.pestana) Estado.pestana = 'creencias';
+    Estado.vista = 'grafo';
     aplicarTema();
 
     listaTradiciones = Busqueda.listaTradiciones(datos);
@@ -1847,7 +1880,7 @@
     // Un enlace compartido que nombra creencias debe abrir su ficha.
     if ((lectura.tradiciones || lectura.posturas) && Estado.modo === 'explorador') {
       Estado.panelAbierto = true;
-      Estado.pestana = Estado.vista === 'lista' ? 'comparar' : 'creencias';
+      Estado.pestana = 'creencias';
     }
 
     dom.chkDesacuerdos.checked = Estado.soloDesacuerdos;
@@ -1878,6 +1911,7 @@
         Estado.seleccionado = nodoId;
         Estado.panelAbierto = true;
         Estado.pestana = 'detalle';
+        Estado.vista = 'grafo';
         Estado.emitir('seleccion');
         Vista.centrarEnNodo(nodoId);
       },

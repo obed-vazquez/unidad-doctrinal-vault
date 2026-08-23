@@ -63,10 +63,17 @@
   position: absolute;
   top: 12px;
   left: 12px;
+  /* Deja libre la ✕ y desliza en horizontal cuando las cuatro pestañas no
+     caben, en vez de meterse debajo del botón de cerrar. */
+  right: 44px;
   display: flex;
   gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.panel-pestanas::-webkit-scrollbar { display: none; }
 .pestana {
+  flex: none;
   padding: 6px 12px;
   border: 1px solid transparent;
   border-radius: var(--radio-chico);
@@ -74,6 +81,7 @@
   color: var(--texto-tenue);
   font: inherit;
   font-size: 12.5px;
+  white-space: nowrap;
   cursor: pointer;
 }
 .pestana:hover { color: var(--texto); }
@@ -367,6 +375,38 @@
 }
 .resumen-comparacion b { color: var(--texto); }
 
+/* --------------------------------------------------------- en construcción */
+
+.en-construccion {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin-top: 12vh;
+  padding: 0 18px;
+  text-align: center;
+}
+.en-construccion-icono {
+  font-size: 34px;
+  line-height: 1;
+  color: var(--texto-tenue);
+  opacity: 0.7;
+}
+.en-construccion h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+.en-construccion p {
+  margin: 0;
+  max-width: 42ch;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--texto-tenue);
+}
+
 @media (max-width: 860px) {
   #panel {
     top: auto;
@@ -392,5 +432,7 @@
     height: 36px;
     font-size: 16px;
   }
+  .panel-pestanas { right: 54px; }
   .pestana { padding: 8px 12px; min-height: 36px; }
+  .en-construccion { margin-top: 8vh; }
 }
