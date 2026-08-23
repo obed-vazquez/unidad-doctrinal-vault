@@ -1375,13 +1375,38 @@
     texto.textContent = frase.texto;
     if (fuente) fuente.textContent = frase.fuente;
     function terminar() { caja.classList.add('hecha'); }
-    var figura = caja.querySelector('figure');
-    if (figura) {
-      figura.addEventListener('animationend', function (evento) {
-        if (evento.animationName === 'bienvenida-sale') terminar();
-      });
+    function aparcarEnEsquina() {
+      var figura = caja.querySelector('figure');
+      if (!figura) { caja.classList.add('en-esquina'); return; }
+      var barra = document.getElementById('barra');
+      var box = figura.getBoundingClientRect();
+      var escala = global.innerWidth <= 860 ? 0.5 : 0.42;
+      var margen = 16;
+      var topDest = (barra ? barra.getBoundingClientRect().bottom : 64) + margen;
+      var leftDest = margen + 4;
+      var ancho = box.width * escala;
+      var alto = box.height * escala;
+      if (leftDest + ancho > global.innerWidth - margen) {
+        leftDest = Math.max(margen, global.innerWidth - ancho - margen);
+      }
+      if (topDest + alto > global.innerHeight - margen) {
+        topDest = Math.max(margen, global.innerHeight - alto - margen);
+      }
+      var destCx = leftDest + ancho / 2;
+      var destCy = topDest + alto / 2;
+      figura.style.setProperty('--bienvenida-dx', (destCx - (box.left + box.width / 2)) + 'px');
+      figura.style.setProperty('--bienvenida-dy', (destCy - (box.top + box.height / 2)) + 'px');
+      figura.style.setProperty('--bienvenida-k', String(escala));
+      caja.classList.add('en-esquina');
     }
-    global.setTimeout(terminar, 4200);
+    // Un rAF para que el estado inicial (opaco, abajo) pinte antes de entrar;
+    // si no, el navegador salta la transición y la cita aparece ya puesta.
+    global.requestAnimationFrame(function () {
+      caja.classList.add('entra');
+    });
+    global.setTimeout(aparcarEnEsquina, 2900);
+    global.setTimeout(function () { caja.classList.add('sale'); }, 6700);
+    global.setTimeout(terminar, 7600);
   }
 
   var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo'];

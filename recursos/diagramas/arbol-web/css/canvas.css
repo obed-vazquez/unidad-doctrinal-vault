@@ -23,15 +23,24 @@ html, body {
 
 /* ------------------------------------------------------------------ lienzo */
 
+#aplicacion {
+  position: relative;
+  height: 100%;
+  /* El fondo vive aquí y no en el SVG: la cita de bienvenida se sienta
+     entre ambos y el nodo raíz la tapa, como un banner detrás del objeto. */
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--fondo-alto), transparent 62%),
+    var(--fondo);
+}
+
 #lienzo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-  background:
-    radial-gradient(ellipse at 20% 0%, var(--fondo-alto), transparent 62%),
-    var(--fondo);
+  background: transparent;
+  z-index: 6;
   cursor: grab;
   touch-action: none;
 }
@@ -478,11 +487,12 @@ html, body {
 #bienvenida {
   position: absolute;
   inset: 0;
-  z-index: 55;
+  /* Detrás del SVG (z 6) y de la barra (z 20): el nodo la oculta de verdad. */
+  z-index: 4;
   display: grid;
   place-items: center;
-  align-content: center;
-  padding-bottom: 26vh;
+  /* Un poco alta: cruza la parte superior de la raíz, no el centro del nodo. */
+  padding: calc(var(--barra-alto, 64px) + 8px) 24px 22vh;
   pointer-events: none;
   background: transparent;
 }
@@ -490,13 +500,33 @@ html, body {
   margin: 0;
   max-width: 96vw;
   text-align: center;
-  transform: translate3d(0, 0, 0);
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.92);
   will-change: transform, opacity;
   backface-visibility: hidden;
-  /* Entrada ease-out cúbica; salida accelerate (Material). */
-  animation:
-    bienvenida-entra 2s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both,
-    bienvenida-sale 0.8s 2.9s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+/* La secuencia la marca JS con clases: si tres @keyframes viven en el
+   mismo elemento, la última se queda con opacity y el fade gana de una. */
+#bienvenida.entra figure {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+}
+#bienvenida.en-esquina figure,
+#bienvenida.sale figure {
+  /* dx/dy/k los calcula JS midiendo la cita, para no salirse de la pantalla. */
+  transform: translate3d(var(--bienvenida-dx, 0px), var(--bienvenida-dy, 0px), 0)
+    scale(var(--bienvenida-k, 0.42));
+}
+#bienvenida.en-esquina figure {
+  opacity: 1;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 1, 1);
+}
+#bienvenida.sale figure {
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 #bienvenida blockquote {
   margin: 0;
@@ -521,21 +551,16 @@ html, body {
   white-space: nowrap;
   line-height: 1;
 }
-@keyframes bienvenida-entra {
-  from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.92); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-}
-@keyframes bienvenida-sale {
-  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-  to {
-    opacity: 0;
-    transform: translate3d(calc(-42vw + 80px), calc(-40vh + 28px), 0) scale(0.28);
+#bienvenida.hecha { display: none; }
+
+@media (max-width: 860px) {
+  #bienvenida {
+    padding: calc(var(--barra-alto, 64px) + 8px) 16px 18vh;
   }
 }
-#bienvenida.hecha { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .girador { animation-duration: 2.4s; }
   #tooltip { transition: none; }
-  #bienvenida figure { animation: none; opacity: 0; }
+  #bienvenida figure { transition: none; opacity: 0; }
 }
