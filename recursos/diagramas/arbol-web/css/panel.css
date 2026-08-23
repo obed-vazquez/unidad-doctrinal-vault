@@ -350,5 +350,29 @@
 .resumen-comparacion b { color: var(--texto); }
 
 @media (max-width: 860px) {
-  #panel { left: 14px; width: auto; }
+  #panel {
+    top: auto;
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    height: min(58dvh, 560px);
+    padding-top: 52px;
+    border-radius: 16px 16px 12px 12px;
+  }
+  #panel.ancho {
+    width: auto;
+    height: min(78dvh, 720px);
+  }
+  #panel.cerrado {
+    transform: translateY(calc(100% + 28px));
+    opacity: 0;
+  }
+  #panel-asa { display: none; }
+  #panel-cerrar {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .pestana { padding: 8px 12px; min-height: 36px; }
 }

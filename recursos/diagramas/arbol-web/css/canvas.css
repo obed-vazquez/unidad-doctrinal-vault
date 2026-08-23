@@ -5,6 +5,7 @@
 html, body {
   margin: 0;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background: var(--fondo);
   color: var(--texto);
@@ -12,6 +13,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #panel, input, textarea, select, #cuerpo-detalle, #cuerpo-creencias, #cuerpo-comparar {
@@ -132,9 +134,65 @@ html, body {
 .boton[hidden] { display: none; }
 .barra-separador[hidden] { display: none; }
 
-@media (max-width: 1180px) {
+@media (max-width: 1180px) and (min-width: 861px) {
   .boton .rotulo { display: none; }
   .selector-modo .rotulo { display: none; }
+}
+
+@media (max-width: 860px) {
+  #barra {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 10px 8px;
+  }
+  .barra-marca {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .barra-titulo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .barra-contador {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .barra-acciones {
+    justify-content: flex-start;
+    width: 100%;
+    gap: 6px;
+  }
+  .barra-separador { display: none; }
+  .selector-modo {
+    flex: 1 1 100%;
+    order: -1;
+  }
+  .selector-modo .rotulo { display: inline; }
+  .selector-modo select { flex: 1; min-width: 0; }
+  .boton {
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+  }
+  .boton .rotulo { display: none; }
+  .boton.icono-solo,
+  .boton.peligro {
+    width: 40px;
+    height: 40px;
+  }
+  #minimapa { display: none; }
+}
+
+@media (hover: none) {
+  #tooltip { display: none !important; }
 }
 
 /* ---------------------------------------------------------------- minimapa */

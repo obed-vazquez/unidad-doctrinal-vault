@@ -13,6 +13,13 @@
   var ZOOM_MAX = 24;
   var DURACION = 300;
   var UMBRAL_ARRASTRE = 4;
+  var UMBRAL_ARRASTRE_TACTIL = 12;
+
+  function distanciaPuntos(a, b) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
   function crear(nombre, atributos, clase) {
     var elemento = document.createElementNS(NS, nombre);
@@ -88,12 +95,15 @@
     animacion: null,
     arrastre: null,
     panorama: null,
+    punteros: null,
+    pellizco: null,
     _clicDiferido: null,
     _ultimoNodoPuntero: null,
     _conteoClic: { id: null, veces: 0, marca: 0 },
 
     iniciar: function (opciones) {
       this.opciones = opciones || {};
+      this.punteros = new Map();
       this.svg = document.getElementById('lienzo');
       this.mundo = document.getElementById('mundo');
       this.capaAristas = document.getElementById('capa-aristas');
@@ -157,7 +167,37 @@
       global.requestAnimationFrame(paso);
     },
 
-    /* Encuadra un conjunto de nodos dejando sitio al panel lateral abierto. */
+    /* Márgenes del lienzo que tapizan barra, panel y minimapa. */
+    margenesLienzo: function () {
+      var rect = this.svg.getBoundingClientRect();
+      var barra = document.getElementById('barra');
+      var panel = document.getElementById('panel');
+      var minimapa = document.getElementById('minimapa');
+      var movil = rect.width <= 860;
+      var margenArr = 92;
+      var margenIzq = movil ? 12 : 40;
+      var margenDer = movil ? 12 : 40;
+      var margenAba = 16;
+      if (barra) {
+        margenArr = Math.max(24, barra.getBoundingClientRect().bottom - rect.top + 10);
+      }
+      var panelAbierto = panel && !panel.classList.contains('cerrado');
+      if (movil && panelAbierto) {
+        margenAba = Math.max(margenAba, rect.bottom - panel.getBoundingClientRect().top + 10);
+      } else if (!movil) {
+        margenDer = (this.opciones.margenDerecho && this.opciones.margenDerecho()) || 40;
+        margenAba = 24;
+        if (minimapa && minimapa.offsetParent) margenAba = 70;
+      }
+      return {
+        margenArr: margenArr,
+        margenIzq: margenIzq,
+        margenDer: margenDer,
+        margenAba: margenAba
+      };
+    },
+
+    /* Encuadra un conjunto de nodos dejando sitio a la barra y al panel. */
     encuadrar: function (ids, animar) {
       var disposicion = this.contexto && this.contexto.disposicion;
       if (!disposicion) return;
@@ -175,19 +215,16 @@
       });
 
       var rect = this.svg.getBoundingClientRect();
-      var margenIzq = 40;
-      var margenDer = (this.opciones.margenDerecho && this.opciones.margenDerecho()) || 40;
-      var margenArr = 92;
-      var margenAba = 70;
-      var disponibleX = Math.max(120, rect.width - margenIzq - margenDer);
-      var disponibleY = Math.max(120, rect.height - margenArr - margenAba);
+      var m = this.margenesLienzo();
+      var disponibleX = Math.max(120, rect.width - m.margenIzq - m.margenDer);
+      var disponibleY = Math.max(120, rect.height - m.margenArr - m.margenAba);
       var k = Math.min(disponibleX / (maxX - minX || 1), disponibleY / (maxY - minY || 1), 1.35);
       k = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, k));
 
       var destino = {
         k: k,
-        x: margenIzq + (disponibleX - (maxX - minX) * k) / 2 - minX * k,
-        y: margenArr + (disponibleY - (maxY - minY) * k) / 2 - minY * k
+        x: m.margenIzq + (disponibleX - (maxX - minX) * k) / 2 - minX * k,
+        y: m.margenArr + (disponibleY - (maxY - minY) * k) / 2 - minY * k
       };
       if (animar === false) this.fijarCamara(destino);
       else this.animarCamara(destino);
@@ -212,12 +249,14 @@
       var caja = this.contexto.disposicion.get(nodoId);
       if (!caja) return;
       var rect = this.svg.getBoundingClientRect();
-      var margenDer = (this.opciones.margenDerecho && this.opciones.margenDerecho()) || 40;
+      var m = this.margenesLienzo();
       var k = this.camara.k;
+      var ancho = rect.width - m.margenIzq - m.margenDer;
+      var alto = rect.height - m.margenArr - m.margenAba;
       this.animarCamara({
         k: k,
-        x: (rect.width - margenDer) / 2 - (caja.x + caja.ancho / 2) * k,
-        y: rect.height / 2 - (caja.y + caja.alto / 2) * k
+        x: m.margenIzq + ancho / 2 - (caja.x + caja.ancho / 2) * k,
+        y: m.margenArr + alto / 2 - (caja.y + caja.alto / 2) * k
       });
     },
 
@@ -727,6 +766,8 @@
     },
 
     dibujarMinimapa: function () {
+      var cajaMin = document.getElementById('minimapa');
+      if (cajaMin && cajaMin.offsetParent === null) return;
       if (!this.minimapaNodos) return;
       var limites = this.limitesMundo();
       var ancho = limites.maxX - limites.minX || 1;
@@ -809,6 +850,52 @@
       this.tooltip.setAttribute('aria-hidden', 'true');
     },
 
+    iniciarPellizco: function () {
+      if (!this.punteros || this.punteros.size < 2) return;
+      var pts = Array.from(this.punteros.values());
+      var caja = this.svg.getBoundingClientRect();
+      this.pellizco = {
+        dist: Math.max(1, distanciaPuntos(pts[0], pts[1])),
+        camara: { x: this.camara.x, y: this.camara.y, k: this.camara.k },
+        mid: {
+          x: (pts[0].x + pts[1].x) / 2 - caja.left,
+          y: (pts[0].y + pts[1].y) / 2 - caja.top
+        }
+      };
+      this.arrastre = null;
+      this.panorama = null;
+      this._huboPellizco = true;
+      this.svg.classList.remove('arrastrando', 'moviendo-nodo');
+      this.cancelarResalteLargo();
+    },
+
+    actualizarPellizco: function () {
+      if (!this.pellizco || this.punteros.size < 2) return;
+      var pts = Array.from(this.punteros.values());
+      var caja = this.svg.getBoundingClientRect();
+      var mid = {
+        x: (pts[0].x + pts[1].x) / 2 - caja.left,
+        y: (pts[0].y + pts[1].y) / 2 - caja.top
+      };
+      var dist = Math.max(1, distanciaPuntos(pts[0], pts[1]));
+      var k0 = this.pellizco.camara.k;
+      var k = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, k0 * (dist / this.pellizco.dist)));
+      var mundoX = (this.pellizco.mid.x - this.pellizco.camara.x) / k0;
+      var mundoY = (this.pellizco.mid.y - this.pellizco.camara.y) / k0;
+      this.fijarCamara({
+        k: k,
+        x: mid.x - mundoX * k,
+        y: mid.y - mundoY * k
+      });
+    },
+
+    cancelarResalteLargo: function () {
+      if (this._resalteLargo) {
+        global.clearTimeout(this._resalteLargo);
+        this._resalteLargo = null;
+      }
+    },
+
     /* ---------------------------------------------------------- eventos -- */
 
     registrarEventos: function () {
@@ -834,6 +921,14 @@
       this.svg.addEventListener('pointerdown', function (evento) {
         if (evento.button != null && evento.button !== 0) return;
         evento.preventDefault();
+        var tactil = evento.pointerType === 'touch';
+        if (!self.punteros) self.punteros = new Map();
+        self.punteros.set(evento.pointerId, { x: evento.clientX, y: evento.clientY });
+        if (self.punteros.size >= 2) {
+          self.iniciarPellizco();
+          return;
+        }
+
         var bajo = elementoBajoPuntero(evento);
         var nodoDOM = ancestro(bajo, '.nodo');
         if (ancestro(bajo, '.opcion') || ancestro(bajo, '.papelera')
@@ -852,6 +947,16 @@
             movido: false,
             ctrl: evento.ctrlKey || evento.metaKey
           };
+          if (tactil) {
+            self.cancelarResalteLargo();
+            self._resalteLargo = global.setTimeout(function () {
+              self._resalteLargo = null;
+              if (!self.arrastre || self.arrastre.movido) return;
+              if (self.opciones.alResaltar) self.opciones.alResaltar(self.arrastre.id);
+              self.arrastre = null;
+              self.ignorarSiguienteClic = true;
+            }, 520);
+          }
         } else {
           self.panorama = {
             inicioCliente: { x: evento.clientX, y: evento.clientY },
@@ -860,14 +965,24 @@
           };
           self.svg.classList.add('arrastrando');
         }
-        try { self.svg.setPointerCapture(evento.pointerId); } catch (error) { /* nada */ }
+        if (!tactil) {
+          try { self.svg.setPointerCapture(evento.pointerId); } catch (error) { /* nada */ }
+        }
       });
 
       this.svg.addEventListener('pointermove', function (evento) {
+        if (self.punteros && self.punteros.has(evento.pointerId)) {
+          self.punteros.set(evento.pointerId, { x: evento.clientX, y: evento.clientY });
+        }
+        if (self.pellizco) {
+          self.actualizarPellizco();
+          return;
+        }
+        var umbral = evento.pointerType === 'touch' ? UMBRAL_ARRASTRE_TACTIL : UMBRAL_ARRASTRE;
         if (self.panorama) {
           var dxLienzo = evento.clientX - self.panorama.inicioCliente.x;
           var dyLienzo = evento.clientY - self.panorama.inicioCliente.y;
-          if (Math.abs(dxLienzo) + Math.abs(dyLienzo) >= UMBRAL_ARRASTRE) {
+          if (Math.abs(dxLienzo) + Math.abs(dyLienzo) >= umbral) {
             self.panorama.movido = true;
           }
           self.fijarCamara({
@@ -881,8 +996,9 @@
         var dx = evento.clientX - self.arrastre.inicioCliente.x;
         var dy = evento.clientY - self.arrastre.inicioCliente.y;
         if (!self.arrastre.movido
-          && Math.abs(dx) + Math.abs(dy) < UMBRAL_ARRASTRE) return;
+          && Math.abs(dx) + Math.abs(dy) < umbral) return;
         self.arrastre.movido = true;
+        self.cancelarResalteLargo();
         self.svg.classList.add('moviendo-nodo');
         self.ocultarTooltip();
         self.posiciones.set(self.arrastre.id, {
@@ -897,13 +1013,25 @@
         if (self.svg.hasPointerCapture && self.svg.hasPointerCapture(evento.pointerId)) {
           self.svg.releasePointerCapture(evento.pointerId);
         }
-        self.svg.classList.remove('arrastrando', 'moviendo-nodo');
-        if (self.panorama) {
-          self.ignorarSiguienteClic = self.panorama.movido;
-          self.panorama = null;
+        if (self.punteros) self.punteros.delete(evento.pointerId);
+        self.cancelarResalteLargo();
+        if (self.pellizco) {
+          if (!self.punteros || self.punteros.size < 2) self.pellizco = null;
+          self.ignorarSiguienteClic = true;
+          self.svg.classList.remove('arrastrando', 'moviendo-nodo');
           return;
         }
-        if (!self.arrastre) return;
+        self.svg.classList.remove('arrastrando', 'moviendo-nodo');
+        if (self.panorama) {
+          self.ignorarSiguienteClic = self.panorama.movido || self._huboPellizco;
+          self.panorama = null;
+          self._huboPellizco = false;
+          return;
+        }
+        if (!self.arrastre) {
+          self._huboPellizco = false;
+          return;
+        }
         var arrastre = self.arrastre;
         self.arrastre = null;
         if (arrastre.movido) {
@@ -912,11 +1040,15 @@
           if (self.opciones.alFijar) self.opciones.alFijar(arrastre.id, punto);
           self.dibujarMinimapa();
         }
+        self._huboPellizco = false;
       });
 
-      this.svg.addEventListener('pointercancel', function () {
+      this.svg.addEventListener('pointercancel', function (evento) {
+        if (self.punteros) self.punteros.delete(evento.pointerId);
+        self.cancelarResalteLargo();
         self.arrastre = null;
         self.panorama = null;
+        self.pellizco = null;
         self.svg.classList.remove('arrastrando', 'moviendo-nodo');
       });
 
@@ -1008,7 +1140,8 @@
       });
 
       this.svg.addEventListener('mousemove', function (evento) {
-        if (self.arrastre || self.panorama) return;
+        if (evento.sourceCapabilities && evento.sourceCapabilities.firesTouchEvents) return;
+        if (self.arrastre || self.panorama || self.pellizco) return;
         var nodoDOM = ancestro(elementoBajoPuntero(evento), '.nodo');
         if (!nodoDOM) { self.ocultarTooltip(); return; }
         var id = nodoDOM.getAttribute('data-id');
