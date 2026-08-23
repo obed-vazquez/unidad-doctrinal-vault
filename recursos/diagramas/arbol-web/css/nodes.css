@@ -17,7 +17,8 @@
 .arista.elegida { stroke: var(--arista-activa); stroke-width: 2.2; }
 .arista.camino { stroke: var(--dorado); stroke-width: 2.6; marker-end: url(#punta-camino); }
 .arista.camino.tentativa { stroke-dasharray: 7 5; }
-.arista.atenuada { opacity: 0.2; }
+.arista.atenuada { opacity: 0.42; }
+.arista.deshabilitada { opacity: 0.52; stroke-width: 1.85; marker-end: url(#punta-deshab); }
 
 .arista-etiqueta-caja { fill: var(--etiqueta-fondo); stroke: var(--borde); stroke-width: 1; rx: 6; }
 .arista-etiqueta-texto { fill: var(--texto-medio); font-size: 11px; font-weight: 600; text-anchor: middle; }
@@ -25,13 +26,17 @@
 .arista-grupo.elegida .arista-etiqueta-texto { fill: var(--acento); }
 .arista-grupo.camino .arista-etiqueta-caja { stroke: var(--dorado); }
 .arista-grupo.camino .arista-etiqueta-texto { fill: var(--dorado); }
-.arista-grupo.atenuada { opacity: 0.22; }
+.arista-grupo.atenuada { opacity: 0.48; }
+.arista-grupo.deshabilitada { opacity: 0.62; }
 
 /* --------------------------------------------------------------------- nodo */
 
 .nodo { cursor: pointer; }
 .nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
 .nodo.atenuado.resaltado { opacity: 1; }
+.nodo.deshabilitado { opacity: 0.42; transition: opacity 280ms ease; }
+.nodo.deshabilitado .opcion,
+.nodo.deshabilitado .papelera { pointer-events: none; }
 .nodo.entrando { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 .nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
 .nodo.saliendo { animation: rama-sale 280ms ease both; pointer-events: none; }
@@ -74,8 +79,8 @@
   letter-spacing: 1px;
 }
 
-.nodo-pregunta { fill: var(--texto); font-size: 14px; }
-.nodo-coloquial { fill: var(--texto-medio); font-size: 12.5px; font-style: italic; }
+.nodo-pregunta { fill: var(--texto-tenue); font-size: 12.5px; font-style: italic; }
+.nodo-coloquial { fill: var(--texto); font-size: 14px; font-style: normal; }
 .nodo-nota { fill: var(--texto-tenue); font-size: 11.5px; font-style: italic; }
 
 .nodo-titulo { fill: var(--texto); font-size: 15px; font-weight: 700; }

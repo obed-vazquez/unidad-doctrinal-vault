@@ -12,6 +12,8 @@
   var Busqueda = Arbol.Busqueda;
   var Router = Arbol.Router;
   var Edits = Arbol.Edits;
+  var I18n = Arbol.I18n;
+  var Definiciones = Arbol.Definiciones;
 
   var RUTA_JSON = 'datos/posturas-creencias.json';
   var RUTA_RESPALDO = 'datos/posturas-creencias.js';
@@ -62,6 +64,54 @@
     return String(texto == null ? '' : texto)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function t(clave, vars) {
+    return I18n && I18n.t ? I18n.t(clave, vars) : clave;
+  }
+
+  function dato(clave, original) {
+    return I18n && I18n.dato ? I18n.dato(clave, original) : original;
+  }
+
+  function recolectarAgregado(nodo) {
+    var tradiciones = [];
+    var porNombre = {};
+    var posturas = [];
+    var vistosNodo = new Set();
+    var vistosPostura = {};
+    function rec(id) {
+      if (!id || vistosNodo.has(id)) return;
+      vistosNodo.add(id);
+      var n = Estado.grafo.nodos.get(id);
+      if (!n) return;
+      var p = n.postura;
+      if (p && !p.is_root && !vistosPostura[p.id]) {
+        vistosPostura[p.id] = true;
+        posturas.push(p);
+        (p.traditions || []).forEach(function (tradicion) {
+          if (!tradicion.name || tradicion.is_note) return;
+          if (!porNombre[tradicion.name]) {
+            porNombre[tradicion.name] = {
+              name: tradicion.name,
+              is_tentative: !!tradicion.is_tentative
+            };
+            tradiciones.push(porNombre[tradicion.name]);
+          } else if (tradicion.is_tentative) {
+            porNombre[tradicion.name].is_tentative = true;
+          }
+        });
+      }
+      n.salidas.forEach(function (arista) { rec(arista.hasta); });
+    }
+    rec(nodo.id);
+    posturas.sort(function (a, b) {
+      return Layout.rotuloPostura(a).localeCompare(Layout.rotuloPostura(b), I18n.idioma || 'es');
+    });
+    tradiciones.sort(function (a, b) {
+      return a.name.localeCompare(b.name, I18n.idioma || 'es');
+    });
+    return { tradiciones: tradiciones, posturas: posturas };
   }
 
   function avisar(mensaje) {
@@ -264,6 +314,7 @@
     var disposicion = Layout.calcular(Estado.grafo, visibles, aristasIds, tamanos, Estado.fijados);
 
     var destacadas = new Set(Estado.tradiciones);
+    var caminoUsuario = Estado.caminoElegido();
 
     Vista.render({
       grafo: Estado.grafo,
@@ -275,7 +326,8 @@
       disposicion: disposicion,
       respuestas: respuestas,
       camino: exploracion,
-      caminoUsuario: Estado.caminoElegido(),
+      caminoUsuario: caminoUsuario,
+      deshabilitados: Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles),
       tradicionesDestacadas: destacadas,
       divulgacion: Estado.divulgacion,
       expandidos: Estado.expandidos
@@ -283,6 +335,7 @@
 
     actualizarBarra(visibles);
     actualizarPanel();
+    pintarDefinicionesEn(dom.cuerpoDetalle);
     Router.escribir(Estado);
   }
 
@@ -329,7 +382,7 @@
 
   function fichaDeNodo(nodo) {
     if (!nodo) {
-      return '<p class="panel-vacio">Selecciona un nodo del árbol para ver su ficha completa.</p>';
+      return '<p class="panel-vacio">' + escapar(t('panelVacio')) + '</p>';
     }
     var datos = Estado.datos;
     var respuestas = Estado.respuestasEfectivas();
@@ -362,33 +415,58 @@
     }
 
     if (nodo.pregunta) {
-      partes.push('<p class="ficha-formal">' + escapar(nodo.pregunta.formal_text) + '</p>');
-      if (nodo.pregunta.colloquial_hint) {
-        partes.push('<p class="ficha-coloquial">' + escapar(nodo.pregunta.colloquial_hint) + '</p>');
+      var textos = {
+        formal: dato('q.' + nodo.pregunta.id + '.formal', nodo.pregunta.formal_text),
+        coloquial: nodo.pregunta.colloquial_hint
+          ? dato('q.' + nodo.pregunta.id + '.coloquial', nodo.pregunta.colloquial_hint)
+          : ''
+      };
+      if (textos.coloquial) {
+        partes.push('<p class="ficha-coloquial">' + escapar(textos.coloquial) + '</p>');
       }
+      partes.push('<p class="ficha-formal">' + escapar(textos.formal) + '</p>');
       var elegida = respuestas[nodo.pregunta.id];
       partes.push('<ul class="ficha-opciones">'
         + (nodo.pregunta.answers || []).map(function (respuesta) {
           var destino = datos.postures[respuesta.target_posture_id];
+          var etiqueta = dato('q.' + nodo.pregunta.id + '.' + respuesta.key + '.label', respuesta.label);
+          var glosa = respuesta.gloss
+            ? dato('q.' + nodo.pregunta.id + '.' + respuesta.key + '.gloss', respuesta.gloss)
+            : '';
           return '<li class="' + (elegida === respuesta.key ? 'elegida' : '') + '">'
-            + '<b>' + escapar(respuesta.label) + '</b> → '
+            + '<b>' + escapar(etiqueta) + '</b> → '
             + escapar(Layout.rotuloPostura(destino))
-            + (respuesta.gloss ? '<span class="glosa">' + escapar(respuesta.gloss) + '</span>' : '')
+            + (glosa ? '<span class="glosa">' + escapar(glosa) + '</span>' : '')
             + '</li>';
         }).join('') + '</ul>');
     }
 
-    var tradiciones = (postura && postura.traditions) || [];
-    if (tradiciones.length) {
-      partes.push('<h3 class="panel-subtitulo">Sostenida por</h3>');
-      partes.push('<div class="etiquetas">' + tradiciones.map(function (tradicion) {
+    if (postura && !postura.is_unnamed) {
+      partes.push('<h3 class="panel-subtitulo">' + escapar(t('definicion')) + '</h3>');
+      partes.push('<div class="ficha-definicion" data-def="' + escapar(postura.id) + '"></div>');
+    }
+
+    var agregado = recolectarAgregado(nodo);
+    partes.push('<h3 class="panel-subtitulo">' + escapar(t('religionesRama')) + '</h3>');
+    if (agregado.tradiciones.length) {
+      partes.push('<div class="etiquetas">' + agregado.tradiciones.map(function (tradicion) {
         var activa = Estado.tradiciones.indexOf(tradicion.name) !== -1;
+        var nombre = dato('t.' + tradicion.name, tradicion.name);
         return '<span class="etiqueta' + (tradicion.is_tentative ? ' tentativa' : '')
           + (activa ? ' activa' : '') + '" data-tradicion="' + escapar(tradicion.name) + '">'
-          + escapar(tradicion.name) + (tradicion.is_tentative ? ' (?)' : '') + '</span>';
+          + escapar(nombre) + (tradicion.is_tentative ? ' (?)' : '') + '</span>';
       }).join('') + '</div>');
-    } else if (postura && !postura.is_unnamed && nodo.tipo !== 'pregunta') {
-      partes.push('<p class="panel-nota">Sin tradición registrada en el documento fuente.</p>');
+    } else {
+      partes.push('<p class="panel-nota">' + escapar(t('ningunaRegistrada')) + '</p>');
+    }
+
+    partes.push('<h3 class="panel-subtitulo">' + escapar(t('posturasRama')) + '</h3>');
+    if (agregado.posturas.length) {
+      partes.push('<ul class="ficha-opciones">' + agregado.posturas.map(function (p) {
+        return '<li>' + escapar(Layout.rotuloPostura(p)) + '</li>';
+      }).join('') + '</ul>');
+    } else {
+      partes.push('<p class="panel-nota">' + escapar(t('ningunaRegistrada')) + '</p>');
     }
 
     var entradas = nodo.entradas.filter(function (arista) {
@@ -537,34 +615,65 @@
     partes.push('<h4>' + escapar(etiquetaPostura || 'Nodo') + '</h4>');
 
     if (nodo.pregunta) {
-      partes.push('<p class="tooltip-formal">' + escapar(nodo.pregunta.formal_text) + '</p>');
-      if (nodo.pregunta.colloquial_hint) {
-        partes.push('<p><em>' + escapar(nodo.pregunta.colloquial_hint) + '</em></p>');
+      var coloquial = nodo.pregunta.colloquial_hint
+        ? dato('q.' + nodo.pregunta.id + '.coloquial', nodo.pregunta.colloquial_hint)
+        : '';
+      var formal = dato('q.' + nodo.pregunta.id + '.formal', nodo.pregunta.formal_text);
+      if (coloquial) {
+        partes.push('<p class="tooltip-coloquial">' + escapar(coloquial) + '</p>');
       }
+      partes.push('<p class="tooltip-formal">' + escapar(formal) + '</p>');
       var clave = respuestas[nodo.pregunta.id];
       if (clave) {
         var elegida = (nodo.pregunta.answers || []).filter(function (r) {
           return r.key === clave;
         })[0];
         if (elegida) {
-          partes.push('<p>Respuesta: <strong>' + escapar(elegida.label) + '</strong>'
-            + (elegida.gloss ? ' — ' + escapar(elegida.gloss) : '') + '</p>');
+          var et = dato('q.' + nodo.pregunta.id + '.' + clave + '.label', elegida.label);
+          var gl = elegida.gloss
+            ? dato('q.' + nodo.pregunta.id + '.' + clave + '.gloss', elegida.gloss)
+            : '';
+          partes.push('<p>Respuesta: <strong>' + escapar(et) + '</strong>'
+            + (gl ? ' — ' + escapar(gl) : '') + '</p>');
         }
       }
     }
 
-    var tradiciones = (nodo.postura && nodo.postura.traditions) || [];
-    var notas = (nodo.postura && nodo.postura.notes) || [];
-    partes.push('<dl>');
-    partes.push('<dt>Religiones adheridas</dt><dd>'
-      + (tradiciones.length
-        ? tradiciones.map(function (t) {
-          return escapar(t.name) + (t.is_tentative ? ' (tentativa)' : '');
-        }).join(', ')
-        : '—') + '</dd>');
-    if (notas.length) partes.push('<dt>Nota</dt><dd>' + escapar(notas.join(' · ')) + '</dd>');
-    partes.push('</dl>');
+    if (nodo.postura && !nodo.postura.is_unnamed) {
+      partes.push('<h4>' + escapar(t('definicion')) + '</h4>');
+      partes.push('<div class="tooltip-definicion" data-def="' + escapar(nodo.postura.id) + '"></div>');
+    }
     return partes.join('');
+  }
+
+  function tooltipDeControl(control) {
+    if (!control) return null;
+    var tipo = control.getAttribute('data-control');
+    if (tipo === 'opcion') {
+      var rotulo = control.getAttribute('data-rotulo') || '';
+      var glosa = control.getAttribute('data-glosa') || '';
+      var cuerpo = rotulo;
+      if (glosa) {
+        var yaEmpieza = glosa.toLowerCase().indexOf(rotulo.toLowerCase()) === 0;
+        cuerpo = yaEmpieza ? glosa : (rotulo + ', ' + glosa);
+      }
+      return '<h4>' + escapar(rotulo || '…') + '</h4><p>' + escapar(cuerpo) + '</p>';
+    }
+    if (tipo === 'chincheta') {
+      return '<h4>' + escapar(t('chincheta')) + '</h4><p>' + escapar(t('chinchetaDesc')) + '</p>';
+    }
+    if (tipo === 'papelera') {
+      return '<h4>' + escapar(t('deshacer')) + '</h4><p>' + escapar(t('deshacerDesc')) + '</p>';
+    }
+    return null;
+  }
+
+  function pintarDefinicionesEn(raiz) {
+    if (!raiz || !Definiciones) return;
+    Array.prototype.forEach.call(raiz.querySelectorAll('[data-def]'), function (caja) {
+      var postura = Estado.datos.postures[caja.getAttribute('data-def')];
+      Definiciones.pintarEn(caja, postura, I18n.idioma);
+    });
   }
 
   function fichaDeEdicion(nodo, postura) {
@@ -790,11 +899,11 @@
       if (entrada.repetido) cuerpo.push('<span class="paso-id">· convergencia ya listada</span>');
       cuerpo.push('</div>');
 
+      if (entrada.coloquial) {
+        cuerpo.push('<p class="paso-coloquial">' + escapar(entrada.coloquial) + '</p>');
+      }
       if (entrada.formal) {
         cuerpo.push('<p class="paso-formal">' + escapar(entrada.formal) + '</p>');
-        if (entrada.coloquial) {
-          cuerpo.push('<p class="paso-coloquial">' + escapar(entrada.coloquial) + '</p>');
-        }
         cuerpo.push('<div class="paso-respuestas">' + entrada.respuestas.map(function (respuesta) {
           return marcaRespuesta(entrada, respuesta, entrada.respuestas.length > 1);
         }).join('') + '</div>');
@@ -959,9 +1068,9 @@
     aplicarAporteCreencias(aporteCreenciasCercano(nodo));
   }
 
-  function hojaDelRecorrido() {
+  function hojasDelRecorrido() {
     var camino = Estado.caminoElegido();
-    if (!camino || !camino.size) return null;
+    if (!camino || !camino.size) return [];
     var hojas = [];
     camino.forEach(function (id) {
       var nodo = Estado.grafo.nodos.get(id);
@@ -971,26 +1080,26 @@
       });
       if (!tieneHijoEnCamino) hojas.push(nodo);
     });
-    if (!hojas.length) return null;
-    var respuestas = Estado.respuestasEfectivas();
-    hojas.sort(function (a, b) {
-      var esperaA = a.pregunta && respuestas[a.pregunta.id] == null ? 1 : 0;
-      var esperaB = b.pregunta && respuestas[b.pregunta.id] == null ? 1 : 0;
-      if (esperaB !== esperaA) return esperaB - esperaA;
-      var pasosA = pasosDesdeRaiz(a.id);
-      var pasosB = pasosDesdeRaiz(b.id);
-      if (pasosA == null) pasosA = -1;
-      if (pasosB == null) pasosB = -1;
-      if (pasosB !== pasosA) return pasosB - pasosA;
-      return a.id < b.id ? -1 : 1;
-    });
-    return hojas[0];
+    return hojas;
   }
 
   function sincronizarHojaCuestionario() {
     if (Estado.divulgacion !== 'cuestionario') return;
-    var hoja = hojaDelRecorrido();
-    if (hoja) preseleccionarPosturaEnCreencias(hoja);
+    var hojas = hojasDelRecorrido();
+    if (!hojas.length) return;
+    var tradiciones = [];
+    var posturasSueltas = [];
+    hojas.forEach(function (hoja) {
+      var aporte = aporteCreenciasCercano(hoja);
+      if (!aporte) return;
+      aporte.tradiciones.forEach(function (nombre) {
+        if (tradiciones.indexOf(nombre) === -1) tradiciones.push(nombre);
+      });
+      aporte.posturasSueltas.forEach(function (pid) {
+        if (posturasSueltas.indexOf(pid) === -1) posturasSueltas.push(pid);
+      });
+    });
+    aplicarAporteCreencias({ tradiciones: tradiciones, posturasSueltas: posturasSueltas });
   }
 
   function abrirPestana(nombre) {
@@ -1006,6 +1115,53 @@
 
   function aplicarTema() {
     document.documentElement.setAttribute('data-tema', Estado.tema);
+  }
+
+  function actualizarRotuloIdioma() {
+    if (dom.rotuloIdioma) {
+      dom.rotuloIdioma.textContent = I18n.idioma === 'en' ? 'ES' : 'EN';
+    }
+  }
+
+  function actualizarBotonMusica() {
+    if (!dom.btnMusica || !dom.audio) return;
+    var activa = !!Estado.musica;
+    dom.btnMusica.hidden = !activa;
+    var silenciada = !activa || dom.audio.muted || dom.audio.paused;
+    dom.btnMusica.classList.toggle('muteado', silenciada);
+    dom.btnMusica.setAttribute('aria-pressed', silenciada ? 'true' : 'false');
+  }
+
+  function arrancarMusica() {
+    actualizarBotonMusica();
+    if (!Estado.musica || !dom.audio) return;
+    dom.audio.loop = true;
+    dom.audio.muted = false;
+    dom.audio.addEventListener('play', actualizarBotonMusica);
+    dom.audio.addEventListener('pause', actualizarBotonMusica);
+    var intento = function () {
+      var p = dom.audio.play();
+      if (p && p.catch) {
+        p.catch(function () {
+          document.addEventListener('pointerdown', function () {
+            dom.audio.play();
+            actualizarBotonMusica();
+          }, { once: true });
+        });
+      }
+      actualizarBotonMusica();
+    };
+    intento();
+  }
+
+  function lanzarBienvenida() {
+    var caja = document.getElementById('bienvenida');
+    var texto = document.getElementById('bienvenida-texto');
+    if (!caja || !texto) return;
+    texto.textContent = t('bienvenida');
+    function terminar() { caja.classList.add('hecha'); }
+    caja.addEventListener('animationend', terminar, { once: true });
+    global.setTimeout(terminar, 5800);
   }
 
   var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo'];
@@ -1161,6 +1317,41 @@
       avisar('Markdown generado para enviarlo al equipo de mantenimiento.');
     });
 
+    dom.btnExportarSvg.addEventListener('click', function () {
+      descargar('arbol-posturas.svg', Vista.exportarSVG(), 'image/svg+xml');
+      avisar(t('svgListo'));
+    });
+
+    dom.btnExportarPng.addEventListener('click', function () {
+      Vista.exportarPNG().then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = 'arbol-posturas.png';
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+        global.setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+        avisar(t('pngListo'));
+      }, function () { avisar(t('exportaFallo')); });
+    });
+
+    dom.btnIdioma.addEventListener('click', function () {
+      I18n.alternar();
+    });
+
+    if (dom.btnMusica) {
+      dom.btnMusica.addEventListener('click', function () {
+        if (!dom.audio) return;
+        dom.audio.muted = !dom.audio.muted;
+        if (dom.audio.paused && !dom.audio.muted) {
+          var p = dom.audio.play();
+          if (p && p.catch) p.catch(function () { /* autoplay */ });
+        }
+        actualizarBotonMusica();
+      });
+    }
+
     dom.btnTema.addEventListener('click', function () {
       Estado.tema = Estado.tema === 'oscuro' ? 'claro' : 'oscuro';
       aplicarTema();
@@ -1190,9 +1381,8 @@
 
     dom.panelCerrar.addEventListener('click', function () {
       Estado.panelAbierto = false;
-      // Cerrar el panel también abandona la vista de lista; si no, el botón
-      // «Comparar» seguía encendido sin nada que comparar a la vista.
       if (Estado.pestana === 'comparar') Estado.vista = 'grafo';
+      Estado.modo = 'libre';
       Estado.emitir('panel');
     });
 
@@ -1302,7 +1492,11 @@
       else if (tecla === 'h' && Estado.resaltados.size) { dom.btnResaltados.click(); }
       else if (evento.key === 'Escape') {
         if (Estado.seleccionado) Estado.seleccionar(null);
-        else if (Estado.panelAbierto) { Estado.panelAbierto = false; Estado.emitir('panel'); }
+        else if (Estado.panelAbierto) {
+          Estado.panelAbierto = false;
+          Estado.modo = 'libre';
+          Estado.emitir('panel');
+        }
       }
     });
   }
@@ -1339,6 +1533,12 @@
       btnComparar: document.getElementById('btn-comparar'),
       btnCompartir: document.getElementById('btn-compartir'),
       btnExportarMd: document.getElementById('btn-exportar-md'),
+      btnExportarSvg: document.getElementById('btn-exportar-svg'),
+      btnExportarPng: document.getElementById('btn-exportar-png'),
+      btnIdioma: document.getElementById('btn-idioma'),
+      rotuloIdioma: document.getElementById('rotulo-idioma'),
+      btnMusica: document.getElementById('btn-musica'),
+      audio: document.getElementById('audio-fondo'),
       btnTema: document.getElementById('btn-tema'),
       btnReiniciar: document.getElementById('btn-reiniciar'),
       btnResaltados: document.getElementById('btn-resaltados'),
@@ -1434,6 +1634,8 @@
       },
       alCambiarCamara: function (camara) { Estado.camara = camara; },
       tooltipHTML: tooltipDeNodo,
+      tooltipControl: tooltipDeControl,
+      alPintarTooltip: pintarDefinicionesEn,
       margenDerecho: function () {
         return Estado.panelAbierto ? dom.panel.getBoundingClientRect().width + 34 : 40;
       }
@@ -1445,10 +1647,21 @@
       }
       refrescar();
     });
+    var recargaIdioma = null;
+    I18n.suscribir(function () {
+      I18n.aplicarDOM();
+      actualizarRotuloIdioma();
+      global.clearTimeout(recargaIdioma);
+      recargaIdioma = global.setTimeout(function () {
+        Layout.limpiarCache();
+        refrescar();
+      }, 280);
+    });
     registrarEventos();
 
     sincronizarHojaCuestionario();
     refrescar();
+    arrancarMusica();
 
     // La URL manda sobre localStorage, y localStorage sobre el encuadre inicial.
     if (lectura.camara || (Estado.camaraRestaurada && !aplicado.huboCambio)) {
@@ -1462,6 +1675,10 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     recogerDOM();
+    I18n.iniciar();
+    Definiciones.iniciar();
+    actualizarRotuloIdioma();
+    lanzarBienvenida();
     cargarDatos().then(iniciar, mostrarError);
   });
 

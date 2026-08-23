@@ -14,6 +14,9 @@
   var DURACION = 300;
   var UMBRAL_ARRASTRE = 4;
   var UMBRAL_ARRASTRE_TACTIL = 12;
+  var TIP_ESPERA = 500;
+  var TIP_OCULTA = 1500;
+  var TIP_MOVIMIENTO = 3;
 
   function distanciaPuntos(a, b) {
     var dx = a.x - b.x;
@@ -333,11 +336,15 @@
           clases.push('atenuado');
         }
       } else if (!resaltado && this.debeAtenuarRecorrido() && contexto.caminoUsuario
-        && contexto.caminoUsuario.size > 1 && !contexto.caminoUsuario.has(nodo.id)) {
+        && contexto.caminoUsuario.size > 1 && !contexto.caminoUsuario.has(nodo.id)
+        && !(contexto.deshabilitados && contexto.deshabilitados.has(nodo.id))) {
         clases.push('atenuado');
       }
       if (esNuevo) clases.push('entrando');
       if (nodo.postura && nodo.postura.is_local) clases.push('borrador');
+      if (contexto.deshabilitados && contexto.deshabilitados.has(nodo.id)) {
+        clases.push('deshabilitado');
+      }
       grupo.setAttribute('class', clases.join(' '));
 
       var firma = compuesto.ancho + 'x' + compuesto.alto + ':'
@@ -438,29 +445,26 @@
           fila.forEach(function (boton) {
             var g = crear('g', {
               'data-clave': boton.clave,
-              'data-pregunta': nodo.preguntaId
+              'data-pregunta': nodo.preguntaId,
+              'data-control': 'opcion',
+              'data-glosa': boton.glosa || '',
+              'data-rotulo': boton.texto
             }, 'opcion' + (respuesta === boton.clave ? ' elegida'
               : (respuesta != null ? ' tenue' : '')));
             g.appendChild(crear('rect', {
               x: padX + boton.x, y: y, width: boton.ancho, height: alturas.boton, rx: 8
             }, 'opcion-caja'));
-            var centro = padX + boton.x + (boton.glosa ? boton.ancho - 14 : boton.ancho) / 2;
-            g.appendChild(texto(boton.texto, centro, y + alturas.boton / 2, 'opcion-texto'));
-            if (boton.glosa) {
-              var marca = texto('ⓘ', padX + boton.x + boton.ancho - 16,
-                y + alturas.boton / 2, 'opcion-glosa');
-              var tituloGlosa = crear('title');
-              tituloGlosa.textContent = boton.glosa;
-              marca.appendChild(tituloGlosa);
-              g.appendChild(marca);
-            }
+            g.appendChild(texto(boton.texto, padX + boton.x + boton.ancho / 2,
+              y + alturas.boton / 2, 'opcion-texto'));
             grupo.appendChild(g);
           });
         });
 
       } else if (parte.k === 'expandir') {
-        var gExp = crear('g', { 'data-expandir': parte.nodoId },
-          'opcion expandir' + (parte.expandido ? ' elegida' : ''));
+        var gExp = crear('g', {
+          'data-expandir': parte.nodoId,
+          'data-control': 'expandir'
+        }, 'opcion expandir' + (parte.expandido ? ' elegida' : ''));
         gExp.appendChild(crear('rect', {
           x: padX, y: parte.y, width: parte.ancho, height: parte.alto, rx: 8
         }, 'opcion-caja'));
@@ -498,15 +502,13 @@
     construirPapelera: function (ancho, nodo) {
       var g = crear('g', {
         transform: 'translate(' + (ancho - 30) + ',7)',
-        'data-papelera': nodo.preguntaId
+        'data-papelera': nodo.preguntaId,
+        'data-control': 'papelera'
       }, 'papelera');
       g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'papelera-caja'));
       g.appendChild(crear('path', {
         d: 'M 6 7 H 16 M 8 7 V 15 M 11 7 V 15 M 14 7 V 15 M 8.5 5 H 13.5'
       }, 'papelera-icono'));
-      var titulo = crear('title');
-      titulo.textContent = 'Deshacer esta respuesta y podar su rama';
-      g.appendChild(titulo);
       return g;
     },
 
@@ -515,16 +517,14 @@
     construirChincheta: function (nodo) {
       var g = crear('g', {
         transform: 'translate(8,7)',
-        'data-desanclar': nodo.id
+        'data-desanclar': nodo.id,
+        'data-control': 'chincheta'
       }, 'chincheta');
       g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'chincheta-caja'));
       g.appendChild(crear('path', {
         d: 'M 8 4 H 14 L 13 5 V 9 L 15.5 11.5 H 6.5 L 9 9 V 5 Z'
       }, 'chincheta-cabeza'));
       g.appendChild(crear('path', { d: 'M 11 11.5 V 16' }, 'chincheta-aguja'));
-      var titulo = crear('title');
-      titulo.textContent = 'Anclado a mano. Pulsa para soltarlo y devolverlo a su posición automática.';
-      g.appendChild(titulo);
       return g;
     },
 
@@ -704,7 +704,12 @@
         if (arista.tipo === 'eje') clasesTrazo.push('eje');
         var elegida = arista.tipo === 'respuesta'
           && contexto.respuestas[arista.preguntaId] === arista.clave;
-        if (contexto.camino) {
+        var deshab = contexto.deshabilitados;
+        var ramaOpaca = deshab && deshab.has(arista.hasta);
+        if (ramaOpaca) {
+          clases.push('deshabilitada');
+          clasesTrazo.push('deshabilitada');
+        } else if (contexto.camino) {
           if (contexto.camino.aristas.has(aristaId)) {
             clases.push('camino');
             clasesTrazo.push('camino');
@@ -720,8 +725,8 @@
           && arista.tipo === 'respuesta'
           && contexto.respuestas[arista.preguntaId] != null
           && !contexto.caminoUsuario.has(arista.hasta)) {
-          clases.push('atenuada');
-          clasesTrazo.push('atenuada');
+          clases.push('deshabilitada');
+          clasesTrazo.push('deshabilitada');
         }
         grupo.setAttribute('class', clases.join(' '));
         trazo.setAttribute('class', clasesTrazo.join(' '));
@@ -835,9 +840,17 @@
 
     mostrarTooltip: function (contenido, clienteX, clienteY) {
       if (!contenido) return;
-      this.tooltip.innerHTML = contenido;
+      if (this.tooltip.innerHTML !== contenido) {
+        this.tooltip.innerHTML = contenido;
+        if (this.opciones.alPintarTooltip) this.opciones.alPintarTooltip(this.tooltip);
+      }
       this.tooltip.classList.add('visible');
+      this.tooltip.classList.remove('saliendo');
       this.tooltip.setAttribute('aria-hidden', 'false');
+      this.posicionarTooltip(clienteX, clienteY);
+    },
+
+    posicionarTooltip: function (clienteX, clienteY) {
       var caja = this.tooltip.getBoundingClientRect();
       var maxX = global.innerWidth - caja.width - 16;
       var maxY = global.innerHeight - caja.height - 16;
@@ -845,9 +858,103 @@
       this.tooltip.style.top = Math.max(12, Math.min(maxY, clienteY + 18)) + 'px';
     },
 
-    ocultarTooltip: function () {
-      this.tooltip.classList.remove('visible');
+    ocultarTooltip: function (inmediato) {
+      this._tipModo = null;
+      this._tipClave = null;
+      this.cancelarTipTimers();
+      if (!this.tooltip) return;
+      if (inmediato) {
+        this.tooltip.classList.remove('visible', 'saliendo');
+      } else {
+        this.tooltip.classList.add('saliendo');
+        this.tooltip.classList.remove('visible');
+      }
       this.tooltip.setAttribute('aria-hidden', 'true');
+    },
+
+    cancelarTipTimers: function () {
+      if (this._tipShow) { global.clearTimeout(this._tipShow); this._tipShow = null; }
+      if (this._tipHide) { global.clearTimeout(this._tipHide); this._tipHide = null; }
+    },
+
+    nodoDeshabilitado: function (nodoDOM) {
+      return !!(nodoDOM && nodoDOM.classList.contains('deshabilitado'));
+    },
+
+    /* SVG serializado del diagrama actual (sin cámara: todo el árbol visible). */
+    svgDelDiagrama: function () {
+      if (!this.svg || !this.contexto) return '';
+      var limites = this.limitesMundo();
+      var pad = 36;
+      var x = limites.minX - pad;
+      var y = limites.minY - pad;
+      var w = (limites.maxX - limites.minX) + pad * 2;
+      var h = (limites.maxY - limites.minY) + pad * 2;
+      var css = '';
+      Array.prototype.forEach.call(document.styleSheets, function (hoja) {
+        try {
+          Array.prototype.forEach.call(hoja.cssRules, function (regla) {
+            css += regla.cssText + '\n';
+          });
+        } catch (error) { /* file:// a veces bloquea cssRules */ }
+      });
+      var estilos = global.getComputedStyle(document.documentElement);
+      var pasadas = 0;
+      while (pasadas < 4 && /var\(/.test(css)) {
+        css = css.replace(/var\((--[^),\s]+)(?:,[^)]*)?\)/g, function (_, nombre) {
+          var valor = estilos.getPropertyValue(nombre.trim());
+          return valor ? valor.trim() : _;
+        });
+        pasadas += 1;
+      }
+      var fondo = (estilos.getPropertyValue('--fondo') || '#0e141b').trim();
+      var mundo = this.mundo ? this.mundo.innerHTML : '';
+      var defs = this.svg.querySelector('defs');
+      return '<?xml version="1.0" encoding="UTF-8"?>\n'
+        + '<svg xmlns="http://www.w3.org/2000/svg" viewBox="'
+        + x + ' ' + y + ' ' + w + ' ' + h
+        + '" width="' + Math.round(w) + '" height="' + Math.round(h) + '">'
+        + '<style><![CDATA[' + css + ']]></style>'
+        + (defs ? defs.outerHTML : '')
+        + '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h
+        + '" fill="' + fondo + '"/>'
+        + '<g id="mundo">' + mundo + '</g></svg>';
+    },
+
+    exportarSVG: function () {
+      return this.svgDelDiagrama();
+    },
+
+    exportarPNG: function () {
+      var self = this;
+      var xml = this.svgDelDiagrama();
+      if (!xml) return Promise.reject(new Error('vacío'));
+      return new Promise(function (resolver, rechazar) {
+        var blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var img = new Image();
+        img.onload = function () {
+          var lienzo = document.createElement('canvas');
+          lienzo.width = Math.max(1, img.naturalWidth);
+          lienzo.height = Math.max(1, img.naturalHeight);
+          var ctx = lienzo.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+          if (lienzo.toBlob) {
+            lienzo.toBlob(function (png) {
+              if (png) resolver(png);
+              else rechazar(new Error('toBlob'));
+            }, 'image/png');
+          } else {
+            rechazar(new Error('toBlob'));
+          }
+        };
+        img.onerror = function () {
+          URL.revokeObjectURL(url);
+          rechazar(new Error('svg'));
+        };
+        img.src = url;
+      });
     },
 
     iniciarPellizco: function () {
@@ -1000,7 +1107,7 @@
         self.arrastre.movido = true;
         self.cancelarResalteLargo();
         self.svg.classList.add('moviendo-nodo');
-        self.ocultarTooltip();
+        self.ocultarTooltip(true);
         self.posiciones.set(self.arrastre.id, {
           x: self.arrastre.inicioNodo.x + dx / self.camara.k,
           y: self.arrastre.inicioNodo.y + dy / self.camara.k
@@ -1066,7 +1173,9 @@
           return;
         }
 
+        var bloqueado = self.nodoDeshabilitado(nodoBajoCursor);
         var opcion = ancestro(bajo, '.opcion');
+        if (opcion && bloqueado) return;
         if (opcion && opcion.getAttribute('data-expandir')) {
           evento.stopPropagation();
           if (self.opciones.alExpandir) {
@@ -1084,6 +1193,7 @@
         }
         var papelera = ancestro(bajo, '.papelera');
         if (papelera) {
+          if (bloqueado) return;
           evento.stopPropagation();
           if (self.opciones.alBorrar) {
             self.opciones.alBorrar(papelera.getAttribute('data-papelera'));
@@ -1142,16 +1252,87 @@
       this.svg.addEventListener('mousemove', function (evento) {
         if (evento.sourceCapabilities && evento.sourceCapabilities.firesTouchEvents) return;
         if (self.arrastre || self.panorama || self.pellizco) return;
-        var nodoDOM = ancestro(elementoBajoPuntero(evento), '.nodo');
-        if (!nodoDOM) { self.ocultarTooltip(); return; }
+        var bajo = elementoBajoPuntero(evento);
+        var control = ancestro(bajo, '[data-control]');
+        var nodoDOM = ancestro(bajo, '.nodo');
+        var mx = evento.clientX;
+        var my = evento.clientY;
+
+        if (control) {
+          self.cancelarTipTimers();
+          var clave = 'c:' + (control.getAttribute('data-control') || '')
+            + ':' + (control.getAttribute('data-clave') || '')
+            + ':' + (control.getAttribute('data-papelera') || '')
+            + ':' + (control.getAttribute('data-desanclar') || '');
+          if (self._tipModo !== 'control' || self._tipClave !== clave) {
+            self._tipModo = 'control';
+            self._tipClave = clave;
+            var htmlControl = self.opciones.tooltipControl
+              ? self.opciones.tooltipControl(control) : null;
+            if (htmlControl) self.mostrarTooltip(htmlControl, mx, my);
+            else self.ocultarTooltip(true);
+          } else if (self.tooltip.classList.contains('visible')) {
+            self.posicionarTooltip(mx, my);
+          }
+          return;
+        }
+
+        if (!nodoDOM) {
+          self.ocultarTooltip();
+          self._ultimoPuntoTip = null;
+          return;
+        }
+
         var id = nodoDOM.getAttribute('data-id');
-        var contenido = self.opciones.tooltipHTML
-          ? self.opciones.tooltipHTML(self.contexto.grafo.nodos.get(id))
-          : null;
-        self.mostrarTooltip(contenido, evento.clientX, evento.clientY);
+        var primera = !self._ultimoPuntoTip;
+        var movio = false;
+        if (self._ultimoPuntoTip) {
+          movio = Math.abs(mx - self._ultimoPuntoTip.x) + Math.abs(my - self._ultimoPuntoTip.y)
+            >= TIP_MOVIMIENTO;
+        }
+        self._ultimoPuntoTip = { x: mx, y: my };
+
+        if (self._tipModo === 'control') {
+          self.ocultarTooltip(true);
+        }
+
+        if (movio && self._tipModo === 'nodo' && self.tooltip.classList.contains('visible')) {
+          if (!self._tipHide) {
+            self._tipHide = global.setTimeout(function () {
+              self._tipHide = null;
+              self.ocultarTooltip();
+            }, TIP_OCULTA);
+          }
+        }
+
+        if (self._tipNodoId !== id) {
+          self.cancelarTipTimers();
+          if (self._tipModo === 'nodo') self.ocultarTooltip(true);
+          self._tipNodoId = id;
+          primera = true;
+        }
+
+        if (primera || movio) {
+          if (self._tipShow) global.clearTimeout(self._tipShow);
+            self._tipShow = global.setTimeout(function () {
+            self._tipShow = null;
+            if (self._tipHide) { global.clearTimeout(self._tipHide); self._tipHide = null; }
+            if (!self.contexto || !self.contexto.grafo) return;
+            var html = self.opciones.tooltipHTML
+              ? self.opciones.tooltipHTML(self.contexto.grafo.nodos.get(id))
+              : null;
+            self._tipModo = 'nodo';
+            self._tipClave = id;
+            self.mostrarTooltip(html, mx, my);
+          }, TIP_ESPERA);
+        }
       });
 
-      this.svg.addEventListener('mouseleave', function () { self.ocultarTooltip(); });
+      this.svg.addEventListener('mouseleave', function () {
+        self._ultimoPuntoTip = null;
+        self._tipNodoId = null;
+        self.ocultarTooltip();
+      });
 
       if (this.minimapaSVG) {
         var arrastrandoMinimapa = false;

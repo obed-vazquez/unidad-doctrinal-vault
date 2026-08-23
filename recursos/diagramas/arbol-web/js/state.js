@@ -201,6 +201,36 @@
     return nodosVisibles(grafo, respuestas, 'limpio');
   }
 
+  /* Subárbol de cada respuesta no elegida: visible pero no interactivo. */
+  function marcarSubarbol(grafo, id, conjunto, visibles, camino) {
+    if (!id || conjunto.has(id)) return;
+    if (camino && camino.has(id)) return;
+    if (visibles && !visibles.has(id)) return;
+    conjunto.add(id);
+    var nodo = grafo.nodos.get(id);
+    if (!nodo) return;
+    nodo.salidas.forEach(function (arista) {
+      marcarSubarbol(grafo, arista.hasta, conjunto, visibles, camino);
+    });
+  }
+
+  function nodosDeshabilitados(grafo, respuestas, visibles) {
+    var deshab = new Set();
+    if (!grafo || !respuestas) return deshab;
+    var camino = nodosEnCaminoElegido(grafo, respuestas);
+    grafo.nodos.forEach(function (nodo) {
+      if (!nodo.preguntaId) return;
+      var clave = respuestas[nodo.preguntaId];
+      if (clave == null) return;
+      nodo.salidas.forEach(function (arista) {
+        if (arista.tipo !== 'respuesta') return;
+        if (arista.clave === clave) return;
+        marcarSubarbol(grafo, arista.hasta, deshab, visibles, camino);
+      });
+    });
+    return deshab;
+  }
+
   /* Borra, sobre el objeto recibido, toda respuesta cuya pregunta ya no es
      alcanzable desde la raíz. Itera hasta el punto fijo porque cada respuesta
      que se cae puede dejar huérfanas a otras más profundas.
@@ -251,6 +281,7 @@
     posturasSueltas: [],     // ids de posturas sin afiliación seleccionadas
     soloDesacuerdos: false,
     profundidad: 0,
+    musica: false,
 
     _oyentes: [],
 
@@ -517,6 +548,7 @@
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;
   Arbol.nodosEnCaminoElegido = nodosEnCaminoElegido;
+  Arbol.nodosDeshabilitados = nodosDeshabilitados;
   Arbol.Estado = Estado;
 
 })(window);

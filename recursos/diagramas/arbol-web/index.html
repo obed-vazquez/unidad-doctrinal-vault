@@ -13,22 +13,27 @@
 <div id="aplicacion">
 
   <svg id="lienzo" xmlns="http://www.w3.org/2000/svg" role="application"
+       data-i18n-aria="ariaLienzo"
        aria-label="Árbol interactivo de posturas y creencias">
     <defs>
       <pattern id="rejilla" width="72" height="72" patternUnits="userSpaceOnUse">
         <circle cx="1" cy="1" r="1.1" class="rejilla-punto"></circle>
       </pattern>
-      <marker id="punta" viewBox="0 0 10 10" refX="8.5" refY="5"
-              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha"></path>
+      <marker id="punta" viewBox="0 0 12 12" refX="10" refY="6"
+              markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+        <path d="M 0 1.2 L 11 6 L 0 10.8 L 2.4 6 z" class="punta-flecha"></path>
       </marker>
-      <marker id="punta-eje" viewBox="0 0 10 10" refX="8.5" refY="5"
-              markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha-eje"></path>
+      <marker id="punta-eje" viewBox="0 0 12 12" refX="10" refY="6"
+              markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+        <path d="M 0 1.2 L 11 6 L 0 10.8 L 2.4 6 z" class="punta-flecha-eje"></path>
       </marker>
-      <marker id="punta-camino" viewBox="0 0 10 10" refX="8.5" refY="5"
-              markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
-        <path d="M 0 1 L 9 5 L 0 9 z" class="punta-flecha-camino"></path>
+      <marker id="punta-camino" viewBox="0 0 12 12" refX="10" refY="6"
+              markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+        <path d="M 0 1.2 L 11 6 L 0 10.8 L 2.4 6 z" class="punta-flecha-camino"></path>
+      </marker>
+      <marker id="punta-deshab" viewBox="0 0 12 12" refX="10" refY="6"
+              markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+        <path d="M 0 1.2 L 11 6 L 0 10.8 L 2.4 6 z" class="punta-flecha-deshab"></path>
       </marker>
     </defs>
     <rect id="fondo-rejilla" x="0" y="0" width="100%" height="100%" fill="url(#rejilla)"></rect>
@@ -40,55 +45,87 @@
 
   <header id="barra">
     <div class="barra-marca">
-      <span class="barra-titulo">Árbol de posturas y creencias</span>
+      <span class="barra-titulo" data-i18n="tituloPagina">Árbol de posturas y creencias</span>
       <span class="barra-contador" id="contador">—</span>
     </div>
     <div class="barra-acciones">
-      <button type="button" class="boton" id="btn-ajustar" title="Ajustar el árbol a la ventana (F)">
-        <span class="icono">⤢</span><span class="rotulo">Ajustar</span>
+      <button type="button" class="boton" id="btn-ajustar" data-i18n-title="ajustarTitle"
+              title="Ajustar el árbol a la ventana (F)">
+        <span class="icono">⤢</span><span class="rotulo" data-i18n="ajustar">Ajustar</span>
       </button>
-      <button type="button" class="boton" id="btn-reorganizar" title="Restaurar las posiciones automáticas (R)">
-        <span class="icono">↻</span><span class="rotulo">Reorganizar</span>
+      <button type="button" class="boton" id="btn-reorganizar" data-i18n-title="reorganizarTitle"
+              title="Restaurar las posiciones automáticas (R)">
+        <span class="icono">↻</span><span class="rotulo" data-i18n="reorganizar">Reorganizar</span>
       </button>
-      <label class="selector-modo" title="Cómo se revelan las ramas (A para ciclar)">
-        <span class="rotulo">Recorrido</span>
+      <label class="selector-modo" data-i18n-title="recorridoTitle"
+             title="Cómo se revelan las ramas (A para ciclar)">
+        <span class="rotulo" data-i18n="recorrido">Recorrido</span>
         <select id="sel-recorrido">
-          <option value="cuestionario">Cuestionario</option>
-          <option value="limpio">Limpio</option>
-          <option value="exploracion">Exploración libre</option>
-          <option value="completo">Árbol completo</option>
+          <option value="cuestionario" data-i18n="cuestionario">Cuestionario</option>
+          <option value="limpio" data-i18n="limpio">Limpio</option>
+          <option value="exploracion" data-i18n="exploracion">Exploración libre</option>
+          <option value="completo" data-i18n="completo">Árbol completo</option>
         </select>
       </label>
       <span class="barra-separador" id="sep-resaltados" hidden></span>
       <button type="button" class="boton resalte" id="btn-resaltados" hidden
+              data-i18n-title="encuadrarResaltados"
               title="Encuadrar todos los nodos resaltados (H)">
-        <span class="icono">◈</span><span class="rotulo"><span id="conteo-resaltados">0</span> resaltados</span>
+        <span class="icono">◈</span><span class="rotulo"><span id="conteo-resaltados">0</span> <span data-i18n="resaltados">resaltados</span></span>
       </button>
       <button type="button" class="boton resalte" id="btn-limpiar-resaltados" hidden
-              title="Quitar todos los resaltados">
+              data-i18n-title="quitarResaltados" title="Quitar todos los resaltados">
         <span class="icono">✕</span>
       </button>
       <span class="barra-separador"></span>
-      <button type="button" class="boton alternable" id="btn-creencias" title="Explorador de creencias (E)">
-        <span class="icono">✦</span><span class="rotulo">Creencias</span>
+      <button type="button" class="boton alternable" id="btn-creencias"
+              data-i18n-title="creenciasTitle" title="Explorador de creencias (E)">
+        <span class="icono">✦</span><span class="rotulo" data-i18n="creencias">Creencias</span>
       </button>
-      <button type="button" class="boton alternable" id="btn-comparar" title="Comparar creencias en forma de lista (L)">
-        <span class="icono">☰</span><span class="rotulo">Comparar</span>
+      <button type="button" class="boton alternable" id="btn-comparar"
+              data-i18n-title="compararTitle" title="Comparar creencias en forma de lista (L)">
+        <span class="icono">☰</span><span class="rotulo" data-i18n="comparar">Comparar</span>
       </button>
-      <button type="button" class="boton" id="btn-razonar" title="Razonar: en construcción">
-        <span class="icono">✎</span><span class="rotulo">Razonar</span>
+      <button type="button" class="boton" id="btn-razonar"
+              data-i18n-title="razonarTitle" title="Razonar: en construcción">
+        <span class="icono">✎</span><span class="rotulo" data-i18n="razonar">Razonar</span>
       </button>
       <span class="barra-separador"></span>
-      <button type="button" class="boton" id="btn-compartir" title="Copiar enlace con esta vista">
-        <span class="icono">⇗</span><span class="rotulo">Compartir</span>
+      <button type="button" class="boton" id="btn-compartir"
+              data-i18n-title="compartirTitle" title="Copiar enlace con esta vista">
+        <span class="icono">⇗</span><span class="rotulo" data-i18n="compartir">Compartir</span>
       </button>
-      <button type="button" class="boton" id="btn-exportar-md" title="Exportar el árbol actual (con tus aportes) en Markdown">
-        <span class="icono">⇩</span><span class="rotulo">Exportar</span>
+      <button type="button" class="boton" id="btn-exportar-md"
+              data-i18n-title="exportarTitle"
+              title="Exportar el árbol actual (con tus aportes) en Markdown">
+        <span class="icono">⇩</span><span class="rotulo" data-i18n="exportar">Exportar</span>
       </button>
-      <button type="button" class="boton icono-solo" id="btn-tema" title="Cambiar entre tema oscuro y claro (T)">
+      <button type="button" class="boton" id="btn-exportar-svg"
+              data-i18n-title="exportarSvgTitle" title="Descargar el diagrama visible como SVG">
+        <span class="icono">▭</span><span class="rotulo">SVG</span>
+      </button>
+      <button type="button" class="boton" id="btn-exportar-png"
+              data-i18n-title="exportarPngTitle" title="Descargar el diagrama visible como PNG">
+        <span class="icono">▢</span><span class="rotulo">PNG</span>
+      </button>
+      <span class="barra-separador"></span>
+      <button type="button" class="boton icono-solo" id="btn-idioma"
+              data-i18n-title="idiomaTitle" title="Cambiar idioma (español / English)">
+        <span class="rotulo" id="rotulo-idioma">EN</span>
+      </button>
+      <button type="button" class="boton icono-solo" id="btn-musica" hidden
+              data-i18n-title="muteTitle" title="Silenciar o reanudar la música">
+        <svg class="icono-nota" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 18.5a2.5 2.5 0 1 1-1.2-2.1V6.8l10-2.3v9.5a2.5 2.5 0 1 1-1.2-2.1V7.2L9 9.2z"></path>
+          <path class="nota-tache" d="M4 5 L20 19"></path>
+        </svg>
+      </button>
+      <button type="button" class="boton icono-solo" id="btn-tema"
+              data-i18n-title="temaTitle" title="Cambiar entre tema oscuro y claro (T)">
         <span class="icono">◐</span>
       </button>
       <button type="button" class="boton peligro icono-solo" id="btn-reiniciar"
+              data-i18n-title="reiniciarTitle"
               title="Borrar respuestas, resaltados y anclajes">
         <svg class="icono-basurero" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 7h16"></path>
@@ -108,41 +145,43 @@
     <div class="minimapa-zoom"><span id="minimapa-escala">100 %</span></div>
   </div>
 
-  <div id="pista">
+  <div id="pista" data-i18n-html="pista">
     <kbd>Rueda</kbd> zoom · <kbd>Arrastrar</kbd> mover o anclar · <kbd>Doble clic</kbd> ficha completa ·
     <kbd>Ctrl</kbd>+<kbd>Clic</kbd> resaltar
   </div>
 
   <aside id="panel" class="cerrado" aria-label="Panel de detalle">
-    <div id="panel-asa" title="Arrastrar para cambiar el ancho"></div>
-    <button type="button" id="panel-cerrar" title="Cerrar panel">✕</button>
+    <div id="panel-asa" data-i18n-title="panelAsa" title="Arrastrar para cambiar el ancho"></div>
+    <button type="button" id="panel-cerrar" data-i18n-title="panelCerrar" title="Cerrar panel">✕</button>
     <nav class="panel-pestanas" role="tablist">
-      <button type="button" class="pestana activa" data-pestana="detalle" role="tab">Detalle</button>
-      <button type="button" class="pestana" data-pestana="creencias" role="tab">Creencias</button>
-      <button type="button" class="pestana" data-pestana="comparar" role="tab">Comparar</button>
+      <button type="button" class="pestana activa" data-pestana="detalle" role="tab" data-i18n="detalle">Detalle</button>
+      <button type="button" class="pestana" data-pestana="creencias" role="tab" data-i18n="creencias">Creencias</button>
+      <button type="button" class="pestana" data-pestana="comparar" role="tab" data-i18n="compararTab">Comparar</button>
     </nav>
 
     <section class="panel-cuerpo activa" data-cuerpo="detalle" id="cuerpo-detalle">
-      <p class="panel-vacio">Selecciona un nodo del árbol para ver su ficha completa.</p>
+      <p class="panel-vacio" data-i18n="panelVacio">Selecciona un nodo del árbol para ver su ficha completa.</p>
     </section>
 
     <section class="panel-cuerpo" data-cuerpo="creencias" id="cuerpo-creencias">
       <div class="buscador">
-        <input type="search" id="buscador-tradiciones" placeholder="Buscar tradición, religión o sistema…"
+        <input type="search" id="buscador-tradiciones"
+               data-i18n-placeholder="buscarPlaceholder"
+               placeholder="Buscar tradición, religión o sistema…"
                autocomplete="off" spellcheck="false">
       </div>
       <div class="panel-controles">
         <label class="interruptor">
           <input type="checkbox" id="chk-compacto" checked>
-          Modo compacto
+          <span data-i18n="modoCompacto">Modo compacto</span>
         </label>
-        <button type="button" class="mini-boton" id="btn-limpiar-creencias">Limpiar selección</button>
-        <button type="button" class="mini-boton destacado" id="btn-ir-comparar">Comparar →</button>
+        <button type="button" class="mini-boton" id="btn-limpiar-creencias" data-i18n="limpiarSeleccion">Limpiar selección</button>
+        <button type="button" class="mini-boton destacado" id="btn-ir-comparar" data-i18n="irComparar">Comparar →</button>
       </div>
       <div id="ficha-creencias"></div>
-      <h3 class="panel-subtitulo">Tradiciones y sistemas de creencias</h3>
+      <h3 class="panel-subtitulo" data-i18n="tradicionesTitulo">Tradiciones y sistemas de creencias</h3>
       <div id="lista-tradiciones"></div>
-      <h3 class="panel-subtitulo">Posturas sin afiliación</h3>
+      <h3 class="panel-subtitulo" data-i18n="posturasTitulo">Posturas sin afiliación</h3>
       <p class="panel-nota" id="nota-sin-afiliacion"></p>
       <div id="lista-posturas-sueltas"></div>
     </section>
@@ -150,22 +189,23 @@
     <section class="panel-cuerpo" data-cuerpo="comparar" id="cuerpo-comparar">
       <div class="panel-controles">
         <label class="interruptor">
-          <input type="checkbox" id="chk-desacuerdos"> Solo desacuerdos
+          <input type="checkbox" id="chk-desacuerdos">
+          <span data-i18n="soloDesacuerdos">Solo desacuerdos</span>
         </label>
         <label class="interruptor">
-          Profundidad
+          <span data-i18n="profundidad">Profundidad</span>
           <select id="sel-profundidad">
-            <option value="0">Toda</option>
-            <option value="3">3 niveles</option>
-            <option value="5">5 niveles</option>
-            <option value="8">8 niveles</option>
+            <option value="0" data-i18n="toda">Toda</option>
+            <option value="3" data-i18n="niveles3">3 niveles</option>
+            <option value="5" data-i18n="niveles5">5 niveles</option>
+            <option value="8" data-i18n="niveles8">8 niveles</option>
           </select>
         </label>
       </div>
       <div class="panel-controles">
-        <button type="button" class="mini-boton" id="btn-copiar">Copiar</button>
-        <button type="button" class="mini-boton" id="btn-csv">Exportar CSV</button>
-        <button type="button" class="mini-boton" id="btn-json">Exportar JSON</button>
+        <button type="button" class="mini-boton" id="btn-copiar" data-i18n="copiar">Copiar</button>
+        <button type="button" class="mini-boton" id="btn-csv" data-i18n="csv">Exportar CSV</button>
+        <button type="button" class="mini-boton" id="btn-json" data-i18n="json">Exportar JSON</button>
       </div>
       <div id="salida-comparar"></div>
     </section>
@@ -176,19 +216,26 @@
       <h2 id="dialogo-titulo"></h2>
       <p id="dialogo-texto"></p>
       <div class="dialogo-acciones">
-        <button type="button" class="mini-boton" id="dialogo-cancelar">Cancelar</button>
-        <button type="button" class="mini-boton peligro" id="dialogo-aceptar">Eliminar</button>
+        <button type="button" class="mini-boton" id="dialogo-cancelar" data-i18n="cancelar">Cancelar</button>
+        <button type="button" class="mini-boton peligro" id="dialogo-aceptar" data-i18n="eliminar">Eliminar</button>
       </div>
     </div>
   </div>
 
+  <div id="bienvenida" aria-hidden="true">
+    <p id="bienvenida-texto"></p>
+  </div>
+
+  <audio id="audio-fondo" loop preload="auto" src="music/006_lifeWave2k.mp3"></audio>
   <div id="tooltip" role="tooltip" aria-hidden="true"></div>
   <div id="aviso" role="status" aria-live="polite"></div>
-  <div id="cargando"><div class="girador"></div><p>Cargando el árbol…</p></div>
+  <div id="cargando"><div class="girador"></div><p data-i18n="cargando">Cargando el árbol…</p></div>
 
 </div>
 
 <script src="js/state.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/definiciones.js"></script>
 <script src="js/edits.js"></script>
 <script src="js/layout.js"></script>
 <script src="js/search.js"></script>

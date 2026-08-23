@@ -77,6 +77,11 @@
     // arrancar de cero sin tocar el almacenamiento a mano.
     lectura.limpio = parametros.get('limpio') === '1';
 
+    var lang = parametros.get('lang') || parametros.get('idioma');
+    if (lang === 'en' || lang === 'es') lectura.lang = lang;
+    lectura.musica = parametros.get('musica') === '1' || parametros.get('music') === '1'
+      || parametros.get('audio') === '1';
+
     var camara = parametros.get('cam');
     if (camara) {
       var numeros = camara.split(',').map(Number);
@@ -112,6 +117,8 @@
       parametros.set('rec', estado.divulgacion);
     }
     if (estado.arbolCompleto || estado.divulgacion === 'completo') parametros.set('full', '1');
+    if (estado.musica) parametros.set('musica', '1');
+    if (Arbol.I18n && Arbol.I18n.idioma === 'en') parametros.set('lang', 'en');
 
     var hayAnclajes = Object.keys(estado.fijados).length > 0;
     parametros.set('view', hayAnclajes ? 'manual' : 'auto');
@@ -178,6 +185,7 @@
       huboCambio = true;
     }
     if (lectura.camara) { estado.camara = lectura.camara; huboCambio = true; }
+    if (lectura.musica) estado.musica = true;
     return {
       huboCambio: huboCambio,
       encuadreAutomatico: lectura.vista !== 'manual' && !lectura.camara

@@ -1,3 +1,4 @@
+## 6a iteración errores y cambios:
 
 - Mejora: Las "religiones adheridas" que aparecen en el tooltip del hover de las tarjetas deberían aparecer en el panel de detalles y no en el tooltip. Ademas, no solo deberían aparecer las religiones adheridas, sino todas las posturas también, además de eso debería tener no solo las que están especificadas en el nodo en la fuente sino todas las que sus sub-nodos tengan, es decir el nodo raíz debería listar TODAS las religiones y TODAS las posturas.
 - Mejora: El hover en las tarjetas tiene que funcionar diferente. Actualmente, el hover en cualquier lado de la tarjeta muestra un tooltip. Los cambios son los siguientes:
@@ -21,7 +22,24 @@
 
 
 - Mejora-funcionalidad: Música y Animación.
-  - La página pondrá música inmediatamente al arrancar si se le solicita mediante parametro de URL.
+  - La página pondrá música inmediatamente al arrancar si se le solicita mediante parámetro de URL.
     - Agregamos un botón para mute'ar/des-mut'ear la música, el de muteo será un toggle del icono estándar de música (un corchete) y tachado al activar el muteo. La música será un loop a [006_lifeWave2k.mp3](recursos/diagramas/arbol-web/music/006_lifeWave2k.mp3)
   - La página tendrá una animación de texto de bienvenida con una frase provista por el implementador relacionada al tema que está tratando la página. Este texto tendrá una animación SOLO al cargar la página, ese texto aparecerá en grande en toda la pantalla y se moverá smoothly a una esquina para luego desaparecer (fade out) después de unos segundos. 
 - Ofrecer traducción automática a inglés por medio de la URL (si entra con una URL que indique inglés, todo el sitio (controles, mensajes y datos) aparecerá en inglés. Además, habrá que agregar un control para cambiarlo al vuelo, solo soportarémos inglés y español por ahora.
+
+## 7a Iteración, errores y cambios:
+
+- La frase debe ser popular (o alguna mención de alguien, debe ser de fuente más grande y con más resalte (quizás gris) y con un estilo de fuente más poco común pero estilizada,  debe de tardar un poco más en desaparecer, el movimiento debe ser más fluido y espera medio segundo para que haga la animación para entrar.
+- El deshabilitado de la tarjeta respuesta que no se escogió no está funcionando, no me deja seleccionar respuesta, pero no está dimmeada.
+- El título del tooltip de los botones de Sí y no, supongo que está bien que tenga Sí y No, pero si la respuesta no tiene detalle se me hace que es mejor quitar todo el contenido y dejar solo el título, o quizás poner un mensaje en su lugar porque se ve muy repetitivo y se ve super-mal, el botón dice "NO", el título del tip solo dice "NO" y el contenido del tooltip solo dice "NO" :D
+- El tooltip del anclaje, debe decir "Nodo Anclado" no "Chincheta" :D
+- Creo que no entendiste lo de la música, quizás no me expliqué bien. Algunos cambios. La música se debe reproducir inicialmente al 10% de volumen, el icono de muteo de la música siempre debe aparecer, (aparezca el parámetro en URL o no) y el usuario siempre puede empezar a reproducir la música él/ella mism@, el icono de música debe no solo poder mutear la música, sino también controlar el volumen, un click la mutea, pero un hover despliega el control de volumen. La música debe estár muteada desde el inicio A MENOS que el usuario haya accedido con el parámetro de música presente en la URL. En ese caso lo único que cambiará es que la música se empezará a reproducir desde el inicio, pero solo eso. Todos los controles y demás funcionalidad estará siempre presente.
+- Vi que pusiste accesos directos para los controles en la parte superior, Excelente iniciativa! Pero me parece que C quedaría mejor para el menú de Comparar no crees? Y el volver a presionar E /C debería cerrar el panel de Creencias/Comparar (y supongo que detalles)
+- El SVG y PNG aparecen con las figuras en negro completamente, algo ocurrió y tanto las tarjetas como las flechas (y la zona donde se renderizan las flechas) está completamente en negro. Además, estos controles para exportar en SVG y PNG deberían estar en un submenu o alguna segunda acción en el botón de exportar. La funcionalidad actual de exportar tenemos que darle un nombre y meterla debajo de ese menu o acción también.
+- el botón de idioma no está cambiando el contenido de la página, los datos no los cambia (quizás el script debería generar el JSON en inglés también? No lo sé, pero) debería mostrarse en inglés de la misma manera.
+- hay un problema con las religiones que aparecen adheridas a un nodo en la sección de detalles. Aparecen muchas "unnamed"/ "sin nombre" esto es un error, ninguna que no tenga nombre debería aparecer en esa sección solo las que Sabemos y conocemos su nombre, también noto que se desperdicia mucho espacio dejando una postura por renglón. Por otro lado, no puedo dar click a las posturas, una funcionalidad natural sería poder dar click a la postura y que me lo seleccionara en el arbol y me lleve a la seccion de creencias igual que las religiones. Me parece que en pocas palabras la seccion de Posturas deberíai ser muy parecida a la de religiones.
+- el panel de Detalle Creencias y Comparar me parece que debería abrirse inicialmente más ancho. por otro lado, debería abrirse sin tapar el menú (no sé por qué no pensé en esto antes) esto debería ser obvio.
+- En la sección de creencias, el control de Modo compacto cámbialo a un botón con toggle. y las creencias y posturas ajústalas para que siempre estén en una sola línea, si no caben en una sola línea, que se muevan a la siguiente, pero que no ocupen varias, se ve mal.
+- tienes un bug, cuando una rama del modo de Cuestionario se queda deshabilitada y se abre el modo de exploración libre, ese nodo se queda deshabilitado, deberían ser estados completamente separados los de los 2 modos. Al parecer tiene un problema parecido cuando se mueve al resto de los modos.
+- Salió un bug. Al fijar una tarjeta manualmente, aparece la chincheta de anclaje, pero al dar click en la chincheta ignora siempre el primer click, se tiene que dar click de nuevo para que se reestablezca la posicion de la tarjeta.
+

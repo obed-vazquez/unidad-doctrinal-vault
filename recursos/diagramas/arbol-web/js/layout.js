@@ -14,8 +14,8 @@
   var F_BANDA = '600 13px ' + PILA;
   var F_TITULO = '700 15px ' + PILA;
   var F_TIPO = '700 9.5px ' + PILA;
-  var F_FORMAL = '400 14px ' + PILA;
-  var F_COLOQUIAL = 'italic 400 12.5px ' + PILA;
+  var F_COLOQUIAL = '400 14px ' + PILA;
+  var F_FORMAL = 'italic 400 12.5px ' + PILA;
   var F_BOTON = '600 12.5px ' + PILA;
   var F_CHIP = '600 12px ' + PILA;
   var F_TRADICION = '500 11px ' + PILA;
@@ -33,8 +33,8 @@
   var ALTO_BANDA_EJE = 28;
   var ALTO_TIPO = 18;
   var LH_TITULO = 20;
-  var LH_FORMAL = 19;
-  var LH_COLOQUIAL = 17;
+  var LH_COLOQUIAL = 19;
+  var LH_FORMAL = 17;
   var LH_NOTA = 16;
   var ALTO_BOTON = 32;
   var GAP_BOTON = 8;
@@ -105,7 +105,10 @@
 
   function rotuloPostura(postura) {
     if (!postura) return '';
-    return postura.is_unnamed ? '(sin nombre)' : postura.label;
+    if (postura.is_unnamed) {
+      return (Arbol.I18n && Arbol.I18n.idioma === 'en') ? '(unnamed)' : '(sin nombre)';
+    }
+    return dato('p.' + postura.id + '.label', postura.label);
   }
 
   function anchoRotuloTipo(rotulo) {
@@ -136,13 +139,17 @@
 
   function partesBotones(pregunta, anchoInterno, y, partes) {
     var botones = (pregunta.answers || []).map(function (respuestaPosible) {
-      var texto = respuestaPosible.label;
-      var ancho = Math.max(58, medir(texto, F_BOTON) + (respuestaPosible.gloss ? 40 : 26));
+      var texto = dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.label',
+        respuestaPosible.label);
+      var glosa = respuestaPosible.gloss
+        ? dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.gloss', respuestaPosible.gloss)
+        : null;
+      var ancho = Math.max(58, medir(texto, F_BOTON) + 26);
       return {
         ancho: ancho,
         clave: respuestaPosible.key,
         texto: texto,
-        glosa: respuestaPosible.gloss || null
+        glosa: glosa
       };
     });
     var filas = empaquetar(botones, anchoInterno, GAP_BOTON);
@@ -151,10 +158,40 @@
     return y + altoBotones;
   }
 
+  function tUI(clave, respaldo) {
+    return (Arbol.I18n && Arbol.I18n.t) ? Arbol.I18n.t(clave) : respaldo;
+  }
+
+  function dato(clave, original) {
+    return (Arbol.I18n && Arbol.I18n.dato) ? Arbol.I18n.dato(clave, original) : original;
+  }
+
+  function textosPregunta(pregunta) {
+    return {
+      formal: dato('q.' + pregunta.id + '.formal', pregunta.formal_text),
+      coloquial: pregunta.colloquial_hint
+        ? dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint)
+        : ''
+    };
+  }
+
+  function partesPreguntaDestacada(pregunta, anchoInterno, y, partes) {
+    var textos = textosPregunta(pregunta);
+    if (textos.coloquial) {
+      var lineasCol = envolver(textos.coloquial, F_COLOQUIAL, anchoInterno, 3);
+      partes.push({ k: 'coloquial', y: y, lineas: lineasCol, lh: LH_COLOQUIAL });
+      y += lineasCol.length * LH_COLOQUIAL + 5;
+    }
+    var lineasF = envolver(textos.formal, F_FORMAL, anchoInterno, 7);
+    partes.push({ k: 'formal', y: y, lineas: lineasF, lh: LH_FORMAL });
+    return y + lineasF.length * LH_FORMAL;
+  }
+
   function parteExpandir(nodo, contexto, anchoInterno, y, partes) {
     if (!nodo.salidas || !nodo.salidas.length) return y;
     var expandido = !!(contexto.expandidos && contexto.expandidos.has(nodo.id));
-    var texto = expandido ? '▾ Ocultar ramas' : '▸ Mostrar ramas';
+    var texto = expandido ? tUI('ocultarRamas', '▾ Ocultar ramas')
+      : tUI('mostrarRamas', '▸ Mostrar ramas');
     partes.push({
       k: 'expandir', y: y, alto: ALTO_BOTON,
       texto: texto, expandido: expandido, nodoId: nodo.id,
@@ -166,15 +203,7 @@
   function componerCuerpoPregunta(pregunta, respuesta, anchoInterno, y, partes, contexto, nodo) {
     var exploracion = contexto && contexto.divulgacion === 'exploracion';
     if (exploracion) {
-      var lineasExp = envolver(pregunta.formal_text, F_FORMAL, anchoInterno, 7);
-      partes.push({ k: 'formal', y: y, lineas: lineasExp, lh: LH_FORMAL });
-      y += lineasExp.length * LH_FORMAL;
-      if (pregunta.colloquial_hint) {
-        y += 5;
-        var lineasColExp = envolver(pregunta.colloquial_hint, F_COLOQUIAL, anchoInterno, 3);
-        partes.push({ k: 'coloquial', y: y, lineas: lineasColExp, lh: LH_COLOQUIAL });
-        y += lineasColExp.length * LH_COLOQUIAL;
-      }
+      y = partesPreguntaDestacada(pregunta, anchoInterno, y, partes);
       y += 10;
       return parteExpandir(nodo, contexto, anchoInterno, y, partes);
     }
@@ -183,38 +212,30 @@
       || contexto.divulgacion === 'completo'
       || contexto.caminoUsuario.has(nodo.id);
     if (contexto && contexto.divulgacion === 'cuestionario' && !enRecorrido) {
-      var lineasFuera = envolver(
-        pregunta.colloquial_hint || pregunta.formal_text,
-        pregunta.colloquial_hint ? F_COLOQUIAL : F_FORMAL,
-        anchoInterno, 4
-      );
+      var textosFuera = textosPregunta(pregunta);
+      var textoFuera = textosFuera.coloquial || textosFuera.formal;
+      var lineasFuera = envolver(textoFuera,
+        textosFuera.coloquial ? F_COLOQUIAL : F_FORMAL, anchoInterno, 4);
       partes.push({
-        k: pregunta.colloquial_hint ? 'coloquial' : 'formal',
+        k: textosFuera.coloquial ? 'coloquial' : 'formal',
         y: y, lineas: lineasFuera,
-        lh: pregunta.colloquial_hint ? LH_COLOQUIAL : LH_FORMAL
+        lh: textosFuera.coloquial ? LH_COLOQUIAL : LH_FORMAL
       });
-      return y + lineasFuera.length * (pregunta.colloquial_hint ? LH_COLOQUIAL : LH_FORMAL);
+      return y + lineasFuera.length * (textosFuera.coloquial ? LH_COLOQUIAL : LH_FORMAL);
     }
 
     if (respuesta == null) {
-      var lineasFormales = envolver(pregunta.formal_text, F_FORMAL, anchoInterno, 7);
-      partes.push({ k: 'formal', y: y, lineas: lineasFormales, lh: LH_FORMAL });
-      y += lineasFormales.length * LH_FORMAL;
-      if (pregunta.colloquial_hint) {
-        y += 5;
-        var lineasColoquiales = envolver(pregunta.colloquial_hint, F_COLOQUIAL, anchoInterno, 3);
-        partes.push({ k: 'coloquial', y: y, lineas: lineasColoquiales, lh: LH_COLOQUIAL });
-        y += lineasColoquiales.length * LH_COLOQUIAL;
-      }
+      y = partesPreguntaDestacada(pregunta, anchoInterno, y, partes);
       y += 12;
       return partesBotones(pregunta, anchoInterno, y, partes);
     }
 
-    var usaColoquial = !!pregunta.colloquial_hint;
+    var textosCortos = textosPregunta(pregunta);
+    var usaColoquial = !!textosCortos.coloquial;
     var fuenteCorta = usaColoquial ? F_COLOQUIAL : F_FORMAL;
     var alturaCorta = usaColoquial ? LH_COLOQUIAL : LH_FORMAL;
     var lineasCortas = envolver(
-      usaColoquial ? pregunta.colloquial_hint : pregunta.formal_text,
+      usaColoquial ? textosCortos.coloquial : textosCortos.formal,
       fuenteCorta, anchoInterno, usaColoquial ? 3 : 2
     );
     partes.push({
@@ -250,7 +271,8 @@
       ancho = ANCHO_TARJETA;
       anchoInterno = ancho - PAD_X * 2;
       var tradicionesTarjeta = (nodo.postura && nodo.postura.traditions) || [];
-      var rotuloTarjeta = nodo.postura && nodo.postura.is_root ? 'ORIGEN' : 'POSTURA';
+      var rotuloTarjeta = nodo.postura && nodo.postura.is_root
+        ? tUI('origen', 'ORIGEN') : tUI('postura', 'POSTURA');
       var saltoTarjeta = anchoRotuloTipo(rotuloTarjeta) + 10;
       partes.push({
         k: 'banda', y: 0, alto: ALTO_BANDA,
@@ -272,7 +294,8 @@
       var origenes = (nodo.pregunta.origin_posture_ids || []).map(function (pid) {
         return rotuloPostura(datos.postures[pid]);
       });
-      var rotuloEje = nodo.pregunta.is_convergence ? 'CONVERGENCIA' : 'EJE';
+      var rotuloEje = nodo.pregunta.is_convergence
+        ? tUI('convergencia', 'CONVERGENCIA') : tUI('eje', 'EJE');
       var saltoEje = anchoRotuloTipo(rotuloEje) + 10;
       partes.push({
         k: 'banda', y: 0, alto: ALTO_BANDA_EJE,
@@ -304,7 +327,7 @@
       y = 12;
       partes.push({
         k: 'tipo', y: y, sangria: sangria,
-        texto: esBase ? 'POSTURA · VARIOS EJES' : 'POSTURA'
+        texto: esBase ? tUI('posturaVarios', 'POSTURA · VARIOS EJES') : tUI('postura', 'POSTURA')
       });
       y += ALTO_TIPO;
       var lineasTitulo = envolver(etiqueta, F_TITULO, anchoInterno, 4);
@@ -349,7 +372,8 @@
       + (anclado ? '|a' : '') + '|' + (contexto.divulgacion || '')
       + (expandido ? '|e' : '')
       + '|' + ((nodo.postura && nodo.postura.label) || '')
-      + (contexto.caminoUsuario && contexto.caminoUsuario.has(nodo.id) ? '|c' : '');
+      + (contexto.caminoUsuario && contexto.caminoUsuario.has(nodo.id) ? '|c' : '')
+      + '|' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es');
     var guardado = cacheComposicion.get(clave);
     if (guardado) return guardado;
     var compuesto = componer(nodo, respuesta, contexto, anclado);
