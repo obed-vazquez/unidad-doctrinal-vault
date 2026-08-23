@@ -50,6 +50,11 @@ WEB_DATA_GLOBAL = "__ARBOL_POSTURAS__"
 # Un {grupo} con esta cantidad de palabras o más se lee como nota descriptiva
 # ("No se identifica quién que sostenga esta postura") y no como tradición.
 NOTE_MIN_WORDS = 5
+# Prefijos que fuerzan la lectura del grupo cuando el recuento de palabras se
+# equivoca: `{tradición: Iglesia de Jesucristo de los Santos de los Últimos
+# Días}` es una tradición aunque sea larga, y `{nota: Catolicismo}` no lo es.
+FORCED_TRADITION = re.compile(r"^tradici[oó]n\s*:\s*", re.IGNORECASE)
+FORCED_NOTE = re.compile(r"^nota\s*:\s*", re.IGNORECASE)
 GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
@@ -680,8 +685,19 @@ def tradition_aliases(canonical_name: str) -> list[str]:
     return result
 
 
-def parse_groups(raw_label: str) -> tuple[list[dict], list[str]]:
-    """Separa los `{...}` de una postura en tradiciones y notas descriptivas."""
+def parse_groups(
+    raw_label: str, reclasificados: list[str] | None = None
+) -> tuple[list[dict], list[str]]:
+    """Separa los `{...}` de una postura en tradiciones y notas descriptivas.
+
+    Una postura admite tantos `{...}` como haga falta: cada uno es una adhesión
+    independiente y todas terminan en `traditions`. El recuento de palabras solo
+    decide entre tradición y nota; `{tradición: ...}` y `{nota: ...}` lo fuerzan
+    cuando la heurística se equivoca (por ejemplo, un nombre largo de iglesia).
+
+    En `reclasificados` se dejan los grupos que la heurística mandó a notas sin
+    que el documento lo pidiera, para que quien convierta pueda revisarlos.
+    """
 
     traditions: list[dict] = []
     notes: list[str] = []
@@ -689,12 +705,24 @@ def parse_groups(raw_label: str) -> tuple[list[dict], list[str]]:
         inner = plain_text(match.group(1))
         if not inner:
             continue
+        forced_tradition = bool(FORCED_TRADITION.match(inner))
+        forced_note = bool(FORCED_NOTE.match(inner))
+        if forced_tradition:
+            inner = FORCED_TRADITION.sub("", inner).strip()
+        elif forced_note:
+            inner = FORCED_NOTE.sub("", inner).strip()
+        if not inner:
+            continue
         is_tentative = inner.endswith("?")
         name = inner[:-1].strip() if is_tentative else inner
         if not name:
             continue
-        if len(name.split()) >= NOTE_MIN_WORDS:
+        if forced_note or (
+            not forced_tradition and len(name.split()) >= NOTE_MIN_WORDS
+        ):
             notes.append(inner)
+            if not forced_note and reclasificados is not None:
+                reclasificados.append(inner)
             continue
         canonical = capitalize_first(name)
         traditions.append(
@@ -776,8 +804,16 @@ def build_web_model(
 
     postures: dict[str, dict] = {}
     for posture_id, posture in model.postures.items():
-        traditions, notes = parse_groups(posture.raw)
+        reclasificados: list[str] = []
+        traditions, notes = parse_groups(posture.raw, reclasificados)
         label = plain_text(strip_groups(posture.raw))
+        for grupo in reclasificados:
+            model.warnings.append(
+                f"{posture_id} ({label!r}): el grupo {{{grupo}}} se leyó como nota "
+                f"descriptiva y no como tradición por tener {NOTE_MIN_WORDS} "
+                "palabras o más. Si es el nombre de una tradición, escríbelo "
+                "como {tradición: …}."
+            )
         postures[posture_id] = {
             "id": posture_id,
             "label": label,
@@ -1053,9 +1089,15 @@ def parse_args() -> argparse.Namespace:
         help="Escribe el .gv pero no invoca a Graphviz para renderizar la imagen.",
     )
     parser.add_argument(
+        "--sin-traduccion",
+        dest="sin_traduccion",
+        action="store_true",
+        help="No regenera js/traducciones-en.js (inglés del visor).",
+    )
+    parser.add_argument(
         "--strict",
         action="store_true",
-        help="Falla si el Markdown requiere una reparación o una inferencia.",
+        help="Falla si la conversión emite advertencias.",
     )
     return parser.parse_args()
 
@@ -1120,7 +1162,12 @@ def main() -> int:
     if args.sin_json:
         print("Visor web: omitido (--sin-json).")
     else:
+        avisos_previos = len(model.warnings)
         web_model = build_web_model(model, input_path, json_path)
+        # El modelo web es el que clasifica los `{...}`, después del bloque de
+        # advertencias de arriba; las suyas se anuncian aquí.
+        for warning in model.warnings[avisos_previos:]:
+            print(f"Advertencia: {warning}", file=sys.stderr)
         json_module_path = json_path.with_suffix(".js")
         json_path.write_text(render_web_json(web_model), encoding="utf-8", newline="\n")
         json_module_path.write_text(
@@ -1128,6 +1175,12 @@ def main() -> int:
         )
         print(f"Visor web (datos): {json_path}")
         print(f"Visor web (respaldo file://): {json_module_path}")
+        if not args.sin_traduccion:
+            from traducir_arbol_en import generar_traducciones_en
+
+            en_path = json_path.parent.parent / "js" / "traducciones-en.js"
+            generar_traducciones_en(web_model, en_path)
+            print(f"Visor web (inglés): {en_path}")
 
     if args.sin_imagen:
         print("Imagen: omitida (--sin-imagen).")

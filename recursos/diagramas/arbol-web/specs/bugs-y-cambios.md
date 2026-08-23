@@ -43,3 +43,14 @@
 - tienes un bug, cuando una rama del modo de Cuestionario se queda deshabilitada y se abre el modo de exploración libre, ese nodo se queda deshabilitado, deberían ser estados completamente separados los de los 2 modos. Al parecer tiene un problema parecido cuando se mueve al resto de los modos.
 - Salió un bug. Al fijar una tarjeta manualmente, aparece la chincheta de anclaje, pero al dar click en la chincheta ignora siempre el primer click, se tiene que dar click de nuevo para que se reestablezca la posicion de la tarjeta.
 
+## 8a Iteración. Mejoras
+
+- Cambios en la barra de herramientas superior.
+  - el botón de compartir debe ir como un elemento más del menú de exportar como "Compartir vista actual (URL)"
+  - Los botones de Creencias, compartir y Razonar deben de ir en un solo botón ahora, se llamará Creencias y el menú se abrirá con el acceso directo `C` (ya no `E`) y se podrá cerrar de la misma manera dando click al toggleable button Creencias, dando click a la x del panel o con la `C` (ya no la `E`). Una vez abierto el panel el usuario puede navegar libremente entre las pestañas como lo ha podido hacer hasta ahora.
+  - El menu de Creencias es el que se abrirá por defecto de ahora en adelante aunque el usuario todavía puede dar doble click en una tarjeta y forzar la apertura del panel en la pestaña de detalle, pero no habrá forma de que abra con la pestaña de Comparar por ningún medio.
+  - Agregarémos la pestaña de `Análisis Profundo` como última pestaña y eliminaremos el botón de razonar del menu principal. En esta pestaña podemos agregar la leyenda de "En construcción".
+  - De la misma manera que la pestaña tiene un botón de Comparar en el panel que lleva a la perstaña de `Comparar`, habrá un botón de `analizar` en la pestaña de `Detalle` y otro más en la pestaña de `Comparar` que llevará a la pestaña de `Análisis Profundo`. 
+  - El control de "Recorrido" debe ser el primero (de izquierda a derecha) y me gustaría cambiarlo por el mismo tipo de menú que el menu de exportar, en lugar de ser un dropdown. que funcione igual que el de exportar.
+  - hacer ajustes necesarios para la version mobile.
+- 

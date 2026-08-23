@@ -137,6 +137,50 @@
     };
   }
 
+  /* Cuántos nodos distintos cuelgan de cada nodo, en el árbol entero y no solo
+     en lo que está desplegado. Las ramas se comparten (convergencias), así que
+     se unen conjuntos en vez de sumar: un nodo al que se llega por dos caminos
+     se cuenta una vez. Se memoriza en el propio grafo, que es inmutable
+     mientras no se reconstruya. */
+  function descendientesPorNodo(grafo) {
+    if (grafo.conteoDescendientes) return grafo.conteoDescendientes;
+    var bajo = new Map();
+    function recoger(id) {
+      if (bajo.has(id)) return bajo.get(id);
+      var acumulado = new Set();
+      bajo.set(id, acumulado);
+      var nodo = grafo.nodos.get(id);
+      if (nodo) {
+        nodo.salidas.forEach(function (arista) {
+          acumulado.add(arista.hasta);
+          recoger(arista.hasta).forEach(function (nieto) { acumulado.add(nieto); });
+        });
+      }
+      return acumulado;
+    }
+    var conteo = new Map();
+    grafo.nodos.forEach(function (_, id) { conteo.set(id, recoger(id).size); });
+    grafo.conteoDescendientes = conteo;
+    return conteo;
+  }
+
+  /* Cuántos nodos abre cada respuesta: el nodo al que lleva, más todo lo que
+     cuelga de él. Es lo que se anuncia en su botón antes de pulsarlo. Con
+     convergencias dos respuestas hermanas pueden compartir parte del subárbol,
+     así que sus pesos pueden sumar más que el conteo del nodo padre, que no
+     cuenta dos veces lo compartido. */
+  function pesoDeRespuestas(grafo) {
+    if (grafo.pesoRespuestas) return grafo.pesoRespuestas;
+    var debajo = descendientesPorNodo(grafo);
+    var pesos = {};
+    grafo.aristas.forEach(function (arista) {
+      if (arista.tipo !== 'respuesta' || !arista.preguntaId || !arista.clave) return;
+      pesos[arista.preguntaId + ':' + arista.clave] = 1 + (debajo.get(arista.hasta) || 0);
+    });
+    grafo.pesoRespuestas = pesos;
+    return pesos;
+  }
+
   /* true legacy = árbol completo; false/omitido = cuestionario. */
   function normalizarDivulgacion(valor) {
     if (valor === true) return 'completo';
@@ -274,11 +318,11 @@
     vista: 'grafo',          // 'grafo' | 'lista'
     panelAbierto: false,
     pestana: 'detalle',
-    panelAncho: 396,
+    panelAncho: 540,
     compactoCreencias: true,
 
     tradiciones: [],         // nombres canónicos seleccionados
-    posturasSueltas: [],     // ids de posturas sin afiliación seleccionadas
+    posturasSueltas: [],     // ids de posturas elegidas una por una, no por su tradición
     soloDesacuerdos: false,
     profundidad: 0,
     musica: false,
@@ -505,7 +549,9 @@
         this.divulgacion = guardado.arbolCompleto ? 'completo' : 'cuestionario';
       }
       if (Array.isArray(guardado.expandidos)) this.expandidos = new Set(guardado.expandidos);
-      if (typeof guardado.panelAncho === 'number') this.panelAncho = guardado.panelAncho;
+      if (typeof guardado.panelAncho === 'number') {
+        this.panelAncho = guardado.panelAncho === 396 ? 540 : guardado.panelAncho;
+      }
       if (typeof guardado.compactoCreencias === 'boolean') {
         this.compactoCreencias = guardado.compactoCreencias;
       }
@@ -545,6 +591,8 @@
   Arbol.CLAVE_ALMACEN = CLAVE_ALMACEN;
   Arbol.podarInalcanzables = podarInalcanzables;
   Arbol.construirGrafo = construirGrafo;
+  Arbol.descendientesPorNodo = descendientesPorNodo;
+  Arbol.pesoDeRespuestas = pesoDeRespuestas;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;
   Arbol.nodosEnCaminoElegido = nodosEnCaminoElegido;

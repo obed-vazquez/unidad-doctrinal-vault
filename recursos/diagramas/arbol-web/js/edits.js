@@ -56,22 +56,38 @@
     return 'A' + (pregunta.answers || []).length;
   }
 
+  /* Una postura puede pertenecer a varias tradiciones y una tradición reunir
+     varias posturas. Se acumulan alias y adhesiones de todas ellas y, como en
+     el generador, la tradición sale tentativa solo si todas sus adhesiones lo
+     son: basta una firme para que el vínculo se considere firme. */
   function reconstruirIndice(postures) {
     var index = {};
+    var adhesiones = {};
     Object.keys(postures).forEach(function (pid) {
       (postures[pid].traditions || []).forEach(function (tradicion) {
         var name = tradicion.name;
+        if (!name) return;
         if (!index[name]) {
           index[name] = {
             canonical_name: name,
-            aliases: (tradicion.aliases || []).slice(),
+            aliases: [],
             posture_ids: [],
-            tentative: !!tradicion.is_tentative
+            tentative: false
           };
+          adhesiones[name] = [];
         }
+        (tradicion.aliases || []).forEach(function (alias) {
+          if (index[name].aliases.indexOf(alias) === -1) index[name].aliases.push(alias);
+        });
         if (index[name].posture_ids.indexOf(pid) === -1) {
           index[name].posture_ids.push(pid);
         }
+        adhesiones[name].push(!!tradicion.is_tentative);
+      });
+    });
+    Object.keys(index).forEach(function (name) {
+      index[name].tentative = adhesiones[name].every(function (tentativa) {
+        return tentativa;
       });
     });
     return index;

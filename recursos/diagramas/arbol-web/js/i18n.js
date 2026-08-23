@@ -1,6 +1,7 @@
 /* Idioma de la interfaz y de los datos. El inglés se activa con ?lang=en
-   (también ?idioma=en o #en). Los textos del árbol se traducen en vivo
-   (MyMemory) y se cachean; los de la UI viven en este diccionario. */
+   (también ?idioma=en o #en). Los textos del árbol salen de js/traducciones-en.js
+   (generado al convertir el Markdown) y, si falta alguno, de MyMemory;
+   los de la UI viven en este diccionario. */
 
 (function (global) {
   'use strict';
@@ -28,15 +29,16 @@
       creencias: 'Creencias',
       creenciasTitle: 'Explorador de creencias (E)',
       comparar: 'Comparar',
-      compararTitle: 'Comparar creencias en forma de lista (L)',
+      compararTitle: 'Comparar creencias en forma de lista (C)',
+      exportar: 'Exportar',
+      exportarTitle: 'Exportar el árbol o una imagen',
+      exportarMd: 'Markdown (propuesta)',
+      exportarSvg: 'Imagen SVG',
+      exportarPng: 'Imagen PNG',
       razonar: 'Razonar',
       razonarTitle: 'Razonar: en construcción',
       compartir: 'Compartir',
       compartirTitle: 'Copiar enlace con esta vista',
-      exportar: 'Exportar',
-      exportarTitle: 'Exportar el árbol actual (con tus aportes) en Markdown',
-      exportarSvgTitle: 'Descargar el diagrama visible como SVG',
-      exportarPngTitle: 'Descargar el diagrama visible como PNG',
       temaTitle: 'Cambiar entre tema oscuro y claro (T)',
       reiniciarTitle: 'Borrar respuestas, resaltados y anclajes',
       idiomaTitle: 'Cambiar idioma (español / English)',
@@ -51,7 +53,7 @@
       limpiarSeleccion: 'Limpiar selección',
       irComparar: 'Comparar →',
       tradicionesTitulo: 'Tradiciones y sistemas de creencias',
-      posturasTitulo: 'Posturas sin afiliación',
+      posturasTitulo: 'Posturas',
       soloDesacuerdos: 'Solo desacuerdos',
       profundidad: 'Profundidad',
       toda: 'Toda',
@@ -65,7 +67,23 @@
       eliminar: 'Eliminar',
       cargando: 'Cargando el árbol…',
       panelVacio: 'Selecciona un nodo del árbol para ver su ficha completa.',
-      bienvenida: 'Toda creencia nace de una pregunta.',
+      bienvenida: 'El corazón tiene razones que la razón ignora.',
+      bienvenidaFuente: 'Blaise Pascal',
+      tambien: 'También: {lista}',
+      posturasSostenidas: '{n} postura sostenida',
+      posturasSostenidasPlural: '{n} posturas sostenidas',
+      ningunaTradicion: 'Ninguna tradición coincide con la búsqueda.',
+      ningunaPosturaSuelta: 'Ninguna postura coincide con la búsqueda.',
+      notaSinAfiliacion: 'Toda postura nombrada del árbol, con tradición o sin ella. Al elegirla se compara por el recorrido de respuestas que lleva de la raíz hasta ella, sin arrastrar las demás posturas de su tradición.',
+      seleccionActiva: 'Selección activa',
+      seleccionVacia: 'Selecciona una o varias tradiciones para desplegar su camino en el árbol e iluminarlo desde la raíz. Puedes combinarlas con posturas concretas para compararlas entre sí.',
+      tambienAparece: 'También aparece como: {lista}',
+      posturaSinTradicion: 'Postura sin tradición registrada; se compara por el recorrido de respuestas que la alcanza desde la raíz.',
+      posturaDeTradicion: 'Postura sostenida por {lista}; aquí se compara sola, por el recorrido de respuestas que la alcanza desde la raíz.',
+      adhesionTentativa: 'adhesión tentativa',
+      respuestasHeredadas: '{n} respuestas heredadas hasta la raíz',
+      notasHistoricas: 'Notas históricas',
+      chincheta: 'Nodo anclado',
       definicion: 'Definición',
       definicionBuscando: 'Consultando Wikipedia…',
       definicionVacia: 'Wikipedia no tiene (o no alcanzó) una ficha para este término.',
@@ -75,9 +93,11 @@
       posturasRama: 'Posturas de esta rama',
       ningunaRegistrada: 'ninguna registrada',
       sostenidaPor: 'Sostenida por',
+      ramaAbre: 'Abre {n} nodos del árbol.',
+      ramaAbreUno: 'Abre 1 nodo del árbol.',
+      ramaMasPoblada: 'Es la rama más poblada de esta pregunta.',
       deshacer: 'Deshacer',
       deshacerDesc: 'Deshace esta respuesta y poda la rama que colgaba de ella.',
-      chincheta: 'Chincheta',
       chinchetaDesc: 'Este nodo está anclado a mano. Púlsala para devolverlo a la posición automática.',
       origen: 'ORIGEN',
       postura: 'POSTURA',
@@ -112,15 +132,16 @@
       creencias: 'Beliefs',
       creenciasTitle: 'Beliefs explorer (E)',
       comparar: 'Compare',
-      compararTitle: 'Compare beliefs as a list (L)',
+      compararTitle: 'Compare beliefs as a list (C)',
+      exportar: 'Export',
+      exportarTitle: 'Export the tree or an image',
+      exportarMd: 'Markdown (proposal)',
+      exportarSvg: 'SVG image',
+      exportarPng: 'PNG image',
       razonar: 'Reason',
       razonarTitle: 'Reason: coming soon',
       compartir: 'Share',
       compartirTitle: 'Copy a link to this view',
-      exportar: 'Export',
-      exportarTitle: 'Export the current tree (with your additions) as Markdown',
-      exportarSvgTitle: 'Download the visible diagram as SVG',
-      exportarPngTitle: 'Download the visible diagram as PNG',
       temaTitle: 'Toggle dark and light theme (T)',
       reiniciarTitle: 'Clear answers, highlights and pins',
       idiomaTitle: 'Switch language (Spanish / English)',
@@ -135,7 +156,7 @@
       limpiarSeleccion: 'Clear selection',
       irComparar: 'Compare →',
       tradicionesTitulo: 'Traditions and belief systems',
-      posturasTitulo: 'Unaffiliated postures',
+      posturasTitulo: 'Postures',
       soloDesacuerdos: 'Disagreements only',
       profundidad: 'Depth',
       toda: 'All',
@@ -149,7 +170,22 @@
       eliminar: 'Delete',
       cargando: 'Loading the tree…',
       panelVacio: 'Select a node in the tree to see its full card.',
-      bienvenida: 'Every belief begins with a question.',
+      bienvenida: 'The heart has its reasons which reason knows nothing of.',
+      bienvenidaFuente: 'Blaise Pascal',
+      tambien: 'Also: {lista}',
+      posturasSostenidas: '{n} posture held',
+      posturasSostenidasPlural: '{n} postures held',
+      ningunaTradicion: 'No tradition matches the search.',
+      ningunaPosturaSuelta: 'No posture matches the search.',
+      notaSinAfiliacion: 'Every named posture in the tree, with or without a tradition. Choosing one compares it by the chain of answers that reaches it from the root, without dragging along the other postures of its tradition.',
+      seleccionActiva: 'Active selection',
+      seleccionVacia: 'Select one or more traditions to unfold their path in the tree and light it from the root. You can combine them with individual postures to compare them.',
+      tambienAparece: 'Also appears as: {lista}',
+      posturaSinTradicion: 'Posture with no recorded tradition; it is compared by the chain of answers that reaches it from the root.',
+      posturaDeTradicion: 'Posture held by {lista}; here it is compared on its own, by the chain of answers that reaches it from the root.',
+      adhesionTentativa: 'tentative adherence',
+      respuestasHeredadas: '{n} inherited answers back to the root',
+      notasHistoricas: 'Historical notes',
       definicion: 'Definition',
       definicionBuscando: 'Looking up Wikipedia…',
       definicionVacia: 'Wikipedia has no entry (or none could be reached) for this term.',
@@ -159,9 +195,12 @@
       posturasRama: 'Postures in this branch',
       ningunaRegistrada: 'none recorded',
       sostenidaPor: 'Held by',
+      ramaAbre: 'Opens {n} nodes of the tree.',
+      ramaAbreUno: 'Opens 1 node of the tree.',
+      ramaMasPoblada: 'It is the most populated branch of this question.',
       deshacer: 'Undo',
       deshacerDesc: 'Undoes this answer and prunes the branch that hung from it.',
-      chincheta: 'Pin',
+      chincheta: 'Pinned node',
       chinchetaDesc: 'This node is pinned by hand. Click to return it to the automatic layout.',
       origen: 'ORIGIN',
       postura: 'POSTURE',
@@ -180,9 +219,59 @@
   };
 
   var cacheTrad = {};
+  var inflightTrad = {};
+  var avisoTrad = null;
   var cola = [];
   var ocupado = false;
   var oyentes = [];
+
+  function meterEnEN(clave, traducido) {
+    var en = Arbol.EN || (Arbol.EN = {
+      questions: {}, postures: {}, traditions: {}, yes: 'Yes', no: 'No', unnamed: '(unnamed)'
+    });
+    var partes = String(clave).split('.');
+    if (partes[0] === 'q') {
+      en.questions = en.questions || {};
+      en.questions[partes[1]] = en.questions[partes[1]] || {};
+      var q = en.questions[partes[1]];
+      if (partes[2] === 'formal') q.formal = traducido;
+      else if (partes[2] === 'coloquial') q.colloquial = traducido;
+      else if (partes[3] === 'label') {
+        q.answers = q.answers || {};
+        q.answers[partes[2]] = q.answers[partes[2]] || {};
+        q.answers[partes[2]].label = traducido;
+      } else if (partes[3] === 'gloss') {
+        q.answers = q.answers || {};
+        q.answers[partes[2]] = q.answers[partes[2]] || {};
+        q.answers[partes[2]].gloss = traducido;
+      }
+    } else if (partes[0] === 'p' && partes[2] === 'label') {
+      en.postures = en.postures || {};
+      en.postures[partes[1]] = traducido;
+    } else if (partes[0] === 't') {
+      en.traditions = en.traditions || {};
+      en.traditions[clave.slice(2)] = traducido;
+    }
+  }
+
+  function pedirTraduccion(clave, original) {
+    if (!original || inflightTrad[original]) return;
+    inflightTrad[original] = true;
+    var url = 'https://api.mymemory.translated.net/get?q='
+      + encodeURIComponent(String(original).slice(0, 450))
+      + '&langpair=es|en';
+    fetch(url).then(function (respuesta) { return respuesta.json(); }).then(function (datos) {
+      var texto = datos && datos.responseData && datos.responseData.translatedText;
+      if (!texto) { delete inflightTrad[original]; return; }
+      cacheTrad[original] = texto;
+      guardarCacheDisco();
+      meterEnEN(clave, texto);
+      global.clearTimeout(avisoTrad);
+      avisoTrad = global.setTimeout(function () {
+        oyentes.forEach(function (fn) { fn(I18n.idioma); });
+      }, 450);
+    }).catch(function () { delete inflightTrad[original]; });
+  }
 
   function leerCacheDisco() {
     try {
@@ -216,6 +305,68 @@
     });
   }
 
+  var CLAVE_FRASE = 'arbol-posturas/frase-bienvenida';
+
+  /* Citas sobre el asombro y la busca de la verdad — no conclusiones
+     de una escuela ni lemas de un sistema. Se rotan en cada carga. */
+  var FRASES_BIENVENIDA = [
+    {
+      es: 'El corazón tiene razones que la razón ignora.',
+      en: 'The heart has its reasons which reason knows nothing of.',
+      fuente: 'Blaise Pascal'
+    },
+    {
+      es: 'El asombro es el principio de la filosofía.',
+      en: 'Wonder is the beginning of philosophy.',
+      fuente: 'Platón'
+    },
+    {
+      es: 'Todos los hombres desean por naturaleza saber.',
+      en: 'All men by nature desire to know.',
+      fuente: 'Aristóteles'
+    },
+    {
+      es: 'Platón es mi amigo, pero más amiga es la verdad.',
+      en: 'Plato is dear to me, but dearer still is truth.',
+      fuente: 'Aristóteles'
+    },
+    {
+      es: 'Prefiero la busca de la verdad a la verdad ya poseída.',
+      en: 'I prefer the search for truth to truth already possessed.',
+      fuente: 'Gotthold E. Lessing'
+    },
+    {
+      es: 'La verdad es hija del tiempo.',
+      en: 'Truth is the daughter of time.',
+      fuente: 'Francis Bacon'
+    },
+    {
+      es: 'Si no esperas lo inesperado, no lo hallarás.',
+      en: 'If you do not expect the unexpected, you will not find it.',
+      fuente: 'Heráclito'
+    },
+    {
+      es: 'La naturaleza ama ocultarse.',
+      en: 'Nature loves to hide.',
+      fuente: 'Heráclito'
+    },
+    {
+      es: 'Ama las preguntas mismas.',
+      en: 'Love the questions themselves.',
+      fuente: 'Rainer Maria Rilke'
+    },
+    {
+      es: 'Busquemos como quienes han de hallar, y hallemos como quienes han de buscar.',
+      en: 'Let us seek as those who are to find, and find as those who are to keep seeking.',
+      fuente: 'San Agustín'
+    },
+    {
+      es: 'La verdad está en el fondo del pozo.',
+      en: 'Truth lies at the bottom of the well.',
+      fuente: 'Demócrito'
+    }
+  ];
+
   var I18n = {
     idioma: 'es',
 
@@ -230,6 +381,23 @@
       var tabla = UI[this.idioma] || UI.es;
       var texto = tabla[clave] != null ? tabla[clave] : (UI.es[clave] || clave);
       return interpolar(texto, vars);
+    },
+
+    elegirBienvenida: function () {
+      var n = FRASES_BIENVENIDA.length;
+      var indice = 0;
+      try {
+        indice = Number(global.localStorage.getItem(CLAVE_FRASE)) || 0;
+        if (indice < 0 || indice >= n) indice = 0;
+        global.localStorage.setItem(CLAVE_FRASE, String((indice + 1) % n));
+      } catch (error) {
+        indice = Math.floor(Math.random() * n);
+      }
+      var frase = FRASES_BIENVENIDA[indice];
+      return {
+        texto: this.idioma === 'en' ? frase.en : frase.es,
+        fuente: frase.fuente
+      };
     },
 
     persistir: function () {
@@ -273,54 +441,47 @@
 
     suscribir: function (fn) { oyentes.push(fn); },
 
-    /* Texto de datos: en español se devuelve el original; en inglés se usa
-       la traducción cacheada o se encola una petición y se pinta el original
-       hasta que llegue. */
+    /* Texto de datos: en español se devuelve el original; en inglés se lee
+       el overlay generado (Arbol.EN) y, si falta, se pide a MyMemory y se
+       cachea. */
     dato: function (clave, original) {
       if (!original) return original;
-      if (this.idioma === 'es') return original;
-      var id = 'en|' + clave;
-      if (Object.prototype.hasOwnProperty.call(cacheTrad, id)) return cacheTrad[id] || original;
-      this.encolar(id, original);
+      if (this.idioma !== 'en') return original;
+      var en = Arbol.EN || {};
+      if (clave === 'unnamed') return en.unnamed || '(unnamed)';
+      if (original === 'Sí') return en.yes || 'Yes';
+      if (original === 'No') return en.no || 'No';
+      if (cacheTrad[original]) {
+        meterEnEN(clave, cacheTrad[original]);
+        return cacheTrad[original];
+      }
+      var partes = String(clave).split('.');
+      if (partes[0] === 'q' && en.questions && en.questions[partes[1]]) {
+        var q = en.questions[partes[1]];
+        if (partes[2] === 'formal' && q.formal) return q.formal;
+        if (partes[2] === 'coloquial' && q.colloquial) return q.colloquial;
+        if (partes[3] === 'label') {
+          if (q.answers && q.answers[partes[2]] && q.answers[partes[2]].label) {
+            return q.answers[partes[2]].label;
+          }
+          if (original === 'Sí') return en.yes || 'Yes';
+          if (original === 'No') return en.no || 'No';
+        }
+        if (partes[3] === 'gloss' && q.answers && q.answers[partes[2]] && q.answers[partes[2]].gloss) {
+          return q.answers[partes[2]].gloss;
+        }
+      }
+      if (partes[0] === 'p' && partes[2] === 'label' && en.postures && en.postures[partes[1]]) {
+        return en.postures[partes[1]];
+      }
+      if (partes[0] === 't' && en.traditions) {
+        var nombre = clave.slice(2);
+        if (en.traditions[nombre]) return en.traditions[nombre];
+      }
+      pedirTraduccion(clave, original);
       return original;
-    },
-
-    encolar: function (id, original) {
-      var i;
-      for (i = 0; i < cola.length; i++) if (cola[i].id === id) return;
-      cola.push({ id: id, original: original });
-      bombearCola();
     }
   };
-
-  function bombearCola() {
-    if (ocupado || !cola.length) return;
-    ocupado = true;
-    var trabajo = cola.shift();
-    traducirRemoto(trabajo.original).then(function (traducido) {
-      cacheTrad[trabajo.id] = traducido || trabajo.original;
-      guardarCacheDisco();
-      ocupado = false;
-      oyentes.forEach(function (fn) { fn(I18n.idioma); });
-      global.setTimeout(bombearCola, 120);
-    }, function () {
-      ocupado = false;
-      global.setTimeout(bombearCola, 400);
-    });
-  }
-
-  function traducirRemoto(texto) {
-    var url = 'https://api.mymemory.translated.net/get?langpair=es|en&q='
-      + encodeURIComponent(String(texto).slice(0, 480));
-    return fetch(url).then(function (respuesta) {
-      if (!respuesta.ok) throw new Error('HTTP');
-      return respuesta.json();
-    }).then(function (json) {
-      var t = json && json.responseData && json.responseData.translatedText;
-      if (!t || /INVALID|QUERY LENGTH/i.test(t)) return texto;
-      return t;
-    });
-  }
 
   Arbol.I18n = I18n;
 

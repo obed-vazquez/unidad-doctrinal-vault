@@ -104,11 +104,16 @@
     if (estado.resaltados.size) {
       parametros.set('hl', Array.from(estado.resaltados).join(','));
     }
-    if (estado.tradiciones.length) {
-      parametros.set('trad', estado.tradiciones.map(encodeURIComponent).join('|'));
-    }
-    if (estado.posturasSueltas.length) {
-      parametros.set('pos', estado.posturasSueltas.join(','));
+    // Las creencias solo viajan si el explorador está en uso: al responder o
+    // seleccionar nodos se preseleccionan tradiciones en segundo plano, y sin
+    // esta condición un enlace las llevaría y abriría el panel a quien lo abre.
+    if (estado.modo === 'explorador') {
+      if (estado.tradiciones.length) {
+        parametros.set('trad', estado.tradiciones.map(encodeURIComponent).join('|'));
+      }
+      if (estado.posturasSueltas.length) {
+        parametros.set('pos', estado.posturasSueltas.join(','));
+      }
     }
     if (estado.modo !== 'libre') parametros.set('modo', estado.modo);
     if (estado.vista !== 'grafo') parametros.set('vista', estado.vista);

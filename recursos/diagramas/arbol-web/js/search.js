@@ -32,16 +32,17 @@
         tentativa: !!entrada.tentative,
         busqueda: normalizar([entrada.canonical_name].concat(entrada.aliases || []).join(' '))
       };
-    });
+    }).sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
   }
 
-  /* §9.4: posturas sin tradición asociada que sí tienen respuestas asignadas
-     (todas las que cuelgan de al menos una respuesta del árbol). */
+  /* §9.4: toda postura nombrada con respuestas asignadas (las que cuelgan de
+     al menos una respuesta del árbol), tenga tradición o no. Las afiliadas
+     también se listan: son elegibles una por una, sin arrastrar consigo el
+     resto de las posturas de su tradición. */
   function listaPosturasSueltas(datos, grafo) {
     return Object.keys(datos.postures).filter(function (pid) {
       var postura = datos.postures[pid];
       if (postura.is_unnamed) return false;
-      if ((postura.traditions || []).length) return false;
       if (postura.is_root) return false;
       var nodo = grafo.nodos.get(grafo.idDePostura(pid));
       return !!(nodo && nodo.entradas.length);

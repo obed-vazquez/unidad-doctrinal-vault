@@ -3,10 +3,10 @@
 
 #panel {
   position: absolute;
-  top: 14px;
+  top: calc(var(--barra-alto, 64px) + 22px);
   right: 14px;
   bottom: 14px;
-  width: var(--panel-ancho, 396px);
+  width: var(--panel-ancho, 540px);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--borde);
@@ -14,15 +14,13 @@
   background: var(--superficie);
   backdrop-filter: blur(16px);
   box-shadow: var(--sombra);
-  z-index: 25;
+  z-index: 18;
   transition: transform var(--transicion), opacity var(--transicion);
 }
 #panel.cerrado { transform: translateX(calc(100% + 22px)); opacity: 0; pointer-events: none; }
 #panel { padding-top: 58px; }
 
-/* Modo de Razonamiento y Comparación: la lista necesita ancho, pero el grafo
-   sigue detrás para poder volver a él con el mismo botón. */
-#panel.ancho { width: max(var(--panel-ancho, 396px), min(760px, 62vw)); }
+#panel.ancho { width: max(var(--panel-ancho, 540px), min(760px, 62vw)); }
 
 #panel-asa {
   position: absolute;
@@ -143,6 +141,9 @@
 .ficha-opciones li.elegida { border-color: var(--acento); background: var(--acento-suave); color: var(--texto); }
 .ficha-opciones b { color: var(--texto); }
 .ficha-opciones .glosa { display: block; margin-top: 3px; font-size: 11.5px; color: var(--texto-tenue); }
+/* Nodos que abre la respuesta; resalta el de la rama más poblada. */
+.ficha-opciones .peso-rama { font-size: 11px; font-weight: 700; color: var(--texto-tenue); }
+.ficha-opciones .peso-rama.densa { color: var(--texto); }
 
 .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
 .etiqueta {
@@ -198,6 +199,7 @@
 }
 .mini-boton:hover { border-color: var(--acento); color: var(--acento); }
 .mini-boton.destacado { border-color: var(--acento); color: var(--acento); }
+.mini-boton.activo { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
 .interruptor { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--texto-medio); }
 .interruptor select {
   border: 1px solid var(--borde);
@@ -223,8 +225,13 @@
 }
 .tradicion:hover { border-color: var(--dorado); }
 .tradicion.activa { border-color: var(--dorado); background: var(--dorado-suave); }
-.tradicion input { margin: 2px 0 0; accent-color: var(--dorado); }
-.tradicion-nombre { font-size: 13px; color: var(--texto); font-weight: 600; }
+.tradicion input { margin: 2px 0 0; accent-color: var(--dorado); flex: none; }
+.tradicion-nombre {
+  font-size: 13px;
+  color: var(--texto);
+  font-weight: 600;
+  line-height: 1.35;
+}
 .tradicion-nombre.tentativa::after {
   content: "adhesión tentativa";
   margin-left: 6px;
@@ -239,19 +246,27 @@
 }
 .tradicion-meta { display: block; margin-top: 2px; font-size: 11px; color: var(--texto-tenue); line-height: 1.45; }
 
+.lista-tarjetas { margin-bottom: 8px; }
 .lista-tarjetas.compacto {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 8px;
 }
 .lista-tarjetas.compacto .tradicion {
   margin: 0;
-  padding: 7px 8px;
+  padding: 5px 8px;
   align-items: center;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 .lista-tarjetas.compacto .tradicion-meta { display: none; }
-.lista-tarjetas.compacto .tradicion-nombre { font-size: 12px; font-weight: 600; line-height: 1.3; }
+.lista-tarjetas.compacto .tradicion-nombre {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .lista-tarjetas.compacto .tradicion-nombre.tentativa::after { display: none; }
 
 .ficha-edicion {

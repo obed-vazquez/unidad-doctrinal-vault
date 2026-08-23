@@ -20,6 +20,7 @@
   var F_CHIP = '600 12px ' + PILA;
   var F_TRADICION = '500 11px ' + PILA;
   var F_NOTA = 'italic 400 11.5px ' + PILA;
+  var F_CONTEO = '700 10.5px ' + PILA;
 
   var ANCHO_TARJETA = 344;
   var ANCHO_PREGUNTA = 326;
@@ -106,7 +107,9 @@
   function rotuloPostura(postura) {
     if (!postura) return '';
     if (postura.is_unnamed) {
-      return (Arbol.I18n && Arbol.I18n.idioma === 'en') ? '(unnamed)' : '(sin nombre)';
+      return (Arbol.I18n && Arbol.I18n.dato)
+        ? Arbol.I18n.dato('unnamed', '(sin nombre)')
+        : ((Arbol.I18n && Arbol.I18n.idioma === 'en') ? '(unnamed)' : '(sin nombre)');
     }
     return dato('p.' + postura.id + '.label', postura.label);
   }
@@ -115,8 +118,33 @@
     return medir(rotulo, F_TIPO) + rotulo.length;
   }
 
-  function reservaDerecha(cuantasTradiciones) {
-    return 30 + Math.min(cuantasTradiciones, 4) * 9;
+  /* Puntos dorados que caben en la banda de una tarjeta sin invadir la esquina
+     de la papelera. Si la postura la sostienen más tradiciones que eso, el
+     último hueco lo ocupa un «+N» para que ninguna quede en silencio. */
+  var MAX_MARCAS_TRADICION = 4;
+
+  function marcasTradicion(cuantas) {
+    if (cuantas <= MAX_MARCAS_TRADICION) return { puntos: cuantas, resto: 0 };
+    var puntos = MAX_MARCAS_TRADICION - 1;
+    return { puntos: puntos, resto: cuantas - puntos };
+  }
+
+  /* «↓ 12»: nodos que cuelgan de este. Va pegado al margen derecho de la fila
+     del título, así que su ancho se descuenta del sitio que le queda al texto. */
+  function textoConteo(nodo, contexto) {
+    var mapa = contexto && contexto.descendientes;
+    if (!mapa || !mapa.get) return '';
+    var cuantos = mapa.get(nodo.id);
+    return cuantos ? '↓ ' + cuantos : '';
+  }
+
+  function anchoConteo(conteo) {
+    return conteo ? Math.ceil(medir(conteo, F_CONTEO)) + 10 : 0;
+  }
+
+  function reservaDerecha(cuantasTradiciones, conteo) {
+    var marcas = marcasTradicion(cuantasTradiciones);
+    return 30 + marcas.puntos * 9 + (marcas.resto ? 22 : 0) + anchoConteo(conteo);
   }
 
   function empaquetar(elementos, anchoDisponible, gap) {
@@ -137,24 +165,54 @@
     return filas;
   }
 
-  function partesBotones(pregunta, anchoInterno, y, partes) {
+  /* Peso de una respuesta: los nodos que se abren si se elige. */
+  function pesoRespuesta(preguntaId, clave, contexto) {
+    var pesos = contexto && contexto.pesosRespuesta;
+    if (!pesos) return 0;
+    return pesos[preguntaId + ':' + clave] || 0;
+  }
+
+  function partesBotones(pregunta, anchoInterno, y, partes, contexto) {
     var botones = (pregunta.answers || []).map(function (respuestaPosible) {
       var texto = dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.label',
         respuestaPosible.label);
       var glosa = respuestaPosible.gloss
         ? dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.gloss', respuestaPosible.gloss)
         : null;
-      var ancho = Math.max(58, medir(texto, F_BOTON) + 26);
+      var peso = pesoRespuesta(pregunta.id, respuestaPosible.key, contexto);
+      var conteo = peso ? '↓ ' + peso : '';
+      var reserva = anchoConteo(conteo);
       return {
-        ancho: ancho,
+        ancho: Math.max(58, medir(texto, F_BOTON) + 26) + reserva,
+        anchoConteo: reserva,
         clave: respuestaPosible.key,
         texto: texto,
-        glosa: glosa
+        glosa: glosa,
+        peso: peso,
+        conteo: conteo
       };
     });
+    /* La rama más poblada se distingue con un tono apenas distinto, y solo si
+       gana de veras: si todas pesan igual no hay nada que señalar. */
+    var mayor = botones.reduce(function (tope, boton) {
+      return Math.max(tope, boton.peso);
+    }, 0);
+    var cuantosEmpatan = botones.filter(function (boton) {
+      return boton.peso === mayor;
+    }).length;
+    if (mayor > 0 && cuantosEmpatan === 1 && botones.length > 1) {
+      botones.forEach(function (boton) { boton.densa = boton.peso === mayor; });
+    }
     var filas = empaquetar(botones, anchoInterno, GAP_BOTON);
     var altoBotones = filas.length * ALTO_BOTON + Math.max(0, filas.length - 1) * GAP_BOTON;
-    partes.push({ k: 'botones', y: y, alto: altoBotones, filas: filas });
+    // El sello entra en la firma del nodo: sin él, una edición local que solo
+    // cambie el peso de una rama dejaría los botones sin repintar.
+    partes.push({
+      k: 'botones', y: y, alto: altoBotones, filas: filas,
+      sello: botones.map(function (boton) {
+        return boton.clave + boton.peso + (boton.densa ? '!' : '');
+      }).join('/')
+    });
     return y + altoBotones;
   }
 
@@ -227,7 +285,7 @@
     if (respuesta == null) {
       y = partesPreguntaDestacada(pregunta, anchoInterno, y, partes);
       y += 12;
-      return partesBotones(pregunta, anchoInterno, y, partes);
+      return partesBotones(pregunta, anchoInterno, y, partes, contexto);
     }
 
     var textosCortos = textosPregunta(pregunta);
@@ -243,7 +301,7 @@
       y: y, lineas: lineasCortas, lh: alturaCorta
     });
     y += lineasCortas.length * alturaCorta + 10;
-    return partesBotones(pregunta, anchoInterno, y, partes);
+    return partesBotones(pregunta, anchoInterno, y, partes, contexto);
   }
 
   function componerChipsTradiciones(postura, anchoInterno) {
@@ -267,6 +325,8 @@
     var sangria = anclado ? 26 : 0;
     var exploracion = contexto && contexto.divulgacion === 'exploracion';
 
+    var conteo = textoConteo(nodo, contexto);
+
     if (nodo.tipo === 'tarjeta' && nodo.pregunta) {
       ancho = ANCHO_TARJETA;
       anchoInterno = ancho - PAD_X * 2;
@@ -277,12 +337,14 @@
       partes.push({
         k: 'banda', y: 0, alto: ALTO_BANDA,
         texto: recortar(rotuloPostura(nodo.postura), F_BANDA,
-          anchoInterno - sangria - saltoTarjeta - reservaDerecha(tradicionesTarjeta.length)),
+          anchoInterno - sangria - saltoTarjeta
+          - reservaDerecha(tradicionesTarjeta.length, conteo)),
         rotulo: rotuloTarjeta,
         desplazamiento: saltoTarjeta,
         sangria: sangria,
         sinNombre: !!(nodo.postura && nodo.postura.is_unnamed),
-        tradiciones: tradicionesTarjeta
+        tradiciones: tradicionesTarjeta,
+        conteo: conteo
       });
       y = ALTO_BANDA + 12;
       y = componerCuerpoPregunta(nodo.pregunta, respuesta, anchoInterno, y, partes, contexto, nodo);
@@ -300,13 +362,14 @@
       partes.push({
         k: 'banda', y: 0, alto: ALTO_BANDA_EJE,
         texto: recortar(origenes.join('  &  '), F_BANDA,
-          anchoInterno - sangria - saltoEje - reservaDerecha(0)),
+          anchoInterno - sangria - saltoEje - reservaDerecha(0, conteo)),
         rotulo: rotuloEje,
         desplazamiento: saltoEje,
         sangria: sangria,
         convergencia: !!nodo.pregunta.is_convergence,
         sinNombre: false,
-        tradiciones: []
+        tradiciones: [],
+        conteo: conteo
       });
       y = ALTO_BANDA_EJE + 12;
       y = componerCuerpoPregunta(nodo.pregunta, respuesta, anchoInterno, y, partes, contexto, nodo);
@@ -322,12 +385,19 @@
       if (!esBase && nodo.postura && (nodo.postura.traditions || []).length) {
         anchoDeseado = Math.max(anchoDeseado, 268);
       }
+      var rotuloBase = esBase
+        ? tUI('posturaVarios', 'POSTURA · VARIOS EJES') : tUI('postura', 'POSTURA');
+      // El conteo comparte fila con el rótulo del tipo: la caja ha de dar para
+      // los dos y para la esquina de la papelera.
+      if (conteo) {
+        anchoDeseado = Math.max(anchoDeseado, sangria + medir(rotuloBase, F_TIPO)
+          + reservaDerecha(0, conteo) + PAD_X * 2);
+      }
       ancho = limitar(Math.ceil(anchoDeseado), minimo, maximo);
       anchoInterno = ancho - PAD_X * 2;
       y = 12;
       partes.push({
-        k: 'tipo', y: y, sangria: sangria,
-        texto: esBase ? tUI('posturaVarios', 'POSTURA · VARIOS EJES') : tUI('postura', 'POSTURA')
+        k: 'tipo', y: y, sangria: sangria, texto: rotuloBase, conteo: conteo
       });
       y += ALTO_TIPO;
       var lineasTitulo = envolver(etiqueta, F_TITULO, anchoInterno, 4);
@@ -373,6 +443,7 @@
       + (expandido ? '|e' : '')
       + '|' + ((nodo.postura && nodo.postura.label) || '')
       + (contexto.caminoUsuario && contexto.caminoUsuario.has(nodo.id) ? '|c' : '')
+      + '|' + textoConteo(nodo, contexto)
       + '|' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es');
     var guardado = cacheComposicion.get(clave);
     if (guardado) return guardado;
@@ -618,6 +689,7 @@
     medir: medir,
     envolver: envolver,
     recortar: recortar,
+    marcasTradicion: marcasTradicion,
     rotuloPostura: rotuloPostura,
     componer: componerConCache,
     limpiarCache: limpiarCache,

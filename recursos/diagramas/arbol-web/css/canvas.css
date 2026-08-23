@@ -141,6 +141,67 @@ html, body {
 }
 #btn-musica.muteado .nota-tache { display: block; }
 #btn-musica.muteado .icono-nota { opacity: 0.7; }
+.musica-wrap, .menu-desplegable {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.vol-musica {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  margin: 0;
+  /* El padding superior une el botón con el slider: sin ese puente el hover se pierde. */
+  padding: 14px 10px 10px;
+  border: 1px solid var(--borde);
+  border-top: 0;
+  border-radius: 0 0 var(--radio-chico) var(--radio-chico);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra-suave);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 30;
+  transition: opacity 160ms ease;
+}
+.musica-wrap:hover .vol-musica,
+.musica-wrap.vol-abierto .vol-musica,
+.vol-musica:focus,
+.vol-musica:active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.menu-lista {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  padding: 6px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra);
+  z-index: 32;
+  display: none;
+}
+.menu-desplegable.abierto .menu-lista { display: grid; gap: 2px; }
+.menu-lista button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.menu-lista button:hover { background: var(--acento-suave); color: var(--acento); }
 #rotulo-idioma { font-size: 11px; font-weight: 700; letter-spacing: 0.4px; }
 .boton.activo { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
 .boton.peligro { padding: 0; width: 32px; height: 32px; justify-content: center; }
@@ -308,6 +369,8 @@ html, body {
 }
 #tooltip .tooltip-coloquial { color: var(--texto); font-size: 13.5px; margin: 0 0 6px; }
 #tooltip .tooltip-formal { color: var(--texto-tenue); font-size: 12px; font-style: italic; margin: 0 0 8px; }
+#tooltip .tooltip-tradiciones { margin: 0 0 8px; font-size: 12px; color: var(--dorado); }
+#tooltip .tooltip-peso { margin: 6px 0 0; font-size: 11.5px; color: var(--texto-tenue); }
 #tooltip .tooltip-definicion { margin: 8px 0 0; font-size: 12px; color: var(--texto-medio); }
 #tooltip .def-fuente { margin: 6px 0 0; font-size: 11px; }
 #tooltip .def-fuente a { color: var(--acento); }
@@ -410,32 +473,61 @@ html, body {
   z-index: 55;
   display: grid;
   place-items: center;
+  align-content: center;
+  padding-bottom: 26vh;
   pointer-events: none;
   background: transparent;
 }
-#bienvenida p {
+#bienvenida figure {
   margin: 0;
-  max-width: min(90vw, 18ch);
+  max-width: 96vw;
   text-align: center;
-  font-size: clamp(28px, 6vw, 64px);
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  color: var(--texto);
-  text-shadow: 0 8px 40px var(--fondo);
-  animation: bienvenida-viaje 5.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  /* Entrada ease-out cúbica; salida accelerate (Material). */
+  animation:
+    bienvenida-entra 2s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both,
+    bienvenida-sale 0.8s 2.9s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
-@keyframes bienvenida-viaje {
-  0% { opacity: 0; transform: translate(0, 12px) scale(1); }
-  12% { opacity: 1; transform: translate(0, 0) scale(1); }
-  48% { opacity: 1; transform: translate(0, 0) scale(1); }
-  72% { opacity: 0.92; transform: translate(calc(-42vw + 80px), calc(-42vh + 48px)) scale(0.38); }
-  100% { opacity: 0; transform: translate(calc(-42vw + 80px), calc(-42vh + 48px)) scale(0.32); }
+#bienvenida blockquote {
+  margin: 0;
+  font-family: "Palatino Linotype", Palatino, "Iowan Old Style", "Book Antiqua", Georgia, serif;
+  font-size: clamp(16px, 3.05vw, 42px);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--texto);
+}
+#bienvenida figcaption {
+  margin-top: 10px;
+  font-family: "Palatino Linotype", Palatino, "Iowan Old Style", "Book Antiqua", Georgia, serif;
+  font-size: clamp(10px, 1.35vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  opacity: 0.42;
+  white-space: nowrap;
+  line-height: 1;
+}
+@keyframes bienvenida-entra {
+  from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.92); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes bienvenida-sale {
+  from { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  to {
+    opacity: 0;
+    transform: translate3d(calc(-42vw + 80px), calc(-40vh + 28px), 0) scale(0.28);
+  }
 }
 #bienvenida.hecha { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .girador { animation-duration: 2.4s; }
   #tooltip { transition: none; }
-  #bienvenida p { animation: none; opacity: 0; }
+  #bienvenida figure { animation: none; opacity: 0; }
 }

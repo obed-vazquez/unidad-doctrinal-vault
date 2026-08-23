@@ -34,11 +34,17 @@
 .nodo { cursor: pointer; }
 .nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
 .nodo.atenuado.resaltado { opacity: 1; }
-.nodo.deshabilitado { opacity: 0.42; transition: opacity 280ms ease; }
+.nodo.deshabilitado { opacity: 0.38; filter: grayscale(0.45); transition: opacity 280ms ease, filter 280ms ease; }
+.nodo.deshabilitado .nodo-caja { fill-opacity: 0.72; }
+.nodo.deshabilitado.entrando { animation: rama-entra-dim 420ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+@keyframes rama-entra-dim {
+  from { opacity: 0; }
+  to { opacity: 0.38; }
+}
 .nodo.deshabilitado .opcion,
 .nodo.deshabilitado .papelera { pointer-events: none; }
-.nodo.entrando { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
-.nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.nodo.entrando:not(.deshabilitado) { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+.nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1); }
 .nodo.saliendo { animation: rama-sale 280ms ease both; pointer-events: none; }
 @keyframes rama-entra {
   from { opacity: 0; }
@@ -78,6 +84,9 @@
   font-weight: 700;
   letter-spacing: 1px;
 }
+
+.nodo-conteo { fill: var(--texto-tenue); font-size: 10.5px; font-weight: 700; }
+.nodo:hover .nodo-conteo { fill: var(--texto-medio); }
 
 .nodo-pregunta { fill: var(--texto-tenue); font-size: 12.5px; font-style: italic; }
 .nodo-coloquial { fill: var(--texto); font-size: 14px; font-style: normal; }
@@ -158,6 +167,17 @@
 .opcion.tenue:hover { opacity: 1; }
 .opcion-glosa { fill: var(--texto-tenue); font-size: 10px; font-weight: 700; }
 
+.opcion-conteo { fill: var(--texto-tenue); font-size: 10.5px; font-weight: 700; }
+.opcion:hover .opcion-conteo { fill: var(--acento); }
+.opcion.elegida .opcion-conteo { fill: var(--acento); }
+/* La respuesta que abre más árbol. Cede el paso al azul de la elegida y al del
+   hover, que dicen cosas más urgentes que «esta rama es la más grande». */
+.opcion.densa:not(.elegida):not(:hover) .opcion-caja {
+  fill: var(--rama-densa);
+  stroke: var(--rama-densa-borde);
+}
+.opcion.densa:not(.elegida):not(:hover) .opcion-conteo { fill: var(--texto-medio); }
+
 .respuesta-chip-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1.2; }
 .respuesta-chip-texto { fill: var(--acento); font-size: 12px; font-weight: 600; }
 
@@ -190,6 +210,8 @@
 
 .marca-tradicion { fill: var(--dorado); }
 .marca-tradicion.tentativa { opacity: 0.5; }
+.marca-tradicion.destacada { stroke: var(--dorado); stroke-width: 3; opacity: 1; }
+.marca-tradicion-resto { fill: var(--dorado); font-size: 10px; font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
   .nodo.entrando, .nodo.raiz.entrando, .nodo.saliendo, .nodo.resaltado .nodo-brillo {

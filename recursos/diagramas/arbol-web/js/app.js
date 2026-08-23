@@ -86,9 +86,7 @@
       var n = Estado.grafo.nodos.get(id);
       if (!n) return;
       var p = n.postura;
-      if (p && !p.is_root && !vistosPostura[p.id]) {
-        vistosPostura[p.id] = true;
-        posturas.push(p);
+      if (p && !p.is_root) {
         (p.traditions || []).forEach(function (tradicion) {
           if (!tradicion.name || tradicion.is_note) return;
           if (!porNombre[tradicion.name]) {
@@ -101,6 +99,13 @@
             porNombre[tradicion.name].is_tentative = true;
           }
         });
+        var etiquetaNom = String(p.label || '').trim();
+        var nombrada = !p.is_unnamed && etiquetaNom && etiquetaNom !== '?'
+          && !/^sin[-\s]?nombre$/i.test(etiquetaNom);
+        if (nombrada && !vistosPostura[p.id]) {
+          vistosPostura[p.id] = true;
+          posturas.push(p);
+        }
       }
       n.salidas.forEach(function (arista) { rec(arista.hasta); });
     }
@@ -285,7 +290,7 @@
   function seguirNodosTrasAbrir(ids) {
     if (!ids || !ids.length) return;
     global.setTimeout(function () {
-      Vista.encuadrar(ids, true);
+      Vista.centrarEnIds(ids, true);
     }, 340);
   }
 
@@ -296,11 +301,15 @@
     var visibles = Estado.visibles();
     var aristasIds = Estado.aristasDe(visibles);
 
+    var descendientes = Arbol.descendientesPorNodo(Estado.grafo);
+    var pesosRespuesta = Arbol.pesoDeRespuestas(Estado.grafo);
     var contextoMedida = {
       datos: Estado.datos,
       fijados: Estado.fijados,
       divulgacion: Estado.divulgacion,
       expandidos: Estado.expandidos,
+      descendientes: descendientes,
+      pesosRespuesta: pesosRespuesta,
       caminoUsuario: Estado.caminoElegido()
     };
     var tamanos = new Map();
@@ -327,10 +336,14 @@
       respuestas: respuestas,
       camino: exploracion,
       caminoUsuario: caminoUsuario,
-      deshabilitados: Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles),
+      deshabilitados: Estado.divulgacion === 'cuestionario'
+        ? Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles)
+        : new Set(),
       tradicionesDestacadas: destacadas,
       divulgacion: Estado.divulgacion,
-      expandidos: Estado.expandidos
+      expandidos: Estado.expandidos,
+      descendientes: descendientes,
+      pesosRespuesta: pesosRespuesta
     });
 
     actualizarBarra(visibles);
@@ -356,10 +369,12 @@
     dom.sepResaltados.hidden = cuantosResaltados === 0;
     dom.panel.classList.toggle('cerrado', !Estado.panelAbierto);
     dom.panel.classList.toggle('ancho', Estado.vista === 'lista' && Estado.panelAbierto);
+    sincronizarAltoBarra();
     document.documentElement.style.setProperty('--panel-ancho', Estado.panelAncho + 'px');
     if (dom.selRecorrido) dom.selRecorrido.value = Estado.divulgacion;
-    if (dom.chkCompacto) {
-      dom.chkCompacto.checked = Estado.compactoCreencias;
+    if (dom.btnCompacto) {
+      dom.btnCompacto.classList.toggle('activo', !!Estado.compactoCreencias);
+      dom.btnCompacto.setAttribute('aria-pressed', Estado.compactoCreencias ? 'true' : 'false');
     }
     Array.prototype.forEach.call(dom.pestanas, function (boton) {
       boton.classList.toggle('activa', boton.getAttribute('data-pestana') === Estado.pestana);
@@ -433,9 +448,12 @@
           var glosa = respuesta.gloss
             ? dato('q.' + nodo.pregunta.id + '.' + respuesta.key + '.gloss', respuesta.gloss)
             : '';
+          var peso = pesoDeRama(nodo.pregunta.id, respuesta.key);
           return '<li class="' + (elegida === respuesta.key ? 'elegida' : '') + '">'
             + '<b>' + escapar(etiqueta) + '</b> → '
             + escapar(Layout.rotuloPostura(destino))
+            + (peso ? ' <span class="peso-rama' + (peso.densa ? ' densa' : '') + '">↓ '
+              + peso.nodos + '</span>' : '')
             + (glosa ? '<span class="glosa">' + escapar(glosa) + '</span>' : '')
             + '</li>';
         }).join('') + '</ul>');
@@ -462,9 +480,16 @@
 
     partes.push('<h3 class="panel-subtitulo">' + escapar(t('posturasRama')) + '</h3>');
     if (agregado.posturas.length) {
-      partes.push('<ul class="ficha-opciones">' + agregado.posturas.map(function (p) {
-        return '<li>' + escapar(Layout.rotuloPostura(p)) + '</li>';
-      }).join('') + '</ul>');
+      partes.push('<div class="etiquetas">' + agregado.posturas.map(function (p) {
+        var nombres = tradicionesDePostura(p);
+        // Marcada si se eligió ella misma o si entró por su tradición.
+        var activa = Estado.posturasSueltas.indexOf(p.id) !== -1
+          || (nombres.length > 0 && nombres.every(function (n) {
+            return Estado.tradiciones.indexOf(n) !== -1;
+          }));
+        return '<span class="etiqueta' + (activa ? ' activa' : '') + '" data-postura="'
+          + escapar(p.id) + '">' + escapar(Layout.rotuloPostura(p)) + '</span>';
+      }).join('') + '</div>');
     } else {
       partes.push('<p class="panel-nota">' + escapar(t('ningunaRegistrada')) + '</p>');
     }
@@ -526,6 +551,12 @@
     partes.push('<dl class="ficha-datos">');
     partes.push('<dt>En el árbol</dt><dd>' + escapar(resumenSituacion(nodo, respuestas)) + '</dd>');
     partes.push('<dt>Profundidad</dt><dd>' + escapar(textoProfundidad(nodo)) + '</dd>');
+    var debajo = Arbol.descendientesPorNodo(Estado.grafo).get(nodo.id) || 0;
+    partes.push('<dt>Nodos debajo</dt><dd>'
+      + (debajo
+        ? debajo + (debajo === 1 ? ' nodo cuelga de aquí' : ' nodos cuelgan de aquí')
+        : 'ninguno: es una hoja del árbol')
+      + '</dd>');
     if (nodo.pregunta) {
       var clave = respuestas[nodo.pregunta.id];
       var elegidaFicha = clave && (nodo.pregunta.answers || []).filter(function (r) {
@@ -538,11 +569,9 @@
         + '</dd>');
     }
     if (postura) {
-      var cuantasTrad = (postura.traditions || []).length;
+      var trads = vinculosTradicionDePostura(postura);
       partes.push('<dt>Tradiciones</dt><dd>'
-        + (cuantasTrad
-          ? cuantasTrad + (cuantasTrad === 1 ? ' la sostiene' : ' la sostienen')
-          : 'ninguna registrada')
+        + (trads.length ? escapar(trads.join(' · ')) : 'ninguna registrada')
         + '</dd>');
       var cuantosEjes = (postura.question_axes || []).length;
       if (cuantosEjes) {
@@ -639,6 +668,14 @@
       }
     }
 
+    // En las tarjetas la banda solo lleva puntos dorados; aquí se leen los
+    // nombres, que es lo que hace falta cuando la sostienen varias tradiciones.
+    var afiliaciones = nodo.postura ? vinculosTradicionDePostura(nodo.postura) : [];
+    if (afiliaciones.length) {
+      partes.push('<p class="tooltip-tradiciones">' + escapar(t('sostenidaPor')) + ': '
+        + escapar(afiliaciones.join(' · ')) + '</p>');
+    }
+
     if (nodo.postura && !nodo.postura.is_unnamed) {
       partes.push('<h4>' + escapar(t('definicion')) + '</h4>');
       partes.push('<div class="tooltip-definicion" data-def="' + escapar(nodo.postura.id) + '"></div>');
@@ -646,18 +683,45 @@
     return partes.join('');
   }
 
+  /* Cuántos nodos abre una respuesta y si es la rama más poblada de su
+     pregunta, que es lo que el botón señala con un tono algo más claro. */
+  function pesoDeRama(preguntaId, clave) {
+    var pregunta = preguntaId && Estado.datos.questions[preguntaId];
+    if (!pregunta || !clave) return null;
+    var pesos = Arbol.pesoDeRespuestas(Estado.grafo);
+    var propio = pesos[preguntaId + ':' + clave] || 0;
+    if (!propio) return null;
+    var hermanas = (pregunta.answers || []).map(function (respuesta) {
+      return pesos[preguntaId + ':' + respuesta.key] || 0;
+    });
+    var mayor = Math.max.apply(null, hermanas);
+    var empatan = hermanas.filter(function (peso) { return peso === mayor; }).length;
+    return {
+      nodos: propio,
+      densa: hermanas.length > 1 && empatan === 1 && propio === mayor
+    };
+  }
+
   function tooltipDeControl(control) {
     if (!control) return null;
     var tipo = control.getAttribute('data-control');
     if (tipo === 'opcion') {
       var rotulo = control.getAttribute('data-rotulo') || '';
-      var glosa = control.getAttribute('data-glosa') || '';
-      var cuerpo = rotulo;
+      var glosa = (control.getAttribute('data-glosa') || '').trim();
+      var bloques = ['<h4>' + escapar(rotulo || '…') + '</h4>'];
       if (glosa) {
         var yaEmpieza = glosa.toLowerCase().indexOf(rotulo.toLowerCase()) === 0;
-        cuerpo = yaEmpieza ? glosa : (rotulo + ', ' + glosa);
+        bloques.push('<p>' + escapar(yaEmpieza ? glosa : rotulo + ', ' + glosa) + '</p>');
       }
-      return '<h4>' + escapar(rotulo || '…') + '</h4><p>' + escapar(cuerpo) + '</p>';
+      // Explica el «↓ N» del botón y, si toca, por qué está más claro.
+      var peso = pesoDeRama(control.getAttribute('data-pregunta'),
+        control.getAttribute('data-clave'));
+      if (peso) {
+        bloques.push('<p class="tooltip-peso">'
+          + escapar(t(peso.nodos === 1 ? 'ramaAbreUno' : 'ramaAbre', { n: peso.nodos })
+            + (peso.densa ? ' ' + t('ramaMasPoblada') : '')) + '</p>');
+      }
+      return bloques.join('');
     }
     if (tipo === 'chincheta') {
       return '<h4>' + escapar(t('chincheta')) + '</h4><p>' + escapar(t('chinchetaDesc')) + '</p>';
@@ -720,48 +784,94 @@
   function fichaDeSujetos() {
     var sujetos = sujetosSeleccionados();
     if (!sujetos.length) {
-      return '<p class="panel-nota">Selecciona una o varias tradiciones para desplegar '
-        + 'su camino en el árbol e iluminarlo desde la raíz. Puedes combinarlas con '
-        + 'posturas sin afiliación para compararlas entre sí.</p>';
+      return '<p class="panel-nota">' + escapar(t('seleccionVacia')) + '</p>';
     }
 
-    return '<h3 class="panel-subtitulo">Selección activa</h3>' + sujetos.map(function (sujeto) {
+    return '<h3 class="panel-subtitulo">' + escapar(t('seleccionActiva')) + '</h3>' + sujetos.map(function (sujeto) {
       var bloques = [];
+      var nombreSujeto = sujeto.tipo === 'tradicion'
+        ? dato('t.' + sujeto.nombre, sujeto.nombre)
+        : (sujeto.posturaIds[0]
+          ? Layout.rotuloPostura(Estado.datos.postures[sujeto.posturaIds[0]])
+          : sujeto.nombre);
       bloques.push('<div class="ficha-sujeto">');
       bloques.push('<div class="tradicion-nombre' + (sujeto.tentativa ? ' tentativa' : '') + '">'
-        + escapar(sujeto.nombre) + '</div>');
+        + escapar(nombreSujeto) + '</div>');
       if (sujeto.alias.length) {
-        bloques.push('<p class="panel-nota">También aparece como: '
-          + escapar(sujeto.alias.join(' · ')) + '</p>');
+        bloques.push('<p class="panel-nota">'
+          + escapar(t('tambienAparece', { lista: sujeto.alias.join(' · ') })) + '</p>');
       }
       if (sujeto.tipo === 'postura') {
-        bloques.push('<p class="panel-nota">Postura sin tradición registrada; se compara por '
-          + 'el recorrido de respuestas que la alcanza desde la raíz.</p>');
+        var afiliacion = vinculosTradicionDePostura(
+          Estado.datos.postures[sujeto.posturaIds[0]] || {});
+        bloques.push('<p class="panel-nota">' + escapar(afiliacion.length
+          ? t('posturaDeTradicion', { lista: afiliacion.join(' · ') })
+          : t('posturaSinTradicion')) + '</p>');
       }
 
       var notas = [];
       bloques.push('<ul class="ficha-opciones">' + sujeto.posturaIds.map(function (pid) {
         var postura = Estado.datos.postures[pid];
-        var adhesion = (postura.traditions || []).filter(function (t) {
-          return t.name === sujeto.nombre;
+        var adhesion = (postura.traditions || []).filter(function (tr) {
+          return tr.name === sujeto.nombre;
         })[0];
         (postura.notes || []).forEach(function (nota) { notas.push(nota); });
         var resolucion = Busqueda.resolver(Estado.grafo, Estado.datos, sujeto);
+        var pregunta = textoPreguntaDePostura(pid);
+        var glosa = [];
+        if (pregunta) glosa.push(pregunta);
+        if (adhesion && adhesion.is_tentative) glosa.push(t('adhesionTentativa'));
+        glosa.push(t('respuestasHeredadas', { n: Object.keys(resolucion.respuestas).length }));
         return '<li class="elegida" data-nodo="' + escapar(Estado.grafo.idDePostura(pid)) + '">'
           + '<b>' + escapar(Layout.rotuloPostura(postura)) + '</b>'
-          + (adhesion && adhesion.is_tentative ? ' <em>(adhesión tentativa)</em>' : '')
-          + '<span class="glosa">' + escapar(pid) + ' · '
-          + Object.keys(resolucion.respuestas).length + ' respuestas heredadas hasta la raíz'
-          + '</span></li>';
+          + '<span class="glosa">' + escapar(glosa.join(' · ')) + '</span></li>';
       }).join('') + '</ul>');
 
       if (notas.length) {
-        bloques.push('<h3 class="panel-subtitulo">Notas históricas</h3>');
+        bloques.push('<h3 class="panel-subtitulo">' + escapar(t('notasHistoricas')) + '</h3>');
         bloques.push('<p class="panel-nota">' + escapar(notas.join(' · ')) + '</p>');
       }
       bloques.push('</div>');
       return bloques.join('');
     }).join('');
+  }
+
+  function recortarFrase(texto, maximo) {
+    texto = String(texto || '').replace(/\s+/g, ' ').trim();
+    if (!texto || texto.length <= maximo) return texto;
+    var corte = texto.lastIndexOf(' ', maximo);
+    if (corte < maximo * 0.55) corte = maximo;
+    return texto.slice(0, corte).replace(/[,;:\s¿¡]+$/, '') + '…';
+  }
+
+  function preguntaQueDefinePostura(pid) {
+    var nodo = Estado.grafo.nodos.get(Estado.grafo.idDePostura(pid));
+    if (!nodo) return null;
+    if (nodo.pregunta) return nodo.pregunta;
+    var i;
+    for (i = 0; i < (nodo.entradas || []).length; i++) {
+      var qid = nodo.entradas[i].preguntaId;
+      if (qid && Estado.datos.questions[qid]) return Estado.datos.questions[qid];
+    }
+    return null;
+  }
+
+  function textoPreguntaDePostura(pid) {
+    var pregunta = preguntaQueDefinePostura(pid);
+    if (!pregunta) return '';
+    if (pregunta.colloquial_hint) {
+      return dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint);
+    }
+    return recortarFrase(dato('q.' + pregunta.id + '.formal', pregunta.formal_text), 88);
+  }
+
+  function vinculosTradicionDePostura(postura) {
+    return (postura.traditions || []).filter(function (tradicion) {
+      return tradicion.name && !tradicion.is_note;
+    }).map(function (tradicion) {
+      var nombre = dato('t.' + tradicion.name, tradicion.name);
+      return tradicion.is_tentative ? nombre + ' (?)' : nombre;
+    });
   }
 
   function pintarListaCreencias() {
@@ -778,36 +888,44 @@
       ? tradiciones.map(function (tradicion) {
         var activa = Estado.tradiciones.indexOf(tradicion.nombre) !== -1;
         var meta = [];
-        if (tradicion.alias.length) meta.push('También: ' + tradicion.alias.join(' · '));
-        meta.push(tradicion.posturaIds.length + ' postura'
-          + (tradicion.posturaIds.length === 1 ? '' : 's') + ' sostenida'
-          + (tradicion.posturaIds.length === 1 ? '' : 's'));
+        if (tradicion.alias.length) {
+          meta.push(t('tambien', { lista: tradicion.alias.join(' · ') }));
+        }
+        var cuantas = tradicion.posturaIds.length;
+        meta.push(t(cuantas === 1 ? 'posturasSostenidas' : 'posturasSostenidasPlural', { n: cuantas }));
         return '<label class="tradicion' + (activa ? ' activa' : '') + '">'
           + '<input type="checkbox" data-tradicion="' + escapar(tradicion.nombre) + '"'
           + (activa ? ' checked' : '') + '>'
           + '<span><span class="tradicion-nombre' + (tradicion.tentativa ? ' tentativa' : '') + '">'
-          + escapar(tradicion.nombre) + '</span>'
+          + escapar(dato('t.' + tradicion.nombre, tradicion.nombre)) + '</span>'
           + '<span class="tradicion-meta">' + escapar(meta.join(' · ')) + '</span></span>'
           + '</label>';
       }).join('')
-      : '<p class="panel-nota">Ninguna tradición coincide con la búsqueda.</p>';
+      : '<p class="panel-nota">' + escapar(t('ningunaTradicion')) + '</p>';
 
-    dom.notaSinAfiliacion.textContent = 'Posturas nombradas que el documento no liga a ninguna '
-      + 'tradición. Se comparan por el recorrido de respuestas que lleva de la raíz hasta ellas.';
+    dom.notaSinAfiliacion.textContent = t('notaSinAfiliacion');
 
     dom.listaPosturasSueltas.innerHTML = posturas.length
       ? posturas.map(function (postura) {
         var pid = postura.posturaIds[0];
         var activa = Estado.posturasSueltas.indexOf(pid) !== -1;
+        var meta = [];
+        if (!Estado.compactoCreencias) {
+          var pregunta = textoPreguntaDePostura(pid);
+          if (pregunta) meta.push(pregunta);
+          var vinculos = vinculosTradicionDePostura(Estado.datos.postures[pid] || {});
+          if (vinculos.length) meta.push(vinculos.join(' · '));
+          if (postura.sugerida) meta.push('término sugerido');
+        }
         return '<label class="tradicion' + (activa ? ' activa' : '') + '">'
           + '<input type="checkbox" data-postura="' + escapar(pid) + '"'
           + (activa ? ' checked' : '') + '>'
-          + '<span><span class="tradicion-nombre">' + escapar(postura.nombre) + '</span>'
-          + '<span class="tradicion-meta">' + escapar(pid)
-          + (postura.sugerida ? ' · término sugerido' : '') + '</span></span>'
-          + '</label>';
+          + '<span><span class="tradicion-nombre">'
+          + escapar(Layout.rotuloPostura(Estado.datos.postures[pid])) + '</span>'
+          + (meta.length ? '<span class="tradicion-meta">' + escapar(meta.join(' · ')) + '</span>' : '')
+          + '</span></label>';
       }).join('')
-      : '<p class="panel-nota">Ninguna postura sin afiliación coincide con la búsqueda.</p>';
+      : '<p class="panel-nota">' + escapar(t('ningunaPosturaSuelta')) + '</p>';
   }
 
   /* -------------------------------------------- panel: razonar y comparar */
@@ -1102,6 +1220,23 @@
     aplicarAporteCreencias({ tradiciones: tradiciones, posturasSueltas: posturasSueltas });
   }
 
+  /* Pulsar la etiqueta de una postura la elige a ella, no a su tradición:
+     quien nombra «Diotelitismo» quiere esa postura y no las demás que sostiene
+     la Ortodoxia calcedonense. La tradición se elige desde su propia lista. */
+  function pulsarPosturaFicha(pid) {
+    var postura = Estado.datos.postures[pid];
+    if (!postura || postura.is_unnamed || postura.is_root) return;
+    var indice = Estado.posturasSueltas.indexOf(pid);
+    if (indice === -1) Estado.posturasSueltas.push(pid);
+    else Estado.posturasSueltas.splice(indice, 1);
+    Estado.modo = Estado.tradiciones.length || Estado.posturasSueltas.length
+      ? 'explorador' : 'libre';
+    var nodoId = Estado.grafo.idDePostura(pid);
+    Estado.seleccionado = nodoId;
+    abrirPestana('creencias');
+    if (nodoId) Vista.encuadrarNodoYDescendientes(nodoId);
+  }
+
   function abrirPestana(nombre) {
     Estado.pestana = nombre;
     Estado.panelAbierto = true;
@@ -1123,45 +1258,107 @@
     }
   }
 
+  function sincronizarAltoBarra() {
+    var barra = document.getElementById('barra');
+    if (barra) {
+      document.documentElement.style.setProperty('--barra-alto', barra.offsetHeight + 'px');
+    }
+  }
+
+  /* Cierto entre que el navegador rechaza la reproducción automática con
+     sonido y el primer gesto del usuario: la música está pedida pero suena
+     en silencio, así que el botón y el enlace no deben darla por apagada. */
+  var esperandoGesto = false;
+
+  /* En fase de captura y sobre varios tipos de evento: el lienzo detiene
+     algunos pointerdown, y Safari no concede activación con `pointerdown`. */
+  var GESTOS = ['pointerdown', 'mousedown', 'touchend', 'keydown', 'click'];
+
   function actualizarBotonMusica() {
     if (!dom.btnMusica || !dom.audio) return;
-    var activa = !!Estado.musica;
-    dom.btnMusica.hidden = !activa;
-    var silenciada = !activa || dom.audio.muted || dom.audio.paused;
-    dom.btnMusica.classList.toggle('muteado', silenciada);
+    dom.btnMusica.hidden = false;
+    var silenciada = !!dom.audio.muted || !!dom.audio.paused || dom.audio.volume === 0;
+    dom.btnMusica.classList.toggle('muteado', silenciada && !esperandoGesto);
     dom.btnMusica.setAttribute('aria-pressed', silenciada ? 'true' : 'false');
+    // El enlace compartido lleva la música si quedó activa.
+    Estado.musica = esperandoGesto || (!dom.audio.muted && dom.audio.volume > 0);
+    Router.escribir(Estado);
+  }
+
+  function alGesto(evento) {
+    var enControles = evento.target && evento.target.closest
+      && evento.target.closest('#musica-wrap');
+    // Si el gesto es sobre el propio control, su manejador ya decide.
+    if (enControles) { olvidarGesto(); return; }
+    olvidarGesto();
+    if (!dom.audio) return;
+    dom.audio.muted = false;
+    var p = dom.audio.play();
+    if (p && p.catch) p.catch(function () { /* sin activación */ });
+    actualizarBotonMusica();
+  }
+
+  function esperarGesto() {
+    if (esperandoGesto) return;
+    esperandoGesto = true;
+    GESTOS.forEach(function (tipo) {
+      document.addEventListener(tipo, alGesto, true);
+    });
+  }
+
+  function olvidarGesto() {
+    if (!esperandoGesto) return;
+    esperandoGesto = false;
+    GESTOS.forEach(function (tipo) {
+      document.removeEventListener(tipo, alGesto, true);
+    });
   }
 
   function arrancarMusica() {
-    actualizarBotonMusica();
-    if (!Estado.musica || !dom.audio) return;
+    if (!dom.audio) return;
     dom.audio.loop = true;
-    dom.audio.muted = false;
+    var pct = dom.volMusica ? Number(dom.volMusica.value) : 10;
+    if (!(pct >= 0)) pct = 10;
+    dom.audio.volume = Math.max(0, Math.min(1, pct / 100));
+    dom.audio.muted = !Estado.musica;
     dom.audio.addEventListener('play', actualizarBotonMusica);
     dom.audio.addEventListener('pause', actualizarBotonMusica);
-    var intento = function () {
-      var p = dom.audio.play();
-      if (p && p.catch) {
-        p.catch(function () {
-          document.addEventListener('pointerdown', function () {
-            dom.audio.play();
-            actualizarBotonMusica();
-          }, { once: true });
-        });
-      }
-      actualizarBotonMusica();
-    };
-    intento();
+    actualizarBotonMusica();
+    var p = dom.audio.play();
+    if (p && p.catch) {
+      p.catch(function () {
+        if (!Estado.musica) return;
+        // Reproducción automática bloqueada: se arranca en silencio, que
+        // siempre está permitido, y se desmutea al primer gesto. Así la
+        // música entra al instante en vez de esperar a cargar el archivo.
+        esperarGesto();
+        dom.audio.muted = true;
+        var q = dom.audio.play();
+        if (q && q.catch) q.catch(function () { /* ni en silencio */ });
+        actualizarBotonMusica();
+      });
+    }
   }
 
   function lanzarBienvenida() {
     var caja = document.getElementById('bienvenida');
     var texto = document.getElementById('bienvenida-texto');
+    var fuente = document.getElementById('bienvenida-fuente');
     if (!caja || !texto) return;
-    texto.textContent = t('bienvenida');
+    var frase = I18n.elegirBienvenida ? I18n.elegirBienvenida() : {
+      texto: t('bienvenida'),
+      fuente: t('bienvenidaFuente')
+    };
+    texto.textContent = frase.texto;
+    if (fuente) fuente.textContent = frase.fuente;
     function terminar() { caja.classList.add('hecha'); }
-    caja.addEventListener('animationend', terminar, { once: true });
-    global.setTimeout(terminar, 5800);
+    var figura = caja.querySelector('figure');
+    if (figura) {
+      figura.addEventListener('animationend', function (evento) {
+        if (evento.animationName === 'bienvenida-sale') terminar();
+      });
+    }
+    global.setTimeout(terminar, 4200);
   }
 
   var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo'];
@@ -1273,11 +1470,14 @@
     });
 
     dom.btnCreencias.addEventListener('click', function () {
-      if (Estado.modo === 'explorador') {
+      var abierto = Estado.panelAbierto && Estado.pestana === 'creencias';
+      if (abierto) {
+        Estado.panelAbierto = false;
         Estado.modo = 'libre';
-        Estado.tradiciones = [];
-        Estado.posturasSueltas = [];
-      } else {
+        Estado.emitir('panel');
+        return;
+      }
+      if (Estado.tradiciones.length || Estado.posturasSueltas.length) {
         Estado.modo = 'explorador';
       }
       abrirPestana('creencias');
@@ -1312,39 +1512,87 @@
       copiar(Router.enlace(Estado));
     });
 
-    dom.btnExportarMd.addEventListener('click', function () {
-      descargar('propuesta-posturas-creencias.md', Edits.aMarkdown(Estado.datos), 'text/markdown');
-      avisar('Markdown generado para enviarlo al equipo de mantenimiento.');
-    });
+    function exportarImagen(tipo) {
+      if (tipo === 'md') {
+        descargar('propuesta-posturas-creencias.md', Edits.aMarkdown(Estado.datos), 'text/markdown');
+        avisar('Markdown generado para enviarlo al equipo de mantenimiento.');
+        return;
+      }
+      if (tipo === 'svg') {
+        descargar('arbol-posturas.svg', Vista.exportarSVG(), 'image/svg+xml');
+        avisar(t('svgListo'));
+        return;
+      }
+      if (tipo === 'png') {
+        Vista.exportarPNG().then(function (blob) {
+          var url = URL.createObjectURL(blob);
+          var enlace = document.createElement('a');
+          enlace.href = url;
+          enlace.download = 'arbol-posturas.png';
+          document.body.appendChild(enlace);
+          enlace.click();
+          enlace.remove();
+          global.setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+          avisar(t('pngListo'));
+        }, function () { avisar(t('exportaFallo')); });
+      }
+    }
 
-    dom.btnExportarSvg.addEventListener('click', function () {
-      descargar('arbol-posturas.svg', Vista.exportarSVG(), 'image/svg+xml');
-      avisar(t('svgListo'));
-    });
-
-    dom.btnExportarPng.addEventListener('click', function () {
-      Vista.exportarPNG().then(function (blob) {
-        var url = URL.createObjectURL(blob);
-        var enlace = document.createElement('a');
-        enlace.href = url;
-        enlace.download = 'arbol-posturas.png';
-        document.body.appendChild(enlace);
-        enlace.click();
-        enlace.remove();
-        global.setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
-        avisar(t('pngListo'));
-      }, function () { avisar(t('exportaFallo')); });
-    });
+    if (dom.btnExportar && dom.menuExportar) {
+      dom.btnExportar.addEventListener('click', function (evento) {
+        evento.stopPropagation();
+        dom.menuExportar.classList.toggle('abierto');
+      });
+      dom.menuExportar.addEventListener('click', function (evento) {
+        var boton = evento.target.closest ? evento.target.closest('[data-export]') : null;
+        if (!boton) return;
+        exportarImagen(boton.getAttribute('data-export'));
+        dom.menuExportar.classList.remove('abierto');
+      });
+      document.addEventListener('click', function () {
+        dom.menuExportar.classList.remove('abierto');
+      });
+    }
 
     dom.btnIdioma.addEventListener('click', function () {
       I18n.alternar();
     });
 
     if (dom.btnMusica) {
+      var wrapMusica = document.getElementById('musica-wrap');
+      var ocultarVol = null;
+      if (wrapMusica) {
+        wrapMusica.addEventListener('mouseenter', function () {
+          global.clearTimeout(ocultarVol);
+          wrapMusica.classList.add('vol-abierto');
+        });
+        wrapMusica.addEventListener('mouseleave', function () {
+          global.clearTimeout(ocultarVol);
+          ocultarVol = global.setTimeout(function () {
+            wrapMusica.classList.remove('vol-abierto');
+          }, 380);
+        });
+      }
       dom.btnMusica.addEventListener('click', function () {
         if (!dom.audio) return;
-        dom.audio.muted = !dom.audio.muted;
-        if (dom.audio.paused && !dom.audio.muted) {
+        if (dom.audio.paused || dom.audio.muted) {
+          dom.audio.muted = false;
+          var p = dom.audio.play();
+          if (p && p.catch) p.catch(function () { /* autoplay */ });
+        } else {
+          dom.audio.muted = true;
+        }
+        actualizarBotonMusica();
+        dom.btnMusica.blur();
+      });
+    }
+    if (dom.volMusica) {
+      dom.volMusica.addEventListener('input', function () {
+        if (!dom.audio) return;
+        var pct = Number(dom.volMusica.value);
+        dom.audio.volume = Math.max(0, Math.min(1, pct / 100));
+        if (pct > 0 && dom.audio.muted) {
+          dom.audio.muted = false;
           var p = dom.audio.play();
           if (p && p.catch) p.catch(function () { /* autoplay */ });
         }
@@ -1394,10 +1642,12 @@
 
     registrarRedimensionPanel();
 
-    dom.chkCompacto.addEventListener('change', function () {
-      Estado.compactoCreencias = dom.chkCompacto.checked;
-      Estado.emitir('panel');
-    });
+    if (dom.btnCompacto) {
+      dom.btnCompacto.addEventListener('click', function () {
+        Estado.compactoCreencias = !Estado.compactoCreencias;
+        Estado.emitir('panel');
+      });
+    }
 
     dom.buscador.addEventListener('input', pintarListaCreencias);
 
@@ -1434,6 +1684,11 @@
     });
 
     dom.cuerpoDetalle.addEventListener('click', function (evento) {
+      var posturaChip = evento.target.closest ? evento.target.closest('[data-postura]') : null;
+      if (posturaChip && !posturaChip.getAttribute('data-accion')) {
+        pulsarPosturaFicha(posturaChip.getAttribute('data-postura'));
+        return;
+      }
       var etiqueta = evento.target.closest ? evento.target.closest('[data-tradicion]') : null;
       if (etiqueta && !etiqueta.getAttribute('data-accion')) {
         alternarTradicion(etiqueta.getAttribute('data-tradicion'));
@@ -1487,7 +1742,7 @@
       else if (tecla === 'r') { dom.btnReorganizar.click(); }
       else if (tecla === 'a') { ciclarDivulgacion(); }
       else if (tecla === 'e') { dom.btnCreencias.click(); }
-      else if (tecla === 'l') { dom.btnComparar.click(); }
+      else if (tecla === 'c') { dom.btnComparar.click(); }
       else if (tecla === 't') { dom.btnTema.click(); }
       else if (tecla === 'h' && Estado.resaltados.size) { dom.btnResaltados.click(); }
       else if (evento.key === 'Escape') {
@@ -1532,12 +1787,12 @@
       btnCreencias: document.getElementById('btn-creencias'),
       btnComparar: document.getElementById('btn-comparar'),
       btnCompartir: document.getElementById('btn-compartir'),
-      btnExportarMd: document.getElementById('btn-exportar-md'),
-      btnExportarSvg: document.getElementById('btn-exportar-svg'),
-      btnExportarPng: document.getElementById('btn-exportar-png'),
+      btnExportar: document.getElementById('btn-exportar'),
+      menuExportar: document.getElementById('menu-exportar'),
       btnIdioma: document.getElementById('btn-idioma'),
       rotuloIdioma: document.getElementById('rotulo-idioma'),
       btnMusica: document.getElementById('btn-musica'),
+      volMusica: document.getElementById('vol-musica'),
       audio: document.getElementById('audio-fondo'),
       btnTema: document.getElementById('btn-tema'),
       btnReiniciar: document.getElementById('btn-reiniciar'),
@@ -1548,7 +1803,7 @@
       btnRazonar: document.getElementById('btn-razonar'),
       btnLimpiarCreencias: document.getElementById('btn-limpiar-creencias'),
       btnIrComparar: document.getElementById('btn-ir-comparar'),
-      chkCompacto: document.getElementById('chk-compacto'),
+      btnCompacto: document.getElementById('btn-compacto'),
       panelAsa: document.getElementById('panel-asa'),
       btnCopiar: document.getElementById('btn-copiar'),
       btnCSV: document.getElementById('btn-csv'),
@@ -1651,12 +1906,14 @@
     I18n.suscribir(function () {
       I18n.aplicarDOM();
       actualizarRotuloIdioma();
+      Layout.limpiarCache();
       global.clearTimeout(recargaIdioma);
       recargaIdioma = global.setTimeout(function () {
-        Layout.limpiarCache();
         refrescar();
-      }, 280);
+      }, 40);
     });
+    sincronizarAltoBarra();
+    global.addEventListener('resize', sincronizarAltoBarra);
     registrarEventos();
 
     sincronizarHojaCuestionario();

@@ -83,7 +83,7 @@
         <span class="icono">✦</span><span class="rotulo" data-i18n="creencias">Creencias</span>
       </button>
       <button type="button" class="boton alternable" id="btn-comparar"
-              data-i18n-title="compararTitle" title="Comparar creencias en forma de lista (L)">
+              data-i18n-title="compararTitle" title="Comparar creencias en forma de lista (C)">
         <span class="icono">☰</span><span class="rotulo" data-i18n="comparar">Comparar</span>
       </button>
       <button type="button" class="boton" id="btn-razonar"
@@ -95,31 +95,33 @@
               data-i18n-title="compartirTitle" title="Copiar enlace con esta vista">
         <span class="icono">⇗</span><span class="rotulo" data-i18n="compartir">Compartir</span>
       </button>
-      <button type="button" class="boton" id="btn-exportar-md"
-              data-i18n-title="exportarTitle"
-              title="Exportar el árbol actual (con tus aportes) en Markdown">
-        <span class="icono">⇩</span><span class="rotulo" data-i18n="exportar">Exportar</span>
-      </button>
-      <button type="button" class="boton" id="btn-exportar-svg"
-              data-i18n-title="exportarSvgTitle" title="Descargar el diagrama visible como SVG">
-        <span class="icono">▭</span><span class="rotulo">SVG</span>
-      </button>
-      <button type="button" class="boton" id="btn-exportar-png"
-              data-i18n-title="exportarPngTitle" title="Descargar el diagrama visible como PNG">
-        <span class="icono">▢</span><span class="rotulo">PNG</span>
-      </button>
+      <div class="menu-desplegable" id="menu-exportar">
+        <button type="button" class="boton" id="btn-exportar"
+                data-i18n-title="exportarTitle" title="Exportar">
+          <span class="icono">⇩</span><span class="rotulo" data-i18n="exportar">Exportar</span>
+        </button>
+        <div class="menu-lista" role="menu">
+          <button type="button" data-export="md" data-i18n="exportarMd">Markdown (propuesta)</button>
+          <button type="button" data-export="svg" data-i18n="exportarSvg">Imagen SVG</button>
+          <button type="button" data-export="png" data-i18n="exportarPng">Imagen PNG</button>
+        </div>
+      </div>
       <span class="barra-separador"></span>
       <button type="button" class="boton icono-solo" id="btn-idioma"
               data-i18n-title="idiomaTitle" title="Cambiar idioma (español / English)">
         <span class="rotulo" id="rotulo-idioma">EN</span>
       </button>
-      <button type="button" class="boton icono-solo" id="btn-musica" hidden
-              data-i18n-title="muteTitle" title="Silenciar o reanudar la música">
-        <svg class="icono-nota" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 18.5a2.5 2.5 0 1 1-1.2-2.1V6.8l10-2.3v9.5a2.5 2.5 0 1 1-1.2-2.1V7.2L9 9.2z"></path>
-          <path class="nota-tache" d="M4 5 L20 19"></path>
-        </svg>
-      </button>
+      <div class="musica-wrap" id="musica-wrap">
+        <button type="button" class="boton icono-solo" id="btn-musica"
+                data-i18n-title="muteTitle" title="Silenciar o reanudar la música">
+          <svg class="icono-nota" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 18.5a2.5 2.5 0 1 1-1.2-2.1V6.8l10-2.3v9.5a2.5 2.5 0 1 1-1.2-2.1V7.2L9 9.2z"></path>
+            <path class="nota-tache" d="M4 5 L20 19"></path>
+          </svg>
+        </button>
+        <input type="range" id="vol-musica" class="vol-musica" min="0" max="100" value="10"
+               aria-label="Volumen">
+      </div>
       <button type="button" class="boton icono-solo" id="btn-tema"
               data-i18n-title="temaTitle" title="Cambiar entre tema oscuro y claro (T)">
         <span class="icono">◐</span>
@@ -171,17 +173,14 @@
                autocomplete="off" spellcheck="false">
       </div>
       <div class="panel-controles">
-        <label class="interruptor">
-          <input type="checkbox" id="chk-compacto" checked>
-          <span data-i18n="modoCompacto">Modo compacto</span>
-        </label>
+        <button type="button" class="mini-boton alternable" id="btn-compacto" data-i18n="modoCompacto">Modo compacto</button>
         <button type="button" class="mini-boton" id="btn-limpiar-creencias" data-i18n="limpiarSeleccion">Limpiar selección</button>
         <button type="button" class="mini-boton destacado" id="btn-ir-comparar" data-i18n="irComparar">Comparar →</button>
       </div>
       <div id="ficha-creencias"></div>
       <h3 class="panel-subtitulo" data-i18n="tradicionesTitulo">Tradiciones y sistemas de creencias</h3>
       <div id="lista-tradiciones"></div>
-      <h3 class="panel-subtitulo" data-i18n="posturasTitulo">Posturas sin afiliación</h3>
+      <h3 class="panel-subtitulo" data-i18n="posturasTitulo">Posturas</h3>
       <p class="panel-nota" id="nota-sin-afiliacion"></p>
       <div id="lista-posturas-sueltas"></div>
     </section>
@@ -223,7 +222,10 @@
   </div>
 
   <div id="bienvenida" aria-hidden="true">
-    <p id="bienvenida-texto"></p>
+    <figure>
+      <blockquote id="bienvenida-texto"></blockquote>
+      <figcaption id="bienvenida-fuente"></figcaption>
+    </figure>
   </div>
 
   <audio id="audio-fondo" loop preload="auto" src="music/006_lifeWave2k.mp3"></audio>
@@ -235,6 +237,7 @@
 
 <script src="js/state.js"></script>
 <script src="js/i18n.js"></script>
+<script src="js/traducciones-en.js"></script>
 <script src="js/definiciones.js"></script>
 <script src="js/edits.js"></script>
 <script src="js/layout.js"></script>

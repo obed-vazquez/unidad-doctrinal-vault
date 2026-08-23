@@ -190,6 +190,105 @@ comprobar('un nodo anclado conserva su posición exacta',
   conFijado.get('T:P1').x === 900 && conFijado.get('T:P1').y === 400,
   JSON.stringify(conFijado.get('T:P1')));
 
+console.log('\n== Nodos que cuelgan de cada nodo ==');
+const debajo = Arbol.descendientesPorNodo(grafo);
+comprobar('cada nodo tiene su conteo', debajo.size === grafo.nodos.size);
+const hojas = Array.from(grafo.nodos.keys())
+  .filter((id) => !grafo.nodos.get(id).salidas.length);
+comprobar('las hojas no cuelgan de nada',
+  hojas.length > 0 && hojas.every((id) => debajo.get(id) === 0));
+console.log('  desde la raíz cuelgan ' + debajo.get(grafo.raices[0]) + ' de '
+  + (grafo.nodos.size - 1) + ' nodos posibles');
+comprobar('desde la raíz cuelga casi todo el árbol, sin contarse a sí misma',
+  debajo.get(grafo.raices[0]) > 90 && debajo.get(grafo.raices[0]) < grafo.nodos.size,
+  String(debajo.get(grafo.raices[0])));
+// Convergencia: un nodo alcanzable por dos ramas se cuenta una sola vez, así
+// que el padre nunca suma más que la suma de sus hijos.
+let sinDobleConteo = true;
+grafo.nodos.forEach((nodo, id) => {
+  const suma = nodo.salidas.reduce((n, arista) => n + 1 + debajo.get(arista.hasta), 0);
+  if (debajo.get(id) > suma) sinDobleConteo = false;
+  nodo.salidas.forEach((arista) => {
+    if (debajo.get(id) <= debajo.get(arista.hasta)) sinDobleConteo = false;
+  });
+});
+comprobar('el conteo no duplica los nodos de las convergencias', sinDobleConteo);
+
+Arbol.Layout.limpiarCache();
+const nodoRaiz = grafo.nodos.get(grafo.raices[0]);
+const bandaRaiz = Arbol.Layout.componer(nodoRaiz, null,
+  { datos, descendientes: debajo }).partes.filter((p) => p.k === 'banda')[0];
+comprobar('la banda de la tarjeta lleva el conteo para dibujarlo a la derecha',
+  bandaRaiz.conteo === '↓ ' + debajo.get(nodoRaiz.id), String(bandaRaiz.conteo));
+Arbol.Layout.limpiarCache();
+const idBase = Array.from(grafo.nodos.keys()).filter((id) => id.charAt(0) === 'B')[0];
+const tipoBase = Arbol.Layout.componer(grafo.nodos.get(idBase), null,
+  { datos, descendientes: debajo }).partes.filter((p) => p.k === 'tipo')[0];
+comprobar('la postura de varios ejes también lo lleva en su fila de tipo',
+  tipoBase.conteo === '↓ ' + debajo.get(idBase), String(tipoBase.conteo));
+Arbol.Layout.limpiarCache();
+const hojaId = hojas.find((id) => grafo.nodos.get(id).postura);
+const partesHoja = Arbol.Layout.componer(grafo.nodos.get(hojaId), null,
+  { datos, descendientes: debajo }).partes;
+comprobar('una hoja no muestra ningún conteo',
+  partesHoja.every((p) => !p.conteo));
+Arbol.Layout.limpiarCache();
+
+console.log('\n== Peso de cada respuesta ==');
+const pesos = Arbol.pesoDeRespuestas(grafo);
+const aristasRespuesta = Array.from(grafo.aristas.values())
+  .filter((arista) => arista.tipo === 'respuesta');
+comprobar('cada respuesta del árbol tiene su peso',
+  Object.keys(pesos).length === aristasRespuesta.length,
+  Object.keys(pesos).length + ' de ' + aristasRespuesta.length);
+comprobar('el peso incluye el nodo destino y todo lo que cuelga de él',
+  aristasRespuesta.every((arista) => pesos[arista.preguntaId + ':' + arista.clave]
+    === 1 + debajo.get(arista.hasta)));
+// El nodo no cuenta dos veces lo que comparten sus ramas; los pesos sí, cada
+// uno por su lado, así que nunca pueden sumar menos que el conteo del padre.
+let pesosCoherentes = true;
+grafo.nodos.forEach((nodo, id) => {
+  const salidas = nodo.salidas.filter((arista) => arista.tipo === 'respuesta');
+  if (!salidas.length) return;
+  const suma = salidas.reduce(
+    (n, arista) => n + pesos[arista.preguntaId + ':' + arista.clave], 0);
+  if (suma < debajo.get(id)) pesosCoherentes = false;
+});
+comprobar('los pesos hermanos nunca suman menos que el conteo de su nodo', pesosCoherentes);
+
+Arbol.Layout.limpiarCache();
+const contextoBotones = { datos, descendientes: debajo, pesosRespuesta: pesos };
+const botonesRaiz = Arbol.Layout.componer(nodoRaiz, null, contextoBotones)
+  .partes.filter((p) => p.k === 'botones')[0];
+const listaBotones = botonesRaiz.filas.reduce((todos, fila) => todos.concat(fila), []);
+console.log('  ' + listaBotones.map((b) => b.texto + ' ' + b.conteo
+  + (b.densa ? ' (más poblada)' : '')).join(' · '));
+comprobar('cada botón anuncia los nodos que abre',
+  listaBotones.length === 2 && listaBotones.every(
+    (boton) => boton.conteo === '↓ ' + pesos['Q1:' + boton.clave]));
+comprobar('el botón reserva sitio para su conteo',
+  listaBotones.every((boton) => boton.anchoConteo > 0
+    && boton.ancho > boton.anchoConteo + 26));
+comprobar('solo la rama más poblada queda marcada',
+  listaBotones.filter((boton) => boton.densa).length === 1
+  && listaBotones.filter((boton) => boton.densa)[0].peso
+    === Math.max.apply(null, listaBotones.map((boton) => boton.peso)));
+// Sin empates que valgan: si dos ramas pesan igual, ninguna se distingue.
+const preguntaEmpate = JSON.parse(JSON.stringify(datos));
+const respuestasQ1 = preguntaEmpate.questions.Q1.answers;
+const empateGrafo = Arbol.construirGrafo(preguntaEmpate);
+const pesosEmpate = Arbol.pesoDeRespuestas(empateGrafo);
+pesosEmpate['Q1:' + respuestasQ1[0].key] = pesosEmpate['Q1:' + respuestasQ1[1].key];
+Arbol.Layout.limpiarCache();
+const botonesEmpate = Arbol.Layout.componer(
+  empateGrafo.nodos.get(empateGrafo.raices[0]), null,
+  { datos: preguntaEmpate, descendientes: Arbol.descendientesPorNodo(empateGrafo),
+    pesosRespuesta: pesosEmpate }
+).partes.filter((p) => p.k === 'botones')[0];
+comprobar('un empate no destaca ninguna rama',
+  botonesEmpate.filas[0].every((boton) => !boton.densa));
+Arbol.Layout.limpiarCache();
+
 console.log('\n== Búsqueda inversa por tradición ==');
 const tradiciones = Arbol.Busqueda.listaTradiciones(datos);
 comprobar('siete tradiciones en el índice', tradiciones.length === 7, String(tradiciones.length));
@@ -261,13 +360,85 @@ comprobar('el CSV tiene una fila por pregunta única',
 comprobar('el JSON exportado es válido',
   !!JSON.parse(Arbol.Busqueda.aJSON(lista, sujetos, datos)).recorrido);
 
-console.log('\n== Posturas sin afiliación ==');
+console.log('\n== Lista de posturas del panel ==');
 const sueltas = Arbol.Busqueda.listaPosturasSueltas(datos, grafo);
-console.log('  ' + sueltas.length + ' posturas nombradas sin tradición registrada');
+console.log('  ' + sueltas.length + ' posturas nombradas con respuestas asignadas');
 comprobar('las posturas sin nombre quedan fuera de la lista',
   sueltas.every((p) => p.nombre !== '?'));
-comprobar('las posturas con tradición no se repiten aquí',
-  sueltas.every((p) => (datos.postures[p.posturaIds[0]].traditions || []).length === 0));
+comprobar('las posturas afiliadas también se pueden elegir una por una',
+  sueltas.some((p) => (datos.postures[p.posturaIds[0]].traditions || []).length > 0),
+  'ninguna postura con tradición llegó a la lista');
+comprobar('ninguna postura aparece dos veces',
+  new Set(sueltas.map((p) => p.posturaIds[0])).size === sueltas.length);
+comprobar('las tradiciones salen en orden alfabético',
+  tradiciones.map((t) => t.nombre).join('|')
+  === tradiciones.map((t) => t.nombre).slice().sort((a, b) => a.localeCompare(b, 'es')).join('|'),
+  tradiciones.map((t) => t.nombre).join(' | '));
+
+console.log('\n== Varias tradiciones por una misma postura ==');
+// El documento todavía no tiene ninguna, así que se fabrica el caso: seis
+// tradiciones sobre P97, una de ellas ya existente (Catolicismo, que hoy solo
+// sostiene P71 y con adhesión tentativa) y otra tentativa.
+const modeloVarias = JSON.parse(JSON.stringify(datos));
+const NUEVAS = ['Catolicismo', 'Luteranismo', 'Anglicanismo', 'Metodismo', 'Presbiterianismo'];
+modeloVarias.postures.P97.traditions = [
+  { name: 'Ortodoxia calcedonense', is_tentative: false, is_note: false, aliases: [] },
+  { name: 'Catolicismo', is_tentative: false, is_note: false, aliases: [] },
+  { name: 'Luteranismo', is_tentative: false, is_note: false, aliases: ['Iglesia luterana'] },
+  { name: 'Anglicanismo', is_tentative: true, is_note: false, aliases: [] },
+  { name: 'Metodismo', is_tentative: false, is_note: false, aliases: [] },
+  { name: 'Presbiterianismo', is_tentative: false, is_note: false, aliases: [] }
+];
+const conVarias = Arbol.Edits.aplicar(modeloVarias, Arbol.Edits.vacio());
+const indiceVarias = conVarias.traditions_index;
+comprobar('todas las tradiciones de la postura entran en el índice',
+  NUEVAS.every((n) => indiceVarias[n] && indiceVarias[n].posture_ids.indexOf('P97') !== -1),
+  NUEVAS.filter((n) => !indiceVarias[n]).join(', '));
+comprobar('una tradición que ya existía suma la postura nueva sin perder las viejas',
+  indiceVarias.Catolicismo.posture_ids.length === 2
+  && indiceVarias.Catolicismo.posture_ids.indexOf('P71') !== -1,
+  indiceVarias.Catolicismo.posture_ids.join(','));
+comprobar('basta una adhesión firme para que la tradición no sea tentativa',
+  indiceVarias.Catolicismo.tentative === false,
+  'Catolicismo salió tentative=' + indiceVarias.Catolicismo.tentative);
+comprobar('una tradición con todas sus adhesiones tentativas sí lo es',
+  indiceVarias.Anglicanismo.tentative === true && indiceVarias.SUD.tentative === true);
+comprobar('los alias de la adhesión llegan al índice',
+  indiceVarias.Luteranismo.aliases.indexOf('Iglesia luterana') !== -1,
+  indiceVarias.Luteranismo.aliases.join(','));
+
+const grafoVarias = Arbol.construirGrafo(conVarias);
+const tradsVarias = Arbol.Busqueda.listaTradiciones(conVarias);
+comprobar('el panel lista las once tradiciones resultantes', tradsVarias.length === 11,
+  String(tradsVarias.length));
+const catolicismo = tradsVarias.find((t) => t.nombre === 'Catolicismo');
+const caminoCatolicismo = Arbol.Busqueda.resolver(grafoVarias, conVarias, catolicismo);
+comprobar('una tradición con dos posturas en ramas distintas resuelve ambas',
+  caminoCatolicismo.nodos.has(grafoVarias.idDePostura('P71'))
+  && caminoCatolicismo.nodos.has(grafoVarias.idDePostura('P97'))
+  && caminoCatolicismo.sinCamino.length === 0,
+  caminoCatolicismo.sinCamino.join(','));
+comprobar('la postura compartida sigue apareciendo una sola vez en la lista',
+  Arbol.Busqueda.listaPosturasSueltas(conVarias, grafoVarias)
+    .filter((p) => p.posturaIds[0] === 'P97').length === 1);
+
+comprobar('el reparto de marcas deja un «+N» cuando no caben todas',
+  Arbol.Layout.marcasTradicion(6).puntos === 3 && Arbol.Layout.marcasTradicion(6).resto === 3
+  && Arbol.Layout.marcasTradicion(4).resto === 0,
+  JSON.stringify(Arbol.Layout.marcasTradicion(6)));
+
+Arbol.Layout.limpiarCache();
+const nodoP97Antes = grafo.nodos.get(grafo.idDePostura('P97'));
+const altoUna = Arbol.Layout.componer(nodoP97Antes, null, { datos }).alto;
+Arbol.Layout.limpiarCache();
+const nodoP97 = grafoVarias.nodos.get(grafoVarias.idDePostura('P97'));
+const compuestoVarias = Arbol.Layout.componer(nodoP97, null, { datos: conVarias });
+const chipsVarias = compuestoVarias.partes.filter((p) => p.k === 'chips')[0];
+comprobar('el nodo crece para mostrar los seis distintivos, sin descartar ninguno',
+  compuestoVarias.alto > altoUna && isFinite(compuestoVarias.alto)
+  && chipsVarias && chipsVarias.filas.reduce((n, fila) => n + fila.length, 0) === 6,
+  'alto ' + altoUna + ' → ' + compuestoVarias.alto);
+Arbol.Layout.limpiarCache();
 
 console.log('\n== Persistencia ==');
 Arbol.Estado.datos = datos;
@@ -382,7 +553,7 @@ comprobar('los resaltados viajan íntegros',
 comprobar('los nombres con «/» y acentos sobreviven a la ida y vuelta',
   destino.tradiciones.indexOf('Islam Suní/Chiita') !== -1
   && destino.tradiciones.indexOf('SUD') !== -1, destino.tradiciones.join(' | '));
-comprobar('las posturas sin afiliación viajan', destino.posturasSueltas[0] === 'P11');
+comprobar('las posturas elegidas una por una viajan', destino.posturasSueltas[0] === 'P11');
 comprobar('modo, vista, tema y árbol completo viajan',
   destino.modo === 'explorador' && destino.vista === 'lista'
   && destino.tema === 'claro' && destino.arbolCompleto === true);

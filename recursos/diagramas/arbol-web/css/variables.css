@@ -28,6 +28,10 @@
   --nodo-encabezado: #1e2b3c;
   --nodo-encabezado-texto: #cfe0f5;
 
+  /* Respuesta que abre la rama más poblada: un tono apenas más claro */
+  --rama-densa: #1b2836;
+  --rama-densa-borde: #3d4f66;
+
   /* Postura base y preguntas desgajadas (tipo 2): acento ámbar atenuado */
   --eje-fondo: #241d10;
   --eje-borde: #6d5426;
@@ -79,6 +83,9 @@
   --nodo-borde: #ccd7e5;
   --nodo-encabezado: #e8eff8;
   --nodo-encabezado-texto: #22405f;
+
+  --rama-densa: #e9eff8;
+  --rama-densa-borde: #b9c8dc;
 
   --eje-fondo: #fdf6e6;
   --eje-borde: #d8b872;
