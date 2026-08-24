@@ -183,7 +183,7 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo
-                            -  Consustancialismo -> ¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina? (¿Existe un Hijo Eterno?)
+                            -  Consustancialismo -> ¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?)
                               - No: Modalismo / Unicitarismo / Unicitarianismo
                               - Sí: Trinitarianismo
                                 - Trinitarianismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?
@@ -192,9 +192,9 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                     - ? -> ¿Jesús tuvo una mente/alma humana racional completa?
                                       - No: Apolinarismo
                                       - Sí: ?
-                                        - ? -> ¿Son el Verbo eterno y el hombre Jesús dos alguien distintos, unidos tan estrechamente que actúan y son honrados como uno solo, pero de modo que lo que le ocurre al hombre no le ocurre a Dios: Jesús muere sin que Dios muera, y María es madre del hombre y no de Dios? (¿Dios habitaba dentro del hombre Jesús como en un templo, sin ser él mismo quien nació y murió?)
-                                          - Sí: Nestorianismo
-                                          - No, un solo, una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer: Monoprosopismo
+                                        - ? -> ¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)
+                                          - No: Dualidad hipostática de Cristo* {Nestorianismo}
+                                          - Sí: Monoprosopismo
                                             - Monoprosopismo -> ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)
                                               - Sí, subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino: Monofisismo / Eutiquianismo
                                               - No, Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo (también Miafisismo)

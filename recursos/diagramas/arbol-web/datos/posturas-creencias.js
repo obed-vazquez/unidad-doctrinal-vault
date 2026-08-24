@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-23T21:39:05Z",
+  "generated_at": "2026-08-24T23:07:45Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -1262,9 +1262,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q44": {
       "id": "Q44",
-      "formal_text": "¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina?",
-      "colloquial_hint": "¿Existe un Hijo Eterno?",
-      "full_text": "¿Se distinguen el Padre y el Hijo de manera permanente y simultánea, pudiendo uno dirigirse al otro como un yo a un tú, en lugar de ser el mismo y único sujeto manifestándose sucesivamente bajo modos o papeles distintos, aun compartiendo una sola e idéntica substancia divina? (¿Existe un Hijo Eterno?)",
+      "formal_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles?",
+      "colloquial_hint": "¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?",
+      "full_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?)",
       "source_line": 186,
       "origin_posture_ids": [
         "P85"
@@ -1349,9 +1349,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q47": {
       "id": "Q47",
-      "formal_text": "¿Son el Verbo eterno y el hombre Jesús dos alguien distintos, unidos tan estrechamente que actúan y son honrados como uno solo, pero de modo que lo que le ocurre al hombre no le ocurre a Dios: Jesús muere sin que Dios muera, y María es madre del hombre y no de Dios?",
-      "colloquial_hint": "¿Dios habitaba dentro del hombre Jesús como en un templo, sin ser él mismo quien nació y murió?",
-      "full_text": "¿Son el Verbo eterno y el hombre Jesús dos alguien distintos, unidos tan estrechamente que actúan y son honrados como uno solo, pero de modo que lo que le ocurre al hombre no le ocurre a Dios: Jesús muere sin que Dios muera, y María es madre del hombre y no de Dios? (¿Dios habitaba dentro del hombre Jesús como en un templo, sin ser él mismo quien nació y murió?)",
+      "formal_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas?",
+      "colloquial_hint": "¿Es la misma persona quien perdonó pecados y quien murió en la cruz?",
+      "full_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)",
       "source_line": 195,
       "origin_posture_ids": [
         "P91"
@@ -1360,17 +1360,17 @@ window.__ARBOL_POSTURAS__ = {
       "answers": [
         {
           "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
+          "label": "No",
+          "full_label": "No",
           "gloss": null,
           "target_posture_id": "P92",
           "source_line": 196
         },
         {
           "key": "B",
-          "label": "No",
-          "full_label": "No, un solo una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer",
-          "gloss": "un solo una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
           "target_posture_id": "P93",
           "source_line": 197
         }
@@ -1427,8 +1427,8 @@ window.__ARBOL_POSTURAS__ = {
         {
           "key": "B",
           "label": "Sí",
-          "full_label": "Sí, el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino.",
-          "gloss": "el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino.",
+          "full_label": "Sí, el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
+          "gloss": "el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
           "target_posture_id": "P97",
           "source_line": 203
         }
@@ -2644,11 +2644,18 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P92": {
       "id": "P92",
-      "label": "Nestorianismo",
+      "label": "Dualidad hipostática de Cristo*",
       "is_unnamed": false,
-      "is_suggested": false,
+      "is_suggested": true,
       "is_uncertain": false,
-      "traditions": [],
+      "traditions": [
+        {
+          "name": "Nestorianismo",
+          "is_tentative": false,
+          "is_note": false,
+          "aliases": []
+        }
+      ],
       "notes": [],
       "wikilinks": [],
       "question_axes": []
@@ -2849,6 +2856,14 @@ window.__ARBOL_POSTURAS__ = {
       ],
       "tentative": false
     },
+    "Nestorianismo": {
+      "canonical_name": "Nestorianismo",
+      "aliases": [],
+      "posture_ids": [
+        "P92"
+      ],
+      "tentative": false
+    },
     "Ortodoxia calcedonense": {
       "canonical_name": "Ortodoxia calcedonense",
       "aliases": [],
@@ -2869,7 +2884,7 @@ window.__ARBOL_POSTURAS__ = {
   "stats": {
     "questions": 51,
     "postures": 103,
-    "traditions": 7,
+    "traditions": 8,
     "unnamed_postures": 54,
     "convergences": 2,
     "source_lines": 210

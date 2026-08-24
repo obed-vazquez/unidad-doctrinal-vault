@@ -493,8 +493,8 @@
       }
     },
     "Q44": {
-      "formal": "Do the Father and the Son distinguish themselves permanently and simultaneously, being able to address each other as an I to a you, instead of being the same and unique subject manifesting successively under different modes or roles, even sharing a single and identical divine substance?",
-      "colloquial": "Is there an Eternal Son?",
+      "formal": "Are the Father and the Son personally distinct subjects, who coexist simultaneously and eternally and can relate to each other as an I and a you, although they share the same and identical divine substance, rather than being a single subject who manifests successively under different modes or roles?",
+      "colloquial": "Are the Father and the Son really two distinct persons, even though they are both fully God?",
       "answers": {
         "A": {
           "label": "No"
@@ -528,15 +528,14 @@
       }
     },
     "Q47": {
-      "formal": "Are the eternal Word and the man Jesus two distinct persons, united so closely that they act and are honored as one, but so that what happens to man does not happen to God: Jesus dies without God dying, and Mary is the mother of man and not of God?",
-      "colloquial": "Did God dwell within the man Jesus as in a temple, without himself being the one who was born and died?",
+      "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
+      "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
         "A": {
-          "label": "Yes"
+          "label": "No"
         },
         "B": {
-          "label": "No",
-          "gloss": "one and the same person who is said at the same time to be begotten of the Father and born of a woman"
+          "label": "Yes"
         }
       }
     },
@@ -564,7 +563,7 @@
         },
         "B": {
           "label": "Yes",
-          "gloss": "“Willing” is a faculty of nature-an integral humanity includes its own will, which freely conforms to the divine."
+          "gloss": "“will” is a faculty of nature - an integral humanity includes its own will, which freely conforms to the divine"
         }
       }
     },
@@ -631,7 +630,7 @@
     "P87": "Trinitarianism",
     "P88": "Docetism",
     "P90": "Apollinarianism",
-    "P92": "Nestorianism",
+    "P92": "Christ's Hypostatic Duality *",
     "P93": "Monoprosopism",
     "P94": "Monophysicism / Eutychianism",
     "P95": "Diophysicism / Chalcedonianism (also Miaphysicism)",
@@ -648,6 +647,7 @@
     "Islam Suní/Chiita": "Sunni/Shia Islam",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",
     "Judaísmo rabínico/talmúdico": "Rabbinic/Talmudic Judaism",
+    "Nestorianismo": "Nestorianism",
     "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
     "SUD": "Sud"
   }
