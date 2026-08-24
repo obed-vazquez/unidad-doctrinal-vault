@@ -367,7 +367,16 @@
       var anterior = this.divulgacion;
       var siguiente = normalizarDivulgacion(valor);
       if (siguiente === 'exploracion' && anterior !== 'exploracion') {
-        this.sembrarExpandidos(anterior);
+        /* Desde el árbol completo no sembramos todos los nodos: eso dejaba
+           el diagrama entero abierto y, al ocultar una rama, sus nietos
+           seguían marcados como expandidos. Si ya había un conjunto de
+           exploración, se conserva; si no, se parte del recorrido del
+           cuestionario. */
+        if (anterior === 'completo') {
+          if (!this.expandidos.size) this.sembrarExpandidos('cuestionario');
+        } else {
+          this.sembrarExpandidos(anterior);
+        }
       }
       this.divulgacion = siguiente;
       this.arbolCompleto = siguiente === 'completo';
@@ -391,9 +400,26 @@
       this.expandidos = sembrados;
     },
 
+    /* Ocultar ramas olvida también a los nietos: si no, volver a expandir
+       reabría el subárbol tal como estaba (a menudo el árbol completo).
+       Un nodo que sigue a la vista por otra rama conservada no se toca. */
+    olvidarExpandidosOcultos: function () {
+      if (!this.grafo) return;
+      var visibles = nodosVisibles(this.grafo, this.respuestasEfectivas(),
+        'exploracion', this.expandidos);
+      var self = this;
+      Array.from(this.expandidos).forEach(function (id) {
+        if (!visibles.has(id)) self.expandidos.delete(id);
+      });
+    },
+
     alternarExpandido: function (nodoId) {
-      if (this.expandidos.has(nodoId)) this.expandidos.delete(nodoId);
-      else this.expandidos.add(nodoId);
+      if (this.expandidos.has(nodoId)) {
+        this.expandidos.delete(nodoId);
+        this.olvidarExpandidosOcultos();
+      } else {
+        this.expandidos.add(nodoId);
+      }
       this.emitir('expandir');
     },
 

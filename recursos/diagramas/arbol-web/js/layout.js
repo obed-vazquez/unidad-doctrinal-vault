@@ -43,8 +43,8 @@
   var ALTO_CHIP_TRADICION = 22;
   var GAP_CHIP = 6;
 
-  var GAP_X = 40;
-  var SEP_RANGO = 82;
+  var GAP_X = 52;
+  var SEP_RANGO = 96;
 
   var lienzoMedida = document.createElement('canvas');
   var ctxMedida = lienzoMedida.getContext('2d');
@@ -282,6 +282,11 @@
       return y + lineasFuera.length * (textosFuera.coloquial ? LH_COLOQUIAL : LH_FORMAL);
     }
 
+    if (contexto && contexto.divulgacion === 'completo') {
+      y = partesPreguntaDestacada(pregunta, anchoInterno, y, partes);
+      return y;
+    }
+
     if (respuesta == null) {
       y = partesPreguntaDestacada(pregunta, anchoInterno, y, partes);
       y += 12;
@@ -500,6 +505,166 @@
     });
   }
 
+  function ordenarFilasPorX(porRango, posiciones) {
+    porRango.forEach(function (fila) {
+      fila.sort(function (a, b) {
+        return posiciones.get(a).x - posiciones.get(b).x;
+      });
+    });
+  }
+
+  /* Una posición fijada puede desplazar un subárbol sobre otra caja. Las
+     iteraciones de barycentro no pueden corregir ese caso porque respetan el
+     anclaje; despejamos cada nivel después de aplicarlos, moviendo solo las
+     cajas no fijadas cuando sea posible. Varias pasadas cubren el empuje a
+     la izquierda (nodo anclado a la derecha) y los anchos distintos. */
+  function separarCajasPorNivel(porRango, tamanos, posiciones, fijados) {
+    porRango.forEach(function (fila) {
+      var guardia = 0;
+      var estable = false;
+      while (!estable && guardia++ < 24) {
+        estable = true;
+        var orden = fila.slice().sort(function (a, b) {
+          return posiciones.get(a).x - posiciones.get(b).x;
+        });
+        for (var i = 1; i < orden.length; i++) {
+          var anteriorId = orden[i - 1];
+          var actualId = orden[i];
+          var anterior = posiciones.get(anteriorId);
+          var actual = posiciones.get(actualId);
+          var minimo = anterior.x + tamanos.get(anteriorId).ancho + GAP_X;
+          if (actual.x >= minimo) continue;
+
+          var desplazamiento = minimo - actual.x;
+          var actualFijado = Object.prototype.hasOwnProperty.call(fijados, actualId);
+          var anteriorFijado = Object.prototype.hasOwnProperty.call(fijados, anteriorId);
+          if (actualFijado && anteriorFijado) continue;
+          if (actualFijado && !anteriorFijado) {
+            anterior.x -= desplazamiento;
+          } else {
+            actual.x += desplazamiento;
+          }
+          estable = false;
+        }
+      }
+    });
+  }
+
+  /* Los padres se centran sobre el span de sus hijos para que no queden
+     apiñados arriba mientras abajo el abanico obliga a las flechas a cruzarse. */
+  function alinearPadresAHijos(porRango, salidas, tamanos, posiciones, fijados) {
+    for (var r = porRango.length - 2; r >= 0; r--) {
+      var fila = porRango[r];
+      var deseados = fila.map(function (id) {
+        if (Object.prototype.hasOwnProperty.call(fijados, id)) {
+          return posiciones.get(id).x;
+        }
+        var hijos = (salidas.get(id) || []).filter(function (h) {
+          return posiciones.has(h);
+        });
+        if (!hijos.length) return posiciones.get(id).x;
+        var minC = Infinity;
+        var maxC = -Infinity;
+        hijos.forEach(function (h) {
+          var p = posiciones.get(h);
+          minC = Math.min(minC, p.x);
+          maxC = Math.max(maxC, p.x + tamanos.get(h).ancho);
+        });
+        return (minC + maxC) / 2 - tamanos.get(id).ancho / 2;
+      });
+      colocarFila(fila, deseados, tamanos, posiciones);
+    }
+  }
+
+  function orientacion(a, b, c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  }
+
+  function aristasSeCruzan(aristaA, aristaB, tamanos, posiciones) {
+    if (aristaA.desde === aristaB.desde || aristaA.desde === aristaB.hasta
+      || aristaA.hasta === aristaB.desde || aristaA.hasta === aristaB.hasta) return false;
+    var desdeA = posiciones.get(aristaA.desde);
+    var hastaA = posiciones.get(aristaA.hasta);
+    var desdeB = posiciones.get(aristaB.desde);
+    var hastaB = posiciones.get(aristaB.hasta);
+    if (!desdeA || !hastaA || !desdeB || !hastaB) return false;
+    var a = {
+      x: desdeA.x + tamanos.get(aristaA.desde).ancho / 2,
+      y: desdeA.y + tamanos.get(aristaA.desde).alto
+    };
+    var b = { x: hastaA.x + tamanos.get(aristaA.hasta).ancho / 2, y: hastaA.y };
+    var c = {
+      x: desdeB.x + tamanos.get(aristaB.desde).ancho / 2,
+      y: desdeB.y + tamanos.get(aristaB.desde).alto
+    };
+    var d = { x: hastaB.x + tamanos.get(aristaB.hasta).ancho / 2, y: hastaB.y };
+    return orientacion(a, b, c) * orientacion(a, b, d) < 0
+      && orientacion(c, d, a) * orientacion(c, d, b) < 0;
+  }
+
+  function contarCruces(aristas, tamanos, posiciones) {
+    var cruces = 0;
+    for (var i = 0; i < aristas.length; i++) {
+      for (var j = i + 1; j < aristas.length; j++) {
+        if (aristasSeCruzan(aristas[i], aristas[j], tamanos, posiciones)) cruces++;
+      }
+    }
+    return cruces;
+  }
+
+  function segmentosDe(salidas) {
+    var segs = [];
+    salidas.forEach(function (destinos, desde) {
+      destinos.forEach(function (hasta) {
+        segs.push({ desde: desde, hasta: hasta });
+      });
+    });
+    return segs;
+  }
+
+  /* El barycentro da un buen orden inicial, pero puede dejar inversiones
+     cuando hay aristas que saltan niveles o convergencias. Intercambiamos
+     vecinos solo si el cambio reduce cruces globales y nunca movemos un nodo
+     que el usuario haya fijado. El intercambio respeta anchos: un swap de
+     x crudo entre cajas distintas reintroducía solapes. */
+  function reducirCruces(segmentos, porRango, tamanos, posiciones, fijados) {
+    var actual = contarCruces(segmentos, tamanos, posiciones);
+    for (var pasada = 0; pasada < 12; pasada++) {
+      var cambio = false;
+      porRango.forEach(function (fila) {
+        var orden = fila.slice().sort(function (a, b) {
+          return posiciones.get(a).x - posiciones.get(b).x;
+        });
+        for (var i = 0; i < orden.length - 1; i++) {
+          var izquierda = orden[i];
+          var derecha = orden[i + 1];
+          if (Object.prototype.hasOwnProperty.call(fijados, izquierda)
+            || Object.prototype.hasOwnProperty.call(fijados, derecha)) continue;
+          var posicionIzquierda = posiciones.get(izquierda);
+          var posicionDerecha = posiciones.get(derecha);
+          var xIzq = posicionIzquierda.x;
+          var xDer = posicionDerecha.x;
+          posicionDerecha.x = xIzq;
+          posicionIzquierda.x = xIzq + tamanos.get(derecha).ancho + GAP_X;
+          var nuevo = contarCruces(segmentos, tamanos, posiciones);
+          if (nuevo < actual) {
+            actual = nuevo;
+            cambio = true;
+            var tmp = orden[i];
+            orden[i] = orden[i + 1];
+            orden[i + 1] = tmp;
+          } else {
+            posicionIzquierda.x = xIzq;
+            posicionDerecha.x = xDer;
+          }
+        }
+        for (var k = 0; k < orden.length; k++) fila[k] = orden[k];
+      });
+      if (!cambio) break;
+    }
+    return actual;
+  }
+
   function mediana(valores) {
     if (!valores.length) return null;
     var orden = valores.slice().sort(function (a, b) { return a - b; });
@@ -563,12 +728,47 @@
     for (var r = 0; r <= maxRango; r++) porRango.push([]);
     ordenInicial.forEach(function (id) { porRango[rango.get(id)].push(id); });
 
+    /* Aristas que saltan rangos se parten con nodos virtuales. Sin eso, la
+       reducción de cruces no ve el tramo intermedio y dos flechas pueden
+       cruzarse aunque ningún par de vecinos del mismo nivel esté invertido. */
+    tamanos = new Map(tamanos);
+    var dummies = [];
+    aristasIds.forEach(function (aristaId) {
+      var arista = grafo.aristas.get(aristaId);
+      if (!arista || !rango.has(arista.desde) || !rango.has(arista.hasta)) return;
+      var r0 = rango.get(arista.desde);
+      var r1 = rango.get(arista.hasta);
+      if (r1 <= r0 + 1) return;
+      var origSal = salidas.get(arista.desde);
+      var ix = origSal.indexOf(arista.hasta);
+      if (ix !== -1) origSal.splice(ix, 1);
+      var origEnt = entradas.get(arista.hasta);
+      var iy = origEnt.indexOf(arista.desde);
+      if (iy !== -1) origEnt.splice(iy, 1);
+      var prev = arista.desde;
+      for (var rd = r0 + 1; rd < r1; rd++) {
+        var did = '__d:' + aristaId + ':' + rd;
+        tamanos.set(did, { ancho: 16, alto: 0 });
+        rango.set(did, rd);
+        salidas.set(did, []);
+        entradas.set(did, []);
+        salidas.get(prev).push(did);
+        entradas.get(did).push(prev);
+        porRango[rd].push(did);
+        dummies.push(did);
+        prev = did;
+      }
+      salidas.get(prev).push(arista.hasta);
+      entradas.get(arista.hasta).push(prev);
+    });
+    dummies.forEach(function (id) { topologico.push(id); });
+
     function indices(fila) {
       var mapa = new Map();
       fila.forEach(function (id, indice) { mapa.set(id, indice); });
       return mapa;
     }
-    for (var paso = 0; paso < 6; paso++) {
+    for (var paso = 0; paso < 32; paso++) {
       var haciaAbajo = paso % 2 === 0;
       for (var nivel = 1; nivel <= maxRango; nivel++) {
         var r2 = haciaAbajo ? nivel : maxRango - nivel;
@@ -593,6 +793,7 @@
 
     var posiciones = new Map();
     visibles.forEach(function (id) { posiciones.set(id, { x: 0, y: 0 }); });
+    dummies.forEach(function (id) { posiciones.set(id, { x: 0, y: 0 }); });
 
     var alturaRango = porRango.map(function (fila) {
       return fila.reduce(function (maximo, id) {
@@ -606,6 +807,7 @@
       return valor;
     });
     visibles.forEach(function (id) { posiciones.get(id).y = yPorRango[rango.get(id)]; });
+    dummies.forEach(function (id) { posiciones.get(id).y = yPorRango[rango.get(id)]; });
 
     porRango.forEach(function (fila) {
       var x = 0;
@@ -633,10 +835,47 @@
       }
     }
 
+    var segs = segmentosDe(salidas);
+    reducirCruces(segs, porRango, tamanos, posiciones, fijados || {});
+    ordenarFilasPorX(porRango, posiciones);
+    separarCajasPorNivel(porRango, tamanos, posiciones, fijados || {});
+    alinearPadresAHijos(porRango, salidas, tamanos, posiciones, fijados || {});
+    for (var nivelHijo = 1; nivelHijo <= maxRango; nivelHijo++) {
+      var filaHijos = porRango[nivelHijo];
+      if (!filaHijos.length) continue;
+      var deseadosHijos = filaHijos.map(function (id) {
+        if (Object.prototype.hasOwnProperty.call(fijados || {}, id)) {
+          return posiciones.get(id).x;
+        }
+        var vecinos = entradas.get(id);
+        if (!vecinos.length) return posiciones.get(id).x;
+        var suma = vecinos.reduce(function (total, vecino) {
+          return total + posiciones.get(vecino).x + tamanos.get(vecino).ancho / 2;
+        }, 0);
+        return suma / vecinos.length - tamanos.get(id).ancho / 2;
+      });
+      colocarFila(filaHijos, deseadosHijos, tamanos, posiciones);
+    }
+    separarCajasPorNivel(porRango, tamanos, posiciones, fijados || {});
+    reducirCruces(segs, porRango, tamanos, posiciones, fijados || {});
+    /* La flecha se traza de nodo real a nodo real, no por los dummies.
+       Hay que deshacer también esos cruces de segmento largo. */
+    var segsReales = [];
+    aristasIds.forEach(function (id) {
+      var arista = grafo.aristas.get(id);
+      if (arista && visibles.has(arista.desde) && visibles.has(arista.hasta)) {
+        segsReales.push(arista);
+      }
+    });
+    reducirCruces(segsReales, porRango, tamanos, posiciones, fijados || {});
+    ordenarFilasPorX(porRango, posiciones);
+    separarCajasPorNivel(porRango, tamanos, posiciones, fijados || {});
+
     var raizVisible = grafo.raices.filter(function (id) { return visibles.has(id); })[0];
     if (raizVisible) {
       var desplazamiento = posiciones.get(raizVisible).x + tamanos.get(raizVisible).ancho / 2;
       visibles.forEach(function (id) { posiciones.get(id).x -= desplazamiento; });
+      dummies.forEach(function (id) { posiciones.get(id).x -= desplazamiento; });
     }
 
     var anclados = topologico.filter(function (id) { return fijados[id]; });
@@ -659,6 +898,11 @@
         punto.y += deltaY;
       });
     });
+
+    reducirCruces(segs, porRango, tamanos, posiciones, fijados || {});
+    reducirCruces(segsReales, porRango, tamanos, posiciones, fijados || {});
+    ordenarFilasPorX(porRango, posiciones);
+    separarCajasPorNivel(porRango, tamanos, posiciones, fijados || {});
 
     var disposicion = new Map();
     visibles.forEach(function (id) {

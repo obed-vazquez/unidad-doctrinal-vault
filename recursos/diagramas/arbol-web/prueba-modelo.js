@@ -165,6 +165,13 @@ visTodo.forEach((id) => {
 });
 const disposicionTodo = Arbol.Layout.calcular(grafo, visTodo, aristasTodo, tamanosTodo, {});
 const cajasTodo = Array.from(disposicionTodo.values());
+let botonesArbolCompleto = 0;
+visTodo.forEach((id) => {
+  const nodo = grafo.nodos.get(id);
+  const compuesto = Arbol.Layout.componer(nodo, null, { datos, divulgacion: 'completo' });
+  botonesArbolCompleto += compuesto.partes.filter((p) => p.k === 'botones').length;
+});
+comprobar('el árbol completo no muestra botones de respuesta', botonesArbolCompleto === 0);
 let solapesTodo = 0;
 for (let i = 0; i < cajasTodo.length; i++) {
   for (let j = i + 1; j < cajasTodo.length; j++) {
@@ -189,6 +196,70 @@ const conFijado = Arbol.Layout.calcular(grafo, vis, aristas, tamanos,
 comprobar('un nodo anclado conserva su posición exacta',
   conFijado.get('T:P1').x === 900 && conFijado.get('T:P1').y === 400,
   JSON.stringify(conFijado.get('T:P1')));
+const mismaFila = Array.from(disposicion.entries()).find(([id, caja]) =>
+  Array.from(disposicion.entries()).some(([otroId, otraCaja]) =>
+    otroId !== id && otraCaja.rango === caja.rango));
+if (mismaFila) {
+  const [ancladoId, ancladoCaja] = mismaFila;
+  const vecinoId = Array.from(disposicion.entries()).find(([id, caja]) =>
+    id !== ancladoId && caja.rango === ancladoCaja.rango)[0];
+  const conColision = Arbol.Layout.calcular(grafo, vis, aristas, tamanos,
+    { [ancladoId]: { x: disposicion.get(vecinoId).x, y: disposicion.get(vecinoId).y } });
+  const cajasColision = Array.from(conColision.values());
+  let solapesAnclados = 0;
+  for (let i = 0; i < cajasColision.length; i++) {
+    for (let j = i + 1; j < cajasColision.length; j++) {
+      const a = cajasColision[i]; const b = cajasColision[j];
+      if (a.x < b.x + b.ancho && b.x < a.x + a.ancho
+        && a.y < b.y + b.alto && b.y < a.y + a.alto) solapesAnclados += 1;
+    }
+  }
+  comprobar('un anclaje no provoca solapes en su nivel', solapesAnclados === 0,
+    solapesAnclados + ' solapes');
+}
+
+function segmentoCruce(a, b, c, d) {
+  function orient(p, q, r) {
+    return (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x);
+  }
+  return orient(a, b, c) * orient(a, b, d) < 0
+    && orient(c, d, a) * orient(c, d, b) < 0;
+}
+
+function contarCrucesLayout(grafoLocal, aristasIds, disposicionLocal) {
+  const lista = [];
+  aristasIds.forEach((id) => {
+    const arista = grafoLocal.aristas.get(id);
+    if (arista) lista.push(arista);
+  });
+  let cruces = 0;
+  for (let i = 0; i < lista.length; i++) {
+    for (let j = i + 1; j < lista.length; j++) {
+      const A = lista[i];
+      const B = lista[j];
+      if (A.desde === B.desde || A.desde === B.hasta
+        || A.hasta === B.desde || A.hasta === B.hasta) continue;
+      const da = disposicionLocal.get(A.desde);
+      const ha = disposicionLocal.get(A.hasta);
+      const db = disposicionLocal.get(B.desde);
+      const hb = disposicionLocal.get(B.hasta);
+      if (!da || !ha || !db || !hb) continue;
+      const pa = { x: da.x + da.ancho / 2, y: da.y + da.alto };
+      const qa = { x: ha.x + ha.ancho / 2, y: ha.y };
+      const pb = { x: db.x + db.ancho / 2, y: db.y + db.alto };
+      const qb = { x: hb.x + hb.ancho / 2, y: hb.y };
+      if (segmentoCruce(pa, qa, pb, qb)) cruces += 1;
+    }
+  }
+  return cruces;
+}
+
+const crucesCamino = contarCrucesLayout(grafo, aristas, disposicion);
+comprobar('el recorrido respondido no cruza flechas',
+  crucesCamino === 0, crucesCamino + ' cruces');
+const crucesTodo = contarCrucesLayout(grafo, aristasTodo, disposicionTodo);
+comprobar('el árbol completo no cruza flechas',
+  crucesTodo === 0, crucesTodo + ' cruces');
 
 console.log('\n== Nodos que cuelgan de cada nodo ==');
 const debajo = Arbol.descendientesPorNodo(grafo);
@@ -508,6 +579,92 @@ comprobar('cambiar Sí por No poda la rama de Sí',
   Arbol.Estado.respuestas.Q1 === 'B' && Arbol.Estado.respuestas.Q2 === undefined
   && Arbol.Estado.respuestas.Q3 === undefined,
   JSON.stringify(Arbol.Estado.respuestas));
+
+console.log('\n== Exploración libre: expansión ==');
+Arbol.Estado.datos = datos;
+Arbol.Estado.grafo = grafo;
+Arbol.Estado.respuestas = {};
+Arbol.Estado.expandidos = new Set();
+Arbol.Estado.divulgacion = 'completo';
+Arbol.Estado.arbolCompleto = true;
+Arbol.Estado._oyentes = [];
+Arbol.Estado.fijarDivulgacion('exploracion');
+const visDesdeCompleto = Arbol.Estado.visibles();
+comprobar('pasar de árbol completo a exploración no abre todo el árbol',
+  visDesdeCompleto.size < grafo.nodos.size,
+  visDesdeCompleto.size + ' de ' + grafo.nodos.size + ' nodos');
+
+const raizExp = grafo.raices[0];
+Arbol.Estado.divulgacion = 'exploracion';
+Arbol.Estado.expandidos = new Set();
+Arbol.Estado.alternarExpandido(raizExp);
+const hijoConSalida = grafo.nodos.get(raizExp).salidas
+  .map((a) => a.hasta)
+  .find((id) => grafo.nodos.get(id) && grafo.nodos.get(id).salidas.length);
+comprobar('hay un hijo de la raíz con descendientes para la prueba', !!hijoConSalida);
+if (hijoConSalida) {
+  Arbol.Estado.alternarExpandido(hijoConSalida);
+  const nieto = grafo.nodos.get(hijoConSalida).salidas[0].hasta;
+  comprobar('expandir un hijo deja nietos a la vista',
+    Arbol.Estado.visibles().has(nieto));
+  comprobar('el hijo queda marcado como expandido',
+    Arbol.Estado.expandidos.has(hijoConSalida));
+  Arbol.Estado.alternarExpandido(raizExp);
+  comprobar('ocultar la raíz olvida la expansión de las ramas inferiores',
+    !Arbol.Estado.expandidos.has(hijoConSalida),
+    Array.from(Arbol.Estado.expandidos).join(','));
+  Arbol.Estado.alternarExpandido(raizExp);
+  comprobar('volver a expandir la raíz no reabre el subárbol anterior',
+    !Arbol.Estado.visibles().has(nieto)
+    && !Arbol.Estado.expandidos.has(hijoConSalida));
+}
+
+function disposicionDeEstado() {
+  const visE = Arbol.Estado.visibles();
+  const arE = Arbol.Estado.aristasDe(visE);
+  const tamE = new Map();
+  visE.forEach((id) => {
+    const nodo = grafo.nodos.get(id);
+    const c = Arbol.Layout.componer(nodo, null, {
+      datos, divulgacion: 'exploracion', expandidos: Arbol.Estado.expandidos
+    });
+    tamE.set(id, { ancho: c.ancho, alto: c.alto });
+  });
+  return { vis: visE, aristas: arE, disp: Arbol.Layout.calcular(grafo, visE, arE, tamE, {}) };
+}
+
+Arbol.Estado.divulgacion = 'exploracion';
+Arbol.Estado.expandidos = new Set();
+let solapesExp = 0;
+let crucesExp = 0;
+const colaExp = [raizExp];
+const vistosExp = new Set();
+while (colaExp.length) {
+  const id = colaExp.shift();
+  if (vistosExp.has(id)) continue;
+  vistosExp.add(id);
+  const nodo = grafo.nodos.get(id);
+  if (!nodo || !nodo.salidas.length) continue;
+  Arbol.Estado.expandidos.add(id);
+  const paso = disposicionDeEstado();
+  const cajasE = Array.from(paso.disp.values());
+  for (let i = 0; i < cajasE.length; i++) {
+    for (let j = i + 1; j < cajasE.length; j++) {
+      const a = cajasE[i]; const b = cajasE[j];
+      if (a.x < b.x + b.ancho && b.x < a.x + a.ancho
+        && a.y < b.y + b.alto && b.y < a.y + a.alto) solapesExp += 1;
+    }
+  }
+  crucesExp += contarCrucesLayout(grafo, paso.aristas, paso.disp);
+  nodo.salidas.forEach((a) => colaExp.push(a.hasta));
+}
+comprobar('expandir rama a rama no solapa nodos', solapesExp === 0, solapesExp + ' solapes');
+comprobar('expandir rama a rama no cruza flechas', crucesExp === 0, crucesExp + ' cruces');
+
+Arbol.Estado.divulgacion = 'cuestionario';
+Arbol.Estado.arbolCompleto = false;
+Arbol.Estado.expandidos = new Set();
+Arbol.Estado._oyentes = [];
 
 console.log('\n== Contribuciones locales ==');
 const edits = Arbol.Edits.vacio();

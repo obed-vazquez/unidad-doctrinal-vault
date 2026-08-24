@@ -194,13 +194,13 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                       - Sí: ?
                                         - ? -> ¿Son el Verbo eterno y el hombre Jesús dos alguien distintos, unidos tan estrechamente que actúan y son honrados como uno solo, pero de modo que lo que le ocurre al hombre no le ocurre a Dios: Jesús muere sin que Dios muera, y María es madre del hombre y no de Dios? (¿Dios habitaba dentro del hombre Jesús como en un templo, sin ser él mismo quien nació y murió?)
                                           - Sí: Nestorianismo
-                                          - No, un solo una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer: Monoprosopismo
+                                          - No, un solo, una misma persona del que se dice a la vez que es engendrado del Padre y nacido de mujer: Monoprosopismo
                                             - Monoprosopismo -> ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)
                                               - Sí, subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino: Monofisismo / Eutiquianismo
                                               - No, Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo (también Miafisismo)
                                                 - Diofisismo -> En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
                                                   - No, el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
-                                                  - Sí, el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino.: [[diotelitismo|Diotelitismo]] {ortodoxia calcedonense}
+                                                  - Sí, el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {ortodoxia calcedonense}
   - No: Ateísmo cosmológico*
     - Ateísmo cosmológico* -> ¿La materia/realidad física es eterna y no fue creada por un Dios?
       - Sí: Materialismo cosmológico

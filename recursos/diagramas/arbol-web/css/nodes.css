@@ -13,6 +13,35 @@
 /* ------------------------------------------------------------------ aristas */
 
 .arista { fill: none; stroke: var(--arista); stroke-width: 1.6; marker-end: url(#punta); transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease; }
+/* La flecha se traza desde el padre; la punta aparece al quitar .entrando. */
+.arista-grupo.entrando .arista {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  marker-end: none;
+  animation: arista-entra 480ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
+.arista-grupo.entrando .arista-etiqueta-caja,
+.arista-grupo.entrando .arista-etiqueta-texto {
+  opacity: 0;
+  animation: etiqueta-entra 260ms ease both;
+  animation-delay: calc(var(--retraso-entrada, 0ms) + 320ms);
+}
+.arista-grupo.saliendo { pointer-events: none; }
+.arista-grupo.saliendo .arista {
+  stroke-dasharray: 1;
+  marker-end: none;
+  animation: arista-sale 360ms ease both;
+  animation-delay: var(--retraso-salida, 0ms);
+}
+.arista-grupo.saliendo .arista-etiqueta-caja,
+.arista-grupo.saliendo .arista-etiqueta-texto {
+  animation: etiqueta-sale 200ms ease both;
+}
+@keyframes arista-entra { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes arista-sale { from { stroke-dashoffset: 0; opacity: 1; } to { stroke-dashoffset: 1; opacity: 0; } }
+@keyframes etiqueta-entra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes etiqueta-sale { from { opacity: 1; } to { opacity: 0; } }
 .arista.eje { stroke: var(--arista-eje); stroke-dasharray: 5 4; marker-end: url(#punta-eje); }
 .arista.elegida { stroke: var(--arista-activa); stroke-width: 2.2; }
 .arista.camino { stroke: var(--dorado); stroke-width: 2.6; marker-end: url(#punta-camino); }
@@ -36,28 +65,65 @@
 .nodo.atenuado.resaltado { opacity: 1; }
 .nodo.deshabilitado { opacity: 0.38; filter: grayscale(0.45); transition: opacity 280ms ease, filter 280ms ease; }
 .nodo.deshabilitado .nodo-caja { fill-opacity: 0.72; }
-.nodo.deshabilitado.entrando { animation: rama-entra-dim 420ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+/* El transform CSS va en .nodo-cuerpo, no en .nodo: un transform en el
+   grupo exterior pisa el translate(x,y) del SVG y el nodo nace en el origen. */
+.nodo.deshabilitado.entrando .nodo-cuerpo {
+  animation: rama-entra-dim 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
 @keyframes rama-entra-dim {
   from { opacity: 0; }
   to { opacity: 0.38; }
 }
 .nodo.deshabilitado .opcion,
 .nodo.deshabilitado .papelera { pointer-events: none; }
-.nodo.entrando:not(.deshabilitado) { animation: rama-entra 420ms cubic-bezier(0.22, 0.61, 0.36, 1); }
-.nodo.raiz.entrando { animation: nacer-raiz 640ms cubic-bezier(0.22, 0.61, 0.36, 1); }
-.nodo.saliendo { animation: rama-sale 280ms ease both; pointer-events: none; }
+.nodo.entrando:not(.deshabilitado):not(.raiz) .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: rama-entra 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
+.nodo.raiz.entrando .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nacer-raiz 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.nodo.saliendo { pointer-events: none; }
+.nodo.saliendo .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: rama-sale 400ms cubic-bezier(0.4, 0, 1, 1) both;
+  animation-delay: var(--retraso-salida, 0ms);
+}
 @keyframes rama-entra {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.18, 0.08);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.045, 1.03);
+    filter: drop-shadow(0 0 16px var(--acento));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: drop-shadow(0 0 0 transparent);
+  }
 }
 @keyframes nacer-raiz {
-  from { opacity: 0; }
-  55% { opacity: 1; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: scale(0.9); }
+  55% { opacity: 1; transform: scale(1.04); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes rama-sale {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from { opacity: 1; transform: none; filter: drop-shadow(0 0 0 transparent); }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.16, 0.06);
+    filter: drop-shadow(0 0 16px var(--peligro));
+  }
 }
 
 .nodo-sombra { fill: rgba(0, 0, 0, 0.35); pointer-events: none; }
@@ -214,7 +280,14 @@
 .marca-tradicion-resto { fill: var(--dorado); font-size: 10px; font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
-  .nodo.entrando, .nodo.raiz.entrando, .nodo.saliendo, .nodo.resaltado .nodo-brillo {
+  .nodo.entrando .nodo-cuerpo, .nodo.raiz.entrando .nodo-cuerpo,
+  .nodo.saliendo .nodo-cuerpo,
+  .arista-grupo.entrando .arista, .arista-grupo.saliendo .arista,
+  .arista-grupo.entrando .arista-etiqueta-caja,
+  .arista-grupo.entrando .arista-etiqueta-texto,
+  .arista-grupo.saliendo .arista-etiqueta-caja,
+  .arista-grupo.saliendo .arista-etiqueta-texto,
+  .nodo.resaltado .nodo-brillo {
     animation: none;
   }
 }

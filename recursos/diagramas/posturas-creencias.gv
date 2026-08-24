@@ -158,8 +158,9 @@ digraph posturas_creencias {
     P97 [label="Diotelitismo {ortodoxia\ncalcedonense}", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
     P98 [label="Ateísmo cosmológico*", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
     P99 [label="Materialismo cosmológico", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
-    P100 [label="Panteísmo / Panenteísmo*", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
-    P101 [label="-", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
+    P100 [label="-", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
+    P101 [label="Panteísmo / Panenteísmo*", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
+    P102 [label="-", shape=box, style="filled", fillcolor="#E7F1FF", color="#2E6DA4", fontcolor="#102A43"];
 
     Q1 -> P1 [label="Sí"];
     Q1 -> P98 [label="No"];
@@ -260,8 +261,9 @@ digraph posturas_creencias {
     Q49 -> P96 [label="No, el \"querer\" es\nacto de la\npersona— siendo\nCristo una sola\npersona, quiere\ncon un solo\nquerer, y su\nhumanidad no añade\notro"];
     Q49 -> P97 [label="Sí, el \"querer\" es\nfacultad de la\nnaturaleza— una\nhumanidad íntegra\nincluye su propio\nquerer, que\nlibremente se\nconforma al\ndivino."];
     Q50 -> P99 [label="Sí"];
-    Q51 -> P100 [label="Sí"];
-    Q51 -> P101 [label="No"];
+    Q50 -> P100 [label="No"];
+    Q51 -> P101 [label="Sí"];
+    Q51 -> P102 [label="No"];
     P1 -> Q2 [style=dashed, color="#2E6DA4", arrowhead=empty];
     P2 -> Q3 [style=dashed, color="#2E6DA4", arrowhead=empty];
     P3 -> Q3 [style=dashed, color="#2E6DA4", arrowhead=empty];

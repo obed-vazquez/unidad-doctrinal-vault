@@ -74,6 +74,23 @@
     return I18n && I18n.dato ? I18n.dato(clave, original) : original;
   }
 
+  function urlNotaPublicada(enlace) {
+    if (!enlace || !enlace.vault_path) return enlace && enlace.href;
+    if (global.location && /^https?:$/.test(global.location.protocol)) {
+      return new URL(enlace.vault_path, document.baseURI).href;
+    }
+    return 'https://raw.githubusercontent.com/obed-vazquez/unidad-doctrinal-vault/'
+      + 'refs/heads/arbol-de-desiciones-posturas/' + enlace.vault_path;
+  }
+
+  function urlMDRender(enlace) {
+    var url = urlNotaPublicada(enlace);
+    if (!url) return null;
+    var fragmento = String(enlace.target || '').split('#')[1];
+    return 'https://mdrenderer.github.io/?' + url
+      + (fragmento ? '#' + fragmento : '');
+  }
+
   function recolectarAgregado(nodo) {
     var tradiciones = [];
     var porNombre = {};
@@ -290,7 +307,7 @@
   function seguirNodosTrasAbrir(ids) {
     if (!ids || !ids.length) return;
     global.setTimeout(function () {
-      Vista.centrarEnIds(ids, true);
+      if (Vista.debeCentrarEnIds(ids)) Vista.centrarEnIds(ids, true);
     }, 340);
   }
 
@@ -468,7 +485,8 @@
             + '<b>' + escapar(etiqueta) + '</b> → '
             + escapar(Layout.rotuloPostura(destino))
             + (peso ? ' <span class="peso-rama' + (peso.densa ? ' densa' : '') + '">↓ '
-              + peso.nodos + '</span>' : '')
+              + peso.nodos + ' (' + escapar(t(peso.nodos === 1
+                ? 'ramaAbreUno' : 'ramaAbre', { n: peso.nodos })) + ')</span>' : '')
             + (glosa ? '<span class="glosa">' + escapar(glosa) + '</span>' : '')
             + '</li>';
         }).join('') + '</ul>');
@@ -555,8 +573,10 @@
 
     var enlaces = (postura && postura.wikilinks) || [];
     enlaces.forEach(function (enlace) {
-      if (enlace.href) {
-        partes.push('<a class="enlace-nota" href="' + escapar(enlace.href) + '">'
+      var destino = urlMDRender(enlace);
+      if (destino) {
+        partes.push('<a class="enlace-nota" href="' + escapar(destino)
+          + '" target="_blank" rel="noopener noreferrer">'
           + escapar(enlace.label) + ' →</a>');
       } else {
         partes.push('<p class="panel-nota">Enlace a nota: [[' + escapar(enlace.target) + ']]</p>');
@@ -1421,7 +1441,7 @@
     Estado.fijarDivulgacion(valor);
     avisar(t('recorridoAviso', { nombre: t(Estado.divulgacion) }));
     if (Estado.divulgacion === 'completo') {
-      global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
+      global.setTimeout(function () { Vista.encuadrar(null, true); }, 80);
     }
   }
 
@@ -1583,7 +1603,7 @@
         return;
       }
       if (tipo === 'svg') {
-        descargar('arbol-posturas.svg', Vista.exportarSVG(), 'image/svg+xml');
+        descargar('analisis-posturas-creencias.svg', Vista.exportarSVG(), 'image/svg+xml');
         avisar(t('svgListo'));
         return;
       }
@@ -1592,7 +1612,7 @@
           var url = URL.createObjectURL(blob);
           var enlace = document.createElement('a');
           enlace.href = url;
-          enlace.download = 'arbol-posturas.png';
+          enlace.download = 'analisis-posturas-creencias.png';
           document.body.appendChild(enlace);
           enlace.click();
           enlace.remove();
@@ -1921,7 +1941,7 @@
         Estado.alternarExpandido(nodoId);
         if (Estado.expandidos.has(nodoId)) {
           global.setTimeout(function () {
-            Vista.encuadrarNodoYDescendientes(nodoId);
+            Vista.encuadrarNodoYDescendientes(nodoId, true);
           }, 340);
         }
       },

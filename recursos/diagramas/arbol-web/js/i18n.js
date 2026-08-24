@@ -11,8 +11,8 @@
   var CLAVE_TRAD = 'arbol-posturas/traducciones/v1';
   var UI = {
     es: {
-      tituloPagina: 'Árbol de posturas y creencias',
-      ariaLienzo: 'Árbol interactivo de posturas y creencias',
+      tituloPagina: 'Análisis de posturas y creencias',
+      ariaLienzo: 'Análisis interactivo de posturas y creencias',
       ajustar: 'Ajustar',
       ajustarTitle: 'Ajustar el árbol a la ventana (F)',
       reorganizar: 'Reorganizar',
@@ -113,8 +113,8 @@
       idiomaEs: 'Español'
     },
     en: {
-      tituloPagina: 'Tree of postures and beliefs',
-      ariaLienzo: 'Interactive tree of postures and beliefs',
+      tituloPagina: 'Analysis of postures and beliefs',
+      ariaLienzo: 'Interactive analysis of postures and beliefs',
       ajustar: 'Fit',
       ajustarTitle: 'Fit the tree to the window (F)',
       reorganizar: 'Rearrange',

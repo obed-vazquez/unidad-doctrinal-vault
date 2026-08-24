@@ -12,6 +12,11 @@
   var ZOOM_MIN = 0.04;
   var ZOOM_MAX = 24;
   var DURACION = 300;
+  var ENTRADA_ARISTA_MS = 480;
+  var ENTRADA_NODO_MS = 620;
+  var ENTRADA_NODO_ESPERA_MS = 200;
+  var SALIDA_NODO_MS = 400;
+  var SALIDA_ARISTA_MS = 360;
   var UMBRAL_ARRASTRE = 4;
   var UMBRAL_ARRASTRE_TACTIL = 12;
   var TIP_ESPERA = 500;
@@ -264,7 +269,32 @@
       else this.animarCamara(destino);
     },
 
-    encuadrarNodoYDescendientes: function (nodoId) {
+    /* En móvil la rama recién abierta debe quedar a la vista; en escritorio
+       solo movemos la cámara si algún nodo nuevo quedó fuera del área útil. */
+    debeCentrarEnIds: function (ids) {
+      var disposicion = this.contexto && this.contexto.disposicion;
+      if (!disposicion) return false;
+      var rect = this.svg.getBoundingClientRect();
+      if (rect.width <= 860) return true;
+      var m = this.margenesLienzo();
+      var limiteIzq = m.margenIzq;
+      var limiteDer = rect.width - m.margenDer;
+      var limiteArr = m.margenArr;
+      var limiteAba = rect.height - m.margenAba;
+      var k = this.camara.k;
+      return (ids || []).some(function (id) {
+        var caja = disposicion.get(id);
+        if (!caja) return false;
+        var x = this.camara.x + caja.x * k;
+        var y = this.camara.y + caja.y * k;
+        var ancho = caja.ancho * k;
+        var alto = caja.alto * k;
+        return x < limiteIzq || x + ancho > limiteDer
+          || y < limiteArr || y + alto > limiteAba;
+      }, this);
+    },
+
+    encuadrarNodoYDescendientes: function (nodoId, soloSiHaceFalta) {
       var grafo = this.contexto.grafo;
       var visibles = this.contexto.visibles;
       var ids = [nodoId];
@@ -274,6 +304,7 @@
           if (visibles.has(arista.hasta)) ids.push(arista.hasta);
         });
       }
+      if (soloSiHaceFalta && !this.debeCentrarEnIds(ids)) return;
       this.centrarEnIds(ids, true);
     },
 
@@ -296,24 +327,25 @@
       var self = this;
       var contexto = this.contexto;
       var vistos = new Set();
+      var idsNuevos = [];
 
-      contexto.visibles.forEach(function (id) {
+      this.contexto.visibles.forEach(function (id) {
         vistos.add(id);
+        var grupo = self.nodosDOM.get(id);
+        if (!grupo) {
+          idsNuevos.push(id);
+          return;
+        }
         var nodo = contexto.grafo.nodos.get(id);
         if (!nodo) return;
         var respuesta = nodo.preguntaId ? contexto.respuestas[nodo.preguntaId] : undefined;
         var compuesto = Arbol.Layout.componer(nodo, respuesta == null ? null : respuesta, contexto);
-        var grupo = self.nodosDOM.get(id);
-        var esNuevo = !grupo;
-        if (esNuevo) {
-          grupo = crear('g', { 'data-id': id }, 'nodo');
-          self.capaNodos.appendChild(grupo);
-          self.nodosDOM.set(id, grupo);
-        }
         grupo.classList.remove('saliendo');
-        self.pintarNodo(grupo, nodo, compuesto, respuesta, esNuevo);
+        grupo.style.removeProperty('--retraso-salida');
+        self.pintarNodo(grupo, nodo, compuesto, respuesta, false);
       });
 
+      var salientes = [];
       this.nodosDOM.forEach(function (grupo, id) {
         if (vistos.has(id)) return;
         if (self.reducirMovimiento()) {
@@ -322,13 +354,95 @@
           self.posiciones.delete(id);
           return;
         }
-        grupo.classList.add('saliendo');
+        if (grupo.classList.contains('saliendo')) return;
+        var punto = self.posiciones.get(id);
+        salientes.push({ id: id, grupo: grupo, y: punto ? punto.y : 0 });
+      });
+      salientes.sort(function (a, b) { return b.y - a.y; });
+      var cascada = Math.min(280, Math.max(0, salientes.length - 1) * 45);
+      salientes.forEach(function (item, indice) {
+        var retraso = salientes.length < 2 ? 0
+          : Math.round((indice / (salientes.length - 1)) * cascada);
+        item.grupo.classList.add('saliendo');
+        item.grupo.style.setProperty('--retraso-salida', retraso + 'ms');
         global.setTimeout(function () {
-          if (self.contexto && self.contexto.visibles && self.contexto.visibles.has(id)) return;
-          grupo.remove();
-          self.nodosDOM.delete(id);
-          self.posiciones.delete(id);
-        }, 280);
+          if (self.contexto && self.contexto.visibles && self.contexto.visibles.has(item.id)) return;
+          item.grupo.remove();
+          self.nodosDOM.delete(item.id);
+          self.posiciones.delete(item.id);
+        }, retraso + SALIDA_NODO_MS + 40);
+      });
+
+      if (!idsNuevos.length) return;
+      this.aparecerNodos(idsNuevos);
+    },
+
+    /* Crea el DOM, fija el retraso CSS y pinta. El nodo ya nace en su sitio. */
+    aparecerNodos: function (ids) {
+      var self = this;
+      var contexto = this.contexto;
+      ids.forEach(function (id) {
+        if (self.nodosDOM.has(id)) return;
+        var grupo = crear('g', { 'data-id': id }, 'nodo');
+        self.capaNodos.appendChild(grupo);
+        self.nodosDOM.set(id, grupo);
+        var caja = contexto.disposicion.get(id);
+        if (caja) self.posiciones.set(id, { x: caja.x, y: caja.y });
+      });
+      this.programarRetrasosEntrada(ids);
+      ids.forEach(function (id) {
+        var grupo = self.nodosDOM.get(id);
+        var nodo = contexto.grafo.nodos.get(id);
+        if (!grupo || !nodo) return;
+        var respuesta = nodo.preguntaId ? contexto.respuestas[nodo.preguntaId] : undefined;
+        var compuesto = Arbol.Layout.componer(nodo, respuesta == null ? null : respuesta, contexto);
+        self.pintarNodo(grupo, nodo, compuesto, respuesta, true);
+      });
+    },
+
+    /* Los nodos nuevos se pintan ya en su sitio; el retraso solo orquesta
+       flecha → nodo, de arriba hacia abajo. */
+    programarRetrasosEntrada: function (idsNuevos) {
+      this._retrasoArista = new Map();
+      if (!idsNuevos.length || this.reducirMovimiento()) return;
+      var disposicion = this.contexto.disposicion;
+      var yMin = Infinity;
+      var yMax = -Infinity;
+      var i;
+      for (i = 0; i < idsNuevos.length; i++) {
+        var caja = disposicion.get(idsNuevos[i]);
+        if (!caja) continue;
+        yMin = Math.min(yMin, caja.y);
+        yMax = Math.max(yMax, caja.y);
+      }
+      var rango = Math.max(1, yMax - yMin);
+      /* Una sola cascada continua según Y. En el árbol completo había pausas
+         entre trozos; el tope sube con el recuento para no comprimir la ola. */
+      var n = idsNuevos.length;
+      var porNodo = n > 12 ? 12 : 48;
+      var tope = n > 12 ? 820 : 420;
+      var cascada = Math.min(tope, Math.max(0, n - 1) * porNodo);
+      var nuevos = new Set(idsNuevos);
+      var self = this;
+      idsNuevos.forEach(function (id) {
+        var cajaNodo = disposicion.get(id);
+        var t = cajaNodo ? (cajaNodo.y - yMin) / rango : 0;
+        var retrasoNodo = Math.round(ENTRADA_NODO_ESPERA_MS + t * cascada);
+        var grupo = self.nodosDOM.get(id);
+        if (grupo) {
+          grupo.style.setProperty('--retraso-entrada', retrasoNodo + 'ms');
+          global.setTimeout(function () {
+            grupo.classList.remove('entrando');
+          }, retrasoNodo + ENTRADA_NODO_MS + 40);
+        }
+      });
+      this.contexto.aristasIds.forEach(function (aristaId) {
+        if (self.aristasDOM.has(aristaId)) return;
+        var arista = self.contexto.grafo.aristas.get(aristaId);
+        if (!arista || !nuevos.has(arista.hasta)) return;
+        var cajaHasta = disposicion.get(arista.hasta);
+        var tArista = cajaHasta ? (cajaHasta.y - yMin) / rango : 0;
+        self._retrasoArista.set(aristaId, Math.round(tArista * cascada));
       });
     },
 
@@ -360,7 +474,7 @@
         && !(contexto.deshabilitados && contexto.deshabilitados.has(nodo.id))) {
         clases.push('atenuado');
       }
-      if (esNuevo) clases.push('entrando');
+      if (esNuevo || grupo.classList.contains('entrando')) clases.push('entrando');
       if (nodo.postura && nodo.postura.is_local) clases.push('borrador');
       if (contexto.deshabilitados && contexto.deshabilitados.has(nodo.id)) {
         clases.push('deshabilitado');
@@ -380,40 +494,43 @@
 
       while (grupo.firstChild) grupo.removeChild(grupo.firstChild);
 
-      grupo.appendChild(crear('rect', {
+      var cuerpo = crear('g', {}, 'nodo-cuerpo');
+      grupo.appendChild(cuerpo);
+
+      cuerpo.appendChild(crear('rect', {
         x: -6, y: -6, width: ancho + 12, height: alto + 12, rx: 17
       }, 'nodo-brillo'));
-      grupo.appendChild(crear('rect', {
+      cuerpo.appendChild(crear('rect', {
         x: -3.5, y: -3.5, width: ancho + 7, height: alto + 7, rx: 15
       }, 'nodo-anillo'));
-      grupo.appendChild(crear('rect', {
+      cuerpo.appendChild(crear('rect', {
         x: 3, y: 5, width: ancho, height: alto, rx: 12
       }, 'nodo-sombra'));
-      grupo.appendChild(crear('rect', {
+      cuerpo.appendChild(crear('rect', {
         x: 0, y: 0, width: ancho, height: alto, rx: 12
       }, 'nodo-caja'));
 
       var self = this;
       compuesto.partes.forEach(function (parte) {
-        self.pintarParte(grupo, parte, ancho, padX, nodo, respuesta);
+        self.pintarParte(cuerpo, parte, ancho, padX, nodo, respuesta);
       });
 
       if (nodo.preguntaId && respuesta != null) {
-        grupo.appendChild(this.construirPapelera(ancho, nodo));
+        cuerpo.appendChild(this.construirPapelera(ancho, nodo));
       }
       if (Object.prototype.hasOwnProperty.call(contexto.estado.fijados, nodo.id)) {
-        grupo.appendChild(this.construirChincheta(nodo));
+        cuerpo.appendChild(this.construirChincheta(nodo));
       }
 
       var entradasVisibles = nodo.entradas.filter(function (arista) {
         return contexto.aristasIds.has(arista.id);
       });
       if (entradasVisibles.length > 1) {
-        grupo.appendChild(crear('path', {
+        cuerpo.appendChild(crear('path', {
           d: 'M ' + (ancho / 2 - 16) + ' -9 Q ' + (ancho / 2) + ' -20 '
             + (ancho / 2 + 16) + ' -9'
         }, 'convergencia-puerto'));
-        grupo.appendChild(texto('&', ancho / 2, -22, 'convergencia-glifo'));
+        cuerpo.appendChild(texto('&', ancho / 2, -22, 'convergencia-glifo'));
       }
     },
 
@@ -585,58 +702,20 @@
       return g;
     },
 
-    /* ------------------------------------------------ animación y aristas */
+    /* ------------------------------------------------ posiciones y aristas */
 
     animarPosiciones: function () {
       var self = this;
       var disposicion = this.contexto.disposicion;
-      var inicio = new Map();
-      var hayMovimiento = false;
-
-      disposicion.forEach(function (caja, id) {
-        var actual = self.posiciones.get(id);
-        if (!actual) {
-          var origen = self.posicionDeEntrada(id, caja);
-          self.posiciones.set(id, { x: origen.x, y: origen.y });
-          inicio.set(id, { x: origen.x, y: origen.y });
-          if (Math.abs(origen.x - caja.x) > 0.5 || Math.abs(origen.y - caja.y) > 0.5) {
-            hayMovimiento = true;
-          }
-        } else {
-          inicio.set(id, { x: actual.x, y: actual.y });
-          if (Math.abs(actual.x - caja.x) > 0.5 || Math.abs(actual.y - caja.y) > 0.5) {
-            hayMovimiento = true;
-          }
-        }
-      });
-
       if (this.animacion) { global.cancelAnimationFrame(this.animacion); this.animacion = null; }
-
-      if (!hayMovimiento || this.reducirMovimiento()) {
-        disposicion.forEach(function (caja, id) { self.posiciones.set(id, { x: caja.x, y: caja.y }); });
-        this.aplicarPosiciones();
-        this.dibujarAristas();
-        return;
-      }
-
-      var t0 = null;
-      function paso(marca) {
-        if (t0 === null) t0 = marca;
-        var avance = Math.min(1, (marca - t0) / DURACION);
-        var e = suavizar(avance);
-        disposicion.forEach(function (caja, id) {
-          var desde = inicio.get(id);
-          self.posiciones.set(id, {
-            x: desde.x + (caja.x - desde.x) * e,
-            y: desde.y + (caja.y - desde.y) * e
-          });
-        });
-        self.aplicarPosiciones();
-        self.dibujarAristas();
-        if (avance < 1) self.animacion = global.requestAnimationFrame(paso);
-        else self.animacion = null;
-      }
-      this.animacion = global.requestAnimationFrame(paso);
+      /* Los nodos nuevos nacen en su coordenada final. Un translate CSS en el
+         mismo <g> que el translate SVG los pintaba en el origen del mundo. */
+      disposicion.forEach(function (caja, id) {
+        if (!self.nodosDOM.has(id)) return;
+        self.posiciones.set(id, { x: caja.x, y: caja.y });
+      });
+      this.aplicarPosiciones();
+      this.dibujarAristas();
     },
 
     reducirMovimiento: function () {
@@ -646,31 +725,6 @@
 
     debeAtenuarRecorrido: function () {
       return this.contexto && this.contexto.divulgacion === 'cuestionario';
-    },
-
-    /* Un nodo recién abierto nace junto a su padre visible y viaja a su sitio. */
-    posicionDeEntrada: function (id, cajaDestino) {
-      var contexto = this.contexto;
-      var nodo = contexto.grafo.nodos.get(id);
-      if (nodo) {
-        var i;
-        for (i = 0; i < nodo.entradas.length; i++) {
-          var padreId = nodo.entradas[i].desde;
-          var padre = this.posiciones.get(padreId);
-          var cajaPadre = contexto.disposicion.get(padreId);
-          if (padre) {
-            return {
-              x: padre.x + ((cajaPadre && cajaPadre.ancho || 0) - cajaDestino.ancho) / 2,
-              y: padre.y + (cajaPadre && cajaPadre.alto || 0)
-            };
-          }
-        }
-      }
-      var raiz = contexto.grafo.raices.filter(function (rid) {
-        return contexto.visibles.has(rid);
-      })[0];
-      var posRaiz = raiz ? this.posiciones.get(raiz) : null;
-      return posRaiz ? { x: posRaiz.x, y: posRaiz.y } : { x: cajaDestino.x, y: cajaDestino.y };
     },
 
     aplicarPosiciones: function () {
@@ -698,9 +752,21 @@
       var holguraX = (cajaA.ancho + cajaB.ancho) / 2;
       var holguraY = (cajaA.alto + cajaB.alto) / 2;
 
+      /* Si el hijo está debajo del padre, siempre abajo→arriba. Las anclas
+         laterales cruzaban flechas cuando los padres quedaban juntos y los
+         hijos se abrían en abanico. */
+      var claroAbajo = puntoB.y >= puntoA.y + cajaA.alto * 0.45;
+      var claroArriba = puntoA.y >= puntoB.y + cajaB.alto * 0.45;
+
       var ladoA;
       var ladoB;
-      if (Math.abs(dx) / holguraX > Math.abs(dy) / holguraY) {
+      if (claroAbajo) {
+        ladoA = 'abajo';
+        ladoB = 'arriba';
+      } else if (claroArriba) {
+        ladoA = 'arriba';
+        ladoB = 'abajo';
+      } else if (Math.abs(dx) / holguraX > Math.abs(dy) / holguraY) {
         ladoA = dx > 0 ? 'derecha' : 'izquierda';
         ladoB = dx > 0 ? 'izquierda' : 'derecha';
       } else {
@@ -721,6 +787,7 @@
       contexto.aristasIds.forEach(function (aristaId) {
         var arista = contexto.grafo.aristas.get(aristaId);
         if (!arista) return;
+        if (!self.nodosDOM.has(arista.desde) || !self.nodosDOM.has(arista.hasta)) return;
         var extremos = self.anclas(arista.desde, arista.hasta);
         if (!extremos) return;
         var desde = extremos.desde;
@@ -728,9 +795,10 @@
         vistas.add(aristaId);
 
         var grupo = self.aristasDOM.get(aristaId);
+        var esNueva = !grupo;
         if (!grupo) {
           grupo = crear('g', { 'data-id': aristaId }, 'arista-grupo');
-          grupo.appendChild(crear('path', {}, 'arista'));
+          grupo.appendChild(crear('path', { pathLength: 1 }, 'arista'));
           if (arista.tipo === 'respuesta' && arista.etiqueta) {
             grupo.appendChild(crear('rect', {}, 'arista-etiqueta-caja'));
             grupo.appendChild(texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto'));
@@ -738,6 +806,12 @@
           self.capaAristas.appendChild(grupo);
           self.aristasDOM.set(aristaId, grupo);
         }
+        if (grupo.__salidaTimer) {
+          global.clearTimeout(grupo.__salidaTimer);
+          grupo.__salidaTimer = null;
+        }
+        grupo.classList.remove('saliendo');
+        grupo.style.removeProperty('--retraso-salida');
 
         var distancia = Math.sqrt(Math.pow(hasta.x - desde.x, 2)
           + Math.pow(hasta.y - desde.y, 2));
@@ -750,6 +824,7 @@
           + ' C ' + c1x + ' ' + c1y + ', ' + c2x + ' ' + c2y
           + ', ' + hasta.x + ' ' + hasta.y;
         var trazo = grupo.querySelector('.arista');
+        trazo.setAttribute('pathLength', '1');
         trazo.setAttribute('d', d);
 
         var clases = ['arista-grupo'];
@@ -781,6 +856,17 @@
           clases.push('deshabilitada');
           clasesTrazo.push('deshabilitada');
         }
+        var seguirEntrando = !esNueva && grupo.classList.contains('entrando');
+        if ((esNueva || seguirEntrando) && !self.reducirMovimiento()) {
+          clases.push('entrando');
+        }
+        if (esNueva && !self.reducirMovimiento()) {
+          var retrasoArista = (self._retrasoArista && self._retrasoArista.get(aristaId)) || 0;
+          grupo.style.setProperty('--retraso-entrada', retrasoArista + 'ms');
+          global.setTimeout(function () {
+            grupo.classList.remove('entrando');
+          }, retrasoArista + ENTRADA_ARISTA_MS + 360);
+        }
         grupo.setAttribute('class', clases.join(' '));
         trazo.setAttribute('class', clasesTrazo.join(' '));
 
@@ -800,10 +886,34 @@
         }
       });
 
+      var salientesAristas = [];
       this.aristasDOM.forEach(function (grupo, id) {
         if (vistas.has(id)) return;
-        grupo.remove();
-        self.aristasDOM.delete(id);
+        if (self.reducirMovimiento()) {
+          grupo.remove();
+          self.aristasDOM.delete(id);
+          return;
+        }
+        if (grupo.classList.contains('saliendo')) return;
+        var arista = contexto.grafo.aristas.get(id);
+        var hastaPunto = arista ? self.posiciones.get(arista.hasta) : null;
+        salientesAristas.push({
+          id: id, grupo: grupo, y: hastaPunto ? hastaPunto.y : 0
+        });
+      });
+      salientesAristas.sort(function (a, b) { return b.y - a.y; });
+      var cascadaArista = Math.min(280, Math.max(0, salientesAristas.length - 1) * 45);
+      salientesAristas.forEach(function (item, indice) {
+        var retraso = salientesAristas.length < 2 ? 0
+          : Math.round((indice / (salientesAristas.length - 1)) * cascadaArista);
+        item.grupo.classList.add('saliendo');
+        item.grupo.style.setProperty('--retraso-salida', retraso + 'ms');
+        if (item.grupo.__salidaTimer) global.clearTimeout(item.grupo.__salidaTimer);
+        item.grupo.__salidaTimer = global.setTimeout(function () {
+          if (self.contexto && self.contexto.aristasIds && self.contexto.aristasIds.has(item.id)) return;
+          item.grupo.remove();
+          self.aristasDOM.delete(item.id);
+        }, retraso + SALIDA_ARISTA_MS + 40);
       });
     },
 
@@ -813,6 +923,7 @@
       var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       var self = this;
       this.contexto.disposicion.forEach(function (caja, id) {
+        if (!self.nodosDOM.has(id)) return;
         var punto = self.posiciones.get(id) || caja;
         minX = Math.min(minX, punto.x);
         minY = Math.min(minY, punto.y);
@@ -848,6 +959,7 @@
       var self = this;
       var contexto = this.contexto;
       contexto.disposicion.forEach(function (caja, id) {
+        if (!self.nodosDOM.has(id)) return;
         var punto = self.posiciones.get(id) || caja;
         var clase = '';
         var nodo = contexto.grafo.nodos.get(id);

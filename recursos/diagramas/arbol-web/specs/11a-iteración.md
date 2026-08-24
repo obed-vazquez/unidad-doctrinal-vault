@@ -1,0 +1,6 @@
+## 11a Iteración
+
+- El efecto de centrado de pantalla al crear un nodo (que ya se había eliminado como solicitúd), no se eliminó de todas las vistas, solo de Cuestionario, Exploración Libre presenta la misma funcionalidad obsoleta.
+- Otro problema es que al cambiar de Árbol completo a Exploración libre, el árbol entero se queda desplegado. (Por esto no habría tanto problema) El problema es que los botones de Ocultar ramas dejan guardado el estado anterior de las ramas inferiores y al dar expander se expande como se tenía, esto hace que todo el árbol se expanda de nuevo al estado anterior (completo) este segundo bug tiene más impactos y, por tanto, es de prioridad mayor.
+- Al parecer hay algunos nodos que se siguen traslapando (las flechas siguen cruzandose) este es un problema que ya se había arreglado, quizas quieras revisar los arachivos de especificacion (quizas el reporte de bug se encuentre allí) recursos/diagramas/arbol-web/specs/[9a-iteracion.md](9a-iteracion.md)
+- La animación de los nodos en `Árbol completo` ahora hace muchas pausas, no hay tanto problema por el tiempo, sino que ya no se ve muy fluido, aunque esta misma animación en las otras vistas, se ve excelente.

@@ -15,6 +15,19 @@ Este repositorio está diseñado para centralizar, organizar y expandir la docum
 
 ---
 
+## 🚀 Publicación del árbol web
+
+El sitio interactivo de `recursos/diagramas/arbol-web` se publica
+automáticamente con GitHub Actions. El workflow copia esa carpeta como la
+raíz del artefacto de GitHub Pages, por lo que no necesita un `index.html`
+adicional ni una redirección. Se ejecuta al cambiar el sitio en `main` o
+`arbol-de-desiciones-posturas`, y también puede iniciarse manualmente desde la
+pestaña **Actions**.
+
+La primera vez, se configuró desde **Settings → Pages → Source → GitHub Actions** en el
+repositorio. Después de cada publicación, GitHub muestra la URL en el resumen
+de la ejecución del workflow.
+
 ## 📌 Visión y Propósito
 
 **Unidad Doctrinal** (*Doctrinal Unity*) es una iniciativa liderada por un grupo de personas dedicadas a la investigación rigurosa, el estudio sistemático y la búsqueda constante de la verdad revelada por Dios a través de las Sagradas Escrituras (Su Revelación).

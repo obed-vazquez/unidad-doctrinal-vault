@@ -573,6 +573,9 @@
       "answers": {
         "A": {
           "label": "Yes"
+        },
+        "B": {
+          "label": "No"
         }
       }
     },
@@ -636,7 +639,7 @@
     "P97": "Diothelitism",
     "P98": "Cosmological Atheism *",
     "P99": "Cosmological materialism",
-    "P100": "Pantheism / Panentheism*",
+    "P101": "Pantheism / Panentheism*",
     "PR1": "Stock"
   },
   "traditions": {

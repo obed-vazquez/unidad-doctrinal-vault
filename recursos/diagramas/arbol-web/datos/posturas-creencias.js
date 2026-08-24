@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-22T08:07:35Z",
+  "generated_at": "2026-08-23T21:39:05Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -1452,6 +1452,14 @@ window.__ARBOL_POSTURAS__ = {
           "gloss": null,
           "target_posture_id": "P99",
           "source_line": 206
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P100",
+          "source_line": 207
         }
       ]
     },
@@ -1460,7 +1468,7 @@ window.__ARBOL_POSTURAS__ = {
       "formal_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
       "colloquial_hint": null,
       "full_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
-      "source_line": 207,
+      "source_line": 208,
       "origin_posture_ids": [
         "P98"
       ],
@@ -1471,16 +1479,16 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P100",
-          "source_line": 208
+          "target_posture_id": "P101",
+          "source_line": 209
         },
         {
           "key": "B",
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P101",
-          "source_line": 209
+          "target_posture_id": "P102",
+          "source_line": 210
         }
       ]
     }
@@ -2710,7 +2718,7 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [
         {
-          "target": "diotelitismo",
+          "target": "diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto",
           "label": "Diotelitismo",
           "href": "../../definiciones/diotelitismo.md",
           "vault_path": "recursos/definiciones/diotelitismo.md"
@@ -2745,6 +2753,17 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P100": {
       "id": "P100",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P101": {
+      "id": "P101",
       "label": "Panteísmo / Panenteísmo*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -2754,8 +2773,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P101": {
-      "id": "P101",
+    "P102": {
+      "id": "P102",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -2849,10 +2868,10 @@ window.__ARBOL_POSTURAS__ = {
   },
   "stats": {
     "questions": 51,
-    "postures": 102,
+    "postures": 103,
     "traditions": 7,
-    "unnamed_postures": 53,
+    "unnamed_postures": 54,
     "convergences": 2,
-    "source_lines": 209
+    "source_lines": 210
   }
 };

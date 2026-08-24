@@ -217,10 +217,11 @@ Q49: Diofisismo - En el Getsemaní Cristo pedía al Padre pasára la copa, tení
 
 Q50: Ateísmo cosmológico* - ¿La materia/realidad física es eterna y no fue creada por un Dios?
   A: Sí -> [OUT_P99]
+  B: No -> [OUT_P100]
 
 Q51: Ateísmo cosmológico* - ¿Es el universo mismo, en su totalidad, de naturaleza divina?
-  A: Sí -> [OUT_P100]
-  B: No -> [OUT_P101]
+  A: Sí -> [OUT_P101]
+  B: No -> [OUT_P102]
 
 R1: Encarnacionismo / Preexistencialismo - La postura «Encarnacionismo / Preexistencialismo» abre varios ejes. ¿Cuál deseas explorar?
   A: Explorar: ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? -> Q18
@@ -434,10 +435,14 @@ R3: Ateísmo cosmológico* - La postura «Ateísmo cosmológico*» abre varios e
   description: Postura terminal extraída del documento fuente.
   code: OUT_P99
 
-[OUT_P100]: Panteísmo / Panenteísmo*
+[OUT_P100]: -
   description: Postura terminal extraída del documento fuente.
   code: OUT_P100
 
-[OUT_P101]: -
+[OUT_P101]: Panteísmo / Panenteísmo*
   description: Postura terminal extraída del documento fuente.
   code: OUT_P101
+
+[OUT_P102]: -
+  description: Postura terminal extraída del documento fuente.
+  code: OUT_P102
