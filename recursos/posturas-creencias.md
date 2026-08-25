@@ -120,66 +120,61 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                     - Autoridad apostólica derivada* -> ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa? (¿El Nuevo Testamento es revelación divina?)
                                       - No: Canon neotestamentario restringido*
                                       - Sí: Canon neotestamentario pleno*
-                                        - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina (Teopneustia)? (¿La Biblia tiene inspiración divina?)
+                                        - Canon neotestamentario pleno* -> ¿La Biblia contiene sesgos humanos?
+                                          - Sí: Teología Liberal / Inerrancia limitada {Iglesia Episcopal, Metodista Unida (UMC), Presbiteriana USA (PCUSA), Luterana ELCA}
+                                          - No: ?
+                                            - ? -> ¿La Biblia es clara y sin ambigüedades en su mensaje, y todo lo que dice es completamente verdadero?
+                                        - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                           - No: Anti-inspiracionalismo
                                           - Sí: Inspiracionismo / Teopneustia
-                                            - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y en un estado de “pecador” (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
+                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible 
+                                            - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
                                               - No, El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
-                                                - ? -> ¿Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar?
+                                                - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar?
                                                   - Sí: ?
-                                                    - ? -> ¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno, pero **no pierde la capacidad de hacer el bien posteriormente aun si no tiene el perdón de Dios**?
-                                                      - Sí: ?
-                                                        - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
-                                                          - Sí: ?
-                                                            - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
-                                                              - Sí: Pelagianismo
-                                                              - No: ?
-                                                          - No: ?
-                                                      - No: ?
                                                   - No: ? 
-                                              - Sí: Depravación Total del hombre
-                                                - Depravación Total del hombre -> ¿Tiene el humano la capacidad de hacer bien?
+                                                - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
                                                   - Sí: ?
-                                                    - ? -> ¿La capacidad de hacer el bien es solo una capacidad “civil” de hacer el bien como "amar a sus hijos"?
+                                                    - ? -> ¿Después de pecar el humano conserva la capacidad de hacer el bien posteriormente, aun si no tiene el perdón de Dios?
+                                                      - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
+                                                        - Sí: ?
+                                                          - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
+                                                            - Sí: Pelagianismo
+                                                            - No: ?
+                                                        - No: ?
+                                                  - No: ?
+                                              - Sí: Depravación Total del hombre
+                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?
+                                                  - Sí: ?
+                                                    - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador?
                                                       - Sí: ?
-                                                        - ? -> ¿Antes del Discernimiento y aun con la capacidad de hacer el bien, el humano sigue estando condenado debido a su estado de muerte (naturaleza pecaminosa) aun sin haber cometido pecado?
+                                                        - ? -> ¿Antes de pecar, el no haber recibido bautismo regenerador antes del Discernimiento, lo deja condenado?
+                                                          - No: ? 
                                                           - Sí: ?
-                                                            - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador?
-                                                              - Sí: ?
-                                                                - ? -> ¿Para el humano, el no haber recibido bautismo regenerador antes del Discernimiento, lo deja condenado?
-                                                                  - No: ? 
-                                                                  - Sí: ?
-                                                                    - ? -> ¿Lo deja condenado al Limbo?
-                                                                      - Sí: ?
-                                                                      - No: ?
-                                                                        - ? -> ¿Lo deja condenado al Infierno?
-                                                                          - Sí: ?
-                                                                          - No: ?
-                                                                    - ? -> ¿Después del Discernimiento el humano inevitablemente peca?
-                                                                      - No: ?
-                                                                      - Sí: ?
-                                                                        - ? -> ¿Después de pecar pierde la capacidad de tener fe (hacer obras salvíficas)?
-                                                                          - Sí: ?
-                                                                          - No: ?
-                                                                            - ? -> ¿Después de pecar puede decidir tener fe (obras salvíficas)?
-                                                                              - No: ?
-                                                                              - Sí: ? {Catolicismo?}
+                                                            - ? -> ¿Lo deja condenado al Limbo?
+                                                              - Sí: ? {Catolicismo Ortodoxo?}
                                                               - No: ?
-                                                          - No, tiene inocencia y entrada al cielo a pesar de su estado de muerte (naturaleza pecaminosa) pues no puede pecar: ?
-                                                            - ? -> ¿Después del Discernimiento Inevitablemente peca?
-                                                              - No: ?
-                                                              - Sí: ?
-                                                                - ? -> ¿Después de pecar pierde la capacidad de tener fe (hacer obras salvíficas)?
-                                                                  - Sí: ?
-                                                                    - ? -> ¿Solo Dios puede llamar o mover al individuo para producir fe?
-                                                                      - Sí: ?
-                                                                      - No: ?
+                                                                - ? -> ¿Lo deja condenado al Infierno?
+                                                                  - Sí: ? {Catolicismo Moderno?}
                                                                   - No: ?
-                                                                    - ? -> ¿Después de pecar puede decidir tener fe (obras salvíficas)?
-                                                                      - No: ?
-                                                                      - Sí: ? 
-                                                      - No: ?
-                                                  - No: Depravación absoluta
+                                                  - No, la inocencia le da acceso al cielo y no puede pecar: ?
+                                                - Depravación Total del hombre -> ¿**Después del Discernimiento** es posible para el humano alcanzar el cielo haciendo buenas obras?
+                                                  - Sí: ?
+                                                  - No: ?
+                                                    - ? -> ¿El ser humano necesita una **transformación/conversión/regeneración espiritual** para entrar al cielo?
+                                                      - No: ? 
+                                                      - Sí: ?
+                                                        - ? -> ¿Puede el humano rechazar el llamado de Dios hacia esa conversión? (¿Es posible para el humano resistir **el** llamado de Dios?)
+                                                          - No: ?
+                                                            - ? -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
+                                                          - Sí: ?
+                                                            - ? -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
+                                                              - Sí: ?
+                                                              - No: ?
+                                                                - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
+                                                        - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo?
+                                                          - No: ?
+                                                          - Sí: ?
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo

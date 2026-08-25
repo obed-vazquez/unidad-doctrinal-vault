@@ -257,8 +257,22 @@
       }
     },
     "Q23": {
-      "formal": "Are the explicit self-testimony of the authoritative scriptures about its divine origin, the attribution of its words to the Holy Spirit as the primary author, and its self-identification as the Word of God with unwavering authority sufficient evidence to conclude that it is the product of divine inspiration (Theopneustia)?",
-      "colloquial": "Does the Bible have divine inspiration?",
+      "formal": "Does the Bible contain human biases?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q24": {
+      "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?"
+    },
+    "Q25": {
+      "formal": "Are the authoritative scriptures' explicit self-testimony of its divine origin, the attribution of its words to the Holy Spirit as the primary author, and its self-identification as the Word of God with unwavering authority sufficient evidence to conclude that it is the product of divine inspiration?",
+      "colloquial": "Is the Bible inspired by God?",
       "answers": {
         "A": {
           "label": "No"
@@ -268,8 +282,11 @@
         }
       }
     },
-    "Q24": {
-      "formal": "Did Adam's sin affect his offspring, is the human born dead and in a state of “sinner” (though not actively sinning)?",
+    "Q26": {
+      "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?"
+    },
+    "Q27": {
+      "formal": "Did Adam's sin affect his offspring, is the human born dead and with a sinful nature (though not actively sinning)?",
       "colloquial": "Is the human born with a “sinful nature”?",
       "answers": {
         "A": {
@@ -281,7 +298,7 @@
         }
       }
     },
-    "Q25": {
+    "Q28": {
       "formal": "Before Discernment, does human innocence give you access to heaven and cannot sin?",
       "answers": {
         "A": {
@@ -292,41 +309,8 @@
         }
       }
     },
-    "Q26": {
-      "formal": "After Discernment the human can sin, the first sin condemns him to hell, but he does not lose the ability to do good later even if he does not have God's forgiveness?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
-    "Q27": {
-      "formal": "After sinning, by asking God for forgiveness, the human is forgiven and gains the right to enter heaven by dying?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
-    "Q28": {
-      "formal": "Does sinning again remove the human's right to enter heaven?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
     "Q29": {
-      "formal": "Does the human have the ability to do well?",
+      "formal": "After Discernment can the human sin, the first sin condemns him to hell?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -337,7 +321,10 @@
       }
     },
     "Q30": {
-      "formal": "Is the ability to do good just a “civil” ability to do good such as “love your children”?",
+      "formal": "After sinning, does the human retain the ability to do good later, even if he does not have God's forgiveness?"
+    },
+    "Q31": {
+      "formal": "After sinning, by asking God for forgiveness, the human is forgiven and gains the right to enter heaven by dying?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -347,20 +334,8 @@
         }
       }
     },
-    "Q31": {
-      "formal": "Before Discernment and even with the ability to do good, is the human still condemned due to his state of death (sinful nature) even without having committed sin?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No",
-          "gloss": "has innocence and entrance into heaven despite his state of death (sinful nature) because he cannot sin"
-        }
-      }
-    },
     "Q32": {
-      "formal": "Is it possible to infuse him with saving “grace” (a divine Gift that is possible to lose) with sacraments such as regenerating baptism?",
+      "formal": "Does sinning again remove the human's right to enter heaven?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -371,7 +346,27 @@
       }
     },
     "Q33": {
-      "formal": "For the human, not having received regenerating baptism before Discernment, does it leave him condemned?",
+      "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No",
+          "gloss": "innocence gives him access to heaven and he cannot sin"
+        }
+      }
+    },
+    "Q34": {
+      "formal": "Is it possible to infuse him with saving “grace” (a divine Gift that is possible to lose) with sacraments such as regenerating baptism?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        }
+      }
+    },
+    "Q35": {
+      "formal": "Does not having received regenerating baptism before Discernment leave you condemned before sinning?",
       "answers": {
         "A": {
           "label": "No"
@@ -381,7 +376,7 @@
         }
       }
     },
-    "Q34": {
+    "Q36": {
       "formal": "Does it leave you condemned to Limbo?",
       "answers": {
         "A": {
@@ -392,7 +387,7 @@
         }
       }
     },
-    "Q35": {
+    "Q37": {
       "formal": "Does it leave you condemned to Hell?",
       "answers": {
         "A": {
@@ -403,41 +398,19 @@
         }
       }
     },
-    "Q36": {
-      "formal": "After Discernment does the human inevitably sin?",
-      "answers": {
-        "A": {
-          "label": "No"
-        },
-        "B": {
-          "label": "Yes"
-        }
-      }
-    },
-    "Q37": {
-      "formal": "After sinning, do you lose the ability to have faith (do saving works)?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
     "Q38": {
-      "formal": "After sinning can you decide to have faith (saving works)?",
+      "formal": "After Discernment is it possible for the human to reach heaven by doing good works?",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No"
         }
       }
     },
     "Q39": {
-      "formal": "After Discernment Do You Inevitably Sin?",
+      "formal": "Does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
       "answers": {
         "A": {
           "label": "No"
@@ -448,39 +421,47 @@
       }
     },
     "Q40": {
-      "formal": "After sinning, do you lose the ability to have faith (do saving works)?",
+      "formal": "Can the human reject God's call to that conversion?",
+      "colloquial": "Is it possible for the human to resist God's call?",
       "answers": {
         "A": {
-          "label": "Yes"
+          "label": "No"
         },
         "B": {
-          "label": "No"
+          "label": "Yes"
         }
       }
     },
     "Q41": {
-      "formal": "Can only God call or move the individual to produce faith?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
+      "formal": "Is the active and direct intervention of God on the will of the human necessary for the human to accept the call to that conversion?",
+      "colloquial": "Does God have an unconditional choice of his saints?"
     },
     "Q42": {
-      "formal": "After sinning can you decide to have faith (saving works)?",
+      "formal": "If the human is missing 1 of these elements, can he have that conversion? Listening to the gospel, Believing the gospel, Having faith in Christ Jesus, Giving your life completely to God (Repentance), Calling on God's name (Asking for help)",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No"
         }
       }
     },
     "Q43": {
+      "formal": "Can the human not have that transformation until he is baptized and is it at the moment of baptism when that conversion occurs?"
+    },
+    "Q44": {
+      "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
+      "answers": {
+        "A": {
+          "label": "No"
+        },
+        "B": {
+          "label": "Yes"
+        }
+      }
+    },
+    "Q45": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -492,7 +473,7 @@
         }
       }
     },
-    "Q44": {
+    "Q46": {
       "formal": "Are the Father and the Son personally distinct subjects, who coexist simultaneously and eternally and can relate to each other as an I and a you, although they share the same and identical divine substance, rather than being a single subject who manifests successively under different modes or roles?",
       "colloquial": "Are the Father and the Son really two distinct persons, even though they are both fully God?",
       "answers": {
@@ -504,7 +485,7 @@
         }
       }
     },
-    "Q45": {
+    "Q47": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -516,7 +497,7 @@
         }
       }
     },
-    "Q46": {
+    "Q48": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -527,7 +508,7 @@
         }
       }
     },
-    "Q47": {
+    "Q49": {
       "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
@@ -539,7 +520,7 @@
         }
       }
     },
-    "Q48": {
+    "Q50": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -553,7 +534,7 @@
         }
       }
     },
-    "Q49": {
+    "Q51": {
       "formal": "In Gethsemane Christ asked the Father to pass the cup, he had the will to die while he did not want to do it, did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -567,7 +548,7 @@
         }
       }
     },
-    "Q50": {
+    "Q52": {
       "formal": "Is matter/physical reality eternal and was not created by a God?",
       "answers": {
         "A": {
@@ -578,7 +559,7 @@
         }
       }
     },
-    "Q51": {
+    "Q53": {
       "formal": "Is the universe itself, in its entirety, divine in nature?",
       "answers": {
         "A": {
@@ -619,30 +600,31 @@
     "P41": "Secondary Apostolic Authority *",
     "P42": "Restricted New Testament fee *",
     "P43": "Full New Testament fee*",
-    "P44": "Anti-inspirationalism",
-    "P45": "Inspirationalism / Theopneustia",
-    "P50": "Pelagianism",
-    "P55": "MAN'S TOTAL DEPRAVATION",
-    "P83": "Absolute Depravity",
-    "P84": "Homoiousianism / Semi-Arrianism",
-    "P85": "Consubstantialism",
-    "P86": "Modalism / Unicitarianism / Unicitarianism",
-    "P87": "Trinitarianism",
-    "P88": "Docetism",
-    "P90": "Apollinarianism",
-    "P92": "Christ's Hypostatic Duality *",
-    "P93": "Monoprosopism",
-    "P94": "Monophysicism / Eutychianism",
-    "P95": "Diophysicism / Chalcedonianism (also Miaphysicism)",
-    "P96": "Monothelitism / Monothelitism",
-    "P97": "Diothelitism",
-    "P98": "Cosmological Atheism *",
-    "P99": "Cosmological materialism",
-    "P101": "Pantheism / Panentheism*",
+    "P44": "Liberal Theology/Limited Inerrancy",
+    "P46": "Anti-inspirationalism",
+    "P47": "Inspirationalism / Theopneustia",
+    "P53": "Pelagianism",
+    "P57": "MAN'S TOTAL DEPRAVATION",
+    "P77": "Homoiousianism / Semi-Arrianism",
+    "P78": "Consubstantialism",
+    "P79": "Modalism / Unicitarianism / Unicitarianism",
+    "P80": "Trinitarianism",
+    "P81": "Docetism",
+    "P83": "Apollinarianism",
+    "P85": "Christ's Hypostatic Duality *",
+    "P86": "Monoprosopism",
+    "P87": "Monophysicism / Eutychianism",
+    "P88": "Diophysicism / Chalcedonianism (also Miaphysicism)",
+    "P89": "Monothelitism / Monothelitism",
+    "P90": "Diothelitism",
+    "P91": "Cosmological Atheism *",
+    "P92": "Cosmological materialism",
+    "P94": "Pantheism / Panentheism*",
     "PR1": "Stock"
   },
   "traditions": {
-    "Catolicismo": "Catholicism",
+    "Catolicismo Moderno": "Modern Catholicism",
+    "Catolicismo Ortodoxo": "Orthodox Catholicism",
     "Islam Ahmadí": "Ahmadiyya Islam",
     "Islam Suní/Chiita": "Sunni/Shia Islam",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",

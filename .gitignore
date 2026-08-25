@@ -26,3 +26,7 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+/recursos/diagramas/*.dag
+/recursos/diagramas/*.gv
+/recursos/diagramas/*.mmd
+/recursos/diagramas/*.svg
