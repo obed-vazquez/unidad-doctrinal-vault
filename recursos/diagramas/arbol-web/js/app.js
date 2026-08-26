@@ -1581,6 +1581,11 @@
     var valor = valorDeCampo(el);
     var titulo = el.getAttribute('data-edit-titulo');
     if (titulo) {
+      var posturaNom = Estado.datos.postures[titulo];
+      if (posturaNom && I18n.idioma === 'en') {
+        var mostrado = Layout.rotuloPostura(posturaNom);
+        if (valor === mostrado) valor = posturaNom.label || valor;
+      }
       Edits.nombrarPostura(editsEstado, titulo, valor);
       if (reconstruir) reconstruirModelo();
       return;

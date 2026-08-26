@@ -620,7 +620,7 @@
     "P91": "Cosmological Atheism *",
     "P92": "Cosmological materialism",
     "P94": "Pantheism / Panentheism*",
-    "PR1": "Stock"
+    "PR1": "Existence"
   },
   "traditions": {
     "Catolicismo Moderno": "Modern Catholicism",

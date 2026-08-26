@@ -344,6 +344,10 @@
       var crudo = global.localStorage.getItem(CLAVE_TRAD);
       if (crudo) cacheTrad = JSON.parse(crudo) || {};
     } catch (error) { cacheTrad = {}; }
+    if (cacheTrad.Existencia === 'Stock') {
+      cacheTrad.Existencia = 'Existence';
+      guardarCacheDisco();
+    }
   }
 
   function guardarCacheDisco() {

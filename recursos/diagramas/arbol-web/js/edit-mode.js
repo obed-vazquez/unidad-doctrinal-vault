@@ -24,7 +24,7 @@
   var PAD_REGION_TOP = 16;
   var PAD_REGION_BOT = 10;
   var PAD_REGION_X = 8;
-  var UMBRAL_LOD = 0.46;
+  var UMBRAL_LOD = 0.74;
   var F_CAMPO = '400 12.5px "Segoe UI", system-ui, sans-serif';
   var LH_CAMPO = 18;
 
@@ -192,7 +192,7 @@
       rotulo = nodo.tipo === 'postura'
         ? tUI('posturaVarios', 'POSTURA · VARIOS EJES')
         : (postura.is_root ? tUI('origen', 'ORIGEN') : tUI('postura', 'POSTURA'));
-      titulo = postura.is_unnamed ? '' : (postura.label || '');
+      titulo = postura.is_unnamed ? '' : lay().rotuloPostura(postura);
     } else if (pregunta) {
       var origenes = (pregunta.origin_posture_ids || []).map(function (pid) {
         return lay().rotuloPostura(datos.postures[pid]);
