@@ -186,7 +186,8 @@
     if (valor === true) return 'completo';
     if (valor === false || valor == null) return 'cuestionario';
     if (valor === 'cuestionario' || valor === 'limpio'
-      || valor === 'exploracion' || valor === 'completo') return valor;
+      || valor === 'exploracion' || valor === 'completo'
+      || valor === 'edicion') return valor;
     return 'cuestionario';
   }
 
@@ -208,7 +209,7 @@
       var nodo = grafo.nodos.get(id);
       if (!nodo) continue;
       var abierto;
-      if (modo === 'exploracion') {
+      if (modo === 'exploracion' || modo === 'edicion') {
         abierto = !!(expandidos && expandidos.has(id));
       } else {
         abierto = nodo.tipo === 'postura'
@@ -216,10 +217,30 @@
       }
       if (!abierto) continue;
       nodo.salidas.forEach(function (arista) {
+        if (arista.tipo === 'control') return;
         if (modo === 'limpio' && arista.tipo === 'respuesta'
           && respuestas[arista.preguntaId] !== arista.clave) return;
         pila.push(arista.hasta);
       });
+    }
+    if (modo === 'edicion') {
+      /* El + y el «nuevo eje» viven en el nivel de los hijos. Con la rama
+         replegada no se muestran: hay que abrirla. Un nodo sin hijos reales
+         sí los enseña, para poder crear el primero. */
+      var extra = [];
+      visibles.forEach(function (vid) {
+        var n = grafo.nodos.get(vid);
+        if (!n) return;
+        var abierto = !!(expandidos && expandidos.has(vid));
+        var tieneReales = n.salidas.some(function (arista) {
+          return arista.tipo !== 'control';
+        });
+        if (!abierto && tieneReales) return;
+        n.salidas.forEach(function (arista) {
+          if (arista.tipo === 'control') extra.push(arista.hasta);
+        });
+      });
+      extra.forEach(function (cid) { visibles.add(cid); });
     }
     return visibles;
   }
@@ -229,7 +250,12 @@
     var resultado = new Set();
     grafo.aristas.forEach(function (arista, id) {
       if (!visibles.has(arista.desde) || !visibles.has(arista.hasta)) return;
-      if (arista.tipo === 'eje' || modo === 'completo' || modo === 'exploracion') {
+      if (arista.tipo === 'control') {
+        if (modo === 'edicion') resultado.add(id);
+        return;
+      }
+      if (arista.tipo === 'eje' || modo === 'completo' || modo === 'exploracion'
+        || modo === 'edicion') {
         resultado.add(id);
         return;
       }
@@ -296,6 +322,98 @@
     return podadas;
   }
 
+  /* Controles del modo edición: ocupan sitio en el layout como hijos, pero
+     no existen en el JSON. El + cuelga del anfitrión de cada pregunta; el
+     nuevo eje cuelga de cada postura. Al partir en varios ejes, el + deja
+     el padre y queda bajo cada pregunta. */
+  function grafoConControles(grafo) {
+    var nodos = new Map();
+    grafo.nodos.forEach(function (nodo) {
+      nodos.set(nodo.id, {
+        id: nodo.id,
+        tipo: nodo.tipo,
+        posturaId: nodo.posturaId,
+        preguntaId: nodo.preguntaId,
+        postura: nodo.postura,
+        pregunta: nodo.pregunta,
+        salidas: nodo.salidas.slice(),
+        entradas: nodo.entradas.slice(),
+        esControl: false
+      });
+    });
+    var aristas = new Map();
+    grafo.aristas.forEach(function (arista, id) { aristas.set(id, arista); });
+
+    function crearControl(id, tipo, extra) {
+      var nodo = {
+        id: id,
+        tipo: tipo,
+        posturaId: extra.posturaId || null,
+        preguntaId: extra.preguntaId || null,
+        postura: extra.postura || null,
+        pregunta: extra.pregunta || null,
+        salidas: [],
+        entradas: [],
+        esControl: true,
+        padreId: extra.padreId
+      };
+      nodos.set(id, nodo);
+      return nodo;
+    }
+
+    function conectar(desde, hasta, tipo) {
+      if (!nodos.has(desde) || !nodos.has(hasta)) return;
+      var id = desde + '>' + hasta + '#' + tipo;
+      if (aristas.has(id)) return;
+      var arista = {
+        id: id, desde: desde, hasta: hasta, tipo: tipo,
+        clave: null, etiqueta: '', glosa: null, preguntaId: null
+      };
+      aristas.set(id, arista);
+      nodos.get(desde).salidas.push(arista);
+      nodos.get(hasta).entradas.push(arista);
+    }
+
+    var originales = [];
+    nodos.forEach(function (nodo) { originales.push(nodo); });
+    originales.forEach(function (nodo) {
+      var split = nodo.tipo === 'postura';
+      if (nodo.preguntaId && !split) {
+        var idMas = '+:' + nodo.preguntaId;
+        if (!nodos.has(idMas)) {
+          crearControl(idMas, 'control-mas', {
+            preguntaId: nodo.preguntaId,
+            pregunta: nodo.pregunta,
+            padreId: nodo.id
+          });
+        }
+        conectar(nodo.id, idMas, 'control');
+      }
+      if (nodo.posturaId) {
+        var idEje = 'E+:' + nodo.posturaId;
+        if (!nodos.has(idEje)) {
+          crearControl(idEje, 'control-eje', {
+            posturaId: nodo.posturaId,
+            postura: nodo.postura,
+            padreId: nodo.id
+          });
+        }
+        conectar(nodo.id, idEje, 'control');
+      }
+    });
+
+    return {
+      datos: grafo.datos,
+      nodos: nodos,
+      aristas: aristas,
+      raices: grafo.raices.slice(),
+      idDePostura: grafo.idDePostura,
+      idDePregunta: grafo.idDePregunta,
+      anfitrionDePregunta: grafo.anfitrionDePregunta,
+      preguntaEsSuelta: grafo.preguntaEsSuelta
+    };
+  }
+
   /* ------------------------------------------------------------ estado --- */
 
   var Estado = {
@@ -311,9 +429,11 @@
     camara: { x: 0, y: 0, k: 1 },
     camaraRestaurada: false,
     tema: 'oscuro',
-    divulgacion: 'cuestionario', // cuestionario | limpio | exploracion | completo
+    divulgacion: 'cuestionario', // cuestionario | limpio | exploracion | completo | edicion
     arbolCompleto: false,    // espejo de divulgacion === 'completo' (URL y tests)
     expandidos: new Set(),   // nodos abiertos en exploración libre
+    editTamanos: {},         // { nodoId: { w, h } } exclusivo del modo edición
+    editCampos: {},          // { 'p:P1': ['traditions'], 'q:Q1': ['colloquial_hint'] }
     modo: 'libre',           // 'libre' | 'explorador'  (explorador de creencias)
     vista: 'grafo',          // 'grafo' | 'lista'
     panelAbierto: false,
@@ -366,7 +486,9 @@
     fijarDivulgacion: function (valor) {
       var anterior = this.divulgacion;
       var siguiente = normalizarDivulgacion(valor);
-      if (siguiente === 'exploracion' && anterior !== 'exploracion') {
+      var pideExpandir = siguiente === 'exploracion' || siguiente === 'edicion';
+      var veniaExpandir = anterior === 'exploracion' || anterior === 'edicion';
+      if (pideExpandir && !veniaExpandir) {
         /* Desde el árbol completo no sembramos todos los nodos: eso dejaba
            el diagrama entero abierto y, al ocultar una rama, sus nietos
            seguían marcados como expandidos. Si ya había un conjunto de
@@ -405,8 +527,9 @@
        Un nodo que sigue a la vista por otra rama conservada no se toca. */
     olvidarExpandidosOcultos: function () {
       if (!this.grafo) return;
+      var modo = this.divulgacion === 'edicion' ? 'edicion' : 'exploracion';
       var visibles = nodosVisibles(this.grafo, this.respuestasEfectivas(),
-        'exploracion', this.expandidos);
+        modo, this.expandidos);
       var self = this;
       Array.from(this.expandidos).forEach(function (id) {
         if (!visibles.has(id)) self.expandidos.delete(id);
@@ -535,6 +658,8 @@
           divulgacion: this.divulgacion,
           arbolCompleto: this.arbolCompleto,
           expandidos: Array.from(this.expandidos),
+          editTamanos: this.editTamanos,
+          editCampos: this.editCampos,
           modo: this.modo,
           vista: this.vista,
           panelAbierto: this.panelAbierto,
@@ -575,6 +700,12 @@
         this.divulgacion = guardado.arbolCompleto ? 'completo' : 'cuestionario';
       }
       if (Array.isArray(guardado.expandidos)) this.expandidos = new Set(guardado.expandidos);
+      if (guardado.editTamanos && typeof guardado.editTamanos === 'object') {
+        this.editTamanos = guardado.editTamanos;
+      }
+      if (guardado.editCampos && typeof guardado.editCampos === 'object') {
+        this.editCampos = guardado.editCampos;
+      }
       if (typeof guardado.panelAncho === 'number') {
         this.panelAncho = guardado.panelAncho === 396 ? 540 : guardado.panelAncho;
       }
@@ -617,6 +748,7 @@
   Arbol.CLAVE_ALMACEN = CLAVE_ALMACEN;
   Arbol.podarInalcanzables = podarInalcanzables;
   Arbol.construirGrafo = construirGrafo;
+  Arbol.grafoConControles = grafoConControles;
   Arbol.descendientesPorNodo = descendientesPorNodo;
   Arbol.pesoDeRespuestas = pesoDeRespuestas;
   Arbol.nodosVisibles = nodosVisibles;

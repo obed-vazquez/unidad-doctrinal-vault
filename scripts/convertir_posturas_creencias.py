@@ -47,14 +47,6 @@ JSON_SCHEMA_VERSION = "1.0.0"
 WEB_APP_DIRECTORY = "arbol-web"
 WEB_DATA_DIRECTORY = "datos"
 WEB_DATA_GLOBAL = "__ARBOL_POSTURAS__"
-# Un {grupo} con esta cantidad de palabras o más se lee como nota descriptiva
-# ("No se identifica quién que sostenga esta postura") y no como tradición.
-NOTE_MIN_WORDS = 5
-# Prefijos que fuerzan la lectura del grupo cuando el recuento de palabras se
-# equivoca: `{tradición: Iglesia de Jesucristo de los Santos de los Últimos
-# Días}` es una tradición aunque sea larga, y `{nota: Catolicismo}` no lo es.
-FORCED_TRADITION = re.compile(r"^tradici[oó]n\s*:\s*", re.IGNORECASE)
-FORCED_NOTE = re.compile(r"^nota\s*:\s*", re.IGNORECASE)
 GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
@@ -685,44 +677,18 @@ def tradition_aliases(canonical_name: str) -> list[str]:
     return result
 
 
-def parse_groups(
-    raw_label: str, reclasificados: list[str] | None = None
-) -> tuple[list[dict], list[str]]:
-    """Separa los `{...}` de una postura en tradiciones y notas descriptivas.
-
-    Una postura admite tantos `{...}` como haga falta: cada uno es una adhesión
-    independiente y todas terminan en `traditions`. El recuento de palabras solo
-    decide entre tradición y nota; `{tradición: ...}` y `{nota: ...}` lo fuerzan
-    cuando la heurística se equivoca (por ejemplo, un nombre largo de iglesia).
-
-    En `reclasificados` se dejan los grupos que la heurística mandó a notas sin
-    que el documento lo pidiera, para que quien convierta pueda revisarlos.
-    """
+def parse_groups(raw_label: str) -> list[dict]:
+    """Cada `{...}` es un grupo o tradición que sostiene la postura, como en
+    el documento fuente. No hay un campo de notas aparte."""
 
     traditions: list[dict] = []
-    notes: list[str] = []
     for match in GROUP.finditer(raw_label):
         inner = plain_text(match.group(1))
-        if not inner:
-            continue
-        forced_tradition = bool(FORCED_TRADITION.match(inner))
-        forced_note = bool(FORCED_NOTE.match(inner))
-        if forced_tradition:
-            inner = FORCED_TRADITION.sub("", inner).strip()
-        elif forced_note:
-            inner = FORCED_NOTE.sub("", inner).strip()
         if not inner:
             continue
         is_tentative = inner.endswith("?")
         name = inner[:-1].strip() if is_tentative else inner
         if not name:
-            continue
-        if forced_note or (
-            not forced_tradition and len(name.split()) >= NOTE_MIN_WORDS
-        ):
-            notes.append(inner)
-            if not forced_note and reclasificados is not None:
-                reclasificados.append(inner)
             continue
         canonical = capitalize_first(name)
         traditions.append(
@@ -733,7 +699,7 @@ def parse_groups(
                 "aliases": tradition_aliases(canonical),
             }
         )
-    return traditions, notes
+    return traditions
 
 
 def split_answer(label: str) -> tuple[str, str | None]:
@@ -804,16 +770,8 @@ def build_web_model(
 
     postures: dict[str, dict] = {}
     for posture_id, posture in model.postures.items():
-        reclasificados: list[str] = []
-        traditions, notes = parse_groups(posture.raw, reclasificados)
+        traditions = parse_groups(posture.raw)
         label = plain_text(strip_groups(posture.raw))
-        for grupo in reclasificados:
-            model.warnings.append(
-                f"{posture_id} ({label!r}): el grupo {{{grupo}}} se leyó como nota "
-                f"descriptiva y no como tradición por tener {NOTE_MIN_WORDS} "
-                "palabras o más. Si es el nombre de una tradición, escríbelo "
-                "como {tradición: …}."
-            )
         postures[posture_id] = {
             "id": posture_id,
             "label": label,
@@ -821,7 +779,7 @@ def build_web_model(
             "is_suggested": label.endswith("*"),
             "is_uncertain": label.endswith("?") and label != "?",
             "traditions": traditions,
-            "notes": notes,
+            "notes": [],
             "wikilinks": parse_wikilinks(posture.raw, repository_root, web_directory),
             "question_axes": list(posture.questions),
         }
@@ -929,7 +887,7 @@ def order_origins(question: Question, origin_ids: list[str], model: Model) -> li
 
 
 def build_traditions_index(postures: dict[str, dict]) -> dict[str, dict]:
-    """Índice canónico de tradiciones; las notas descriptivas quedan fuera."""
+    """Índice canónico de tradiciones: cada `{...}` del documento fuente."""
 
     index: dict[str, dict] = {}
     tentative_flags: dict[str, list[bool]] = defaultdict(list)
@@ -1162,12 +1120,7 @@ def main() -> int:
     if args.sin_json:
         print("Visor web: omitido (--sin-json).")
     else:
-        avisos_previos = len(model.warnings)
         web_model = build_web_model(model, input_path, json_path)
-        # El modelo web es el que clasifica los `{...}`, después del bloque de
-        # advertencias de arriba; las suyas se anuncian aquí.
-        for warning in model.warnings[avisos_previos:]:
-            print(f"Advertencia: {warning}", file=sys.stderr)
         json_module_path = json_path.with_suffix(".js")
         json_path.write_text(render_web_json(web_model), encoding="utf-8", newline="\n")
         json_module_path.write_text(

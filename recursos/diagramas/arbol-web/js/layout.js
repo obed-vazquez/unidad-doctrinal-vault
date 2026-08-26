@@ -450,6 +450,9 @@
       + (contexto.caminoUsuario && contexto.caminoUsuario.has(nodo.id) ? '|c' : '')
       + '|' + textoConteo(nodo, contexto)
       + '|' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es');
+    if (contexto && contexto.divulgacion === 'edicion' && Arbol.EditMode) {
+      return Arbol.EditMode.componer(nodo, contexto);
+    }
     var guardado = cacheComposicion.get(clave);
     if (guardado) return guardado;
     var compuesto = componer(nodo, respuesta, contexto, anclado);

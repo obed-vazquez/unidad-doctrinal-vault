@@ -315,8 +315,11 @@
     var exploracion = calcularExploracion();
     caminoActual = exploracion;
     var respuestas = Estado.respuestasEfectivas();
-    var visibles = Estado.visibles();
-    var aristasIds = Estado.aristasDe(visibles);
+    var enEdicion = Estado.divulgacion === 'edicion';
+    var grafoVista = (enEdicion && Arbol.grafoConControles)
+      ? Arbol.grafoConControles(Estado.grafo) : Estado.grafo;
+    var visibles = Arbol.nodosVisibles(grafoVista, respuestas, Estado.divulgacion, Estado.expandidos);
+    var aristasIds = Arbol.aristasVisibles(grafoVista, visibles, respuestas, Estado.divulgacion);
 
     var descendientes = Arbol.descendientesPorNodo(Estado.grafo);
     var pesosRespuesta = Arbol.pesoDeRespuestas(Estado.grafo);
@@ -327,23 +330,27 @@
       expandidos: Estado.expandidos,
       descendientes: descendientes,
       pesosRespuesta: pesosRespuesta,
-      caminoUsuario: Estado.caminoElegido()
+      caminoUsuario: Estado.caminoElegido(),
+      editTamanos: Estado.editTamanos,
+      editCampos: Estado.editCampos,
+      estado: Estado
     };
     var tamanos = new Map();
     visibles.forEach(function (id) {
-      var nodo = Estado.grafo.nodos.get(id);
+      var nodo = grafoVista.nodos.get(id);
+      if (!nodo) return;
       var respuesta = nodo.preguntaId ? respuestas[nodo.preguntaId] : undefined;
       var compuesto = Layout.componer(nodo, respuesta == null ? null : respuesta, contextoMedida);
       tamanos.set(id, { ancho: compuesto.ancho, alto: compuesto.alto });
     });
 
-    var disposicion = Layout.calcular(Estado.grafo, visibles, aristasIds, tamanos, Estado.fijados);
+    var disposicion = Layout.calcular(grafoVista, visibles, aristasIds, tamanos, Estado.fijados);
 
     var destacadas = new Set(Estado.tradiciones);
     var caminoUsuario = Estado.caminoElegido();
 
     Vista.render({
-      grafo: Estado.grafo,
+      grafo: grafoVista,
       datos: Estado.datos,
       fijados: Estado.fijados,
       estado: Estado,
@@ -360,8 +367,18 @@
       divulgacion: Estado.divulgacion,
       expandidos: Estado.expandidos,
       descendientes: descendientes,
-      pesosRespuesta: pesosRespuesta
+      pesosRespuesta: pesosRespuesta,
+      editTamanos: Estado.editTamanos,
+      editCampos: Estado.editCampos
     });
+
+    if (Arbol.EditMode) {
+      Arbol.EditMode.marcarModo(enEdicion);
+      if (enEdicion) {
+        Arbol.EditMode.aplicarLod(Vista.camara ? Vista.camara.k : 1);
+        Arbol.EditMode.restaurarFoco();
+      }
+    }
 
     actualizarBarra(visibles);
     actualizarPanel();
@@ -385,9 +402,17 @@
 
   function actualizarBarra(visibles) {
     var totalNodos = Estado.grafo.nodos.size;
+    var visiblesReales = 0;
+    visibles.forEach(function (id) {
+      if (Estado.grafo.nodos.has(id)) visiblesReales++;
+    });
     var respondidas = Object.keys(Estado.respuestasEfectivas()).length;
-    dom.contador.textContent = visibles.size + ' de ' + totalNodos + ' nodos · '
+    dom.contador.textContent = visiblesReales + ' de ' + totalNodos + ' nodos · '
       + respondidas + ' de ' + Object.keys(Estado.datos.questions).length + ' preguntas';
+    var pista = document.getElementById('pista');
+    if (pista) {
+      pista.innerHTML = t(Estado.divulgacion === 'edicion' ? 'pistaEdicion' : 'pista');
+    }
     // «Creencias» es el único interruptor del panel: se enciende con él abierto
     // en cualquiera de sus pestañas y se apaga al cerrarlo, también con la ✕.
     dom.btnCreencias.classList.toggle('activo', Estado.panelAbierto);
@@ -627,7 +652,9 @@
     partes.push('<dt>Resaltado</dt><dd>'
       + (Estado.resaltados.has(nodo.id) ? 'sí (Ctrl + clic para quitarlo)' : 'no') + '</dd>');
     partes.push('</dl>');
-    partes.push(fichaDeEdicion(nodo, postura));
+    if (Estado.divulgacion !== 'edicion') {
+      partes.push(fichaDeEdicion(nodo, postura));
+    }
     return partes.join('');
   }
 
@@ -667,6 +694,9 @@
   }
 
   function tooltipDeNodo(nodo) {
+    if (Estado.divulgacion === 'edicion' && Arbol.EditMode) {
+      return Arbol.EditMode.tooltipDeNodo(nodo);
+    }
     if (!nodo) return null;
     var respuestas = Estado.respuestasEfectivas();
     var partes = [];
@@ -739,6 +769,10 @@
 
   function tooltipDeControl(control) {
     if (!control) return null;
+    if (Estado.divulgacion === 'edicion' && Arbol.EditMode) {
+      var ayuda = Arbol.EditMode.tooltipDeControl(control);
+      if (ayuda) return ayuda;
+    }
     var tipo = control.getAttribute('data-control');
     if (tipo === 'opcion') {
       var rotulo = control.getAttribute('data-rotulo') || '';
@@ -758,7 +792,10 @@
       }
       return bloques.join('');
     }
-    if (tipo === 'chincheta') {
+    if (tipo === 'asa-nodo' || tipo === 'chincheta') {
+      if (tipo === 'asa-nodo' && !control.classList.contains('anclada')) {
+        return '<h4>' + escapar(t('asaNodo')) + '</h4><p>' + escapar(t('asaNodoDesc')) + '</p>';
+      }
       return '<h4>' + escapar(t('chincheta')) + '</h4><p>' + escapar(t('chinchetaDesc')) + '</p>';
     }
     if (tipo === 'papelera') {
@@ -1134,9 +1171,17 @@
     });
   }
 
+  function expandirCaminoCreencias() {
+    if (Estado.divulgacion !== 'edicion') return;
+    var expl = calcularExploracion();
+    if (!expl || !expl.nodos) return;
+    expl.nodos.forEach(function (id) { Estado.expandidos.add(id); });
+  }
+
   function trasCambiarSujetos() {
     Estado.modo = Estado.tradiciones.length || Estado.posturasSueltas.length
       ? 'explorador' : 'libre';
+    expandirCaminoCreencias();
     Estado.emitir('creencias');
     // El layout se anima 300 ms; encuadramos el camino cuando ya reposó.
     global.setTimeout(encuadrarCaminoActual, 330);
@@ -1280,6 +1325,7 @@
     if (nombre === 'creencias'
       && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
       Estado.modo = 'explorador';
+      expandirCaminoCreencias();
     }
     Estado.emitir('panel');
   }
@@ -1429,7 +1475,7 @@
     global.setTimeout(terminar, 7600);
   }
 
-  var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo'];
+  var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo', 'edicion'];
 
   function ciclarDivulgacion() {
     var indice = ORDEN_DIVULGACION.indexOf(Estado.divulgacion);
@@ -1439,19 +1485,25 @@
   function fijarRecorrido(valor) {
     if (!valor || valor === Estado.divulgacion) return;
     Estado.fijarDivulgacion(valor);
+    if (Estado.divulgacion === 'edicion') {
+      var antes = Estado.expandidos.size;
+      expandirCaminoCreencias();
+      if (Estado.expandidos.size !== antes) Estado.emitir('expandir');
+    }
     avisar(t('recorridoAviso', { nombre: t(Estado.divulgacion) }));
     if (Estado.divulgacion === 'completo') {
       global.setTimeout(function () { Vista.encuadrar(null, true); }, 80);
     }
   }
 
-  function reconstruirModelo() {
+  function reconstruirModelo(despues) {
     Estado.datos = Edits.aplicar(datosCanon, editsEstado);
     Estado.grafo = Arbol.construirGrafo(Estado.datos);
     Layout.limpiarCache();
     listaTradiciones = Busqueda.listaTradiciones(Estado.datos);
     listaPosturasSueltas = Busqueda.listaPosturasSueltas(Estado.datos, Estado.grafo);
     Estado.sanear();
+    if (despues) despues();
     Estado.emitir('edicion');
   }
 
@@ -1502,6 +1554,297 @@
         avisar('Aportes locales descartados.');
       });
     }
+  }
+
+  function esInputEdicion(el) {
+    if (!el || !el.getAttribute) return false;
+    return !!(el.getAttribute('data-edit-titulo')
+      || el.getAttribute('data-edit-campo')
+      || el.getAttribute('data-edit-arista'));
+  }
+
+  function valorDeCampo(el) {
+    if (Arbol.EditMode && Arbol.EditMode.valorWidget) {
+      return Arbol.EditMode.valorWidget(el);
+    }
+    return el.value;
+  }
+
+  function persistirCampoEdicion(el, opciones) {
+    if (!esInputEdicion(el)) return;
+    var reconstruir = !(opciones && opciones.sinReconstruir);
+    if (reconstruir) {
+      if (Arbol.EditMode && Arbol.EditMode.soltarFoco) Arbol.EditMode.soltarFoco();
+    } else if (Arbol.EditMode) {
+      Arbol.EditMode.guardarFoco(el);
+    }
+    var valor = valorDeCampo(el);
+    var titulo = el.getAttribute('data-edit-titulo');
+    if (titulo) {
+      Edits.nombrarPostura(editsEstado, titulo, valor);
+      if (reconstruir) reconstruirModelo();
+      return;
+    }
+    var aristaId = el.getAttribute('data-edit-arista');
+    if (aristaId) {
+      var wrap = el.closest ? el.closest('.edit-arista-wrap') : null;
+      var labelEl = wrap ? wrap.querySelector('.edit-arista-input') : el;
+      var glossEl = wrap ? wrap.querySelector('.edit-arista-glosa') : null;
+      Edits.fijarRespuesta(editsEstado, el.getAttribute('data-edit-pregunta'),
+        el.getAttribute('data-edit-clave'),
+        labelEl ? labelEl.value : valor,
+        glossEl ? glossEl.value : undefined);
+      if (reconstruir) reconstruirModelo();
+      return;
+    }
+    var campo = el.getAttribute('data-edit-campo');
+    var preguntaId = el.getAttribute('data-edit-pregunta');
+    var posturaId = el.getAttribute('data-edit-postura');
+    if (campo === 'formal_text' && preguntaId) {
+      Edits.fijarPregunta(editsEstado, preguntaId, valor, undefined);
+      if (reconstruir) reconstruirModelo();
+      return;
+    }
+    if (campo === 'colloquial_hint' && preguntaId) {
+      Edits.fijarPregunta(editsEstado, preguntaId, undefined, valor);
+      if (reconstruir) reconstruirModelo();
+      return;
+    }
+    if (campo && posturaId) {
+      Edits.fijarMetaPostura(editsEstado, posturaId, campo, valor);
+      if (reconstruir) reconstruirModelo();
+    }
+  }
+
+  function volcarCampoActivo() {
+    var el = document.activeElement;
+    if (esInputEdicion(el)) persistirCampoEdicion(el);
+  }
+
+  function crecerCampoLocal(el) {
+    if (!el || el.tagName !== 'TEXTAREA') return;
+    if (el.getAttribute('data-edit-arista')) return;
+    var start = el.selectionStart;
+    var end = el.selectionEnd;
+    el.style.height = 'auto';
+    var h = Math.max(42, el.scrollHeight + 6);
+    el.style.height = h + 'px';
+    var fo = el.closest ? el.closest('foreignObject') : null;
+    if (fo) {
+      var prev = parseFloat(fo.getAttribute('height')) || 0;
+      if (h > prev) fo.setAttribute('height', h);
+    }
+    if (document.activeElement !== el && el.focus) {
+      try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); }
+      try {
+        if (typeof start === 'number' && el.setSelectionRange) {
+          el.setSelectionRange(start, end == null ? start : end);
+        }
+      } catch (err) { /* nada */ }
+    }
+  }
+
+  function crearDesdeControl(id) {
+    if (!id) return;
+    volcarCampoActivo();
+    if (id.indexOf('+:') === 0) {
+      var qid = id.slice(2);
+      var creado = Edits.agregarPosturaVacia(editsEstado, Estado.datos, qid);
+      if (!creado) return;
+      reconstruirModelo(function () {
+        var anfitrion = Estado.grafo.anfitrionDePregunta(qid);
+        if (anfitrion) Estado.expandidos.add(anfitrion);
+        Estado.grafo.aristas.forEach(function (arista) {
+          if (arista.tipo === 'respuesta' && arista.preguntaId === qid
+              && arista.clave === creado.key && Arbol.EditMode) {
+            Arbol.EditMode.pedirFocoArista(arista.id);
+          }
+        });
+      });
+      avisar('Postura añadida al borrador local.');
+      return;
+    }
+    if (id.indexOf('E+:') === 0) {
+      var pid = id.slice(3);
+      var qidNuevo = Edits.extraerYCrearEje(editsEstado, pid);
+      reconstruirModelo(function () {
+        var idPostura = Estado.grafo.idDePostura(pid);
+        if (idPostura) Estado.expandidos.add(idPostura);
+        if (qidNuevo) {
+          var idPreg = Estado.grafo.idDePregunta(qidNuevo);
+          if (idPreg) Estado.expandidos.add(idPreg);
+        }
+      });
+      avisar('Eje añadido al borrador local.');
+    }
+  }
+
+  function nombreDeNodo(nodo) {
+    if (!nodo) return 'Nodo';
+    if (nodo.postura) return Layout.rotuloPostura(nodo.postura);
+    if (nodo.pregunta) {
+      return nodo.pregunta.colloquial_hint || nodo.pregunta.formal_text || nodo.id;
+    }
+    return nodo.id;
+  }
+
+  function detalleAlcance(alcance) {
+    var partes = [];
+    var n = alcance.nodos.length;
+    var q = alcance.questionIds.length;
+    var p = alcance.postureIds.length;
+    partes.push(n + (n === 1 ? ' nodo' : ' nodos'));
+    if (q) partes.push(q + (q === 1 ? ' pregunta' : ' preguntas'));
+    if (p) partes.push(p + (p === 1 ? ' postura' : ' posturas'));
+    return partes.join(', ');
+  }
+
+  function borrarNodoEdicion(nodoId) {
+    if (!nodoId) return;
+    volcarCampoActivo();
+    var alcance = Edits.alcanceBorrado(Estado.grafo, nodoId);
+    if (!alcance.nodos.length) return;
+    var raicesRestantes = (Estado.grafo.raices || []).filter(function (id) {
+      return alcance.nodos.indexOf(id) === -1;
+    });
+    if (!raicesRestantes.length) {
+      avisar(t('noBorrarUltimaRaiz'));
+      return;
+    }
+    var nodo = Estado.grafo.nodos.get(nodoId);
+    confirmar({
+      titulo: t('borrarNodoTitulo'),
+      texto: t('borrarNodoTexto', {
+        nombre: escapar(nombreDeNodo(nodo)),
+        detalle: detalleAlcance(alcance)
+      }),
+      aceptar: t('eliminarNodo')
+    }).then(function (aceptado) {
+      if (!aceptado) return;
+      Edits.borrarSubarbol(editsEstado, alcance);
+      reconstruirModelo();
+      avisar('Nodo eliminado del borrador local.');
+    });
+  }
+
+  function agregarCampoEdicion(el, evento) {
+    if (!el || !Arbol.EditMode) return;
+    var campos = (el.getAttribute('data-edit-campos') || '').split(',').filter(Boolean);
+    var clave = el.getAttribute('data-edit-clave');
+    if (!campos.length || !clave) return;
+    Arbol.EditMode.abrirPopupCampos(campos, evento.clientX, evento.clientY, function (campo) {
+      if (!Estado.editCampos[clave]) Estado.editCampos[clave] = [];
+      if (Estado.editCampos[clave].indexOf(campo) === -1) {
+        Estado.editCampos[clave].push(campo);
+      }
+      Estado.emitir('edicion');
+    });
+  }
+
+  function redimensionarNodoEdicion(id, w, h) {
+    if (!id) return;
+    Estado.editTamanos[id] = { w: Math.round(w), h: Math.round(h) };
+    Estado.emitir('edicion');
+  }
+
+  function reengancharDesdeVista(arista, extremo, nodo) {
+    if (!arista || !nodo) return;
+    volcarCampoActivo();
+    if (arista.tipo === 'respuesta') {
+      if (extremo === 'hasta') {
+        var viejoPid = null;
+        var pregunta = Estado.datos.questions[arista.preguntaId];
+        if (pregunta) {
+          (pregunta.answers || []).forEach(function (respuesta) {
+            if (respuesta.key === arista.clave) viejoPid = respuesta.target_posture_id;
+          });
+        }
+        var huerfana = viejoPid
+          && (Estado.datos.root_postures || []).indexOf(viejoPid) === -1
+          && Edits.quedariaHuerfanaPostura(Estado.datos, viejoPid, {
+            questionId: arista.preguntaId, key: arista.clave
+          });
+        var aplicar = function (comoRaiz) {
+          Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
+            newPostureId: nodo.posturaId,
+            huérfanoComoRaiz: !!comoRaiz
+          });
+          reconstruirModelo();
+        };
+        if (huerfana) {
+          var nombre = Layout.rotuloPostura(Estado.datos.postures[viejoPid]);
+          confirmar({
+            titulo: t('huerfanoTitulo'),
+            texto: t('huerfanoTexto', { nombre: escapar(nombre) }),
+            aceptar: t('huerfanoAceptar')
+          }).then(function (ok) {
+            if (ok) aplicar(true);
+          });
+          return;
+        }
+        aplicar(false);
+        return;
+      }
+      Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
+        newQuestionId: nodo.preguntaId
+      });
+      reconstruirModelo();
+      return;
+    }
+    if (arista.tipo === 'eje') {
+      var fromNodo = Estado.grafo.nodos.get(arista.desde);
+      var fromPid = fromNodo && fromNodo.posturaId;
+      if (!fromPid || !arista.preguntaId) return;
+      if (extremo === 'desde') {
+        Edits.reengancharEje(editsEstado, arista.preguntaId, fromPid, {
+          toPostureId: nodo.posturaId
+        });
+      } else {
+        Edits.reengancharEje(editsEstado, arista.preguntaId, fromPid, {
+          toQuestionId: nodo.preguntaId
+        });
+      }
+      reconstruirModelo();
+    }
+  }
+
+  function registrarEventosEdicion() {
+    var lienzo = document.getElementById('lienzo');
+    if (!lienzo) return;
+    lienzo.addEventListener('focusin', function (evento) {
+      if (esInputEdicion(evento.target) && Arbol.EditMode) {
+        Arbol.EditMode.guardarFoco(evento.target);
+      }
+    });
+    lienzo.addEventListener('input', function (evento) {
+      if (Estado.divulgacion !== 'edicion' || !esInputEdicion(evento.target)) return;
+      crecerCampoLocal(evento.target);
+      persistirCampoEdicion(evento.target, { sinReconstruir: true });
+    });
+    lienzo.addEventListener('focusout', function (evento) {
+      if (Estado.divulgacion !== 'edicion' || !esInputEdicion(evento.target)) return;
+      var origen = evento.target;
+      global.setTimeout(function () {
+      var activo = document.activeElement;
+      if (esInputEdicion(activo)) {
+        persistirCampoEdicion(origen, { sinReconstruir: true });
+        return;
+      }
+      persistirCampoEdicion(origen);
+      }, 0);
+    });
+    document.addEventListener('keydown', function (evento) {
+      if (!Arbol.EditMode || Estado.divulgacion !== 'edicion') return;
+      var esc = evento.key === 'Escape' || evento.key === 'Esc' || evento.code === 'Escape';
+      if (!esc) return;
+      var cerroPopup = Arbol.EditMode.popupCamposAbierto && Arbol.EditMode.popupCamposAbierto();
+      if (cerroPopup) Arbol.EditMode.cerrarPopupCampos();
+      var quito = Arbol.EditMode.quitarFocoCampos && Arbol.EditMode.quitarFocoCampos();
+      if (cerroPopup || quito) {
+        evento.preventDefault();
+        evento.stopPropagation();
+      }
+    }, true);
   }
 
   function registrarRedimensionPanel() {
@@ -1938,6 +2281,7 @@
       },
       alBorrar: pedirPoda,
       alExpandir: function (nodoId) {
+        volcarCampoActivo();
         Estado.alternarExpandido(nodoId);
         if (Estado.expandidos.has(nodoId)) {
           global.setTimeout(function () {
@@ -1946,11 +2290,13 @@
         }
       },
       alSeleccionar: function (nodoId) {
+        if (nodoId && !Estado.grafo.nodos.has(nodoId)) return;
         var nodo = nodoId ? Estado.grafo.nodos.get(nodoId) : null;
         preseleccionarPosturaEnCreencias(nodo);
         Estado.seleccionar(nodoId);
       },
       alDobleClic: function (nodoId) {
+        if (nodoId && !Estado.grafo.nodos.has(nodoId)) return;
         var nodo = nodoId ? Estado.grafo.nodos.get(nodoId) : null;
         preseleccionarPosturaEnCreencias(nodo);
         Estado.seleccionado = nodoId;
@@ -1967,6 +2313,11 @@
         avisar('Nodo devuelto a su posición automática.');
       },
       alCambiarCamara: function (camara) { Estado.camara = camara; },
+      alCrearControl: crearDesdeControl,
+      alReenganchar: reengancharDesdeVista,
+      alRedimensionar: redimensionarNodoEdicion,
+      alBorrarNodoEdicion: borrarNodoEdicion,
+      alAgregarCampo: agregarCampoEdicion,
       tooltipHTML: tooltipDeNodo,
       tooltipControl: tooltipDeControl,
       alPintarTooltip: pintarDefinicionesEn,
@@ -1994,6 +2345,7 @@
     sincronizarAltoBarra();
     global.addEventListener('resize', sincronizarAltoBarra);
     registrarEventos();
+    registrarEventosEdicion();
 
     sincronizarHojaCuestionario();
     refrescar();

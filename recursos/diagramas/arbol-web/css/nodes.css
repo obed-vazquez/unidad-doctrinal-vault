@@ -13,6 +13,7 @@
 /* ------------------------------------------------------------------ aristas */
 
 .arista { fill: none; stroke: var(--arista); stroke-width: 1.6; marker-end: url(#punta); transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease; }
+.arista.control { stroke: var(--acento); stroke-dasharray: 4 5; marker-end: none; opacity: 0.75; }
 /* La flecha se traza desde el padre; la punta aparece al quitar .entrando. */
 .arista-grupo.entrando .arista {
   stroke-dasharray: 1;
@@ -270,6 +271,25 @@
 .chincheta:hover .chincheta-caja { fill: var(--acento); stroke: var(--acento); }
 .chincheta:hover .chincheta-cabeza { fill: var(--superficie-solida); }
 .chincheta:hover .chincheta-aguja { stroke: var(--superficie-solida); }
+
+.asa-nodo { cursor: grab; opacity: 0.9; pointer-events: all; }
+.asa-nodo:hover { opacity: 1; }
+.asa-nodo.anclada,
+.asa-nodo.arrastrando { cursor: grabbing; opacity: 1; }
+.asa-nodo-caja { fill: transparent; stroke: none; pointer-events: all; }
+.asa-nodo:hover .asa-nodo-caja,
+.asa-nodo.anclada .asa-nodo-caja,
+.asa-nodo.arrastrando .asa-nodo-caja {
+  fill: transparent;
+  stroke: none;
+}
+.asa-nodo-punto { fill: var(--texto-tenue); }
+.asa-nodo:hover .asa-nodo-punto { fill: var(--acento); }
+.asa-nodo-pin { display: none; }
+.asa-nodo.anclada .asa-nodo-pin,
+.asa-nodo.arrastrando .asa-nodo-pin { display: block; }
+.asa-nodo.anclada .asa-nodo-agarre,
+.asa-nodo.arrastrando .asa-nodo-agarre { display: none; }
 
 .convergencia-glifo { fill: var(--eje-texto); font-size: 12px; font-weight: 800; text-anchor: middle; }
 .convergencia-puerto { fill: none; stroke: var(--eje-borde); stroke-width: 1.6; }

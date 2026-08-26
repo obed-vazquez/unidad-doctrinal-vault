@@ -116,6 +116,7 @@
       this.mundo = document.getElementById('mundo');
       this.capaAristas = document.getElementById('capa-aristas');
       this.capaNodos = document.getElementById('capa-nodos');
+      this.capaEtiquetas = document.getElementById('capa-etiquetas');
       this.patron = document.getElementById('rejilla');
       this.tooltip = document.getElementById('tooltip');
       this.minimapaSVG = document.getElementById('minimapa-svg');
@@ -144,6 +145,7 @@
         this.minimapaEscala.textContent = Math.round(camara.k * 100) + ' %';
       }
       this.actualizarMinimapaVista();
+      if (Arbol.EditMode) Arbol.EditMode.aplicarLod(camara.k);
       if (this.opciones.alCambiarCamara) this.opciones.alCambiarCamara(camara);
     },
 
@@ -455,12 +457,14 @@
       var padX = compuesto.padX;
 
       var clases = ['nodo', 'tipo-' + nodo.tipo];
+      if (contexto.divulgacion === 'edicion') clases.push('modo-edicion');
+      if (nodo.esControl) clases.push('control');
       if (nodo.postura && nodo.postura.is_root) clases.push('raiz');
       if (estado.seleccionado === nodo.id) clases.push('seleccionado');
       if (estado.resaltados.has(nodo.id)) clases.push('resaltado');
       if (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id)) clases.push('fijado');
       var resaltado = estado.resaltados.has(nodo.id);
-      if (camino) {
+      if (camino && !nodo.esControl) {
         if (camino.nodos.has(nodo.id)) {
           clases.push('camino');
           if (camino.destinosTentativos && camino.destinosTentativos.has(nodo.id)) {
@@ -469,7 +473,7 @@
         } else if (!resaltado) {
           clases.push('atenuado');
         }
-      } else if (!resaltado && this.debeAtenuarRecorrido() && contexto.caminoUsuario
+      } else if (!nodo.esControl && !resaltado && this.debeAtenuarRecorrido() && contexto.caminoUsuario
         && contexto.caminoUsuario.size > 1 && !contexto.caminoUsuario.has(nodo.id)
         && !(contexto.deshabilitados && contexto.deshabilitados.has(nodo.id))) {
         clases.push('atenuado');
@@ -484,11 +488,16 @@
       var firma = compuesto.ancho + 'x' + compuesto.alto + ':'
         + (respuesta == null ? '' : respuesta) + ':'
         + compuesto.partes.map(function (p) {
-          return p.k + (p.expandido ? 'e' : '') + (p.conteo || '') + (p.sello || '');
+          return p.k + (p.expandido ? 'e' : '') + (p.conteo || '') + (p.sello || '')
+            + (p.valor ? p.valor : '');
         }).join(',')
         + ':' + ((nodo.postura && nodo.postura.label) || '')
         + (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id) ? ':f' : '')
-        + ':' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es');
+        + ':' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es')
+        + (nodo.pregunta ? '|' + (nodo.pregunta.formal_text || '') + '|' + (nodo.pregunta.colloquial_hint || '') : '')
+        + (nodo.postura ? '|' + ((nodo.postura.notes || []).join())
+          + '|' + ((nodo.postura.traditions || []).map(function (t) { return t.name; }).join())
+          + '|' + ((nodo.postura.wikilinks || []).map(function (e) { return e.target || e.label; }).join()) : '');
       if (!esNuevo && grupo.getAttribute('data-firma') === firma) return;
       grupo.setAttribute('data-firma', firma);
 
@@ -515,11 +524,11 @@
         self.pintarParte(cuerpo, parte, ancho, padX, nodo, respuesta);
       });
 
-      if (nodo.preguntaId && respuesta != null) {
+      if (contexto.divulgacion !== 'edicion' && nodo.preguntaId && respuesta != null) {
         cuerpo.appendChild(this.construirPapelera(ancho, nodo));
       }
-      if (Object.prototype.hasOwnProperty.call(contexto.estado.fijados, nodo.id)) {
-        cuerpo.appendChild(this.construirChincheta(nodo));
+      if (!nodo.esControl) {
+        cuerpo.appendChild(this.construirAsaNodo(nodo, ancho));
       }
 
       var entradasVisibles = nodo.entradas.filter(function (arista) {
@@ -535,6 +544,13 @@
     },
 
     pintarParte: function (grupo, parte, ancho, padX, nodo, respuesta) {
+      if (parte.k === 'editBanda' || parte.k === 'editCampo' || parte.k === 'editPie'
+        || parte.k === 'editRegion' || parte.k === 'editPapelera'
+        || parte.k === 'editResize' || parte.k === 'editLod'
+        || parte.k === 'controlMas' || parte.k === 'controlEje') {
+        if (Arbol.EditMode) Arbol.EditMode.pintarParte(grupo, parte, ancho, padX, nodo);
+        return;
+      }
       var i;
       var self = this;
 
@@ -675,7 +691,7 @@
 
     construirPapelera: function (ancho, nodo) {
       var g = crear('g', {
-        transform: 'translate(' + (ancho - 30) + ',7)',
+        transform: 'translate(8,7)',
         'data-papelera': nodo.preguntaId,
         'data-control': 'papelera'
       }, 'papelera');
@@ -686,19 +702,28 @@
       return g;
     },
 
-    /* Chincheta de tachuela, contrapuesta a la papelera. Al pulsarla el nodo
-       suelta el anclaje y vuelve a su posición automática. */
-    construirChincheta: function (nodo) {
+    /* Asa fija arriba a la derecha: agarre para mover, chincheta al anclar. */
+    construirAsaNodo: function (nodo, ancho) {
+      var fijado = Object.prototype.hasOwnProperty.call(this.contexto.estado.fijados, nodo.id);
       var g = crear('g', {
-        transform: 'translate(8,7)',
+        transform: 'translate(' + (ancho - 30) + ',7)',
+        'data-asa-nodo': nodo.id,
         'data-desanclar': nodo.id,
-        'data-control': 'chincheta'
-      }, 'chincheta');
-      g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'chincheta-caja'));
-      g.appendChild(crear('path', {
+        'data-control': 'asa-nodo'
+      }, 'asa-nodo' + (fijado ? ' anclada' : ''));
+      g.appendChild(crear('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'asa-nodo-caja'));
+      var agarre = crear('g', {}, 'asa-nodo-agarre');
+      var puntos = [[8, 6], [14, 6], [8, 10], [14, 10], [8, 14], [14, 14]];
+      puntos.forEach(function (p) {
+        agarre.appendChild(crear('circle', { cx: p[0], cy: p[1], r: 1.35 }, 'asa-nodo-punto'));
+      });
+      g.appendChild(agarre);
+      var pin = crear('g', {}, 'asa-nodo-pin');
+      pin.appendChild(crear('path', {
         d: 'M 8 4 H 14 L 13 5 V 9 L 15.5 11.5 H 6.5 L 9 9 V 5 Z'
       }, 'chincheta-cabeza'));
-      g.appendChild(crear('path', { d: 'M 11 11.5 V 16' }, 'chincheta-aguja'));
+      pin.appendChild(crear('path', { d: 'M 11 11.5 V 16' }, 'chincheta-aguja'));
+      g.appendChild(pin);
       return g;
     },
 
@@ -799,7 +824,7 @@
         if (!grupo) {
           grupo = crear('g', { 'data-id': aristaId }, 'arista-grupo');
           grupo.appendChild(crear('path', { pathLength: 1 }, 'arista'));
-          if (arista.tipo === 'respuesta' && arista.etiqueta) {
+          if (arista.tipo === 'respuesta' && (arista.etiqueta || contexto.divulgacion === 'edicion')) {
             grupo.appendChild(crear('rect', {}, 'arista-etiqueta-caja'));
             grupo.appendChild(texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto'));
           }
@@ -830,6 +855,15 @@
         var clases = ['arista-grupo'];
         var clasesTrazo = ['arista'];
         if (arista.tipo === 'eje') clasesTrazo.push('eje');
+        if (arista.tipo === 'control') {
+          clasesTrazo.push('control');
+          clases.push('control');
+          var destControl = contexto.grafo.nodos.get(arista.hasta);
+          if (destControl && destControl.tipo === 'control-eje') {
+            clasesTrazo.push('control-eje');
+            clases.push('control-eje');
+          }
+        }
         var elegida = arista.tipo === 'respuesta'
           && contexto.respuestas[arista.preguntaId] === arista.clave;
         var deshab = contexto.deshabilitados;
@@ -837,7 +871,7 @@
         if (ramaOpaca) {
           clases.push('deshabilitada');
           clasesTrazo.push('deshabilitada');
-        } else if (contexto.camino) {
+        } else if (contexto.camino && arista.tipo !== 'control') {
           if (contexto.camino.aristas.has(aristaId)) {
             clases.push('camino');
             clasesTrazo.push('camino');
@@ -870,26 +904,45 @@
         grupo.setAttribute('class', clases.join(' '));
         trazo.setAttribute('class', clasesTrazo.join(' '));
 
+        var mx = (desde.x + 3 * c1x + 3 * c2x + hasta.x) / 8;
+        var my = (desde.y + 3 * c1y + 3 * c2y + hasta.y) / 8;
         var caja = grupo.querySelector('.arista-etiqueta-caja');
+        var etiqueta = grupo.querySelector('.arista-etiqueta-texto');
         if (caja) {
-          var etiqueta = grupo.querySelector('.arista-etiqueta-texto');
-          // Punto medio real de la cúbica: (P0 + 3·C1 + 3·C2 + P3) / 8.
-          var mx = (desde.x + 3 * c1x + 3 * c2x + hasta.x) / 8;
-          var my = (desde.y + 3 * c1y + 3 * c2y + hasta.y) / 8;
-          var anchoTexto = Arbol.Layout.medir(arista.etiqueta, '600 11px ' + Arbol.Layout.PILA);
+          var anchoTexto = Arbol.Layout.medir(arista.etiqueta || '', '600 11px ' + Arbol.Layout.PILA);
           caja.setAttribute('x', mx - anchoTexto / 2 - 8);
           caja.setAttribute('y', my - 10);
-          caja.setAttribute('width', anchoTexto + 16);
+          caja.setAttribute('width', Math.max(24, anchoTexto + 16));
           caja.setAttribute('height', 20);
-          etiqueta.setAttribute('x', mx);
-          etiqueta.setAttribute('y', my);
+          if (etiqueta) {
+            etiqueta.setAttribute('x', mx);
+            etiqueta.setAttribute('y', my);
+            etiqueta.textContent = arista.etiqueta || '';
+          }
+        }
+        if (contexto.divulgacion === 'edicion' && arista.tipo === 'respuesta' && Arbol.EditMode) {
+          Arbol.EditMode.pintarEtiquetaArista(grupo, arista, mx, my);
+        } else {
+          if (Arbol.EditMode && Arbol.EditMode.quitarEtiquetaArista) {
+            Arbol.EditMode.quitarEtiquetaArista(aristaId);
+          }
+          var foEdit = grupo.querySelector('.edit-arista-fo');
+          if (foEdit) foEdit.remove();
+          if (etiqueta) etiqueta.removeAttribute('display');
         }
       });
+
+      if (contexto.divulgacion === 'edicion' && Arbol.EditMode) {
+        Arbol.EditMode.dibujarAsas(this);
+      }
 
       var salientesAristas = [];
       this.aristasDOM.forEach(function (grupo, id) {
         if (vistas.has(id)) return;
         if (self.reducirMovimiento()) {
+          if (Arbol.EditMode && Arbol.EditMode.quitarEtiquetaArista) {
+            Arbol.EditMode.quitarEtiquetaArista(id);
+          }
           grupo.remove();
           self.aristasDOM.delete(id);
           return;
@@ -911,6 +964,9 @@
         if (item.grupo.__salidaTimer) global.clearTimeout(item.grupo.__salidaTimer);
         item.grupo.__salidaTimer = global.setTimeout(function () {
           if (self.contexto && self.contexto.aristasIds && self.contexto.aristasIds.has(item.id)) return;
+          if (Arbol.EditMode && Arbol.EditMode.quitarEtiquetaArista) {
+            Arbol.EditMode.quitarEtiquetaArista(item.id);
+          }
           item.grupo.remove();
           self.aristasDOM.delete(item.id);
         }, retraso + SALIDA_ARISTA_MS + 40);
@@ -1202,7 +1258,10 @@
     registrarEventos: function () {
       var self = this;
 
-      this.svg.addEventListener('selectstart', function (evento) { evento.preventDefault(); });
+      this.svg.addEventListener('selectstart', function (evento) {
+        if (Arbol.EditMode && Arbol.EditMode.esEventoDeEdicion(evento)) return;
+        evento.preventDefault();
+      });
 
       this.svg.addEventListener('wheel', function (evento) {
         evento.preventDefault();
@@ -1222,9 +1281,31 @@
       this.svg.addEventListener('pointerdown', function (evento) {
         if (evento.button != null && evento.button !== 0) return;
         var bajo = elementoBajoPuntero(evento);
+        var tag = evento.target && evento.target.tagName;
+        var enCampo = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'
+          || (evento.target && evento.target.closest
+            && evento.target.closest('.edit-chip-quitar'));
+        if (!enCampo && Arbol.EditMode && self.contexto
+          && self.contexto.divulgacion === 'edicion') {
+          Arbol.EditMode.quitarFocoCampos();
+        }
+        if (Arbol.EditMode && Arbol.EditMode.esEventoDeEdicion(evento)) {
+          if (Arbol.EditMode.iniciarReenganche(evento, self)) {
+            try { self.svg.setPointerCapture(evento.pointerId); } catch (e) { /* nada */ }
+            evento.preventDefault();
+            return;
+          }
+          if (Arbol.EditMode.iniciarResize(evento, self)) {
+            try { self.svg.setPointerCapture(evento.pointerId); } catch (e) { /* nada */ }
+            evento.preventDefault();
+            return;
+          }
+          return;
+        }
         var nodoDOM = ancestro(bajo, '.nodo');
         if (ancestro(bajo, '.opcion') || ancestro(bajo, '.papelera')
-          || ancestro(bajo, '.chincheta')) {
+          || ancestro(bajo, '.edit-papelera') || ancestro(bajo, '.tipo-control-mas')
+          || ancestro(bajo, '.tipo-control-eje')) {
           return;
         }
         evento.preventDefault();
@@ -1273,6 +1354,10 @@
       });
 
       this.svg.addEventListener('pointermove', function (evento) {
+        if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
+          if (Arbol.EditMode.moverReenganche(evento, self)) return;
+          if (Arbol.EditMode.moverResize(evento)) return;
+        }
         if (self.punteros && self.punteros.has(evento.pointerId)) {
           self.punteros.set(evento.pointerId, { x: evento.clientX, y: evento.clientY });
         }
@@ -1303,6 +1388,9 @@
         self.cancelarResalteLargo();
         self.svg.classList.add('moviendo-nodo');
         self.ocultarTooltip(true);
+        var grupoMovido = self.nodosDOM.get(self.arrastre.id);
+        var asaMovida = grupoMovido && grupoMovido.querySelector('.asa-nodo');
+        if (asaMovida) asaMovida.classList.add('arrastrando');
         self.posiciones.set(self.arrastre.id, {
           x: self.arrastre.inicioNodo.x + dx / self.camara.k,
           y: self.arrastre.inicioNodo.y + dy / self.camara.k
@@ -1314,6 +1402,16 @@
       this.svg.addEventListener('pointerup', function (evento) {
         if (self.svg.hasPointerCapture && self.svg.hasPointerCapture(evento.pointerId)) {
           self.svg.releasePointerCapture(evento.pointerId);
+        }
+        if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
+          if (Arbol.EditMode.soltarReenganche(evento, self, self.opciones.alReenganchar)) {
+            self.ignorarSiguienteClic = true;
+            return;
+          }
+          if (Arbol.EditMode.soltarResize(self.opciones.alRedimensionar)) {
+            self.ignorarSiguienteClic = true;
+            return;
+          }
         }
         if (self.punteros) self.punteros.delete(evento.pointerId);
         self.cancelarResalteLargo();
@@ -1346,6 +1444,9 @@
       });
 
       this.svg.addEventListener('pointercancel', function (evento) {
+        if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
+          Arbol.EditMode.cancelarGestos(self);
+        }
         if (self.punteros) self.punteros.delete(evento.pointerId);
         self.cancelarResalteLargo();
         self.arrastre = null;
@@ -1356,8 +1457,26 @@
 
       this.svg.addEventListener('click', function (evento) {
         var bajo = elementoBajoPuntero(evento);
-        var esControl = !!(ancestro(bajo, '.chincheta') || ancestro(bajo, '.papelera')
-          || ancestro(bajo, '.opcion'));
+        var esControl = !!(ancestro(bajo, '.asa-nodo') || ancestro(bajo, '.chincheta')
+          || ancestro(bajo, '.papelera')
+          || ancestro(bajo, '.opcion') || ancestro(bajo, '.edit-papelera')
+          || ancestro(bajo, '.edit-agregar') || ancestro(bajo, '.edit-rama')
+          || ancestro(bajo, '.tipo-control-mas') || ancestro(bajo, '.tipo-control-eje')
+          || ancestro(bajo, '.edit-fo') || ancestro(bajo, '.reenganche-asa')
+          || ancestro(bajo, '.edit-resize'));
+        var asaNodo = ancestro(bajo, '.asa-nodo');
+        if (asaNodo) {
+          if (self.ignorarSiguienteClic || Date.now() < (self._ignorarClicHasta || 0)) {
+            self.ignorarSiguienteClic = false;
+            return;
+          }
+          evento.stopPropagation();
+          if (asaNodo.classList.contains('anclada') && self.opciones.alDesanclar) {
+            self.opciones.alDesanclar(asaNodo.getAttribute('data-desanclar')
+              || asaNodo.getAttribute('data-asa-nodo'));
+          }
+          return;
+        }
         if (self.ignorarSiguienteClic) {
           self.ignorarSiguienteClic = false;
           if (!esControl) return;
@@ -1409,6 +1528,38 @@
           }
           return;
         }
+        var ramaEdit = ancestro(bajo, '[data-edit-expandir]');
+        if (ramaEdit) {
+          evento.stopPropagation();
+          if (self.opciones.alExpandir) {
+            self.opciones.alExpandir(ramaEdit.getAttribute('data-edit-expandir'));
+          }
+          return;
+        }
+        var agregar = ancestro(bajo, '[data-edit-control="agregar"]');
+        if (agregar && self.opciones.alAgregarCampo) {
+          evento.stopPropagation();
+          self.opciones.alAgregarCampo(agregar, evento);
+          return;
+        }
+        var borrarEdit = ancestro(bajo, '[data-edit-borrar]');
+        if (borrarEdit && self.opciones.alBorrarNodoEdicion) {
+          evento.stopPropagation();
+          self.opciones.alBorrarNodoEdicion(borrarEdit.getAttribute('data-edit-borrar'));
+          return;
+        }
+        if (nodoBajoCursor && (nodoBajoCursor.classList.contains('tipo-control-mas')
+            || nodoBajoCursor.classList.contains('tipo-control-eje'))) {
+          evento.stopPropagation();
+          if (self.opciones.alCrearControl) {
+            self.opciones.alCrearControl(nodoBajoCursor.getAttribute('data-id'));
+          }
+          return;
+        }
+        if (ancestro(bajo, '.edit-fo') || ancestro(bajo, '.reenganche-asa')
+            || ancestro(bajo, '.edit-resize')) {
+          return;
+        }
         if (nodoBajoCursor) {
           var idCapturado = nodoBajoCursor.getAttribute('data-id');
           var ahora = Date.now();
@@ -1433,6 +1584,7 @@
       });
 
       this.svg.addEventListener('dblclick', function (evento) {
+        if (Arbol.EditMode && Arbol.EditMode.esEventoDeEdicion(evento)) return;
         evento.preventDefault();
         evento.stopPropagation();
         if (global.getSelection) {
@@ -1454,7 +1606,7 @@
         if (evento.sourceCapabilities && evento.sourceCapabilities.firesTouchEvents) return;
         if (self.arrastre || self.panorama || self.pellizco) return;
         var bajo = elementoBajoPuntero(evento);
-        var control = ancestro(bajo, '[data-control]');
+        var control = ancestro(bajo, '[data-control], [data-edit-control], [data-edit-campo]');
         var nodoDOM = ancestro(bajo, '.nodo');
         var mx = evento.clientX;
         var my = evento.clientY;
@@ -1524,7 +1676,8 @@
               : null;
             self._tipModo = 'nodo';
             self._tipClave = id;
-            self.mostrarTooltip(html, mx, my);
+            if (html) self.mostrarTooltip(html, mx, my);
+            else self.ocultarTooltip(true);
           }, TIP_ESPERA);
         }
       });

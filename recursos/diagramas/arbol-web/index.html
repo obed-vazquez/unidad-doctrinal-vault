@@ -8,11 +8,13 @@
 <link rel="stylesheet" href="css/canvas.css">
 <link rel="stylesheet" href="css/nodes.css">
 <link rel="stylesheet" href="css/panel.css">
+<link rel="stylesheet" href="css/edit-mode.css">
 </head>
 <body>
 <div id="aplicacion">
 
   <svg id="lienzo" xmlns="http://www.w3.org/2000/svg" role="application"
+       tabindex="-1"
        data-i18n-aria="ariaLienzo"
        aria-label="Árbol interactivo de posturas y creencias">
     <defs>
@@ -40,6 +42,8 @@
     <g id="mundo">
       <g id="capa-aristas"></g>
       <g id="capa-nodos"></g>
+      <g id="capa-etiquetas"></g>
+      <g id="capa-asas"></g>
     </g>
   </svg>
 
@@ -61,6 +65,7 @@
           <button type="button" role="menuitemradio" data-recorrido="limpio" data-i18n="limpio">Limpio</button>
           <button type="button" role="menuitemradio" data-recorrido="exploracion" data-i18n="exploracion">Exploración libre</button>
           <button type="button" role="menuitemradio" data-recorrido="completo" data-i18n="completo">Árbol completo</button>
+          <button type="button" role="menuitemradio" data-recorrido="edicion" data-i18n="edicion">Edición</button>
         </div>
       </div>
       <button type="button" class="boton" id="btn-ajustar" data-i18n-title="ajustarTitle"
@@ -253,6 +258,7 @@
 <script src="js/definiciones.js"></script>
 <script src="js/edits.js"></script>
 <script src="js/layout.js"></script>
+<script src="js/edit-mode.js"></script>
 <script src="js/search.js"></script>
 <script src="js/renderer.js"></script>
 <script src="js/router.js"></script>

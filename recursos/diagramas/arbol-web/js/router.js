@@ -68,7 +68,8 @@
 
     if (parametros.get('full') !== null) lectura.completo = parametros.get('full') === '1';
     var rec = parametros.get('rec');
-    if (rec === 'cuestionario' || rec === 'limpio' || rec === 'exploracion' || rec === 'completo') {
+    if (rec === 'cuestionario' || rec === 'limpio' || rec === 'exploracion'
+      || rec === 'completo' || rec === 'edicion') {
       lectura.divulgacion = rec;
     }
 
