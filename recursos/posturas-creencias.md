@@ -165,16 +165,18 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                                       - No: ? 
                                                       - Sí: ?
                                                         - ? -> ¿Puede el humano rechazar el llamado de Dios hacia esa conversión? (¿Es posible para el humano resistir **el** llamado de Dios?)
-                                                          - No: ?
-                                                            - ? -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
-                                                          - Sí: ?
-                                                            - ? -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
+                                                          - No: Gracia Irresistible {Calvinismo / Tradición Reformada}
+                                                            - Gracia Irresistible -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
+                                                              - Sí: ?
+                                                              - No: ?
+                                                          - Sí: Gracia Resistible {Arminianismo / Metodismo}
+                                                            - Gracia Resistible -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
                                                               - Sí: ?
                                                               - No: ?
                                                                 - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
                                                         - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo?
-                                                          - No: ?
-                                                          - Sí: ?
+                                                          - No: Perseverancia de los Santos / Seguridad Eterna {Calvinismo, Bautistas}
+                                                          - Sí: Pérdida de la Salvación / Perseverancia Condicional {Arminianismo, Metodismo, Pentecostalismo}
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo

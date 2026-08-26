@@ -1,0 +1,36 @@
+## Modo edición
+Necesitamos generar un modo distinto al resto de las vistas de recorrido. En esta vista generaremos un modo de edición más visual de la herramienta. 
+
+Actualmente, la herramienta ya cuenta con edición, pero son muchos pasos para hacerlo porque la herramienta no está centrada en la edición del árbol sino en su exploración y análisis. Este nuevo modo tendrá dentro del mismo árbol herramientas de edición:
+- Cada nodo con pregunta tendrá como parte de sus hijos un nodo de creación de un nuevo nodo solamente con un + (símbolo de suma/más) el cual generará un nuevo nodo vacío como hijo de su padre (sería su hermano), este + sería solo un control no un nodo real en la estructura.
+  - Nodos nuevos. Los campos que se muestran en 
+- Cada nodo tendrá también como parte de sus hijos un nodo de creación de pregunta/eje con un tema visual parecido al que tienen las preguntas (ejes) actualmente. Este nodo Creará no solo un nodo de pregunta, sino que tendría que extraer la pregunta del nodo "padre" para que este quedara como postura.
+  - Obviamente, al tener 2 o más preguntas/ejes, el botón de creación de nodo nuevo se eliminará de su padre y pasará a estar debajo de las preguntas.
+- Las líneas de las preguntas y nodos deben poder reajustarse (modificar la tarjeta de origen y destino), pero obviamente no puede ir `pregunta -> pregunta` ni `postura -> postura` solo `pregunta -> postura` y `postura -> pregunta` (a menos que estén integradas en un nodo-integrado) es un cambio grande porque la estructura que genére debe reflejar el cambio.
+- Todos los campos de los nodos estarán siempre visibles (aun los vacíos) y serán editables.
+- las tarjetas deben contar con otros botones de mostrar y ocultar ramas (no los de las otras vistas, algo más compacto) con ánimos de tener la misma funcionalidad pero ahorrar espacio en la tarjeta.
+
+- En lugar de poner todos los campos vacíos implementaremos un signo de más (+) al final de todos los campos y lo que cause es que antes de agregar el campo el sistema preguntará qué campo (que no está ya desplegado) quiere agregar/rellnar el usuario, de esta manera, no tendremos las tarjetas llenas de campos vacíos.
+    - El botón de ocultar/mostrar ramas se colocará alineado a la derecha del fondo de la tarjeta y a la izquierda dejas el + que muestra los campos que están vacíos.
+- Los títulos de los campos se mostrarán como outlined input with floating label donde aparece el título del campo en la parte superior del input.
+- El nombre de la postura es importante que salga más "resaltada", lo primero que se viene a la mente es que sea de fuente más grande, pero la solución queda a juicio/sugerencia del implementador. Lo que sí es un problema es que es ilogico que la fuente de los titulos de las propiedades de las tarjetas sea más grande que las del título mismo de la tarjeta.
+- Es necesario que salga completo el nombre/título de las propiedades de la tarjeta (porque en unas tiene elipses porque el nombre es muy grande). Se debe desplegar completo, podemos simplemente hacer sus fuentes más pequeñas para que no ocupen tanto espacio. Y combinemos eso con lo siguiente:
+    - Vamos a poner alias para los títulos de algunos campos: "Tradiciones / sistemas" se va a llamar "Religiones" (estos son solo un alias, no modificar el resto de las estructuras internas, solamente como se despliegan en las tarjetas de esta vista en específico);
+- El nombre de la postura se verá siempre en la barra de título pero será editable. Harémos que se vea igual que como se ve en los nodos (que no se vea que es un input) pero que sea editable al dar click en él.
+- Se puede hacer que si el usuario hace Zoom-out muy lejos (en el punto en el que ya no sea legible el texto de las tarjetas, que la tarjeta cambie a mostrar solo el nombre de la postura/Pregunta Coloquial en texto más grande (para que sea legible)?
+- Pondremos la respuesta a una pregunta como campo DE LA LÍNEA en lugar de dentro de la postura? Y que el usuario pueda editar ese campo en el aire solo dando click en él? si no tiene respuesta (porque apenas lo está creando) que solo aparezca un + con fondo muy transparente y sin bordes, puedes consultar en internet el estandar para este tipo de controles.
+    - Esto traería un cambio natural en la creación de las posturas nuevas (no preguntas), sería mejor que cuando el usuario diése click en el icono de + para crear un nuevo nodo postura, que el sistema cree el nodo y luego posicióne automáticamente el foco del usuario en este campo de respuesta para que lo rellene (si es que no lo rellenó ya en algun otro lado, quizás en el futuro lo pueda rellenar desde otro lado).
+- Los tooltips de información/detalle del nodo no deben de aparecer, al menos no con ese uso, es mejor que se utilice ese tooltip para mostrar información de otro estilo tocante a los campos y otras cosas de las tarjetas, quizás mostrar la información de para qué se usan los campos o qué representan, y quizás describir la estructura de los nodos compuestos de postura+pregunta, pero no para mostrar los detalles del nodo que usan otras vistas.
+- los campos de texto con mucho texto nunca tendrán barra de scroll al mostrarse llenos
+    - El texto en todos lados debería estar wrapped.
+    - El recuadro del texto debería encompass'earlo, packaged, ajustarse al tamaño del texto y crecer, por lo tanto, la tarjeta entera tendría que hacer lo mismo.
+    - Esto nos lleva a que la tarjeta debe ser resizeable, su tamaño debe ser manualmente ajustable.
+
+- La selección de creencia debe funcionar correctamente en el modo de edición. Si se accede a una creencia el árbol debe mostrar y desplegar la ruta hasta él y al cerrar el panel dde creencias no debe replegar la(s) rama(s). 
+  - Se le recuerda al implementador que estas especificaciónes son solo para el modo de Edición 
+  - Se le recuerda al implementador que el abrir un nodo debe estar ligado de cierta manera a la creencia al abrir el panel de creencias, se debe tener cuidado de no romper esa funcionalidad
+- Se marcará la sección de la pregunta dentro de un nodo-integrado (tarjeta-integrada) con un diseño parecido al de los ejes individuales (el tema amarillo que tienen) pero que quede como una sección interna del nodo, para representar la integración (quizas podemos ponerle un nombre/título de sección como eje integrado o pregunta integrada), con una opacidad mas tenue. Es importante recordar que el diseño es primordial y que si esto hace que la tarjeta se vea mal se debe priorizar en todo momento que la tarjeta se vea profesional y apegada a estandares de diseño gráfico aún si es necesario modificar este diseñó o cancelar el punto (y cualquier otro).
+
+
+Intentemos que los estados, las tarjetas, el diseño y demás opciones que son modificadas o diferentes a los otros modos, sean exclusivas de esta vista/modo, para no interferir con el resto, el modo de edición es especial en muchos aspectos y requiere funcionalidades que el resto de los modos no requieren, por lo tanto, preferirémos no reutilizarlos si son dierentes en la medida de lo posible.
+Es importante el diseño estético para cada uno de los controles descritos, deben ser modernos y preferentemente con animaciónes modernas, el implementador puede consultar por trends actuales en el mundo del desarrollo web.
