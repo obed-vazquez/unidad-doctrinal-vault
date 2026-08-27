@@ -749,7 +749,7 @@
     },
 
     debeAtenuarRecorrido: function () {
-      return this.contexto && this.contexto.divulgacion === 'cuestionario';
+      return this.contexto && this.contexto.divulgacion === 'indagatorio';
     },
 
     aplicarPosiciones: function () {

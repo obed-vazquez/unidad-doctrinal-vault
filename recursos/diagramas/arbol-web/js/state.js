@@ -181,19 +181,20 @@
     return pesos;
   }
 
-  /* true legacy = árbol completo; false/omitido = cuestionario. */
+  /* true legacy = árbol completo; false/omitido = indagatorio (árbol). */
   function normalizarDivulgacion(valor) {
     if (valor === true) return 'completo';
-    if (valor === false || valor == null) return 'cuestionario';
-    if (valor === 'cuestionario' || valor === 'limpio'
+    if (valor === false || valor == null) return 'indagatorio';
+    if (valor === 'cuestionario' || valor === 'indagatorio' || valor === 'limpio'
       || valor === 'exploracion' || valor === 'completo'
       || valor === 'edicion') return valor;
     return 'cuestionario';
   }
 
-  /* Divulgación progresiva. En cuestionario, responder revela TODAS las
-     posturas destino (también la no elegida). En limpio, solo la elegida.
-     En exploración, un conjunto de nodos expandidos abre todas sus salidas. */
+  /* Divulgación progresiva. En indagatorio, responder revela TODAS las
+     posturas destino (también la no elegida). En limpio y cuestionario,
+     solo la elegida. En exploración, un conjunto de nodos expandidos abre
+     todas sus salidas. */
   function nodosVisibles(grafo, respuestas, divulgacion, expandidos) {
     var modo = normalizarDivulgacion(divulgacion);
     var visibles = new Set();
@@ -218,7 +219,7 @@
       if (!abierto) continue;
       nodo.salidas.forEach(function (arista) {
         if (arista.tipo === 'control') return;
-        if (modo === 'limpio' && arista.tipo === 'respuesta'
+        if ((modo === 'limpio' || modo === 'cuestionario') && arista.tipo === 'respuesta'
           && respuestas[arista.preguntaId] !== arista.clave) return;
         pila.push(arista.hasta);
       });
@@ -260,7 +261,8 @@
         return;
       }
       if (respuestas[arista.preguntaId] == null) return;
-      if (modo === 'limpio' && respuestas[arista.preguntaId] !== arista.clave) return;
+      if ((modo === 'limpio' || modo === 'cuestionario')
+        && respuestas[arista.preguntaId] !== arista.clave) return;
       resultado.add(id);
     });
     return resultado;
@@ -429,7 +431,7 @@
     camara: { x: 0, y: 0, k: 1 },
     camaraRestaurada: false,
     tema: 'oscuro',
-    divulgacion: 'cuestionario', // cuestionario | limpio | exploracion | completo | edicion
+    divulgacion: 'cuestionario', // cuestionario | indagatorio | limpio | exploracion | completo | edicion
     arbolCompleto: false,    // espejo de divulgacion === 'completo' (URL y tests)
     expandidos: new Set(),   // nodos abiertos en exploración libre
     editTamanos: {},         // { nodoId: { w, h } } exclusivo del modo edición
@@ -492,10 +494,12 @@
         /* Desde el árbol completo no sembramos todos los nodos: eso dejaba
            el diagrama entero abierto y, al ocultar una rama, sus nietos
            seguían marcados como expandidos. Si ya había un conjunto de
-           exploración, se conserva; si no, se parte del recorrido del
-           cuestionario. */
+           exploración, se conserva; si no, se parte del recorrido
+           indagatorio. */
         if (anterior === 'completo') {
-          if (!this.expandidos.size) this.sembrarExpandidos('cuestionario');
+          if (!this.expandidos.size) this.sembrarExpandidos('indagatorio');
+        } else if (anterior === 'cuestionario') {
+          this.sembrarExpandidos('limpio');
         } else {
           this.sembrarExpandidos(anterior);
         }
@@ -509,7 +513,7 @@
        quedan expandidos para no colapsar el árbol que el usuario construyó. */
     sembrarExpandidos: function (desdeModo) {
       var visibles = nodosVisibles(this.grafo, this.respuestasEfectivas(),
-        desdeModo || 'cuestionario', this.expandidos);
+        desdeModo || 'indagatorio', this.expandidos);
       var sembrados = new Set();
       visibles.forEach(function (id) {
         var nodo = this.grafo.nodos.get(id);
@@ -547,7 +551,7 @@
     },
 
     responder: function (preguntaId, clave) {
-      if (this.divulgacion === 'cuestionario' && this.grafo) {
+      if (this.divulgacion === 'indagatorio' && this.grafo) {
         var anfitrion = this.grafo.anfitrionDePregunta(preguntaId);
         var camino = nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas());
         if (anfitrion && !camino.has(anfitrion)) return;
@@ -642,6 +646,9 @@
       this.divulgacion = 'cuestionario';
       this.arbolCompleto = false;
       this.expandidos = new Set();
+      this.editTamanos = {};
+      this.editCampos = {};
+      this.panelAbierto = false;
       this.emitir('reinicio');
     },
 
@@ -697,7 +704,7 @@
         this.arbolCompleto = this.divulgacion === 'completo';
       } else if (typeof guardado.arbolCompleto === 'boolean') {
         this.arbolCompleto = guardado.arbolCompleto;
-        this.divulgacion = guardado.arbolCompleto ? 'completo' : 'cuestionario';
+        this.divulgacion = guardado.arbolCompleto ? 'completo' : 'indagatorio';
       }
       if (Array.isArray(guardado.expandidos)) this.expandidos = new Set(guardado.expandidos);
       if (guardado.editTamanos && typeof guardado.editTamanos === 'object') {

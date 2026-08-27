@@ -661,7 +661,7 @@ while (colaExp.length) {
 comprobar('expandir rama a rama no solapa nodos', solapesExp === 0, solapesExp + ' solapes');
 comprobar('expandir rama a rama no cruza flechas', crucesExp === 0, crucesExp + ' cruces');
 
-Arbol.Estado.divulgacion = 'cuestionario';
+Arbol.Estado.divulgacion = 'indagatorio';
 Arbol.Estado.arbolCompleto = false;
 Arbol.Estado.expandidos = new Set();
 Arbol.Estado._oyentes = [];

@@ -348,6 +348,7 @@
         origin_posture_ids: [op.postureId],
         is_convergence: false,
         answers: [],
+        wikilinks: [],
         is_local: true
       };
       origen.question_axes = (origen.question_axes || []).concat([op.id]);

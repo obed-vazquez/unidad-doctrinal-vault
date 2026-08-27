@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="css/nodes.css">
 <link rel="stylesheet" href="css/panel.css">
 <link rel="stylesheet" href="css/edit-mode.css">
+<link rel="stylesheet" href="css/cuestionario.css">
+<link rel="stylesheet" href="css/markdown.css">
 </head>
 <body>
 <div id="aplicacion">
@@ -62,6 +64,7 @@
         </button>
         <div class="menu-lista" role="menu">
           <button type="button" role="menuitemradio" data-recorrido="cuestionario" data-i18n="cuestionario">Cuestionario</button>
+          <button type="button" role="menuitemradio" data-recorrido="indagatorio" data-i18n="indagatorio">Indagatorio</button>
           <button type="button" role="menuitemradio" data-recorrido="limpio" data-i18n="limpio">Limpio</button>
           <button type="button" role="menuitemradio" data-recorrido="exploracion" data-i18n="exploracion">Exploración libre</button>
           <button type="button" role="menuitemradio" data-recorrido="completo" data-i18n="completo">Árbol completo</button>
@@ -109,7 +112,7 @@
       <span class="barra-separador"></span>
       <button type="button" class="boton icono-solo" id="btn-idioma"
               data-i18n-title="idiomaTitle" title="Cambiar idioma (español / English)">
-        <span class="rotulo" id="rotulo-idioma">EN</span>
+        <span class="valor" id="rotulo-idioma">EN</span>
       </button>
       <div class="musica-wrap" id="musica-wrap">
         <button type="button" class="boton icono-solo" id="btn-musica"
@@ -248,6 +251,7 @@
   <audio id="audio-fondo" loop preload="auto" src="music/006_lifeWave2k.mp3"></audio>
   <div id="tooltip" role="tooltip" aria-hidden="true"></div>
   <div id="aviso" role="status" aria-live="polite"></div>
+  <div id="modo-cuestionario" hidden aria-hidden="true"></div>
   <div id="cargando"><div class="girador"></div><p data-i18n="cargando">Cargando el árbol…</p></div>
 
 </div>
@@ -261,7 +265,11 @@
 <script src="js/edit-mode.js"></script>
 <script src="js/search.js"></script>
 <script src="js/renderer.js"></script>
+<script src="datos/notas.cache.js?v=2"></script>
+<script src="js/vendor/marked.min.js"></script>
+<script src="js/markdown.js?v=2"></script>
 <script src="js/router.js"></script>
+<script src="js/cuestionario.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

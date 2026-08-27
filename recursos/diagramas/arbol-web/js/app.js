@@ -360,7 +360,7 @@
       respuestas: respuestas,
       camino: exploracion,
       caminoUsuario: caminoUsuario,
-      deshabilitados: Estado.divulgacion === 'cuestionario'
+      deshabilitados: Estado.divulgacion === 'indagatorio'
         ? Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles)
         : new Set(),
       tradicionesDestacadas: destacadas,
@@ -383,6 +383,7 @@
     actualizarBarra(visibles);
     actualizarPanel();
     pintarDefinicionesEn(dom.cuerpoDetalle);
+    if (Arbol.Cuestionario) Arbol.Cuestionario.sincronizar(Estado);
     Router.escribir(Estado);
   }
 
@@ -739,6 +740,16 @@
     if (afiliaciones.length) {
       partes.push('<p class="tooltip-tradiciones">' + escapar(t('sostenidaPor')) + ': '
         + escapar(afiliaciones.join(' · ')) + '</p>');
+    }
+
+    var debajo = Arbol.descendientesPorNodo(Estado.grafo).get(nodo.id) || 0;
+    if (debajo === 0) {
+      partes.push('<p class="tooltip-conteo">' + escapar(t('nodosDebajoCero')) + '</p>');
+    } else if (debajo === 1) {
+      partes.push('<p class="tooltip-conteo">' + escapar(t('nodosDebajoUno')) + '</p>');
+    } else {
+      partes.push('<p class="tooltip-conteo">'
+        + escapar(t('nodosDebajo', { n: String(debajo) })) + '</p>');
     }
 
     if (nodo.postura && !nodo.postura.is_unnamed) {
@@ -1281,8 +1292,8 @@
     return hojas;
   }
 
-  function sincronizarHojaCuestionario() {
-    if (Estado.divulgacion !== 'cuestionario') return;
+  function sincronizarHojasRecorrido() {
+    if (Estado.divulgacion !== 'indagatorio' && Estado.divulgacion !== 'limpio') return;
     var hojas = hojasDelRecorrido();
     if (!hojas.length) return;
     var tradiciones = [];
@@ -1475,11 +1486,57 @@
     global.setTimeout(terminar, 7600);
   }
 
-  var ORDEN_DIVULGACION = ['cuestionario', 'limpio', 'exploracion', 'completo', 'edicion'];
+  var ORDEN_DIVULGACION = ['cuestionario', 'indagatorio', 'limpio', 'exploracion', 'completo', 'edicion'];
 
   function ciclarDivulgacion() {
     var indice = ORDEN_DIVULGACION.indexOf(Estado.divulgacion);
     fijarRecorrido(ORDEN_DIVULGACION[(indice + 1) % ORDEN_DIVULGACION.length]);
+  }
+
+  function explorarSujetoEnArbol(opciones) {
+    var opts = opciones || {};
+    var tradiciones = [];
+    var posturas = [];
+    var nodoId = null;
+    if (opts.tradicion) {
+      tradiciones = [opts.tradicion];
+      var indice = Estado.datos.traditions_index
+        && Estado.datos.traditions_index[opts.tradicion];
+      var pids = (indice && indice.posture_ids) || [];
+      var camino = Estado.caminoElegido();
+      var i;
+      for (i = 0; i < pids.length; i++) {
+        var candidato = Estado.grafo.idDePostura(pids[i]);
+        if (candidato && camino.has(candidato)) {
+          nodoId = candidato;
+          break;
+        }
+      }
+      if (!nodoId && pids.length) nodoId = Estado.grafo.idDePostura(pids[0]);
+    } else if (opts.posturaId) {
+      // Preferimos la postura concreta (no toda su tradición), como en la ficha.
+      posturas = [opts.posturaId];
+      nodoId = Estado.grafo.idDePostura(opts.posturaId);
+    }
+
+    if (Estado.divulgacion !== 'indagatorio') {
+      Estado.fijarDivulgacion('indagatorio');
+      avisar(t('recorridoAviso', { nombre: t('indagatorio') }));
+    }
+
+    // sincronizarHojasRecorrido corre al emitir divulgacion y carga todo el
+    // recorrido; aquí lo sustituimos por el sujeto elegido.
+    Estado.tradiciones = tradiciones;
+    Estado.posturasSueltas = posturas;
+    Estado.modo = tradiciones.length || posturas.length ? 'explorador' : 'libre';
+    Estado.panelAbierto = true;
+    Estado.pestana = 'creencias';
+    Estado.seleccionado = nodoId;
+    Estado.emitir('creencias');
+    global.setTimeout(function () {
+      if (nodoId) Vista.encuadrarNodoYDescendientes(nodoId, true);
+      else Vista.encuadrar(null, true);
+    }, 120);
   }
 
   function fijarRecorrido(valor) {
@@ -1490,8 +1547,12 @@
       expandirCaminoCreencias();
       if (Estado.expandidos.size !== antes) Estado.emitir('expandir');
     }
+    if (Estado.divulgacion === 'cuestionario' && Arbol.Cuestionario) {
+      Arbol.Cuestionario.reiniciarHistorial();
+    }
     avisar(t('recorridoAviso', { nombre: t(Estado.divulgacion) }));
-    if (Estado.divulgacion === 'completo') {
+    if (Estado.divulgacion === 'completo' || Estado.divulgacion === 'indagatorio'
+      || Estado.divulgacion === 'limpio') {
       global.setTimeout(function () { Vista.encuadrar(null, true); }, 80);
     }
   }
@@ -1925,6 +1986,7 @@
     // cualquier pestaña.
     dom.btnCreencias.addEventListener('click', function () {
       if (Estado.panelAbierto) { cerrarPanel(); return; }
+      sincronizarHojasRecorrido();
       if (Estado.tradiciones.length || Estado.posturasSueltas.length) {
         Estado.modo = 'explorador';
       }
@@ -2048,6 +2110,13 @@
         if (!aceptado) return;
         Estado.olvidar();
         Estado.reiniciar();
+        if (Arbol.Cuestionario) Arbol.Cuestionario.reiniciarHistorial();
+        if (Vista.nodosDOM) {
+          Vista.nodosDOM.forEach(function (grupo) {
+            grupo.classList.remove('resaltado');
+            grupo.removeAttribute('data-firma');
+          });
+        }
         avisar('Árbol reiniciado.');
         global.setTimeout(function () { Vista.encuadrar(null, true); }, 340);
       });
@@ -2270,6 +2339,16 @@
     listaTradiciones = Busqueda.listaTradiciones(datos);
     listaPosturasSueltas = Busqueda.listaPosturasSueltas(datos, Estado.grafo);
 
+    if (Arbol.Cuestionario) {
+      Arbol.Cuestionario.montar({
+        estado: Estado,
+        fijarRecorrido: fijarRecorrido,
+        explorarEnArbol: explorarSujetoEnArbol,
+        urlMDRender: urlMDRender,
+        pintarDefiniciones: pintarDefinicionesEn
+      });
+    }
+
     // Un enlace compartido que nombra creencias debe abrir su ficha.
     if ((lectura.tradiciones || lectura.posturas) && Estado.modo === 'explorador') {
       Estado.panelAbierto = true;
@@ -2333,7 +2412,7 @@
 
     Estado.suscribir(function (motivo) {
       if (motivo === 'respuesta' || motivo === 'divulgacion') {
-        sincronizarHojaCuestionario();
+        sincronizarHojasRecorrido();
       }
       refrescar();
     });
@@ -2352,7 +2431,7 @@
     registrarEventos();
     registrarEventosEdicion();
 
-    sincronizarHojaCuestionario();
+    sincronizarHojasRecorrido();
     refrescar();
     arrancarMusica();
 

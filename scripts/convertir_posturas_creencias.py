@@ -47,6 +47,8 @@ JSON_SCHEMA_VERSION = "1.0.0"
 WEB_APP_DIRECTORY = "arbol-web"
 WEB_DATA_DIRECTORY = "datos"
 WEB_DATA_GLOBAL = "__ARBOL_POSTURAS__"
+WEB_NOTES_GLOBAL = "__ARBOL_NOTAS__"
+WEB_NOTES_FILENAME = "notas.cache.js"
 GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
@@ -85,6 +87,8 @@ class Question:
     posture_hints: list[str] = field(default_factory=list)
     colloquial_hint: str | None = None
     answers: list["Answer"] = field(default_factory=list)
+    # Texto crudo de la línea (con [[wikilinks]]); `text` ya los aplanó.
+    raw: str = ""
 
 
 @dataclass
@@ -118,6 +122,7 @@ class Model:
     def add_question(self, text: str, source_line: int) -> str:
         self._question_number += 1
         question_id = f"Q{self._question_number}"
+        raw = " ".join(text.strip().split())
         full_text = display_text(text)
         formal_text, colloquial_hint = split_colloquial_question(full_text)
         self.questions[question_id] = Question(
@@ -126,6 +131,7 @@ class Model:
             formal_text=formal_text,
             source_line=source_line,
             colloquial_hint=colloquial_hint,
+            raw=raw,
         )
         return question_id
 
@@ -677,28 +683,68 @@ def tradition_aliases(canonical_name: str) -> list[str]:
     return result
 
 
+def split_tradition_names(inner: str) -> list[str]:
+    """Parte tradiciones separadas por coma, respetando paréntesis.
+
+    En el documento, `{A, B (alias), C}` enumera varias tradiciones; la coma
+    dentro de un paréntesis no separa (p. ej. aún no aparece, pero queda cubierto).
+    El «/» sigue siendo sinonimia dentro de un mismo nombre.
+    """
+
+    parts: list[str] = []
+    buffer: list[str] = []
+    depth = 0
+    for char in inner:
+        if char == "(":
+            depth += 1
+            buffer.append(char)
+        elif char == ")":
+            depth = max(0, depth - 1)
+            buffer.append(char)
+        elif char == "," and depth == 0:
+            piece = "".join(buffer).strip()
+            if piece:
+                parts.append(piece)
+            buffer = []
+        else:
+            buffer.append(char)
+    piece = "".join(buffer).strip()
+    if piece:
+        parts.append(piece)
+    return parts
+
+
 def parse_groups(raw_label: str) -> list[dict]:
-    """Cada `{...}` es un grupo o tradición que sostiene la postura, como en
-    el documento fuente. No hay un campo de notas aparte."""
+    """Cada `{...}` lista tradiciones separadas por comas que sostienen la postura.
+
+    No hay un campo de notas aparte. Varios `{...}` en la misma etiqueta se
+    concatenan; dentro de cada uno, la coma enumera tradiciones distintas.
+    """
 
     traditions: list[dict] = []
+    seen: set[str] = set()
     for match in GROUP.finditer(raw_label):
         inner = plain_text(match.group(1))
         if not inner:
             continue
-        is_tentative = inner.endswith("?")
-        name = inner[:-1].strip() if is_tentative else inner
-        if not name:
-            continue
-        canonical = capitalize_first(name)
-        traditions.append(
-            {
-                "name": canonical,
-                "is_tentative": is_tentative,
-                "is_note": False,
-                "aliases": tradition_aliases(canonical),
-            }
-        )
+        for name_raw in split_tradition_names(inner):
+            is_tentative = name_raw.endswith("?")
+            name = name_raw[:-1].strip() if is_tentative else name_raw
+            if not name:
+                continue
+            canonical = capitalize_first(name)
+            key = canonical.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            traditions.append(
+                {
+                    "name": canonical,
+                    "is_tentative": is_tentative,
+                    "is_note": False,
+                    "aliases": tradition_aliases(canonical),
+                }
+            )
     return traditions
 
 
@@ -833,14 +879,17 @@ def build_web_model(
             )
         questions[question_id] = {
             "id": question_id,
-            "formal_text": plain_text(question.formal_text),
+            "formal_text": plain_text(strip_groups(question.formal_text)),
             "colloquial_hint": plain_text(question.colloquial_hint)
             if question.colloquial_hint
             else None,
-            "full_text": plain_text(question.text),
+            "full_text": plain_text(strip_groups(question.text)),
             "source_line": question.source_line,
             "origin_posture_ids": ordered,
             "is_convergence": len(ordered) > 1,
+            "wikilinks": parse_wikilinks(
+                question.raw or question.text, repository_root, web_directory
+            ),
             "answers": answers,
         }
 
@@ -931,6 +980,50 @@ def render_web_json_module(web_model: dict, json_name: str) -> str:
         "/* Generado por scripts/convertir_posturas_creencias.py; no editar a mano. */\n"
         f"/* Copia ejecutable de {json_name} para abrir el visor con file://. */\n"
         f"window.{WEB_DATA_GLOBAL} = {payload};\n"
+    )
+
+
+def collect_linked_notes(web_model: dict, repository_root: Path) -> dict[str, str]:
+    """Lee el contenido de cada nota referenciada por wikilinks del modelo.
+
+    Indexa por ``vault_path``, por ``href`` y por el stem del target para que el
+    visor encuentre la nota aunque falle una de las claves.
+    """
+
+    notes: dict[str, str] = {}
+
+    def remember(key: str | None, text: str) -> None:
+        if not key or key in notes:
+            return
+        notes[key] = text
+
+    buckets = [web_model.get("questions", {}), web_model.get("postures", {})]
+    for bucket in buckets:
+        for entry in bucket.values():
+            for enlace in entry.get("wikilinks") or []:
+                vault_path = enlace.get("vault_path")
+                if not vault_path:
+                    continue
+                path = repository_root / vault_path
+                if not path.is_file():
+                    continue
+                text = path.read_text(encoding="utf-8")
+                remember(vault_path, text)
+                remember(enlace.get("href"), text)
+                target = (enlace.get("target") or "").split("#")[0].split("|")[0].strip()
+                remember(target, text)
+                remember(Path(vault_path).name, text)
+    return notes
+
+
+def render_notes_module(notes: dict[str, str]) -> str:
+    """Empaqueta las notas Markdown para el visor en `file://` (sin fetch)."""
+
+    payload = json.dumps(notes, ensure_ascii=False, indent=2)
+    return (
+        "/* Generado por scripts/convertir_posturas_creencias.py; no editar a mano. */\n"
+        "/* Notas del vault enlazadas desde posturas/preguntas (respaldo file://). */\n"
+        f"window.{WEB_NOTES_GLOBAL} = {payload};\n"
     )
 
 
@@ -1126,8 +1219,12 @@ def main() -> int:
         json_module_path.write_text(
             render_web_json_module(web_model, json_path.name), encoding="utf-8", newline="\n"
         )
+        notes = collect_linked_notes(web_model, find_repository_root(input_path))
+        notes_path = json_path.parent / WEB_NOTES_FILENAME
+        notes_path.write_text(render_notes_module(notes), encoding="utf-8", newline="\n")
         print(f"Visor web (datos): {json_path}")
         print(f"Visor web (respaldo file://): {json_module_path}")
+        print(f"Visor web (notas embebidas): {notes_path} ({len(notes)})")
         if not args.sin_traduccion:
             from traducir_arbol_en import generar_traducciones_en
 

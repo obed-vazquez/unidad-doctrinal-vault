@@ -269,7 +269,7 @@
     var enRecorrido = !contexto || !contexto.caminoUsuario
       || contexto.divulgacion === 'completo'
       || contexto.caminoUsuario.has(nodo.id);
-    if (contexto && contexto.divulgacion === 'cuestionario' && !enRecorrido) {
+    if (contexto && contexto.divulgacion === 'indagatorio' && !enRecorrido) {
       var textosFuera = textosPregunta(pregunta);
       var textoFuera = textosFuera.coloquial || textosFuera.formal;
       var lineasFuera = envolver(textoFuera,

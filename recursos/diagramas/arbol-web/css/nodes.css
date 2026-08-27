@@ -138,7 +138,7 @@
   transition: stroke 180ms ease, fill 180ms ease;
 }
 /* El hover es un realce discreto del borde neutro. El azul queda reservado a
-   la selección y el violeta al resaltado, para que los tres estados no se
+   la selección y el blanco al resaltado, para que los tres estados no se
    confundan entre sí. */
 .nodo:hover .nodo-caja { stroke: var(--texto-tenue); }
 .nodo-encabezado-fondo { fill: var(--nodo-encabezado); }
@@ -194,8 +194,9 @@
 .nodo.camino .nodo-brillo { stroke: var(--dorado); opacity: 0.4; }
 .nodo.camino.tentativa .nodo-brillo { stroke-dasharray: 8 5; }
 
-/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y selección. */
-.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y selección,
+   salvo cuando el explorador de creencias ya ilumina el nodo en dorado. */
+.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; filter: drop-shadow(0 0 10px var(--resalte-glow)); }
 .nodo.resaltado .nodo-brillo,
 .nodo.camino.resaltado .nodo-brillo,
 .nodo.seleccionado.resaltado .nodo-brillo {
@@ -214,6 +215,22 @@
 .nodo.seleccionado.resaltado .nodo-caja {
   stroke: var(--resalte);
   stroke-width: 2.6;
+}
+
+/* El camino dorado del panel de creencias no debe mezclarse con el resaltado
+   Ctrl+clic: se deja solo el amarillo. */
+.nodo.camino.resaltado .nodo-brillo,
+.nodo.camino.seleccionado.resaltado .nodo-brillo {
+  fill: transparent;
+  stroke: var(--dorado);
+  opacity: 0.4;
+  animation: none;
+  filter: none;
+}
+.nodo.camino.resaltado .nodo-caja,
+.nodo.camino.seleccionado.resaltado .nodo-caja {
+  stroke: var(--dorado);
+  stroke-width: 2.2;
 }
 
 /* ----------------------------------------------------------------- botones */

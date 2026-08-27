@@ -68,7 +68,7 @@
 
     if (parametros.get('full') !== null) lectura.completo = parametros.get('full') === '1';
     var rec = parametros.get('rec');
-    if (rec === 'cuestionario' || rec === 'limpio' || rec === 'exploracion'
+    if (rec === 'cuestionario' || rec === 'indagatorio' || rec === 'limpio' || rec === 'exploracion'
       || rec === 'completo' || rec === 'edicion') {
       lectura.divulgacion = rec;
     }
@@ -187,7 +187,7 @@
       huboCambio = true;
     } else if (lectura.completo !== null) {
       estado.arbolCompleto = lectura.completo;
-      estado.divulgacion = lectura.completo ? 'completo' : 'cuestionario';
+      estado.divulgacion = lectura.completo ? 'completo' : 'indagatorio';
       huboCambio = true;
     }
     if (lectura.camara) { estado.camara = lectura.camara; huboCambio = true; }

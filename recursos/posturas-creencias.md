@@ -123,10 +123,14 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                           - Sí: Teología Liberal / Inerrancia limitada {Iglesia Episcopal, Metodista Unida (UMC), Presbiteriana USA (PCUSA), Luterana ELCA}
                                           - No: ?
                                             - ? -> ¿La Biblia es clara y sin ambigüedades en su mensaje, y todo lo que dice es completamente verdadero?
+                                              - Sí: ?
+                                              - No: ?
                                         - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                           - No: Anti-inspiracionalismo
                                           - Sí: Inspiracionismo / Teopneustia
                                             - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible? 
+                                              - Sí: ?
+                                              - No: ?
                                             - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
                                               - No, El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
                                                 - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)
@@ -135,15 +139,17 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                                 - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
                                                   - Sí: ?
                                                     - ? -> ¿Después de pecar el humano conserva la capacidad de hacer el bien posteriormente, aun si no tiene el perdón de Dios?
-                                                      - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
-                                                        - Sí: ?
-                                                          - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
-                                                            - Sí: Pelagianismo
-                                                            - No: ?
-                                                        - No: ?
+                                                      - No: ?
+                                                      - Sí: ?
+                                                        - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
+                                                          - Sí: ?
+                                                            - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
+                                                              - Sí: Pelagianismo
+                                                              - No: ?
+                                                          - No: ?
                                                   - No: ?
                                               - Sí: Depravación Total del hombre
-                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño no va al cielo por defecto?)
+                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)
                                                   - Sí: ?
                                                     - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
                                                       - Sí: ?
@@ -170,6 +176,8 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                                               - Sí: ?
                                                               - No: ?
                                                                 - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
+                                                                  - Sí: Salvación Bautismal
+                                                                  - No: ?
                                                         - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? {[[La Perdida de la Salvación]]}
                                                           - No: Perseverancia de los Santos / Seguridad Eterna {Calvinismo, Bautistas}
                                                           - Sí: Pérdida de la Salvación / Perseverancia Condicional {Arminianismo, Metodismo, Pentecostalismo}

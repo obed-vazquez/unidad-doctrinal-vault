@@ -10,7 +10,7 @@
   "unnamed": "(unnamed)",
   "questions": {
     "Q1": {
-      "formal": "Was the universe caused by a Creator? { The non-existence of a creator God}",
+      "formal": "Was the universe caused by a Creator?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -110,7 +110,7 @@
     },
     "Q10": {
       "formal": "Do miracles (especially his resurrection) and other evidences function as signs attesting to Jesus' declared divine identity?",
-      "colloquial": "Is God Jesus with a Birthdate on Christmas?",
+      "colloquial": "Is Jesus God?",
       "answers": {
         "A": {
           "label": "No"
@@ -268,7 +268,15 @@
       }
     },
     "Q24": {
-      "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?"
+      "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
     },
     "Q25": {
       "formal": "Are the authoritative scriptures' explicit self-testimony of its divine origin, the attribution of its words to the Holy Spirit as the primary author, and its self-identification as the Word of God with unwavering authority sufficient evidence to conclude that it is the product of divine inspiration?",
@@ -283,7 +291,15 @@
       }
     },
     "Q26": {
-      "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?"
+      "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
     },
     "Q27": {
       "formal": "Did Adam's sin affect his offspring, is the human born dead and with a sinful nature (though not actively sinning)?",
@@ -322,7 +338,15 @@
       }
     },
     "Q30": {
-      "formal": "After sinning, does the human retain the ability to do good later, even if he does not have God's forgiveness?"
+      "formal": "After sinning, does the human retain the ability to do good later, even if he does not have God's forgiveness?",
+      "answers": {
+        "A": {
+          "label": "No"
+        },
+        "B": {
+          "label": "Yes"
+        }
+      }
     },
     "Q31": {
       "formal": "After sinning, by asking God for forgiveness, the human is forgiven and gains the right to enter heaven by dying?",
@@ -347,8 +371,7 @@
       }
     },
     "Q33": {
-      "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
-      "colloquial": "When a child dies, does it not go to heaven by default?",
+      "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin? (When a child dies, does he go to a different place in heaven?)",
       "answers": {
         "A": {
           "label": "Yes"
@@ -448,10 +471,18 @@
       }
     },
     "Q42": {
-      "formal": "Can the human not have that transformation until he is baptized and is it at the moment of baptism when that conversion occurs?"
+      "formal": "Can the human not have that transformation until he is baptized and is it at the moment of baptism when that conversion occurs?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
     },
     "Q43": {
-      "formal": "Does sinning again after that conversion remove from the human the right to enter heaven? {The Loss of Salvation}",
+      "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
       "answers": {
         "A": {
           "label": "No"
@@ -575,17 +606,17 @@
     "P1": "Creationist",
     "P2": "Deism",
     "P3": "Theism",
-    "P4": "Mythology",
+    "P4": "Mythicism",
     "P5": "Historicity of Jesus*",
     "P8": "Christological naturalism *",
     "P9": "Socinianism",
     "P10": "Historical reductionism *",
     "P11": "Impostor Posture",
-    "P15": "Lunatic Pose",
+    "P15": "Lunatic Posture",
     "P16": "Legend Posture",
     "P19": "Subordinationism",
     "P20": "Christ-creaturism*",
-    "P21": "Without name",
+    "P21": "Unnamed",
     "P23": "Arianism",
     "P24": "JW Arianism (Jehovah's Witnesses)",
     "P25": "Classical Arianism",
@@ -598,32 +629,33 @@
     "P33": "Incarnationism / Preexistentialism",
     "P34": "Liberal Theology/Theological Rationalism?",
     "P41": "Secondary Apostolic Authority *",
-    "P42": "Restricted New Testament fee *",
-    "P43": "Full New Testament fee*",
+    "P42": "Restricted New Testament Canon*",
+    "P43": "Full New Testament Canon*",
     "P44": "Liberal Theology/Limited Inerrancy",
-    "P46": "Anti-inspirationalism",
-    "P47": "Inspirationalism / Theopneustia",
-    "P53": "Pelagianism",
-    "P57": "MAN'S TOTAL DEPRAVATION",
-    "P69": "IRRESISTIBLE GRACE",
-    "P72": "Resistible Grace",
-    "P75": "Perseverance of the Saints /Eternal Security",
-    "P76": "Loss of Salvation /Conditional Perseverance",
-    "P77": "Homoiousianism / Semi-Arrianism",
-    "P78": "Consubstantialism",
-    "P79": "Modalism / Unicitarianism / Unicitarianism",
-    "P80": "Trinitarianism",
-    "P81": "Docetism",
-    "P83": "Apollinarianism",
-    "P85": "Christ's Hypostatic Duality *",
-    "P86": "Monoprosopism",
-    "P87": "Monophysicism / Eutychianism",
-    "P88": "Diophysicism / Chalcedonianism (also Miaphysicism)",
-    "P89": "Monothelitism / Monothelitism",
-    "P90": "Diothelitism",
-    "P91": "Cosmological Atheism *",
-    "P92": "Cosmological materialism",
-    "P94": "Pantheism / Panentheism*",
+    "P48": "Anti-inspirationalism",
+    "P49": "Inspirationalism / Theopneustia",
+    "P59": "Pelagianism",
+    "P63": "Total Depravity of Man",
+    "P75": "IRRESISTIBLE GRACE",
+    "P78": "Resistible Grace",
+    "P81": "Baptismal Salvation",
+    "P83": "Perseverance of the Saints /Eternal Security",
+    "P84": "Loss of Salvation /Conditional Perseverance",
+    "P85": "Homoiousianism / Semi-Arrianism",
+    "P86": "Consubstantialism",
+    "P87": "Modalism / Oneness / Unitarianism",
+    "P88": "Trinitarianism",
+    "P89": "Docetism",
+    "P91": "Apollinarianism",
+    "P93": "Christ's Hypostatic Duality *",
+    "P94": "Monoprosopism",
+    "P95": "Monophysicism / Eutychianism",
+    "P96": "Diophysicism / Chalcedonianism (also Miaphysicism)",
+    "P97": "Monothelitism / Monothelitism",
+    "P98": "Diothelitism",
+    "P99": "Cosmological Atheism *",
+    "P100": "Cosmological materialism",
+    "P102": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {
