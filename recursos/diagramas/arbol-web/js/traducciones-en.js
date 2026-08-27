@@ -10,7 +10,7 @@
   "unnamed": "(unnamed)",
   "questions": {
     "Q1": {
-      "formal": "Was the universe caused by a Creator?",
+      "formal": "Was the universe caused by a Creator? { The non-existence of a creator God}",
       "answers": {
         "A": {
           "label": "Yes"
@@ -300,6 +300,7 @@
     },
     "Q28": {
       "formal": "Before Discernment, does human innocence give you access to heaven and cannot sin?",
+      "colloquial": "Do children go to heaven when they die?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -347,6 +348,7 @@
     },
     "Q33": {
       "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
+      "colloquial": "When a child dies, does it not go to heaven by default?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -359,6 +361,7 @@
     },
     "Q34": {
       "formal": "Is it possible to infuse him with saving “grace” (a divine Gift that is possible to lose) with sacraments such as regenerating baptism?",
+      "colloquial": "Does the child have to be baptized to go to heaven, but is not assured entry?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -366,18 +369,18 @@
       }
     },
     "Q35": {
-      "formal": "Does not having received regenerating baptism before Discernment leave you condemned before sinning?",
+      "formal": "Does not having received baptism leave you condemned to Limbo?",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No"
         }
       }
     },
     "Q36": {
-      "formal": "Does it leave you condemned to Limbo?",
+      "formal": "Does not having received baptism leave you condemned to Hell?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -388,17 +391,6 @@
       }
     },
     "Q37": {
-      "formal": "Does it leave you condemned to Hell?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
-    "Q38": {
       "formal": "After Discernment is it possible for the human to reach heaven by doing good works?",
       "answers": {
         "A": {
@@ -409,7 +401,7 @@
         }
       }
     },
-    "Q39": {
+    "Q38": {
       "formal": "Does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
       "answers": {
         "A": {
@@ -420,7 +412,7 @@
         }
       }
     },
-    "Q40": {
+    "Q39": {
       "formal": "Can the human reject God's call to that conversion?",
       "colloquial": "Is it possible for the human to resist God's call?",
       "answers": {
@@ -432,11 +424,19 @@
         }
       }
     },
-    "Q41": {
+    "Q40": {
       "formal": "Is the active and direct intervention of God on the will of the human necessary for the human to accept the call to that conversion?",
-      "colloquial": "Does God have an unconditional choice of his saints?"
+      "colloquial": "Does God have an unconditional choice of his saints?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
     },
-    "Q42": {
+    "Q41": {
       "formal": "If the human is missing 1 of these elements, can he have that conversion? Listening to the gospel, Believing the gospel, Having faith in Christ Jesus, Giving your life completely to God (Repentance), Calling on God's name (Asking for help)",
       "answers": {
         "A": {
@@ -447,11 +447,11 @@
         }
       }
     },
-    "Q43": {
+    "Q42": {
       "formal": "Can the human not have that transformation until he is baptized and is it at the moment of baptism when that conversion occurs?"
     },
-    "Q44": {
-      "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
+    "Q43": {
+      "formal": "Does sinning again after that conversion remove from the human the right to enter heaven? {The Loss of Salvation}",
       "answers": {
         "A": {
           "label": "No"
@@ -461,7 +461,7 @@
         }
       }
     },
-    "Q45": {
+    "Q44": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -473,7 +473,7 @@
         }
       }
     },
-    "Q46": {
+    "Q45": {
       "formal": "Are the Father and the Son personally distinct subjects, who coexist simultaneously and eternally and can relate to each other as an I and a you, although they share the same and identical divine substance, rather than being a single subject who manifests successively under different modes or roles?",
       "colloquial": "Are the Father and the Son really two distinct persons, even though they are both fully God?",
       "answers": {
@@ -485,7 +485,7 @@
         }
       }
     },
-    "Q47": {
+    "Q46": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -497,7 +497,7 @@
         }
       }
     },
-    "Q48": {
+    "Q47": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -508,7 +508,7 @@
         }
       }
     },
-    "Q49": {
+    "Q48": {
       "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
@@ -520,7 +520,7 @@
         }
       }
     },
-    "Q50": {
+    "Q49": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -534,7 +534,7 @@
         }
       }
     },
-    "Q51": {
+    "Q50": {
       "formal": "In Gethsemane Christ asked the Father to pass the cup, he had the will to die while he did not want to do it, did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -548,7 +548,7 @@
         }
       }
     },
-    "Q52": {
+    "Q51": {
       "formal": "Is matter/physical reality eternal and was not created by a God?",
       "answers": {
         "A": {
@@ -559,7 +559,7 @@
         }
       }
     },
-    "Q53": {
+    "Q52": {
       "formal": "Is the universe itself, in its entirety, divine in nature?",
       "answers": {
         "A": {
@@ -605,6 +605,10 @@
     "P47": "Inspirationalism / Theopneustia",
     "P53": "Pelagianism",
     "P57": "MAN'S TOTAL DEPRAVATION",
+    "P69": "IRRESISTIBLE GRACE",
+    "P72": "Resistible Grace",
+    "P75": "Perseverance of the Saints /Eternal Security",
+    "P76": "Loss of Salvation /Conditional Perseverance",
     "P77": "Homoiousianism / Semi-Arrianism",
     "P78": "Consubstantialism",
     "P79": "Modalism / Unicitarianism / Unicitarianism",
@@ -623,13 +627,19 @@
     "PR1": "Existence"
   },
   "traditions": {
+    "Arminianismo / Metodismo": "Arminianism / Methodism",
+    "Arminianismo, Metodismo, Pentecostalismo": "Arminianism, Methodism, Pentecostalism",
+    "Calvinismo / Tradición Reformada": "Calvinism /Reformed Tradition",
+    "Calvinismo, Bautistas": "Calvinism, Baptists",
     "Catolicismo Moderno": "Modern Catholicism",
     "Catolicismo Ortodoxo": "Orthodox Catholicism",
+    "Iglesia Episcopal, Metodista Unida (UMC), Presbiteriana USA (PCUSA), Luterana ELCA": "Episcopal Church, United Methodist (UMC), Presbyterian USA (PCUSA), Lutheran ELCA",
     "Islam Ahmadí": "Ahmadiyya Islam",
     "Islam Suní/Chiita": "Sunni/Shia Islam",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",
     "Judaísmo rabínico/talmúdico": "Rabbinic/Talmudic Judaism",
     "Nestorianismo": "Nestorianism",
+    "No se identifica quién que sostenga esta postura": "It is not identified who holds this position",
     "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
     "SUD": "Sud"
   }

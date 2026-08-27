@@ -4,10 +4,10 @@
 ## Sintaxis
 Dos tipos de línea, ambas en lista anidada de Markdown:
 
-| Nombre de la línea    | Formato                                                                                                               | Uso                                   |
-| --------------------- |:----------------------------------------------------------------------------------------------------------------------| ------------------------------------- |
-| Arista                | `<Respuesta>`: `<Nombre de Postura>`                                                                                  | Respuesta que produce una postura     |
-| Nodo                  | `<Nombre de Postura>` -> `<Pregunta>` (`<Opcionalmente la misma pregunta en formato coloquial>`)                      | Pegunta planteada desde esa postura   | 
+| Nombre de la línea    | Formato                                                                                                                                                                  | Uso                                   |
+| --------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------- |
+| Arista                | `<Respuesta>`: `<Nombre de Postura>` {`<Tradiciónes o sistemas de creencias que sostienen la postura separados por comas>`}                                              | Respuesta que produce una postura     |
+| Nodo                  | `<Nombre de Posturas separadas por &>` -> `<Pregunta>` (`<Opcionalmente la misma pregunta en formato coloquial>`)  {`<wikilink a documento de análisis de la pregunta>`} | Pegunta planteada desde esa postura   | 
 
 La indentación expresa anidamiento. El nombre de postura repetido al inicio de la línea `->` no es redundancia: identifica desde qué nodo se hace la pregunta, y es lo que permite que una postura tenga más de una pregunta colgando.
 
@@ -16,9 +16,8 @@ La indentación expresa anidamiento. El nombre de postura repetido al inicio de 
 - `?`   postura aun sin nombrar; hueco pendiente de trabajo o ausencia de uno.
 - `{}`  grupo o tradición que sostiene la postura (ejemplo empírico, no definición):
   `Arrianismo de los JW (Testigos de Jehová)`, `{Islam Suní/Chiita}`
-- `[[]]` enlace a nota de Obsidian donde la postura se desarrolla (p. ej. `[[diotelitismo]]`)
-- `&`   pregunta compartida por varias posturas: `Teísmo & Deísmo -> ¿Jesucristo realmente existió?`
-  Es un punto de convergencia: ramas distintas vuelven a unirse en un mismo nodo.
+- `[[]]` enlace wikilink a documentos de descripción/desarrollo de postura o pregunta
+- `&`   pregunta compartida por varias posturas: `Teísmo & Deísmo -> ¿Jesucristo realmente existió?`. Es un punto de convergencia: ramas distintas vuelven a unirse en un mismo nodo.
 
 ## Particularidad estructural: no es un árbol binario estricto
 Una misma postura puede tener **varias líneas `->`**, cada una abriendo un eje de decisión independiente sobre un tópico distinto. En la estructura Un nodo puede sostener dos preguntas (Aristas) paralelas que exploren dimensiones separadas y generan subárboles que no se solapan.
@@ -55,7 +54,7 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
 
 
 ## Árbol de Decisión:
-- Existencia -> ¿El universo fue causado por un Creador?
+- Existencia -> ¿El universo fue causado por un Creador? { [[La inexistencia de un Dios creador]] }
   - Sí: Creacionismo
     - Creacionismo -> ¿El Creador se identifica como Dios?
       - No: Deísmo
@@ -127,10 +126,10 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                         - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                           - No: Anti-inspiracionalismo
                                           - Sí: Inspiracionismo / Teopneustia
-                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible 
+                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible? 
                                             - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
                                               - No, El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
-                                                - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar?
+                                                - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)
                                                   - Sí: ?
                                                   - No: ? 
                                                 - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
@@ -144,19 +143,16 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                                         - No: ?
                                                   - No: ?
                                               - Sí: Depravación Total del hombre
-                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?
+                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño no va al cielo por defecto?)
                                                   - Sí: ?
-                                                    - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador?
+                                                    - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
                                                       - Sí: ?
-                                                        - ? -> ¿Antes de pecar, el no haber recibido bautismo regenerador antes del Discernimiento, lo deja condenado?
-                                                          - No: ? 
-                                                          - Sí: ?
-                                                            - ? -> ¿Lo deja condenado al Limbo?
-                                                              - Sí: ? {Catolicismo Ortodoxo?}
+                                                        - ? -> ¿El no haber recibido el bautismo lo deja condenado al Limbo?
+                                                          - Sí: ? {Catolicismo Ortodoxo?}
+                                                          - No: ?
+                                                            - ? -> ¿El no haber recibido el bautismo lo deja condenado al Infierno?
+                                                              - Sí: ? {Catolicismo Moderno?}
                                                               - No: ?
-                                                                - ? -> ¿Lo deja condenado al Infierno?
-                                                                  - Sí: ? {Catolicismo Moderno?}
-                                                                  - No: ?
                                                   - No, la inocencia le da acceso al cielo y no puede pecar: ?
                                                 - Depravación Total del hombre -> ¿**Después del Discernimiento** es posible para el humano alcanzar el cielo haciendo buenas obras?
                                                   - Sí: ?
@@ -174,7 +170,7 @@ Opciones avanzadas (rutas, formato, resolución, `-Strict`):
                                                               - Sí: ?
                                                               - No: ?
                                                                 - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
-                                                        - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo?
+                                                        - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? {[[La Perdida de la Salvación]]}
                                                           - No: Perseverancia de los Santos / Seguridad Eterna {Calvinismo, Bautistas}
                                                           - Sí: Pérdida de la Salvación / Perseverancia Condicional {Arminianismo, Metodismo, Pentecostalismo}
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
