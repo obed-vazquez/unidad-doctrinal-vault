@@ -3,144 +3,316 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bóveda de conocimiento teológico de Unidad Doctrinal — recursos interactivos y documentación.">
   <title>Unidad Doctrinal — Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --fondo: #0a0e15;
-      --superficie: #131a25;
-      --borde: #26313f;
-      --texto: #e7eef8;
-      --texto-medio: #a9b8cc;
-      --texto-tenue: #708197;
-      --acento: #58a6ff;
-      --dorado: #f2c14e;
-      --radio: 12px;
-      --fuente: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      --ww-teal: #2e5b65;
+      --ww-teal-light: #45818e;
+      --ww-teal-dark: #152428;
+      --ww-gold: #d4a843;
+      --ww-gold-soft: rgba(212, 168, 67, 0.15);
+      --ww-accent: #3b9fd4;
+      --ww-bg: #0c1218;
+      --ww-surface: #141c26;
+      --ww-surface-hover: #1a2533;
+      --ww-border: #243040;
+      --ww-text: #eef3f8;
+      --ww-text-muted: #8fa3b8;
+      --ww-radius: 14px;
+      --ww-font-display: 'Playfair Display', Georgia, serif;
+      --ww-font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--fuente);
-      background: var(--fondo);
-      color: var(--texto);
+      font-family: var(--ww-font-body);
+      background: var(--ww-bg);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(46, 91, 101, 0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 100% 100%, rgba(212, 168, 67, 0.08) 0%, transparent 55%);
+      color: var(--ww-text);
       line-height: 1.6;
       min-height: 100vh;
     }
 
-    .contenedor {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 4rem;
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--ww-border);
+      background: rgba(12, 18, 24, 0.85);
+      backdrop-filter: blur(8px);
     }
 
-    header {
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid var(--borde);
+    .top-bar-brand {
+      font-family: var(--ww-font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ww-text);
+      letter-spacing: 0.02em;
+    }
+
+    .top-bar-brand span { color: var(--ww-teal-light); }
+
+    .top-bar-link {
+      font-size: 0.85rem;
+      color: var(--ww-text-muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .top-bar-link:hover { color: var(--ww-gold); }
+
+    .contenedor {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    header { margin-bottom: 2.5rem; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ww-gold);
+      background: var(--ww-gold-soft);
+      border: 1px solid rgba(212, 168, 67, 0.3);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
     }
 
     h1 {
-      font-size: 1.75rem;
+      font-family: var(--ww-font-display);
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
       font-weight: 600;
       letter-spacing: -0.02em;
+      line-height: 1.2;
     }
 
     .subtitulo {
-      margin-top: 0.5rem;
-      color: var(--texto-medio);
-      font-size: 1rem;
+      margin-top: 0.75rem;
+      color: var(--ww-text-muted);
+      font-size: 1.05rem;
+      font-weight: 300;
+      max-width: 540px;
     }
 
     section { margin-bottom: 2rem; }
 
     h2 {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--texto-tenue);
-      margin-bottom: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--ww-teal-light);
+      margin-bottom: 1rem;
     }
 
     .recursos {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 1rem;
     }
 
     .recurso {
-      display: block;
-      background: var(--superficie);
-      border: 1px solid var(--borde);
-      border-radius: var(--radio);
-      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem 1.25rem;
+      align-items: start;
+      background: var(--ww-surface);
+      border: 1px solid var(--ww-border);
+      border-radius: var(--ww-radius);
+      padding: 1.25rem 1.5rem;
       text-decoration: none;
       color: inherit;
-      transition: border-color 160ms ease, background 160ms ease;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
     }
 
     .recurso:hover {
-      border-color: var(--acento);
-      background: #151f2c;
+      border-color: var(--ww-teal-light);
+      background: var(--ww-surface-hover);
+      transform: translateY(-2px);
+    }
+
+    .recurso.principal {
+      border-color: rgba(69, 129, 142, 0.45);
+      background: linear-gradient(135deg, var(--ww-surface) 0%, rgba(46, 91, 101, 0.12) 100%);
+    }
+
+    .recurso.principal:hover {
+      border-color: var(--ww-teal-light);
+    }
+
+    .recurso-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .recurso-icon.docs {
+      background: rgba(69, 129, 142, 0.2);
+      color: var(--ww-teal-light);
+    }
+
+    .recurso-icon.timeline {
+      background: rgba(59, 159, 212, 0.15);
+      color: var(--ww-accent);
+    }
+
+    .recurso-icon.arbol {
+      background: rgba(212, 168, 67, 0.15);
+      color: var(--ww-gold);
+    }
+
+    .recurso-body { min-width: 0; }
+
+    .recurso-etiqueta {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ww-gold);
+      margin-bottom: 0.2rem;
     }
 
     .recurso-titulo {
+      font-family: var(--ww-font-display);
       font-weight: 600;
-      color: var(--acento);
-      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+      color: var(--ww-text);
+      margin-bottom: 0.35rem;
     }
 
     .recurso-desc {
       font-size: 0.9rem;
-      color: var(--texto-medio);
+      color: var(--ww-text-muted);
+      line-height: 1.55;
+    }
+
+    .recurso-flecha {
+      color: var(--ww-teal-light);
+      font-size: 1.25rem;
+      align-self: center;
+      opacity: 0.6;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .recurso:hover .recurso-flecha {
+      opacity: 1;
+      transform: translateX(3px);
     }
 
     footer {
       margin-top: 3rem;
       padding-top: 1.5rem;
-      border-top: 1px solid var(--borde);
+      border-top: 1px solid var(--ww-border);
       font-size: 0.85rem;
-      color: var(--texto-tenue);
+      color: var(--ww-text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      justify-content: space-between;
+      align-items: center;
     }
 
     footer a {
-      color: var(--dorado);
+      color: var(--ww-teal-light);
       text-decoration: none;
     }
 
-    footer a:hover { text-decoration: underline; }
+    footer a:hover { color: var(--ww-gold); }
+
+    @media (max-width: 520px) {
+      .recurso {
+        grid-template-columns: auto 1fr;
+      }
+      .recurso-flecha { display: none; }
+    }
   </style>
 </head>
 <body>
+  <div class="top-bar">
+    <div class="top-bar-brand">White<span>Web</span> · Doctrinal</div>
+    <a class="top-bar-link" href="https://whiteweb.mx">← whiteweb.mx</a>
+  </div>
+
   <div class="contenedor">
     <header>
+      <div class="badge">Vault</div>
       <h1>Unidad Doctrinal</h1>
-      <p class="subtitulo">Bóveda de conocimiento teológico y doctrinal</p>
+      <p class="subtitulo">
+        Bóveda de conocimiento teológico y doctrinal — recursos interactivos
+        para el estudio sistemático de la verdad revelada en las Escrituras.
+      </p>
     </header>
 
     <section>
-      <h2>Recursos interactivos</h2>
+      <h2>Recursos</h2>
       <ul class="recursos">
         <li>
-          <a class="recurso" href="recursos/diagramas/arbol-web/">
-            <div class="recurso-titulo">Árbol de posturas y creencias</div>
-            <div class="recurso-desc">
-              Visor interactivo del árbol de clasificación de posturas filosóficas,
-              teológicas y doctrinales. Responde secuencialmente para llegar a la
-              etiqueta histórica de una postura.
+          <a class="recurso principal" href="https://unidad.whiteweb.mx">
+            <div class="recurso-icon docs" aria-hidden="true">📖</div>
+            <div class="recurso-body">
+              <div class="recurso-etiqueta">Principal</div>
+              <div class="recurso-titulo">Documentación Doctrinal</div>
+              <div class="recurso-desc">
+                Biblioteca publicada de estudios: Hermenéutica, Doctrina, Apologética,
+                Evangelio y Primeros Pasos — investigación rigurosa de la Revelación de Dios.
+              </div>
             </div>
+            <span class="recurso-flecha" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="recurso" href="https://timeline.whiteweb.mx/">
+            <div class="recurso-icon timeline" aria-hidden="true">⏳</div>
+            <div class="recurso-body">
+              <div class="recurso-titulo">Línea del Tiempo Bíblica</div>
+              <div class="recurso-desc">
+                Línea del tiempo histórica interactiva sobre traducciones bíblicas,
+                doctrina cristiana e historia eclesiástica.
+              </div>
+            </div>
+            <span class="recurso-flecha" aria-hidden="true">→</span>
+          </a>
+        </li>
+        <li>
+          <a class="recurso" href="recursos/diagramas/arbol-web/index.html">
+            <div class="recurso-icon arbol" aria-hidden="true">🌳</div>
+            <div class="recurso-body">
+              <div class="recurso-titulo">Árbol de posturas y creencias</div>
+              <div class="recurso-desc">
+                Visor interactivo del árbol de clasificación de posturas filosóficas,
+                teológicas y doctrinales. Responde secuencialmente para llegar a la
+                etiqueta histórica de una postura.
+              </div>
+            </div>
+            <span class="recurso-flecha" aria-hidden="true">→</span>
           </a>
         </li>
       </ul>
     </section>
 
     <footer>
+      <p>Proyecto <a href="https://unidad.whiteweb.mx/">Unidad Doctrinal</a></p>
       <p>
-        Proyecto <a href="https://unidad.whiteweb.mx/">Unidad Doctrinal</a>.
-        Repositorio en
-        <a href="https://github.com/obed-vazquez/unidad-doctrinal-vault">GitHub</a>.
+        <a href="https://github.com/obed-vazquez/unidad-doctrinal-vault">GitHub</a>
       </p>
     </footer>
   </div>
