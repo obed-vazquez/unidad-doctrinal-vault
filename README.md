@@ -15,6 +15,22 @@ Este repositorio está diseñado para centralizar, organizar y expandir la docum
 
 ---
 
+## 🚀 Publicación del sitio web
+
+El sitio se publica automáticamente con GitHub Actions al hacer merge a
+`main`. El workflow construye un artefacto con esta estructura:
+
+- `index.html` — página de inicio del sitio (en la raíz del repositorio)
+- `recursos/diagramas/arbol-web/` — visor interactivo del árbol de posturas
+- `recursos/definiciones/` — notas Markdown referenciadas por el visor
+
+URL publicada: [https://obed-vazquez.github.io/unidad-doctrinal-vault/](https://obed-vazquez.github.io/unidad-doctrinal-vault/)
+
+El workflow **no se ejecuta en ramas de PR**; solo al integrar cambios en
+`main` (o manualmente desde la pestaña **Actions**). La fuente de GitHub
+Pages debe estar en **Settings → Pages → Build and deployment → Source →
+GitHub Actions**.
+
 ## 📌 Visión y Propósito
 
 **Unidad Doctrinal** (*Doctrinal Unity*) es una iniciativa liderada por un grupo de personas dedicadas a la investigación rigurosa, el estudio sistemático y la búsqueda constante de la verdad revelada por Dios a través de las Sagradas Escrituras (Su Revelación).

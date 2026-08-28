@@ -1,0 +1,32 @@
+# =========================
+# Obsidian
+# =========================
+
+.obsidian/workspace.json
+.obsidian/workspaces.json
+.obsidian/workspace-mobile.json
+.trash/
+
+
+# =========================
+# IntelliJ IDEA
+# =========================
+
+.idea/
+
+*.iml
+*.iws
+*.ipr
+
+
+# =========================
+# Operating System
+# =========================
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+/recursos/diagramas/*.dag
+/recursos/diagramas/*.gv
+/recursos/diagramas/*.mmd
+/recursos/diagramas/*.svg

@@ -1,0 +1,710 @@
+/* Modo Edición — estilos exclusivos. No reutilizan los de otras vistas. */
+
+.modo-edicion-activo #lienzo:focus { outline: none; }
+
+/* Knockout de la arista: el rectángulo pinta el color del lienzo y tapa la
+   línea, sin borde. Es el patrón de React Flow (labelShowBg + fill del pane). */
+.modo-edicion-activo .arista-etiqueta-caja,
+.modo-edicion-activo .arista-grupo.camino .arista-etiqueta-caja,
+.modo-edicion-activo .arista-grupo.elegida .arista-etiqueta-caja {
+  fill: var(--fondo);
+  stroke: none;
+}
+.modo-edicion-activo .arista-etiqueta-texto { display: none; }
+
+.edit-fo {
+  overflow: visible;
+  pointer-events: all;
+}
+.edit-titulo-input,
+.edit-campo-input,
+.edit-arista-input,
+.edit-arista-glosa {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* ---------------------------------------- título editable (parece texto) */
+
+.edit-banda-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font-family: var(--pila-fuente);
+}
+.edit-banda-leyenda {
+  flex: none;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--texto-tenue, #708197);
+  white-space: nowrap;
+  line-height: 1;
+}
+.edit-banda-nombre {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--nodo-encabezado-texto, #cfe0f5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nodo.tipo-pregunta.modo-edicion .edit-banda-leyenda,
+.nodo.tipo-pregunta.modo-edicion .edit-banda-nombre {
+  color: var(--eje-texto, #e6c184);
+}
+.nodo.raiz.modo-edicion .edit-banda-leyenda,
+.nodo.raiz.modo-edicion .edit-banda-nombre,
+.nodo.raiz.modo-edicion .edit-titulo-input {
+  color: var(--acento, #58a6ff);
+}
+.edit-titulo-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.edit-titulo-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  height: auto;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  background: transparent;
+  color: var(--nodo-encabezado-texto, #cfe0f5);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0 2px;
+  margin: 0;
+  outline: none;
+  cursor: text;
+  border-radius: 3px;
+  transition: border-color 0.2s ease, background-color 0.18s ease;
+}
+.edit-titulo-input::placeholder {
+  color: var(--texto-tenue, #708197);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+}
+.edit-titulo-input:hover { background: rgba(255, 255, 255, 0.04); }
+.edit-titulo-input:focus {
+  border-bottom-color: var(--acento, #58a6ff);
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-tema="claro"] .edit-titulo-input {
+  color: var(--nodo-encabezado-texto, #22405f);
+}
+:root[data-tema="claro"] .edit-banda-nombre {
+  color: var(--nodo-encabezado-texto, #22405f);
+}
+:root[data-tema="claro"] .edit-titulo-input:hover { background: rgba(0, 0, 0, 0.03); }
+:root[data-tema="claro"] .edit-titulo-input:focus { background: rgba(0, 0, 0, 0.04); }
+
+.nodo.modo-edicion .nodo-etiqueta-tipo {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------- campo outlined + floating label */
+
+.edit-campo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.edit-campo-input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1.2px solid var(--borde, #26313f);
+  border-radius: 6px;
+  padding: 16px 10px 8px;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  background: transparent;
+  color: var(--texto, #e7eef8);
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.edit-campo-input::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.edit-campo-input:hover { border-color: var(--texto-tenue, #708197); }
+.edit-campo-input:focus {
+  border-color: var(--acento, #58a6ff);
+  box-shadow: 0 0 0 2.5px rgba(88, 166, 255, 0.14);
+}
+.edit-campo-label {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--texto-tenue, #708197);
+  pointer-events: none;
+  background: var(--nodo-fondo, #151f2c);
+  padding: 0 4px;
+  border-radius: 2px;
+  max-width: calc(100% - 16px);
+  white-space: nowrap;
+  overflow: visible;
+  transition: top 0.18s cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 0.18s cubic-bezier(0.22, 0.61, 0.36, 1),
+              font-size 0.18s cubic-bezier(0.22, 0.61, 0.36, 1),
+              color 0.18s ease;
+}
+.edit-campo-input:focus ~ .edit-campo-label,
+.edit-campo.tiene-valor .edit-campo-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 9px;
+}
+.edit-campo.tiene-valor .edit-campo-label { color: var(--texto-tenue, #708197); }
+.edit-campo-input:focus ~ .edit-campo-label { color: var(--acento, #58a6ff); }
+:root[data-tema="claro"] .edit-campo-label { background: var(--nodo-fondo, #ffffff); }
+
+/* --------------------------------- región eje integrado (fieldset + floating label) */
+
+.edit-region-fondo {
+  fill: var(--eje-fondo, #241d10);
+  fill-opacity: 0.5;
+  stroke: none;
+  pointer-events: none;
+}
+.edit-region-borde {
+  fill: none;
+  stroke: var(--eje-borde, #6d5426);
+  stroke-opacity: 0.65;
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+.edit-region-label {
+  fill: var(--eje-texto, #e6c184);
+  font-family: var(--pila-fuente);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+.nodo.tipo-pregunta.modo-edicion .edit-campo-label,
+:root[data-tema="claro"] .nodo.tipo-pregunta.modo-edicion .edit-campo-label {
+  background: var(--eje-fondo, #241d10);
+}
+.nodo.tipo-postura.modo-edicion .edit-campo-label,
+:root[data-tema="claro"] .nodo.tipo-postura.modo-edicion .edit-campo-label {
+  background: var(--nodo-encabezado, #1e2b3c);
+}
+.edit-campo.integrado .edit-campo-label,
+:root[data-tema="claro"] .edit-campo.integrado .edit-campo-label {
+  background: color-mix(in srgb, var(--eje-fondo, #241d10) 50%, var(--nodo-fondo, #151f2c) 50%);
+}
+
+/* --------------------------------- pie: + campo y rama compacta */
+
+.edit-agregar { cursor: pointer; }
+.edit-agregar-caja {
+  fill: transparent;
+  stroke: var(--borde, #26313f);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  transition: fill 0.18s ease, stroke 0.18s ease;
+}
+.edit-agregar:hover .edit-agregar-caja {
+  fill: var(--acento-suave, rgba(88, 166, 255, 0.16));
+  stroke: var(--acento, #58a6ff);
+}
+.edit-agregar-mas,
+.edit-agregar-texto {
+  fill: var(--texto-tenue, #708197);
+  font-size: 12px;
+  font-weight: 600;
+  dominant-baseline: middle;
+  transition: fill 0.18s ease;
+}
+.edit-agregar-texto { font-weight: 500; text-anchor: start; }
+.edit-agregar:hover .edit-agregar-mas,
+.edit-agregar:hover .edit-agregar-texto { fill: var(--acento, #58a6ff); }
+
+.edit-rama { cursor: pointer; }
+.edit-rama-caja {
+  fill: var(--nodo-fondo-2, #111925);
+  stroke: var(--borde, #26313f);
+  stroke-width: 1;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+.edit-rama:hover .edit-rama-caja,
+.edit-rama.expandido .edit-rama-caja {
+  fill: var(--acento-suave, rgba(88, 166, 255, 0.16));
+  stroke: var(--acento, #58a6ff);
+}
+.edit-rama-icono {
+  fill: var(--texto-tenue, #708197);
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.edit-rama:hover .edit-rama-icono,
+.edit-rama.expandido .edit-rama-icono { fill: var(--acento, #58a6ff); }
+
+.edit-papelera { cursor: pointer; opacity: 0; transition: opacity 150ms ease; }
+.nodo.modo-edicion:hover .edit-papelera { opacity: 1; }
+.edit-papelera:hover .papelera-caja { fill: rgba(240, 97, 109, 0.18); stroke: var(--peligro); }
+.edit-papelera:hover .papelera-icono { stroke: var(--peligro); }
+
+.edit-resize { cursor: nwse-resize; }
+.edit-resize-hit { fill: transparent; }
+.edit-resize-icono {
+  stroke: var(--texto-tenue, #708197);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 150ms ease, stroke 150ms ease;
+}
+.nodo.modo-edicion:hover .edit-resize-icono { opacity: 0.7; }
+.edit-resize:hover .edit-resize-icono { opacity: 1; stroke: var(--acento, #58a6ff); }
+
+/* --------------------------------- nodos control + / nuevo eje */
+
+.nodo.tipo-control-mas .nodo-brillo,
+.nodo.tipo-control-mas .nodo-anillo,
+.nodo.tipo-control-mas .nodo-sombra,
+.nodo.tipo-control-mas .nodo-caja,
+.nodo.tipo-control-eje .nodo-brillo,
+.nodo.tipo-control-eje .nodo-anillo,
+.nodo.tipo-control-eje .nodo-sombra,
+.nodo.tipo-control-eje .nodo-caja,
+.nodo.tipo-control-mas:hover .nodo-caja,
+.nodo.tipo-control-eje:hover .nodo-caja,
+.nodo.tipo-control-eje .nodo-encabezado-fondo,
+.nodo.tipo-control-eje .nodo-separador { display: none; }
+.nodo.tipo-control-mas,
+.nodo.tipo-control-eje { cursor: pointer; }
+
+.control-mas-caja {
+  fill: rgba(88, 166, 255, 0.08);
+  stroke: var(--acento, #58a6ff);
+  stroke-width: 1.4;
+  stroke-opacity: 0.45;
+  transition: fill 0.18s ease, stroke-opacity 0.18s ease, stroke-width 0.18s ease, r 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nodo.tipo-control-mas:hover .control-mas-caja {
+  fill: rgba(88, 166, 255, 0.22);
+  stroke-opacity: 1;
+  stroke-width: 1.8;
+  r: 24;
+}
+.control-mas-plus {
+  fill: var(--acento, #58a6ff);
+  font-size: 22px;
+  font-weight: 300;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.control-eje-caja {
+  fill: rgba(230, 193, 132, 0.12);
+  stroke: var(--eje-texto, #e6c184);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 4;
+  stroke-opacity: 0.7;
+  transition: fill 0.18s ease, stroke-opacity 0.18s ease, stroke-width 0.18s ease, r 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nodo.tipo-control-eje:hover .control-eje-caja {
+  fill: rgba(230, 193, 132, 0.24);
+  stroke-opacity: 1;
+  stroke-width: 1.8;
+  r: 24;
+}
+.control-eje-plus {
+  fill: var(--eje-texto, #e6c184);
+  font-size: 22px;
+  font-weight: 300;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.arista.control-eje {
+  stroke: var(--eje-borde, #6d5426);
+  opacity: 0.85;
+}
+
+/* --------------------------------- arista: respuesta editable / ghost + */
+
+/* Las etiquetas de respuesta viven encima de los nodos. */
+#capa-etiquetas { pointer-events: none; }
+#capa-etiquetas .edit-arista-fo { pointer-events: all; }
+#capa-etiquetas .edit-arista-fo.atenuada { opacity: 0.48; }
+
+.edit-arista-fo { overflow: visible; }
+.edit-arista-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  background: var(--fondo, #0a0e15);
+  color-scheme: inherit;
+  overflow: hidden;
+}
+.edit-arista-wrap.escribiendo,
+.edit-arista-wrap:focus-within {
+  overflow: visible;
+}
+.edit-arista-input {
+  display: block;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: auto;
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 15px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  background-color: transparent;
+  color: var(--texto, #e7eef8);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 15px;
+  text-align: center;
+  padding: 1px 4px;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+  color-scheme: inherit;
+  resize: none;
+  overflow: hidden;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.edit-arista-input::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.edit-arista-wrap.escribiendo .edit-arista-input,
+.edit-arista-wrap:focus-within .edit-arista-input {
+  white-space: pre;
+  overflow: hidden;
+}
+.edit-arista-glosa {
+  display: none;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 13px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--texto-tenue, #708197);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 13px;
+  text-align: center;
+  padding: 0 4px 2px;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+  color-scheme: inherit;
+  resize: none;
+  overflow: hidden;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.edit-arista-glosa::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.edit-arista-glosa::placeholder {
+  color: var(--texto-tenue, #708197);
+  opacity: 0.55;
+  font-style: italic;
+}
+.edit-arista-wrap.con-glosa .edit-arista-glosa,
+.edit-arista-wrap.escribiendo:not(.vacia) .edit-arista-glosa,
+.edit-arista-wrap:focus-within:not(.vacia) .edit-arista-glosa {
+  display: block;
+}
+.edit-arista-input:hover,
+.edit-arista-input:focus {
+  color: var(--texto, #e7eef8);
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+.edit-arista-ghost {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--fondo, #0a0e15);
+  color: var(--texto-tenue, #708197);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 20px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.65;
+}
+.edit-arista-wrap:hover .edit-arista-ghost {
+  opacity: 1;
+  color: var(--acento, #58a6ff);
+}
+.edit-arista-wrap.vacia .edit-arista-input {
+  color: transparent;
+  caret-color: var(--texto, #e7eef8);
+  background: transparent;
+}
+.edit-arista-wrap.vacia:focus-within .edit-arista-input {
+  color: var(--texto, #e7eef8);
+}
+.edit-arista-wrap:not(.vacia) .edit-arista-ghost,
+.edit-arista-wrap.vacia:focus-within .edit-arista-ghost { display: none; }
+
+/* --------------------------------- popup campos */
+
+#edit-popup-campos {
+  position: fixed;
+  z-index: 9999;
+  background: var(--superficie-solida, #131a25);
+  border: 1px solid var(--borde, #26313f);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  min-width: 170px;
+  animation: edit-popup-entra 0.16s cubic-bezier(0.22, 0.61, 0.36, 1);
+  pointer-events: all;
+}
+#edit-popup-campos.oculto { display: none; }
+#edit-popup-campos button {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--texto, #e7eef8);
+  font-family: var(--pila-fuente);
+  font-size: 12.5px;
+  text-align: left;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+#edit-popup-campos button:hover {
+  background: var(--acento-suave, rgba(88, 166, 255, 0.16));
+  color: var(--acento, #58a6ff);
+}
+@keyframes edit-popup-entra {
+  from { opacity: 0; transform: scale(0.95) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+:root[data-tema="claro"] #edit-popup-campos {
+  background: var(--superficie-solida, #ffffff);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* --------------------------------- tarjeta y destinos de reenganche */
+
+.nodo.modo-edicion .nodo-caja {
+  stroke: var(--nodo-borde, #2c3a4c);
+  stroke-width: 0.8;
+}
+.nodo.modo-edicion.seleccionado .nodo-caja {
+  stroke: var(--acento, #58a6ff);
+  stroke-width: 1.6;
+}
+.nodo.modo-edicion.tipo-pregunta .nodo-caja {
+  fill: var(--eje-fondo, #241d10);
+  stroke: var(--eje-borde, #6d5426);
+}
+.nodo.modo-edicion.tipo-pregunta .nodo-encabezado-fondo {
+  fill: var(--eje-encabezado, #2f2513);
+}
+.nodo.modo-edicion.tipo-pregunta .nodo-etiqueta-tipo {
+  fill: var(--eje-texto, #e6c184);
+}
+.nodo.edit-destino-valido .nodo-caja {
+  stroke: var(--consenso, #3fb950);
+  stroke-width: 2;
+}
+.nodo.edit-destino-invalido .nodo-caja {
+  stroke: var(--peligro, #f0616d);
+  stroke-width: 2;
+}
+
+/* --------------------------------- asas de reenganche */
+
+#capa-asas { pointer-events: none; }
+.reenganche-asa { pointer-events: all; cursor: grab; }
+.reenganche-asa-hit { fill: transparent; }
+.reenganche-asa-disco {
+  fill: var(--acento, #58a6ff);
+  stroke: var(--superficie-solida, #131a25);
+  stroke-width: 1.6;
+  transition: r 120ms ease, fill 120ms ease;
+}
+.reenganche-asa[data-tipo="eje"] .reenganche-asa-disco { fill: var(--arista-eje, #6d5426); }
+.reenganche-asa:hover .reenganche-asa-disco { r: 6.5; }
+.arista-reenganche-preview {
+  fill: none;
+  stroke: var(--acento, #58a6ff);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+  marker-end: url(#punta);
+  pointer-events: none;
+}
+.arista-reenganche-preview.invalido {
+  stroke: var(--peligro, #f0616d);
+  marker-end: url(#punta-deshab);
+}
+
+/* --------------------------------- LOD: el título llena la tarjeta */
+
+.edit-lod-titulo { display: none; pointer-events: none; }
+.modo-edicion-activo.edit-lod .edit-lod-titulo { display: inline; }
+.modo-edicion-activo.edit-lod .nodo-cuerpo {
+  clip-path: inset(0 round 12px);
+}
+.edit-lod-linea {
+  fill: var(--nodo-encabezado-texto, #cfe0f5);
+}
+.modo-edicion-activo.edit-lod .tipo-pregunta .edit-lod-linea {
+  fill: var(--eje-texto, #e6c184);
+}
+.modo-edicion-activo.edit-lod .edit-fo,
+.modo-edicion-activo.edit-lod .edit-agregar,
+.modo-edicion-activo.edit-lod .edit-rama,
+.modo-edicion-activo.edit-lod .edit-region-fondo,
+.modo-edicion-activo.edit-lod .edit-region-borde,
+.modo-edicion-activo.edit-lod .edit-region-label,
+.modo-edicion-activo.edit-lod .edit-papelera,
+.modo-edicion-activo.edit-lod .edit-resize,
+.modo-edicion-activo.edit-lod .edit-pie-grupo,
+.modo-edicion-activo.edit-lod #capa-asas,
+.modo-edicion-activo.edit-lod #capa-etiquetas,
+.modo-edicion-activo.edit-lod .asa-nodo,
+.modo-edicion-activo.edit-lod .nodo-etiqueta-tipo,
+.modo-edicion-activo.edit-lod .nodo-encabezado-texto,
+.modo-edicion-activo.edit-lod .nodo-encabezado-fondo,
+.modo-edicion-activo.edit-lod .nodo-separador { display: none; }
+
+.modo-edicion-activo #tooltip.tooltip-detalle-nodo { display: none; }
+
+.modo-edicion-activo.edit-lod .tipo-control-mas,
+.modo-edicion-activo.edit-lod .tipo-control-eje,
+.modo-edicion-activo.edit-lod .arista-grupo.control { display: none; }
+
+.nodo.edit-resizing .nodo-caja {
+  stroke: var(--acento, #58a6ff);
+  stroke-width: 1.8;
+}
+.nodo.edit-resizing { pointer-events: none; }
+.nodo.edit-resizing .edit-resize { pointer-events: all; }
+
+/* --------------------------------- chips de religiones */
+
+.edit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 100%;
+  padding: 16px 8px 6px;
+  border: 1.2px solid var(--borde, #26313f);
+  border-radius: 6px;
+  box-sizing: border-box;
+  cursor: text;
+}
+.edit-campo:focus-within .edit-chips {
+  border-color: var(--acento, #58a6ff);
+  box-shadow: 0 0 0 2.5px rgba(88, 166, 255, 0.14);
+}
+.edit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 4px 2px 8px;
+  border-radius: 11px;
+  background: var(--superficie-alta, #1a2331);
+  border: 1px solid var(--borde, #26313f);
+  color: var(--texto-medio, #a9b8cc);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.edit-chip-texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edit-chip-quitar {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--texto-tenue, #708197);
+  font-size: 13px;
+  line-height: 16px;
+  cursor: pointer;
+}
+.edit-chip-quitar:hover {
+  background: rgba(240, 97, 109, 0.18);
+  color: var(--peligro, #f0616d);
+}
+.edit-chip-input {
+  flex: 1 1 72px;
+  min-width: 72px;
+  border: none;
+  background: transparent;
+  color: var(--texto, #e7eef8);
+  font-size: 12.5px;
+  outline: none;
+  padding: 2px 4px;
+}
+.edit-campo .edit-chips + .edit-campo-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 9px;
+}

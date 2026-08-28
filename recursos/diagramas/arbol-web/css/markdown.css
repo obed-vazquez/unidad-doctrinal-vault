@@ -1,0 +1,199 @@
+/* Estilos del visor Markdown embebido (análisis y aclaraciones). */
+
+.md-tarjeta {
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+:root[data-tema="claro"] .md-tarjeta {
+  background: #fff;
+}
+
+.md-tarjeta + .md-tarjeta {
+  margin-top: 12px;
+}
+
+.md-tarjeta > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-weight: 650;
+  font-size: 0.95rem;
+  background: rgba(88, 166, 255, 0.08);
+  border-bottom: 1px solid transparent;
+}
+
+.md-tarjeta[open] > summary {
+  border-bottom-color: var(--borde-suave);
+}
+
+.md-tarjeta > summary::-webkit-details-marker { display: none; }
+
+.md-tarjeta-hint {
+  color: var(--texto-tenue);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.md-cuerpo {
+  max-height: min(52vh, 520px);
+  overflow: auto;
+  padding: 14px 16px 18px;
+  color: var(--texto-medio);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  scroll-behavior: smooth;
+}
+
+.md-cuerpo.md-cargando {
+  min-height: 72px;
+}
+
+.md-estado {
+  margin: 0;
+  color: var(--texto-tenue);
+  font-style: italic;
+}
+
+.md-cuerpo h1,
+.md-cuerpo h2,
+.md-cuerpo h3,
+.md-cuerpo h4,
+.md-cuerpo h5,
+.md-cuerpo h6 {
+  color: var(--texto);
+  line-height: 1.25;
+  margin: 1.1em 0 0.45em;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.md-cuerpo h1 { font-size: 1.35rem; }
+.md-cuerpo h2 { font-size: 1.2rem; }
+.md-cuerpo h3 { font-size: 1.08rem; }
+.md-cuerpo h4,
+.md-cuerpo h5,
+.md-cuerpo h6 { font-size: 1rem; }
+
+.md-cuerpo > :first-child { margin-top: 0; }
+
+.md-cuerpo p,
+.md-cuerpo ul,
+.md-cuerpo ol,
+.md-cuerpo blockquote,
+.md-cuerpo pre {
+  margin: 0 0 0.85em;
+}
+
+.md-cuerpo ul,
+.md-cuerpo ol {
+  padding-left: 1.35em;
+}
+
+.md-cuerpo li + li { margin-top: 0.28em; }
+
+.md-cuerpo a {
+  color: var(--acento);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.md-cuerpo a:hover { text-decoration: underline; }
+
+.md-cuerpo strong { color: var(--texto); }
+
+.md-cuerpo blockquote {
+  border-left: 3px solid var(--acento);
+  padding: 0.2em 0 0.2em 0.9em;
+  color: var(--texto-tenue);
+}
+
+.md-cuerpo code {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.88em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+}
+
+.md-cuerpo pre {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow: auto;
+}
+
+:root[data-tema="claro"] .md-cuerpo pre {
+  background: #f2f5f9;
+}
+
+.md-cuerpo pre code {
+  background: none;
+  padding: 0;
+}
+
+.md-cuerpo hr {
+  border: 0;
+  border-top: 1px solid var(--borde);
+  margin: 1.2em 0;
+}
+
+.md-cuerpo table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 1em;
+}
+
+.md-cuerpo th,
+.md-cuerpo td {
+  border: 1px solid var(--borde);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.md-fallback {
+  white-space: pre-wrap;
+  font-family: inherit;
+  margin: 0;
+}
+
+.md-tarjeta-pie {
+  padding: 0 14px 12px;
+  border-top: 1px solid var(--borde-suave);
+  padding-top: 10px;
+  margin: 0 2px;
+}
+
+.md-tarjeta-pie .quiz-enlace {
+  font-size: 0.85rem;
+}
+
+.quiz-docs {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.quiz-docs-titulo {
+  margin: 0 0 2px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.quiz-ficha-enlaces > h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}

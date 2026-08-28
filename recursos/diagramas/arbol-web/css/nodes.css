@@ -1,0 +1,330 @@
+/* Nodos y aristas dibujados en SVG puro.
+   Los tamaños de fuente de este archivo son los mismos que js/layout.js usa
+   para medir el texto; si cambia uno hay que cambiar el otro. */
+
+#capa-nodos text,
+#capa-aristas text {
+  font-family: var(--pila-fuente);
+  dominant-baseline: middle;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ------------------------------------------------------------------ aristas */
+
+.arista { fill: none; stroke: var(--arista); stroke-width: 1.6; marker-end: url(#punta); transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease; }
+.arista.control { stroke: var(--acento); stroke-dasharray: 4 5; marker-end: none; opacity: 0.75; }
+/* La flecha se traza desde el padre; la punta aparece al quitar .entrando. */
+.arista-grupo.entrando .arista {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  marker-end: none;
+  animation: arista-entra 480ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
+.arista-grupo.entrando .arista-etiqueta-caja,
+.arista-grupo.entrando .arista-etiqueta-texto {
+  opacity: 0;
+  animation: etiqueta-entra 260ms ease both;
+  animation-delay: calc(var(--retraso-entrada, 0ms) + 320ms);
+}
+.arista-grupo.saliendo { pointer-events: none; }
+.arista-grupo.saliendo .arista {
+  stroke-dasharray: 1;
+  marker-end: none;
+  animation: arista-sale 360ms ease both;
+  animation-delay: var(--retraso-salida, 0ms);
+}
+.arista-grupo.saliendo .arista-etiqueta-caja,
+.arista-grupo.saliendo .arista-etiqueta-texto {
+  animation: etiqueta-sale 200ms ease both;
+}
+@keyframes arista-entra { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes arista-sale { from { stroke-dashoffset: 0; opacity: 1; } to { stroke-dashoffset: 1; opacity: 0; } }
+@keyframes etiqueta-entra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes etiqueta-sale { from { opacity: 1; } to { opacity: 0; } }
+.arista.eje { stroke: var(--arista-eje); stroke-dasharray: 5 4; marker-end: url(#punta-eje); }
+.arista.elegida { stroke: var(--arista-activa); stroke-width: 2.2; }
+.arista.camino { stroke: var(--dorado); stroke-width: 2.6; marker-end: url(#punta-camino); }
+.arista.camino.tentativa { stroke-dasharray: 7 5; }
+.arista.atenuada { opacity: 0.42; }
+.arista.deshabilitada { opacity: 0.52; stroke-width: 1.85; marker-end: url(#punta-deshab); }
+
+.arista-etiqueta-caja { fill: var(--etiqueta-fondo); stroke: var(--borde); stroke-width: 1; rx: 6; }
+.arista-etiqueta-texto { fill: var(--texto-medio); font-size: 11px; font-weight: 600; text-anchor: middle; }
+.arista-grupo.elegida .arista-etiqueta-caja { stroke: var(--acento); }
+.arista-grupo.elegida .arista-etiqueta-texto { fill: var(--acento); }
+.arista-grupo.camino .arista-etiqueta-caja { stroke: var(--dorado); }
+.arista-grupo.camino .arista-etiqueta-texto { fill: var(--dorado); }
+.arista-grupo.atenuada { opacity: 0.48; }
+.arista-grupo.deshabilitada { opacity: 0.62; }
+
+/* --------------------------------------------------------------------- nodo */
+
+.nodo { cursor: pointer; }
+.nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
+.nodo.atenuado.resaltado { opacity: 1; }
+.nodo.deshabilitado { opacity: 0.38; filter: grayscale(0.45); transition: opacity 280ms ease, filter 280ms ease; }
+.nodo.deshabilitado .nodo-caja { fill-opacity: 0.72; }
+/* El transform CSS va en .nodo-cuerpo, no en .nodo: un transform en el
+   grupo exterior pisa el translate(x,y) del SVG y el nodo nace en el origen. */
+.nodo.deshabilitado.entrando .nodo-cuerpo {
+  animation: rama-entra-dim 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
+@keyframes rama-entra-dim {
+  from { opacity: 0; }
+  to { opacity: 0.38; }
+}
+.nodo.deshabilitado .opcion,
+.nodo.deshabilitado .papelera { pointer-events: none; }
+.nodo.entrando:not(.deshabilitado):not(.raiz) .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: rama-entra 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--retraso-entrada, 0ms);
+}
+.nodo.raiz.entrando .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nacer-raiz 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.nodo.saliendo { pointer-events: none; }
+.nodo.saliendo .nodo-cuerpo {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: rama-sale 400ms cubic-bezier(0.4, 0, 1, 1) both;
+  animation-delay: var(--retraso-salida, 0ms);
+}
+@keyframes rama-entra {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.18, 0.08);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.045, 1.03);
+    filter: drop-shadow(0 0 16px var(--acento));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+}
+@keyframes nacer-raiz {
+  from { opacity: 0; transform: scale(0.9); }
+  55% { opacity: 1; transform: scale(1.04); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rama-sale {
+  from { opacity: 1; transform: none; filter: drop-shadow(0 0 0 transparent); }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.16, 0.06);
+    filter: drop-shadow(0 0 16px var(--peligro));
+  }
+}
+
+.nodo-sombra { fill: rgba(0, 0, 0, 0.35); pointer-events: none; }
+:root[data-tema="claro"] .nodo-sombra { fill: rgba(31, 45, 65, 0.12); }
+
+.nodo-caja {
+  fill: var(--nodo-fondo);
+  stroke: var(--nodo-borde);
+  stroke-width: 1.4;
+  pointer-events: all;
+  transition: stroke 180ms ease, fill 180ms ease;
+}
+/* El hover es un realce discreto del borde neutro. El azul queda reservado a
+   la selección y el blanco al resaltado, para que los tres estados no se
+   confundan entre sí. */
+.nodo:hover .nodo-caja { stroke: var(--texto-tenue); }
+.nodo-encabezado-fondo { fill: var(--nodo-encabezado); }
+.nodo-separador { stroke: var(--nodo-borde); stroke-width: 1; opacity: 0.75; }
+.nodo-encabezado-texto { fill: var(--nodo-encabezado-texto); font-size: 13px; font-weight: 600; }
+.nodo-encabezado-texto.sin-nombre { fill: var(--texto-tenue); font-style: italic; font-weight: 500; }
+.nodo-etiqueta-tipo {
+  fill: var(--texto-tenue);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.nodo-conteo { fill: var(--texto-tenue); font-size: 10.5px; font-weight: 700; }
+.nodo:hover .nodo-conteo { fill: var(--texto-medio); }
+
+.nodo-pregunta { fill: var(--texto-tenue); font-size: 12.5px; font-style: italic; }
+.nodo-coloquial { fill: var(--texto); font-size: 14px; font-style: normal; }
+.nodo-nota { fill: var(--texto-tenue); font-size: 11.5px; font-style: italic; }
+
+.nodo-titulo { fill: var(--texto); font-size: 15px; font-weight: 700; }
+.nodo-titulo.sin-nombre { fill: var(--texto-tenue); font-style: italic; font-weight: 400; }
+
+/* Postura dividida (tipo 2): base sobria, preguntas en ámbar atenuado. */
+.nodo.tipo-postura .nodo-caja { fill: var(--nodo-encabezado); stroke: var(--eje-borde); }
+.nodo.tipo-postura .nodo-etiqueta-tipo { fill: var(--eje-texto); }
+.nodo.tipo-pregunta .nodo-caja { fill: var(--eje-fondo); stroke: var(--eje-borde); }
+.nodo.tipo-pregunta .nodo-encabezado-fondo { fill: var(--eje-encabezado); }
+.nodo.tipo-pregunta .nodo-encabezado-texto { fill: var(--eje-texto); }
+.nodo.tipo-pregunta .nodo-etiqueta-tipo { fill: var(--eje-texto); opacity: 0.75; }
+
+/* La raíz se distingue por su rótulo ORIGEN y una cabecera algo más marcada,
+   no por un borde de color: un borde permanente se leía como un hover pegado. */
+.nodo.raiz .nodo-encabezado-fondo { fill: var(--acento-suave); }
+.nodo.raiz .nodo-encabezado-texto { fill: var(--acento); }
+.nodo.raiz .nodo-etiqueta-tipo { fill: var(--acento); }
+
+/* Estado 3: seleccionado (anillo de foco). */
+.nodo.seleccionado .nodo-caja { stroke: var(--acento); stroke-width: 2.2; }
+.nodo.borrador .nodo-caja { stroke-dasharray: 6 4; }
+.nodo-anillo {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+.nodo.seleccionado .nodo-anillo { opacity: 0.42; }
+
+/* Camino iluminado del explorador de creencias (por debajo del Ctrl + clic). */
+.nodo.camino .nodo-caja { stroke: var(--dorado); stroke-width: 2.2; }
+.nodo.camino .nodo-brillo { stroke: var(--dorado); opacity: 0.4; }
+.nodo.camino.tentativa .nodo-brillo { stroke-dasharray: 8 5; }
+
+/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y selección,
+   salvo cuando el explorador de creencias ya ilumina el nodo en dorado. */
+.nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; filter: drop-shadow(0 0 10px var(--resalte-glow)); }
+.nodo.resaltado .nodo-brillo,
+.nodo.camino.resaltado .nodo-brillo,
+.nodo.seleccionado.resaltado .nodo-brillo {
+  fill: var(--resalte);
+  stroke: var(--resalte-suave);
+  opacity: 0.55;
+  animation: pulso-resalte 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes pulso-resalte {
+  0% { opacity: 0; }
+  35% { opacity: 0.9; }
+  100% { opacity: 0.55; }
+}
+.nodo.resaltado .nodo-caja,
+.nodo.camino.resaltado .nodo-caja,
+.nodo.seleccionado.resaltado .nodo-caja {
+  stroke: var(--resalte);
+  stroke-width: 2.6;
+}
+
+/* El camino dorado del panel de creencias no debe mezclarse con el resaltado
+   Ctrl+clic: se deja solo el amarillo. */
+.nodo.camino.resaltado .nodo-brillo,
+.nodo.camino.seleccionado.resaltado .nodo-brillo {
+  fill: transparent;
+  stroke: var(--dorado);
+  opacity: 0.4;
+  animation: none;
+  filter: none;
+}
+.nodo.camino.resaltado .nodo-caja,
+.nodo.camino.seleccionado.resaltado .nodo-caja {
+  stroke: var(--dorado);
+  stroke-width: 2.2;
+}
+
+/* ----------------------------------------------------------------- botones */
+
+.opcion { cursor: pointer; }
+.opcion-caja {
+  fill: var(--nodo-fondo-2);
+  stroke: var(--nodo-borde);
+  stroke-width: 1.3;
+  transition: fill 150ms ease, stroke 150ms ease;
+}
+.opcion:hover .opcion-caja { fill: var(--acento-suave); stroke: var(--acento); }
+.opcion-texto { fill: var(--texto); font-size: 12.5px; font-weight: 600; text-anchor: middle; }
+.opcion:hover .opcion-texto { fill: var(--acento); }
+.opcion.elegida .opcion-caja { fill: var(--acento-suave); stroke: var(--acento); }
+.opcion.elegida .opcion-texto { fill: var(--acento); }
+.opcion.tenue { opacity: 0.42; }
+.opcion.tenue:hover { opacity: 1; }
+.opcion-glosa { fill: var(--texto-tenue); font-size: 10px; font-weight: 700; }
+
+.opcion-conteo { fill: var(--texto-tenue); font-size: 10.5px; font-weight: 700; }
+.opcion:hover .opcion-conteo { fill: var(--acento); }
+.opcion.elegida .opcion-conteo { fill: var(--acento); }
+/* La respuesta que abre más árbol. Cede el paso al azul de la elegida y al del
+   hover, que dicen cosas más urgentes que «esta rama es la más grande». */
+.opcion.densa:not(.elegida):not(:hover) .opcion-caja {
+  fill: var(--rama-densa);
+  stroke: var(--rama-densa-borde);
+}
+.opcion.densa:not(.elegida):not(:hover) .opcion-conteo { fill: var(--texto-medio); }
+
+.respuesta-chip-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1.2; }
+.respuesta-chip-texto { fill: var(--acento); font-size: 12px; font-weight: 600; }
+
+.tradicion-chip-caja { fill: var(--superficie-alta); stroke: var(--borde); stroke-width: 1; }
+.tradicion-chip-caja.tentativa { stroke-dasharray: 4 3; }
+.tradicion-chip-caja.destacada { fill: var(--dorado-suave); stroke: var(--dorado); }
+.tradicion-chip-texto { fill: var(--texto-medio); font-size: 11px; font-weight: 500; }
+.tradicion-chip-caja.destacada + .tradicion-chip-texto { fill: var(--dorado); }
+
+/* ------------------------------------------------------------- indicadores */
+
+.papelera { cursor: pointer; opacity: 0; transition: opacity 150ms ease; }
+.nodo:hover .papelera { opacity: 1; }
+.papelera-caja { fill: var(--superficie-alta); stroke: var(--borde); stroke-width: 1; }
+.papelera-icono { fill: none; stroke: var(--texto-tenue); stroke-width: 1.5; stroke-linecap: round; }
+.papelera:hover .papelera-caja { fill: rgba(240, 97, 109, 0.18); stroke: var(--peligro); }
+.papelera:hover .papelera-icono { stroke: var(--peligro); }
+
+.chincheta { cursor: pointer; opacity: 1; }
+.nodo.fijado .chincheta { opacity: 1; }
+.chincheta-caja { fill: var(--acento-suave); stroke: var(--acento); stroke-width: 1; }
+.chincheta-cabeza { fill: var(--acento); stroke: none; }
+.chincheta-aguja { fill: none; stroke: var(--acento); stroke-width: 1.5; stroke-linecap: round; }
+.chincheta:hover .chincheta-caja { fill: var(--acento); stroke: var(--acento); }
+.chincheta:hover .chincheta-cabeza { fill: var(--superficie-solida); }
+.chincheta:hover .chincheta-aguja { stroke: var(--superficie-solida); }
+
+.asa-nodo { cursor: grab; opacity: 0.9; pointer-events: all; }
+.asa-nodo:hover { opacity: 1; }
+.asa-nodo.anclada,
+.asa-nodo.arrastrando { cursor: grabbing; opacity: 1; }
+.asa-nodo-caja { fill: transparent; stroke: none; pointer-events: all; }
+.asa-nodo:hover .asa-nodo-caja,
+.asa-nodo.anclada .asa-nodo-caja,
+.asa-nodo.arrastrando .asa-nodo-caja {
+  fill: transparent;
+  stroke: none;
+}
+.asa-nodo-punto { fill: var(--texto-tenue); }
+.asa-nodo:hover .asa-nodo-punto { fill: var(--acento); }
+.asa-nodo-pin { display: none; }
+.asa-nodo.anclada .asa-nodo-pin,
+.asa-nodo.arrastrando .asa-nodo-pin { display: block; }
+.asa-nodo.anclada .asa-nodo-agarre,
+.asa-nodo.arrastrando .asa-nodo-agarre { display: none; }
+
+.convergencia-glifo { fill: var(--eje-texto); font-size: 12px; font-weight: 800; text-anchor: middle; }
+.convergencia-puerto { fill: none; stroke: var(--eje-borde); stroke-width: 1.6; }
+
+.marca-tradicion { fill: var(--dorado); }
+.marca-tradicion.tentativa { opacity: 0.5; }
+.marca-tradicion.destacada { stroke: var(--dorado); stroke-width: 3; opacity: 1; }
+.marca-tradicion-resto { fill: var(--dorado); font-size: 10px; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nodo.entrando .nodo-cuerpo, .nodo.raiz.entrando .nodo-cuerpo,
+  .nodo.saliendo .nodo-cuerpo,
+  .arista-grupo.entrando .arista, .arista-grupo.saliendo .arista,
+  .arista-grupo.entrando .arista-etiqueta-caja,
+  .arista-grupo.entrando .arista-etiqueta-texto,
+  .arista-grupo.saliendo .arista-etiqueta-caja,
+  .arista-grupo.saliendo .arista-etiqueta-texto,
+  .nodo.resaltado .nodo-brillo {
+    animation: none;
+  }
+}

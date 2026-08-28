@@ -1,0 +1,52 @@
+name: Publicar sitio web
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'recursos/diagramas/arbol-web/**'
+      - 'recursos/definiciones/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.desplegar.outputs.page_url }}
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar artefacto
+        run: |
+          mkdir -p _site/recursos/diagramas/arbol-web
+          mkdir -p _site/recursos/definiciones
+          cp index.html _site/
+          touch _site/.nojekyll
+          cp -R recursos/diagramas/arbol-web/. _site/recursos/diagramas/arbol-web/
+          cp -R recursos/definiciones/. _site/recursos/definiciones/
+
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Desplegar en GitHub Pages
+        id: desplegar
+        uses: actions/deploy-pages@v4

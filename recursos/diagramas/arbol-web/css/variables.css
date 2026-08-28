@@ -1,0 +1,114 @@
+/* Paleta y tokens compartidos. El tema oscuro es el predeterminado; el claro
+   solo redefine los mismos nombres para que el resto del CSS no cambie. */
+
+:root {
+  --pila-fuente: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+  /* Lienzo */
+  --fondo: #0a0e15;
+  --fondo-alto: #10161f;
+  --rejilla: #1b2534;
+
+  /* Superficies de interfaz */
+  --superficie: rgba(17, 24, 34, 0.86);
+  --superficie-solida: #131a25;
+  --superficie-alta: #1a2331;
+  --borde: #26313f;
+  --borde-suave: #1d2632;
+
+  /* Texto */
+  --texto: #e7eef8;
+  --texto-medio: #a9b8cc;
+  --texto-tenue: #708197;
+
+  /* Tarjeta unificada estándar (tipo 1): paleta neutra oscura */
+  --nodo-fondo: #151f2c;
+  --nodo-fondo-2: #111925;
+  --nodo-borde: #2c3a4c;
+  --nodo-encabezado: #1e2b3c;
+  --nodo-encabezado-texto: #cfe0f5;
+
+  /* Respuesta que abre la rama más poblada: un tono apenas más claro */
+  --rama-densa: #1b2836;
+  --rama-densa-borde: #3d4f66;
+
+  /* Postura base y preguntas desgajadas (tipo 2): acento ámbar atenuado */
+  --eje-fondo: #241d10;
+  --eje-borde: #6d5426;
+  --eje-encabezado: #2f2513;
+  --eje-texto: #e6c184;
+
+  /* Acentos funcionales */
+  --acento: #58a6ff;
+  --acento-suave: rgba(88, 166, 255, 0.16);
+  --dorado: #f2c14e;
+  --dorado-suave: rgba(242, 193, 78, 0.18);
+  --resalte: #f4f7fb;
+  --resalte-suave: rgba(244, 247, 251, 0.42);
+  --resalte-glow: rgba(255, 255, 255, 0.28);
+  --peligro: #f0616d;
+  --consenso: #3fb950;
+  --divergencia: #f0616d;
+
+  /* Aristas */
+  --arista: #3c4b5e;
+  --arista-activa: #58a6ff;
+  --arista-eje: #6d5426;
+  --etiqueta-fondo: #101823;
+
+  /* Geometría */
+  --radio: 12px;
+  --radio-chico: 7px;
+  --sombra: 0 12px 34px rgba(0, 0, 0, 0.48);
+  --sombra-suave: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --transicion: 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+:root[data-tema="claro"] {
+  --fondo: #f4f6fa;
+  --fondo-alto: #eaeef5;
+  --rejilla: #d3dbe6;
+
+  --superficie: rgba(255, 255, 255, 0.9);
+  --superficie-solida: #ffffff;
+  --superficie-alta: #f2f5f9;
+  --borde: #d2dae5;
+  --borde-suave: #e2e8f0;
+
+  --texto: #16202c;
+  --texto-medio: #46586d;
+  --texto-tenue: #74869b;
+
+  --nodo-fondo: #ffffff;
+  --nodo-fondo-2: #f6f9fd;
+  --nodo-borde: #ccd7e5;
+  --nodo-encabezado: #e8eff8;
+  --nodo-encabezado-texto: #22405f;
+
+  --rama-densa: #e9eff8;
+  --rama-densa-borde: #b9c8dc;
+
+  --eje-fondo: #fdf6e6;
+  --eje-borde: #d8b872;
+  --eje-encabezado: #f6ead0;
+  --eje-texto: #7a5a15;
+
+  --acento: #1f6feb;
+  --acento-suave: rgba(31, 111, 235, 0.12);
+  --dorado: #b98700;
+  --dorado-suave: rgba(185, 135, 0, 0.16);
+  --resalte: #2a3545;
+  --resalte-suave: rgba(42, 53, 69, 0.28);
+  --resalte-glow: rgba(26, 35, 49, 0.22);
+  --peligro: #cf222e;
+  --consenso: #1a7f37;
+  --divergencia: #cf222e;
+
+  --arista: #a8b6c8;
+  --arista-activa: #1f6feb;
+  --arista-eje: #d8b872;
+  --etiqueta-fondo: #ffffff;
+
+  --sombra: 0 12px 30px rgba(31, 45, 65, 0.16);
+  --sombra-suave: 0 3px 10px rgba(31, 45, 65, 0.12);
+}

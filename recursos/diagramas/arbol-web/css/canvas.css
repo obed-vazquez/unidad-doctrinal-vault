@@ -1,0 +1,614 @@
+/* Lienzo, cámara, barra flotante, minimapa, tooltip y avisos. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--pila-fuente);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#panel, input, textarea, select, #cuerpo-detalle, #cuerpo-creencias, #cuerpo-comparar {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* ------------------------------------------------------------------ lienzo */
+
+#aplicacion {
+  position: relative;
+  height: 100%;
+  /* El fondo vive aquí y no en el SVG: la cita de bienvenida se sienta
+     entre ambos y el nodo raíz la tapa, como un banner detrás del objeto. */
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--fondo-alto), transparent 62%),
+    var(--fondo);
+}
+
+#lienzo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+  z-index: 6;
+  cursor: grab;
+  touch-action: none;
+}
+#lienzo.arrastrando { cursor: grabbing; }
+#lienzo.moviendo-nodo { cursor: grabbing; }
+
+.rejilla-punto { fill: var(--rejilla); }
+#fondo-rejilla { pointer-events: none; }
+
+.punta-flecha { fill: var(--arista); }
+.punta-flecha-eje { fill: var(--arista-eje); }
+.punta-flecha-camino { fill: var(--dorado); }
+.punta-flecha-deshab { fill: var(--arista); opacity: 0.85; }
+
+/* -------------------------------------------------------------------- barra */
+
+#barra {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sombra-suave);
+  z-index: 20;
+}
+
+.barra-marca { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.barra-titulo { font-size: 14px; font-weight: 650; letter-spacing: 0.2px; white-space: nowrap; }
+.barra-contador { font-size: 11.5px; color: var(--texto-tenue); white-space: nowrap; }
+
+.barra-acciones { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.barra-separador { width: 1px; height: 20px; background: var(--borde); }
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-alta);
+  color: var(--texto-medio);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transicion), color var(--transicion), border-color var(--transicion);
+}
+.boton:hover { background: var(--acento-suave); color: var(--texto); border-color: var(--acento); }
+.boton .icono { font-size: 13px; }
+/* Valor vigente de un menú (p. ej. el recorrido): sobrevive al rótulo, que las
+   pantallas estrechas esconden, porque sin él el botón no dice en qué modo está. */
+.boton .valor {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--acento-suave);
+  color: var(--acento);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+.boton.icono-solo {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+}
+.boton.icono-solo .icono { font-size: 20px; line-height: 1; }
+.icono-basurero {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icono-nota {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.icono-nota .nota-tache {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  display: none;
+}
+#btn-musica.muteado .nota-tache { display: block; }
+#btn-musica.muteado .icono-nota { opacity: 0.7; }
+.musica-wrap, .menu-desplegable {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.vol-musica {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  margin: 0;
+  /* El padding superior une el botón con el slider: sin ese puente el hover se pierde. */
+  padding: 14px 10px 10px;
+  border: 1px solid var(--borde);
+  border-top: 0;
+  border-radius: 0 0 var(--radio-chico) var(--radio-chico);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra-suave);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 30;
+  transition: opacity 160ms ease;
+}
+.musica-wrap:hover .vol-musica,
+.musica-wrap.vol-abierto .vol-musica,
+.vol-musica:focus,
+.vol-musica:active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.menu-lista {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  max-width: calc(100vw - 40px);
+  padding: 6px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra);
+  z-index: 32;
+  display: none;
+}
+.menu-desplegable.menu-izquierda .menu-lista { right: auto; left: 0; }
+.menu-desplegable.abierto .menu-lista { display: grid; gap: 2px; }
+.menu-lista button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.menu-lista button:hover { background: var(--acento-suave); color: var(--acento); }
+/* Opción vigente del menú: la marca ocupa una columna fija para que los
+   rótulos no bailen entre una opción y otra. */
+.menu-lista button::before {
+  content: "✓";
+  width: 10px;
+  font-size: 11px;
+  color: var(--acento);
+  opacity: 0;
+}
+.menu-lista button.activo { color: var(--acento); }
+.menu-lista button.activo::before { opacity: 1; }
+.menu-lista button:not([data-recorrido])::before { display: none; }
+#rotulo-idioma {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  min-width: 1.6em;
+  text-align: center;
+}
+#btn-idioma.icono-solo {
+  width: auto;
+  min-width: 32px;
+  padding: 0 8px;
+}
+.boton.activo { background: var(--acento-suave); border-color: var(--acento); color: var(--acento); }
+.boton.peligro { padding: 0; width: 32px; height: 32px; justify-content: center; }
+.boton.peligro:hover { background: rgba(240, 97, 109, 0.16); border-color: var(--peligro); color: var(--peligro); }
+.boton.resalte { background: var(--resalte-suave); border-color: var(--resalte); color: var(--resalte); }
+.boton.resalte:hover { background: var(--resalte-suave); border-color: var(--resalte); color: var(--texto); }
+.boton[hidden] { display: none; }
+.barra-separador[hidden] { display: none; }
+
+@media (max-width: 1180px) and (min-width: 861px) {
+  .boton .rotulo { display: none; }
+}
+
+@media (max-width: 860px) {
+  #barra {
+    top: max(8px, env(safe-area-inset-top));
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 10px 8px;
+  }
+  .barra-marca {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .barra-titulo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .barra-contador {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .barra-acciones {
+    justify-content: flex-start;
+    width: 100%;
+    gap: 6px;
+  }
+  .barra-separador { display: none; }
+  .boton {
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+  }
+  .boton .rotulo { display: none; }
+  .boton.icono-solo,
+  .boton.peligro {
+    width: 40px;
+    height: 40px;
+  }
+  #btn-idioma.icono-solo {
+    width: auto;
+    min-width: 40px;
+    padding: 0 10px;
+  }
+  /* El recorrido manda sobre el resto del árbol: en móvil conserva su rótulo
+     y abre en fila propia para que su menú no se salga de la pantalla. */
+  #menu-recorrido { flex: 1 1 100%; }
+  #menu-recorrido .boton { width: 100%; justify-content: flex-start; gap: 8px; }
+  #menu-recorrido .boton .rotulo { display: inline; }
+  #menu-recorrido .menu-lista { left: 0; right: 0; min-width: 0; max-width: none; }
+  #menu-exportar .menu-lista { max-width: calc(100vw - 32px); }
+  #minimapa { display: none; }
+}
+
+@media (hover: none) {
+  #tooltip { display: none !important; }
+}
+
+/* ---------------------------------------------------------------- minimapa */
+
+#minimapa {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  width: 218px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--sombra-suave);
+  overflow: hidden;
+  z-index: 15;
+}
+#minimapa-svg { display: block; width: 100%; height: 138px; cursor: pointer; }
+#minimapa-nodos rect { fill: var(--arista); }
+#minimapa-nodos rect.eje { fill: var(--eje-borde); }
+#minimapa-nodos rect.camino { fill: var(--dorado); }
+#minimapa-nodos rect.seleccionado { fill: var(--acento); }
+#minimapa-nodos rect.resaltado { fill: var(--resalte); }
+#minimapa-vista {
+  fill: var(--acento-suave);
+  stroke: var(--acento);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.minimapa-zoom {
+  padding: 4px 9px;
+  border-top: 1px solid var(--borde-suave);
+  font-size: 11px;
+  color: var(--texto-tenue);
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------- pista */
+
+#pista {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 999px;
+  background: var(--superficie);
+  backdrop-filter: blur(10px);
+  color: var(--texto-tenue);
+  font-size: 11.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 12;
+}
+#pista kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: var(--superficie-alta);
+  color: var(--texto-medio);
+  font: inherit;
+  font-size: 10.5px;
+}
+@media (max-width: 900px) { #pista { display: none; } }
+
+/* ----------------------------------------------------------------- tooltip */
+
+#tooltip {
+  position: absolute;
+  z-index: 40;
+  max-width: 420px;
+  padding: 12px 14px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--texto-medio);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.98);
+  transition: opacity 280ms ease, transform 280ms ease, visibility 280ms;
+  pointer-events: none;
+}
+#tooltip.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+#tooltip.saliendo { opacity: 0; visibility: hidden; transform: translateY(-4px) scale(0.98); }
+#tooltip h4 {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+#tooltip .tooltip-coloquial { color: var(--texto); font-size: 13.5px; margin: 0 0 6px; }
+#tooltip .tooltip-formal { color: var(--texto-tenue); font-size: 12px; font-style: italic; margin: 0 0 8px; }
+#tooltip .tooltip-tradiciones { margin: 0 0 8px; font-size: 12px; color: var(--dorado); }
+#tooltip .tooltip-peso { margin: 6px 0 0; font-size: 11.5px; color: var(--texto-tenue); }
+#tooltip .tooltip-definicion { margin: 8px 0 0; font-size: 12px; color: var(--texto-medio); }
+#tooltip .def-fuente { margin: 6px 0 0; font-size: 11px; }
+#tooltip .def-fuente a { color: var(--acento); }
+#tooltip dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; }
+#tooltip dt { color: var(--texto-tenue); font-size: 11.5px; }
+#tooltip dd { margin: 0; color: var(--texto-medio); font-size: 11.5px; }
+
+/* ---------------------------------------------------------------- diálogo */
+
+#dialogo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 7, 12, 0.62);
+  backdrop-filter: blur(3px);
+  z-index: 70;
+  opacity: 1;
+  transition: opacity 160ms ease;
+}
+#dialogo.oculto { opacity: 0; pointer-events: none; }
+
+.dialogo-caja {
+  width: min(440px, calc(100vw - 48px));
+  padding: 20px 22px 18px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra);
+  transform: translateY(0);
+  transition: transform 160ms ease;
+}
+#dialogo.oculto .dialogo-caja { transform: translateY(8px); }
+.dialogo-caja h2 { margin: 0 0 8px; font-size: 16px; font-weight: 650; color: var(--texto); }
+.dialogo-caja p { margin: 0 0 18px; font-size: 13px; line-height: 1.6; color: var(--texto-medio); }
+.dialogo-caja b { color: var(--texto); }
+.dialogo-acciones { display: flex; justify-content: flex-end; gap: 8px; }
+.dialogo-acciones .mini-boton { padding: 7px 14px; font-size: 12.5px; }
+.mini-boton.peligro { border-color: var(--peligro); color: var(--peligro); }
+.mini-boton.peligro:hover { background: rgba(240, 97, 109, 0.16); color: var(--peligro); }
+
+/* ------------------------------------------------------------- aviso/carga */
+
+#aviso {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  padding: 8px 16px;
+  border: 1px solid var(--acento);
+  border-radius: 999px;
+  background: var(--superficie-solida);
+  box-shadow: var(--sombra);
+  font-size: 12.5px;
+  color: var(--texto);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+  z-index: 45;
+}
+#aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+
+#cargando {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: var(--fondo);
+  color: var(--texto-tenue);
+  font-size: 13px;
+  z-index: 60;
+  transition: opacity 260ms ease;
+}
+#cargando.oculto { opacity: 0; pointer-events: none; }
+#cargando p { margin: 0; }
+#cargando.error .girador { display: none; }
+#cargando.error p { max-width: 640px; text-align: center; line-height: 1.6; color: var(--texto-medio); }
+#cargando code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--superficie-alta);
+  color: var(--acento);
+  font-size: 12px;
+}
+.girador {
+  width: 30px;
+  height: 30px;
+  border: 2.5px solid var(--borde);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  animation: girar 850ms linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* Sombra de la cita: se proyecta sobre el lienzo (misma capa que el texto,
+   detrás del SVG) y el nodo raíz la corta. */
+:root {
+  --bienvenida-sombra:
+    drop-shadow(0 10px 8px rgba(0, 0, 0, 0.28))
+    drop-shadow(0 42px 26px rgba(0, 0, 0, 0.4));
+  --bienvenida-sombra-rincón:
+    drop-shadow(0 6px 6px rgba(0, 0, 0, 0.22))
+    drop-shadow(0 16px 12px rgba(0, 0, 0, 0.28));
+  --bienvenida-sombra-apagada:
+    drop-shadow(0 10px 8px rgba(0, 0, 0, 0))
+    drop-shadow(0 42px 26px rgba(0, 0, 0, 0));
+}
+:root[data-tema="claro"] {
+  --bienvenida-sombra:
+    drop-shadow(0 8px 6px rgba(31, 45, 65, 0.12))
+    drop-shadow(0 36px 22px rgba(31, 45, 65, 0.18));
+  --bienvenida-sombra-rincón:
+    drop-shadow(0 5px 5px rgba(31, 45, 65, 0.1))
+    drop-shadow(0 14px 10px rgba(31, 45, 65, 0.14));
+  --bienvenida-sombra-apagada:
+    drop-shadow(0 8px 6px rgba(31, 45, 65, 0))
+    drop-shadow(0 36px 22px rgba(31, 45, 65, 0));
+}
+
+#bienvenida {
+  position: absolute;
+  inset: 0;
+  /* Detrás del SVG (z 6) y de la barra (z 20): el nodo la oculta de verdad. */
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  /* Un poco alta: cruza la parte superior de la raíz, no el centro del nodo. */
+  padding: calc(var(--barra-alto, 64px) + 8px) 24px 22vh;
+  pointer-events: none;
+  background: transparent;
+}
+#bienvenida figure {
+  margin: 0;
+  max-width: 96vw;
+  text-align: center;
+  opacity: 0;
+  transform: translate3d(0, 28px, 0) scale(0.92);
+  filter: var(--bienvenida-sombra-apagada);
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+/* La secuencia la marca JS con clases: si tres @keyframes viven en el
+   mismo elemento, la última se queda con opacity y el fade gana de una. */
+#bienvenida.entra figure {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: var(--bienvenida-sombra);
+  transition:
+    opacity 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    transform 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    filter 2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+}
+#bienvenida.en-esquina figure,
+#bienvenida.sale figure {
+  /* dx/dy/k los calcula JS midiendo la cita, para no salirse de la pantalla. */
+  transform: translate3d(var(--bienvenida-dx, 0px), var(--bienvenida-dy, 0px), 0)
+    scale(var(--bienvenida-k, 0.42));
+}
+#bienvenida.en-esquina figure {
+  opacity: 1;
+  filter: var(--bienvenida-sombra-rincón);
+  transition:
+    transform 0.8s cubic-bezier(0.4, 0, 1, 1),
+    filter 0.8s ease;
+}
+#bienvenida.sale figure {
+  opacity: 0;
+  filter: var(--bienvenida-sombra-apagada);
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+#bienvenida blockquote {
+  margin: 0;
+  font-family: "Palatino Linotype", Palatino, "Iowan Old Style", "Book Antiqua", Georgia, serif;
+  font-size: clamp(16px, 3.05vw, 42px);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--texto);
+}
+#bienvenida figcaption {
+  margin-top: 10px;
+  font-family: "Palatino Linotype", Palatino, "Iowan Old Style", "Book Antiqua", Georgia, serif;
+  font-size: clamp(10px, 1.35vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+  opacity: 0.42;
+  white-space: nowrap;
+  line-height: 1;
+}
+#bienvenida.hecha { display: none; }
+
+@media (max-width: 860px) {
+  #bienvenida {
+    padding: calc(var(--barra-alto, 64px) + 8px) 16px 18vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .girador { animation-duration: 2.4s; }
+  #tooltip { transition: none; }
+  #bienvenida figure { transition: none; opacity: 0; }
+}
