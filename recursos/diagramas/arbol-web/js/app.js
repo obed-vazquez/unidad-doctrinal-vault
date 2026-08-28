@@ -80,7 +80,7 @@
       return new URL(enlace.vault_path, document.baseURI).href;
     }
     return 'https://raw.githubusercontent.com/obed-vazquez/unidad-doctrinal-vault/'
-      + 'refs/heads/arbol-de-desiciones-posturas/' + enlace.vault_path;
+      + 'refs/heads/main/' + enlace.vault_path;
   }
 
   function urlMDRender(enlace) {

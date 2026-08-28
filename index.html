@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unidad Doctrinal — Vault</title>
+  <style>
+    :root {
+      --fondo: #0a0e15;
+      --superficie: #131a25;
+      --borde: #26313f;
+      --texto: #e7eef8;
+      --texto-medio: #a9b8cc;
+      --texto-tenue: #708197;
+      --acento: #58a6ff;
+      --dorado: #f2c14e;
+      --radio: 12px;
+      --fuente: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--fuente);
+      background: var(--fondo);
+      color: var(--texto);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .contenedor {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitulo {
+      margin-top: 0.5rem;
+      color: var(--texto-medio);
+      font-size: 1rem;
+    }
+
+    section { margin-bottom: 2rem; }
+
+    h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--texto-tenue);
+      margin-bottom: 0.75rem;
+    }
+
+    .recursos {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .recurso {
+      display: block;
+      background: var(--superficie);
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      padding: 1rem 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .recurso:hover {
+      border-color: var(--acento);
+      background: #151f2c;
+    }
+
+    .recurso-titulo {
+      font-weight: 600;
+      color: var(--acento);
+      margin-bottom: 0.25rem;
+    }
+
+    .recurso-desc {
+      font-size: 0.9rem;
+      color: var(--texto-medio);
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--borde);
+      font-size: 0.85rem;
+      color: var(--texto-tenue);
+    }
+
+    footer a {
+      color: var(--dorado);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="contenedor">
+    <header>
+      <h1>Unidad Doctrinal</h1>
+      <p class="subtitulo">Bóveda de conocimiento teológico y doctrinal</p>
+    </header>
+
+    <section>
+      <h2>Recursos interactivos</h2>
+      <ul class="recursos">
+        <li>
+          <a class="recurso" href="recursos/diagramas/arbol-web/">
+            <div class="recurso-titulo">Árbol de posturas y creencias</div>
+            <div class="recurso-desc">
+              Visor interactivo del árbol de clasificación de posturas filosóficas,
+              teológicas y doctrinales. Responde secuencialmente para llegar a la
+              etiqueta histórica de una postura.
+            </div>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>
+        Proyecto <a href="https://unidad.whiteweb.mx/">Unidad Doctrinal</a>.
+        Repositorio en
+        <a href="https://github.com/obed-vazquez/unidad-doctrinal-vault">GitHub</a>.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

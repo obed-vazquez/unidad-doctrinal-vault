@@ -1,13 +1,14 @@
-name: Publicar árbol web
+name: Publicar sitio web
 
 on:
   push:
     branches:
-      - arbol-de-desiciones-posturas
       - main
     paths:
+      - 'index.html'
       - 'recursos/diagramas/arbol-web/**'
-      - '.github/workflows/deploy-arbol-web.yml'
+      - 'recursos/definiciones/**'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,8 +35,11 @@ jobs:
 
       - name: Preparar artefacto
         run: |
+          mkdir -p _site/recursos/diagramas/arbol-web
           mkdir -p _site/recursos/definiciones
-          cp -R recursos/diagramas/arbol-web/. _site/
+          cp index.html _site/
+          touch _site/.nojekyll
+          cp -R recursos/diagramas/arbol-web/. _site/recursos/diagramas/arbol-web/
           cp -R recursos/definiciones/. _site/recursos/definiciones/
 
       - name: Subir artefacto

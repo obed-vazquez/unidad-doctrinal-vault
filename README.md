@@ -15,18 +15,21 @@ Este repositorio está diseñado para centralizar, organizar y expandir la docum
 
 ---
 
-## 🚀 Publicación del árbol web
+## 🚀 Publicación del sitio web
 
-El sitio interactivo de `recursos/diagramas/arbol-web` se publica
-automáticamente con GitHub Actions. El workflow copia esa carpeta como la
-raíz del artefacto de GitHub Pages, por lo que no necesita un `index.html`
-adicional ni una redirección. Se ejecuta al cambiar el sitio en `main` o
-`arbol-de-desiciones-posturas`, y también puede iniciarse manualmente desde la
-pestaña **Actions**.
+El sitio se publica automáticamente con GitHub Actions al hacer merge a
+`main`. El workflow construye un artefacto con esta estructura:
 
-La primera vez, se configuró desde **Settings → Pages → Source → GitHub Actions** en el
-repositorio. Después de cada publicación, GitHub muestra la URL en el resumen
-de la ejecución del workflow.
+- `index.html` — página de inicio del sitio (en la raíz del repositorio)
+- `recursos/diagramas/arbol-web/` — visor interactivo del árbol de posturas
+- `recursos/definiciones/` — notas Markdown referenciadas por el visor
+
+URL publicada: [https://obed-vazquez.github.io/unidad-doctrinal-vault/](https://obed-vazquez.github.io/unidad-doctrinal-vault/)
+
+El workflow **no se ejecuta en ramas de PR**; solo al integrar cambios en
+`main` (o manualmente desde la pestaña **Actions**). La fuente de GitHub
+Pages debe estar en **Settings → Pages → Build and deployment → Source →
+GitHub Actions**.
 
 ## 📌 Visión y Propósito
 

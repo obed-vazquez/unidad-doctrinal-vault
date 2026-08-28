@@ -11,7 +11,7 @@
   var Arbol = global.Arbol || (global.Arbol = {});
   var cache = {};
   var inflight = {};
-  var ramaGithub = 'arbol-de-desiciones-posturas';
+  var ramaGithub = 'main';
 
   function escapar(texto) {
     return String(texto == null ? '' : texto)
