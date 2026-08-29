@@ -12,6 +12,7 @@ Este repositorio está diseñado para centralizar, organizar y expandir la docum
 - 🐙 **GitHub Pages (Proyecto Original):** [https://obed-vazquez.github.io/unidad-doctrinal/](https://obed-vazquez.github.io/unidad-doctrinal/)
 - 📄 **Documento Principal de Google Docs (Fuente Oficial):** [Documento en Google Docs](https://docs.google.com/document/d/11AA-q7WJT9KE5S4CMfm4IpKPPTbegSrFdW3qx-4Z5E4/edit?usp=drive_web&ouid=111370028134665902682) *(Acceso público para lectura y comentarios)*
 - 📁 **Carpeta de Recursos en Google Drive:** [Carpeta en Google Drive](https://drive.google.com/drive/folders/0B-9PnaxsQwDUOVE0ZDJQQk80SGs?resourcekey=0-nc0kG3WmircBx3CI-TW9Tg)
+- 🔄 **Sincronización Drive → vault:** GitHub Action hacia `apologética/`. Más info en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).
 
 ---
 
@@ -24,20 +25,17 @@ El sitio se publica automáticamente con GitHub Actions al hacer merge a
 - `recursos/diagramas/arbol-web/` — visor interactivo del árbol de posturas
 - `recursos/definiciones/` — notas Markdown referenciadas por el visor
 
-URL publicada: [https://obed-vazquez.github.io/unidad-doctrinal-vault/](https://obed-vazquez.github.io/unidad-doctrinal-vault/)
+URL publicada: [Unidad Doctrinal Vault](https://doctrinal.whiteweb.mx/)
 
-El workflow **no se ejecuta en ramas de PR**; solo al integrar cambios en
-`main` (o manualmente desde la pestaña **Actions**). La fuente de GitHub
-Pages debe estar en **Settings → Pages → Build and deployment → Source →
-GitHub Actions**.
+El workflow de publicación de GitHub Pages **no se ejecuta en ramas de PR**; solo al integrar cambios en `main` (o manualmente desde la pestaña **Actions**). La fuente de GitHub Pages debe estar en **Settings → Pages → Build and deployment → Source → GitHub Actions**.
 
 ## 📌 Visión y Propósito
 
-**Unidad Doctrinal** (*Doctrinal Unity*) es una iniciativa liderada por un grupo de personas dedicadas a la investigación rigurosa, el estudio sistemático y la búsqueda constante de la verdad revelada por Dios a través de las Sagradas Escrituras (Su Revelación).
+**Unidad Doctrinal** (*Doctrinal Unity*) es una iniciativa liderada por un grupo de personas dedicadas a la investigación rigurosa, el estudio sistemático y la búsqueda constante de la verdad revelada por Dios.
 
 El propósito primordial de esta **bóveda (Vault)** es:
 
-1. **Replicar y Migrar:** Trasladar gradualmente todos los recursos y documentos oficiales desarrollados originalmente en plataformas como Google Docs y sitios web a una estructura de notas en Markdown limpia, estructurada y versionada en Git.
+1. **Migrar y Unificar:** Trasladar gradualmente todos los recursos y documentos oficiales desarrollados originalmente en plataformas como Google Docs y sitios web a una estructura de notas en Markdown limpia, estructurada y versionada en Git.
 2. **Expandir y Profundizar:** Agregar nuevos estudios, investigaciones, diagramas y recursos doctrinales para enriquecer el cuerpo documental existente.
 3. **Fomentar la Interconexión:** Utilizar el potencial de los enlaces bidireccionales y grafos de conocimiento (*knowledge graphs*) para relacionar doctrinas, textos bíblicos, antecedentes históricos y temas teológicos de manera fluida y coherente.
 
@@ -69,7 +67,7 @@ Para mantener la cohesión en la documentación dentro del Vault, se consideran 
   - Las descripciones, metadatos e índices principales están en **español**.
   - Los recursos o textos específicos en inglés deben incluir un encabezado claro indicando su idioma original y, de ser posible, una síntesis en español.
 - **Enlaces Internos (Wikilinks):** Haz uso de enlaces entre notas (`[[Nombre de la Nota]]` o `[Texto](archivo.md)`) para conectar conceptos teológicos, pasajes y fuentes.
-- Mas detalles sobre las convenciones de trabajo pueden encontrarse en la Carpeta oficial de Google Drive y serán migradas a este repositorio paulatinamente.
+- Más detalles sobre las convenciones de trabajo pueden encontrarse en la Carpeta oficial de Google Drive y serán migradas a este repositorio paulatinamente.
 
 ---
 

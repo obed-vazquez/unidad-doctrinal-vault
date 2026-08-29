@@ -6,7 +6,9 @@
 
 ## 🔄 Flujo de Trabajo para Contribuir
 
-Si deseas migrar documentos desde el Google Drive oficial o aportar nuevas notas doctrinales, sigue los pasos descritos a continuación:
+Si deseas migrar documentos desde el Google Drive oficial o aportar nuevas notas doctrinales, sigue los pasos descritos a continuación.
+
+Si tu aporte toca `apologética/`, lee el aviso del paso 5: Drive es la fuente de verdad de esa carpeta y cada sincronización la reemplaza.
 
 ### 1. Crear un Fork del Repositorio
 1. En GitHub, navega al repositorio oficial de `unidad-doctrinal-vault`.
@@ -34,6 +36,7 @@ git checkout -b migrar-documento-nombre
 
 ### 5. Edición y Migración de Documentos
 - **Formato:** Asegurate de seguir las convenciones descritas en los documentos relativos a tu aporte.
+- **Carpeta `apologética/`:** Google Drive es la fuente de verdad. El Action **Sincronizar Google Docs** **reemplaza** el contenido de `apologética/` en cada ejecución. No uses esa carpeta para notas que existan solo en el vault y deban sobrevivir a una sincronización; colócalas en otra ruta del repositorio.
 
 ### 6. Guardar y Confirmar Cambios (*Commit*)
 Una vez que hayas redactado o revisado tus notas:
