@@ -25,13 +25,15 @@ concurrency:
 jobs:
   sincronizar:
     runs-on: ubuntu-latest
+    env:
+      HAS_GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS != '' }}
     steps:
       - name: Obtener código
         uses: actions/checkout@v4
 
       # JSON (simple): secreto GOOGLE_CREDENTIALS = clave JSON completa de la cuenta de servicio.
       - name: Autenticar en Google Cloud (JSON)
-        if: ${{ secrets.GOOGLE_CREDENTIALS != '' }}
+        if: env.HAS_GOOGLE_CREDENTIALS == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
@@ -39,7 +41,7 @@ jobs:
       # WIF (recomendado por Google; más clics en GCP):
       # secretos GOOGLE_WORKLOAD_IDENTITY_PROVIDER + GOOGLE_SERVICE_ACCOUNT
       - name: Autenticar en Google Cloud (WIF)
-        if: ${{ secrets.GOOGLE_CREDENTIALS == '' }}
+        if: env.HAS_GOOGLE_CREDENTIALS != 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
