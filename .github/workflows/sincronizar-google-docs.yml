@@ -1,0 +1,58 @@
+# Sincroniza Google Docs de una carpeta de Drive → Markdown en apologética/.
+# Acción: r7kamura/google-docs-to-github@v3
+# Guía: .github/google-docs-sync.md
+name: Sincronizar Google Docs
+
+on:
+  schedule:
+    # Diario 00:00 America/Mexico_City (UTC-6, sin horario de verano)
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      rama:
+        description: Rama destino del commit (vacío = GOOGLE_DOCS_SYNC_BRANCH o la rama desde la que se dispara el workflow)
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: sincronizar-google-docs
+  cancel-in-progress: false
+
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    env:
+      HAS_GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS != '' }}
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      # JSON (simple): secreto GOOGLE_CREDENTIALS = clave JSON completa de la cuenta de servicio.
+      - name: Autenticar en Google Cloud (JSON)
+        if: env.HAS_GOOGLE_CREDENTIALS == 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      # WIF (recomendado por Google; más clics en GCP):
+      # secretos GOOGLE_WORKLOAD_IDENTITY_PROVIDER + GOOGLE_SERVICE_ACCOUNT
+      - name: Autenticar en Google Cloud (WIF)
+        if: env.HAS_GOOGLE_CREDENTIALS != 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      # github_directory → destination_dir de peaceiris: solo toca apologética/
+      # en la rama destino (no publica un sitio gh-pages).
+      - name: Exportar Docs y confirmar en apologética/
+        uses: r7kamura/google-docs-to-github@v3
+        with:
+          google_drive_folder_id: ${{ vars.GOOGLE_DRIVE_FOLDER_ID || '0B-9PnaxsQwDUM2RQTm8zdVJVcXM' }}
+          github_directory: "apologética"
+          github_branch: ${{ inputs.rama || vars.GOOGLE_DOCS_SYNC_BRANCH || github.ref_name }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

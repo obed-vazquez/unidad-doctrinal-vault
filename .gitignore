@@ -37,3 +37,6 @@ Desktop.ini
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Credenciales temporales de google-github-actions/auth
+gha-creds-*.json
