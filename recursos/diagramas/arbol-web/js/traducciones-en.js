@@ -659,20 +659,26 @@
     "PR1": "Existence"
   },
   "traditions": {
+    "Arminianismo": "Arminianism",
     "Arminianismo / Metodismo": "Arminianism / Methodism",
-    "Arminianismo, Metodismo, Pentecostalismo": "Arminianism, Methodism, Pentecostalism",
+    "Bautistas": "Baptists",
+    "Calvinismo": "Calvinism",
     "Calvinismo / Tradición Reformada": "Calvinism /Reformed Tradition",
-    "Calvinismo, Bautistas": "Calvinism, Baptists",
     "Catolicismo Moderno": "Modern Catholicism",
     "Catolicismo Ortodoxo": "Orthodox Catholicism",
-    "Iglesia Episcopal, Metodista Unida (UMC), Presbiteriana USA (PCUSA), Luterana ELCA": "Episcopal Church, United Methodist (UMC), Presbyterian USA (PCUSA), Lutheran ELCA",
+    "Iglesia Episcopal": "Anglican Church",
     "Islam Ahmadí": "Ahmadiyya Islam",
     "Islam Suní/Chiita": "Sunni/Shia Islam",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",
     "Judaísmo rabínico/talmúdico": "Rabbinic/Talmudic Judaism",
+    "Luterana ELCA": "Lutheran ELCA",
+    "Metodismo": "Methodism",
+    "Metodista Unida (UMC)": "United Methodist (UMC)",
     "Nestorianismo": "Nestorianism",
     "No se identifica quién que sostenga esta postura": "It is not identified who holds this position",
     "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
+    "Pentecostalismo": "Pentecostalism",
+    "Presbiteriana USA (PCUSA)": "Presbyterian USA (PCUSA)",
     "SUD": "Sud"
   }
 };

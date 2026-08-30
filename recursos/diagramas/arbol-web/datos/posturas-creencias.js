@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-27T12:52:36Z",
+  "generated_at": "2026-08-30T02:29:32Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -25,8 +25,8 @@ window.__ARBOL_POSTURAS__ = {
         {
           "target": "La inexistencia de un Dios creador",
           "label": "La inexistencia de un Dios creador",
-          "href": "../../../apologética/God Related/La inexistencia de un Dios creador.md",
-          "vault_path": "apologética/God Related/La inexistencia de un Dios creador.md"
+          "href": "../../../apologética/Análisis de Doctrinas/God Related/La inexistencia de un Dios creador.md",
+          "vault_path": "apologética/Análisis de Doctrinas/God Related/La inexistencia de un Dios creador.md"
         }
       ],
       "answers": [
@@ -1286,8 +1286,8 @@ window.__ARBOL_POSTURAS__ = {
         {
           "target": "La Perdida de la Salvación",
           "label": "La Perdida de la Salvación",
-          "href": "../../../apologética/Otros Evangelios o Religiones/La Perdida de la Salvación.md",
-          "vault_path": "apologética/Otros Evangelios o Religiones/La Perdida de la Salvación.md"
+          "href": "../../../apologética/Análisis de Doctrinas/Otros Evangelios _ Religiones/La Perdida de la Salvación.md",
+          "vault_path": "apologética/Análisis de Doctrinas/Otros Evangelios _ Religiones/La Perdida de la Salvación.md"
         }
       ],
       "answers": [

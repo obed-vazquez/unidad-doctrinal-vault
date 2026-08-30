@@ -1,0 +1,102 @@
+## **Índice de Doctrinas tocantes a la(s) Persona(s) de Dios** \[[Folder](https://drive.google.com/drive/folders/0B-9PnaxsQwDUflFhbllybmlsNXFOdEVEcWZTdGdldmczdUItZThIaWlPRlItOEpuODJrNjQ), [Base](https://docs.google.com/document/d/1nLDkMUiteNTyl9QVqoX2vYXaRGbnJaI3HzX_87V4ZMY), [Pub](https://docs.google.com/document/d/1nLDkMUiteNTyl9QVqoX2vYXaRGbnJaI3HzX_87V4ZMY/pub)\]
+
+Hay mucha confusión tocante a los nombres de las doctrinas así que se intenta establecer un estándar para facilitar su análisis.
+
+1. # **Doctrinas**
+
+   1. Unitarismo / Modalismo / Sabelianismo / Unicitarismo / Solo Jesús.   
+   2. Triteísmo.   
+      1. Subordinacionismo.   
+         1. Arrianismo.    
+            1. [**JW**](http://www.jw.org/es/publicaciones/libros/ense%C3%B1a/la-verdad-acerca-del-padre-el-hijo-y-el-esp%C3%ADritu-santo/).   
+   3. [Cristo no Omnisciente](https://docs.google.com/document/d/1rgdxaEdorBvPvhO_ba5SnC4gxbzROEqSNc7JAa8R6Q0/pub).
+
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	
