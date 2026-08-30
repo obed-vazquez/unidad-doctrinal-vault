@@ -12,7 +12,6 @@ Este repositorio está diseñado para centralizar, organizar y expandir la docum
 - 🐙 **GitHub Pages (Proyecto Original):** [https://obed-vazquez.github.io/unidad-doctrinal/](https://obed-vazquez.github.io/unidad-doctrinal/)
 - 📄 **Documento Principal de Google Docs (Fuente Oficial):** [Documento en Google Docs](https://docs.google.com/document/d/11AA-q7WJT9KE5S4CMfm4IpKPPTbegSrFdW3qx-4Z5E4/edit?usp=drive_web&ouid=111370028134665902682) *(Acceso público para lectura y comentarios)*
 - 📁 **Carpeta de Recursos en Google Drive:** [Carpeta en Google Drive](https://drive.google.com/drive/folders/0B-9PnaxsQwDUOVE0ZDJQQk80SGs?resourcekey=0-nc0kG3WmircBx3CI-TW9Tg)
-- 🔄 **Sincronización Drive → vault:** GitHub Action hacia `apologética/`. Más info en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).
 
 ---
 
@@ -76,6 +75,30 @@ Para mantener la cohesión en la documentación dentro del Vault, se consideran 
 Para ver los detalles paso a paso sobre cómo hacer un *fork*, clonar la bóveda en Obsidian, realizar cambios y enviar un *Pull Request*, consulta nuestra guía dedicada:
 
 👉 **[[COMO_CONTRIBUIR]] / [Guía de Contribución](COMO_CONTRIBUIR.md)**
+
+---
+
+## 🔄 Sincronizar Drive (local)
+
+Para actualizar `apologética/` desde Google Drive (Drive es la fuente de verdad). El script **reemplaza** esa carpeta en cada ejecución; el aviso de sobrescritura está en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).
+
+Obtén el JSON de **cuenta de servicio** (no un cliente OAuth):
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → selecciona el proyecto (p. ej. `striped-option-507020-r4`).
+2. **APIs & Services** → **Library** → habilita **Google Drive API** (el script exporta con Drive `files.export`; no hace falta Docs API).
+3. **IAM & Admin** → **Service accounts** → **Create service account** (si aún no hay una) → **Done**. No hace falta asignar roles de GCP: basta compartir la carpeta de Drive.
+4. Abre el **email** de la cuenta → pestaña **Keys** → **Add key** → **Create new key** → **JSON**.
+5. **No uses** **Google Auth Platform** → **Clients** → **Create client** (`client_secret_…apps.googleusercontent.com.json`). El archivo correcto contiene `"type": "service_account"`.
+6. Comparte la carpeta de Drive (y archivos si hace falta) con el `client_email` del JSON, permiso **Viewer**.
+
+Si al crear la clave aparece *Service account key creation is disabled*, la org-policy lo bloquea: no uses **Create client** como alternativa.
+
+Desde la raíz del repositorio, apunta `GOOGLE_APPLICATION_CREDENTIALS` a ese JSON, instala dependencias y ejecuta el script. Configura la variable de entorno para que apunte a tu JSON En PowerShell: `$env:GOOGLE_APPLICATION_CREDENTIALS="C:\ruta\sa.json"`. En cmd: `set GOOGLE_APPLICATION_CREDENTIALS=C:\ruta\sa.json`.
+
+```
+pip install -r scripts/requirements-sync-drive.txt
+python scripts/sync_drive_markdown.py
+```
 
 ---
 
