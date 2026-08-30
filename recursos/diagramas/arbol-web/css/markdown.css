@@ -1,10 +1,11 @@
-/* Estilos del visor Markdown embebido (análisis y aclaraciones). */
+/* Estilos del visor Markdown embebido (análisis, aclaraciones y panel). */
 
 .md-tarjeta {
   border: 1px solid var(--borde);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.03);
   overflow: hidden;
+  box-shadow: var(--sombra-suave);
 }
 
 :root[data-tema="claro"] .md-tarjeta {
@@ -23,11 +24,20 @@
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: var(--md-fuente-cuerpo);
   font-weight: 650;
   font-size: 0.95rem;
-  background: rgba(88, 166, 255, 0.08);
+  background: linear-gradient(135deg, var(--acento-suave), var(--dorado-suave));
   border-bottom: 1px solid transparent;
+  transition: background var(--transicion);
+}
+
+.md-tarjeta > summary:hover {
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.22), rgba(242, 193, 78, 0.16));
+}
+
+:root[data-tema="claro"] .md-tarjeta > summary:hover {
+  background: linear-gradient(135deg, rgba(31, 111, 235, 0.14), rgba(185, 135, 0, 0.1));
 }
 
 .md-tarjeta[open] > summary {
@@ -36,22 +46,30 @@
 
 .md-tarjeta > summary::-webkit-details-marker { display: none; }
 
+.md-tarjeta-titulo {
+  color: var(--texto);
+  letter-spacing: -0.01em;
+}
+
 .md-tarjeta-hint {
   color: var(--texto-tenue);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+/* Contenedor de prosa renderizada */
 .md-cuerpo {
   max-height: min(52vh, 520px);
   overflow: auto;
-  padding: 14px 16px 18px;
+  padding: 16px 18px 20px;
   color: var(--texto-medio);
-  font-size: 0.95rem;
-  line-height: 1.55;
+  font-family: var(--md-fuente-cuerpo);
+  font-size: var(--md-tamano);
+  line-height: var(--md-interlineado);
   scroll-behavior: smooth;
+  text-wrap: pretty;
 }
 
 .md-cuerpo.md-cargando {
@@ -64,6 +82,7 @@
   font-style: italic;
 }
 
+/* Jerarquía de títulos: seis niveles claramente diferenciados */
 .md-cuerpo h1,
 .md-cuerpo h2,
 .md-cuerpo h3,
@@ -71,94 +90,282 @@
 .md-cuerpo h5,
 .md-cuerpo h6 {
   color: var(--texto);
-  line-height: 1.25;
-  margin: 1.1em 0 0.45em;
-  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.28;
+  font-family: var(--md-fuente-titulo);
+  scroll-margin-top: 12px;
 }
 
-.md-cuerpo h1 { font-size: 1.35rem; }
-.md-cuerpo h2 { font-size: 1.2rem; }
-.md-cuerpo h3 { font-size: 1.08rem; }
-.md-cuerpo h4,
-.md-cuerpo h5,
-.md-cuerpo h6 { font-size: 1rem; }
+.md-cuerpo h1 {
+  font-size: var(--md-h1);
+  font-weight: 700;
+  margin: 0 0 0.7em;
+  padding-bottom: 0.45em;
+  border-bottom: 2px solid var(--acento);
+  letter-spacing: -0.02em;
+}
+
+.md-cuerpo h2 {
+  font-size: var(--md-h2);
+  font-weight: 650;
+  margin: 1.65em 0 0.55em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--borde);
+  color: var(--resalte);
+}
+
+:root[data-tema="claro"] .md-cuerpo h2 {
+  color: var(--texto);
+}
+
+.md-cuerpo h3 {
+  font-size: var(--md-h3);
+  font-weight: 650;
+  margin: 1.45em 0 0.5em;
+  padding-left: 0.75em;
+  border-left: 3px solid var(--dorado);
+  color: var(--texto);
+}
+
+.md-cuerpo h4 {
+  font-size: var(--md-h4);
+  font-weight: 600;
+  margin: 1.2em 0 0.4em;
+  font-family: var(--md-fuente-cuerpo);
+  color: var(--acento);
+  letter-spacing: -0.005em;
+}
+
+.md-cuerpo h5 {
+  font-size: var(--md-h5);
+  font-weight: 650;
+  margin: 1.05em 0 0.35em;
+  font-family: var(--md-fuente-cuerpo);
+  color: var(--texto);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.md-cuerpo h6 {
+  font-size: var(--md-h6);
+  font-weight: 600;
+  margin: 0.95em 0 0.3em;
+  font-family: var(--md-fuente-cuerpo);
+  color: var(--texto-tenue);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
 .md-cuerpo > :first-child { margin-top: 0; }
 
+.md-cuerpo h1 + p,
+.md-cuerpo h2 + p,
+.md-cuerpo h3 + p {
+  margin-top: 0.15em;
+}
+
+/* Párrafos y listas */
 .md-cuerpo p,
 .md-cuerpo ul,
 .md-cuerpo ol,
 .md-cuerpo blockquote,
-.md-cuerpo pre {
-  margin: 0 0 0.85em;
+.md-cuerpo pre,
+.md-cuerpo table,
+.md-cuerpo figure {
+  margin: 0 0 0.9em;
 }
 
 .md-cuerpo ul,
 .md-cuerpo ol {
-  padding-left: 1.35em;
+  padding-left: 1.5em;
 }
 
-.md-cuerpo li + li { margin-top: 0.28em; }
+.md-cuerpo ul {
+  list-style: none;
+}
 
+.md-cuerpo ul > li {
+  position: relative;
+}
+
+.md-cuerpo ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.1em;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--acento);
+  opacity: 0.75;
+}
+
+.md-cuerpo ul ul > li::before {
+  width: 4px;
+  height: 4px;
+  background: var(--dorado);
+  opacity: 0.85;
+}
+
+.md-cuerpo ol {
+  list-style: decimal;
+}
+
+.md-cuerpo ol > li::marker {
+  color: var(--dorado);
+  font-weight: 650;
+}
+
+.md-cuerpo li + li { margin-top: 0.35em; }
+
+.md-cuerpo li > p {
+  margin-bottom: 0.45em;
+}
+
+.md-cuerpo li > p:last-child {
+  margin-bottom: 0;
+}
+
+/* Enlaces y énfasis */
 .md-cuerpo a {
   color: var(--acento);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 166, 255, 0.35);
+  text-underline-offset: 2px;
   word-break: break-word;
+  transition: color var(--transicion), text-decoration-color var(--transicion);
 }
 
-.md-cuerpo a:hover { text-decoration: underline; }
+:root[data-tema="claro"] .md-cuerpo a {
+  text-decoration-color: rgba(31, 111, 235, 0.3);
+}
 
-.md-cuerpo strong { color: var(--texto); }
+.md-cuerpo a:hover {
+  color: var(--resalte);
+  text-decoration-color: currentColor;
+}
 
+:root[data-tema="claro"] .md-cuerpo a:hover {
+  color: var(--acento);
+}
+
+.md-cuerpo strong {
+  color: var(--texto);
+  font-weight: 650;
+}
+
+.md-cuerpo em {
+  font-style: italic;
+  color: var(--texto);
+}
+
+/* Citas (versículos, citas teológicas) */
 .md-cuerpo blockquote {
-  border-left: 3px solid var(--acento);
-  padding: 0.2em 0 0.2em 0.9em;
-  color: var(--texto-tenue);
+  margin: 1em 0;
+  padding: 0.75em 1em 0.75em 1.1em;
+  border-left: 3px solid var(--dorado);
+  border-radius: 0 10px 10px 0;
+  background: var(--md-cita-fondo);
+  color: var(--texto);
+  font-family: var(--md-fuente-titulo);
+  font-style: italic;
+  font-size: 0.98em;
+  line-height: 1.55;
 }
 
+.md-cuerpo blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.md-cuerpo blockquote p {
+  margin-bottom: 0.5em;
+}
+
+/* Código */
 .md-cuerpo code {
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.88em;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 0.1em 0.35em;
+  font-family: var(--md-fuente-codigo);
+  font-size: 0.86em;
+  background: var(--md-codigo-fondo);
+  padding: 0.12em 0.38em;
   border-radius: 5px;
+  border: 1px solid var(--borde-suave);
 }
 
 .md-cuerpo pre {
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--md-pre-fondo);
   border: 1px solid var(--borde);
   border-radius: 10px;
   padding: 12px 14px;
   overflow: auto;
-}
-
-:root[data-tema="claro"] .md-cuerpo pre {
-  background: #f2f5f9;
+  font-size: 0.86em;
+  line-height: 1.5;
 }
 
 .md-cuerpo pre code {
   background: none;
+  border: 0;
   padding: 0;
 }
 
+/* Separadores */
 .md-cuerpo hr {
   border: 0;
-  border-top: 1px solid var(--borde);
-  margin: 1.2em 0;
+  height: 1px;
+  margin: 1.6em 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--acento) 18%,
+    var(--dorado) 82%,
+    transparent
+  );
+  opacity: 0.55;
 }
 
+/* Tablas */
 .md-cuerpo table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
   margin-bottom: 1em;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.md-cuerpo thead {
+  background: var(--acento-suave);
 }
 
 .md-cuerpo th,
 .md-cuerpo td {
   border: 1px solid var(--borde);
-  padding: 6px 8px;
+  padding: 7px 10px;
   text-align: left;
+  vertical-align: top;
+}
+
+.md-cuerpo th {
+  color: var(--texto);
+  font-weight: 650;
+  font-size: 0.88em;
+  letter-spacing: 0.02em;
+}
+
+.md-cuerpo tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+:root[data-tema="claro"] .md-cuerpo tbody tr:nth-child(even) {
+  background: rgba(22, 32, 44, 0.03);
+}
+
+/* Imágenes */
+.md-cuerpo img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--borde);
+  margin: 0.5em 0;
 }
 
 .md-fallback {
@@ -168,9 +375,8 @@
 }
 
 .md-tarjeta-pie {
-  padding: 0 14px 12px;
+  padding: 10px 14px 12px;
   border-top: 1px solid var(--borde-suave);
-  padding-top: 10px;
   margin: 0 2px;
 }
 
@@ -190,10 +396,21 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--texto-tenue);
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: var(--md-fuente-cuerpo);
 }
 
 .quiz-ficha-enlaces > h4 {
   margin: 0 0 8px;
   font-size: 1rem;
+}
+
+/* Notas embebidas en el panel lateral */
+.panel-notas-md {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.panel-notas-md .md-cuerpo {
+  max-height: min(48vh, 480px);
 }

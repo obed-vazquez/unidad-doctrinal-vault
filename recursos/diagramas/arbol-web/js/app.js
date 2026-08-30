@@ -598,16 +598,33 @@
     }
 
     var enlaces = (postura && postura.wikilinks) || [];
-    enlaces.forEach(function (enlace) {
-      var destino = urlMDRender(enlace);
-      if (destino) {
-        partes.push('<a class="enlace-nota" href="' + escapar(destino)
-          + '" target="_blank" rel="noopener noreferrer">'
-          + escapar(enlace.label) + ' →</a>');
-      } else {
-        partes.push('<p class="panel-nota">Enlace a nota: [[' + escapar(enlace.target) + ']]</p>');
-      }
-    });
+    if (enlaces.length) {
+      partes.push('<h3 class="panel-subtitulo">' + escapar(t('mdDocumentos')) + '</h3>');
+      partes.push('<div class="panel-notas-md">');
+      enlaces.forEach(function (enlace) {
+        if (Arbol.Markdown && Arbol.Markdown.tarjeta) {
+          var pie = '';
+          var destino = urlMDRender(enlace);
+          if (destino) {
+            pie = '<a class="quiz-enlace enlace-nota" href="' + escapar(destino)
+              + '" target="_blank" rel="noopener noreferrer">'
+              + escapar(t('quizAclaracionAbrir')) + ' →</a>';
+          }
+          partes.push(Arbol.Markdown.tarjeta(enlace, { pie: pie }));
+        } else {
+          var fallback = urlMDRender(enlace);
+          if (fallback) {
+            partes.push('<a class="enlace-nota" href="' + escapar(fallback)
+              + '" target="_blank" rel="noopener noreferrer">'
+              + escapar(enlace.label) + ' →</a>');
+          } else {
+            partes.push('<p class="panel-nota">Enlace a nota: [['
+              + escapar(enlace.target) + ']]</p>');
+          }
+        }
+      });
+      partes.push('</div>');
+    }
 
     partes.push('<dl class="ficha-datos">');
     partes.push('<dt>En el árbol</dt><dd>' + escapar(resumenSituacion(nodo, respuestas)) + '</dd>');
@@ -1151,6 +1168,9 @@
   function actualizarPanel() {
     var nodo = Estado.seleccionado ? Estado.grafo.nodos.get(Estado.seleccionado) : null;
     dom.fichaDetalle.innerHTML = fichaDeNodo(nodo);
+    if (Arbol.Markdown && Arbol.Markdown.pintarCola) {
+      Arbol.Markdown.pintarCola(dom.fichaDetalle);
+    }
     pintarListaCreencias();
     pintarComparacion();
   }
