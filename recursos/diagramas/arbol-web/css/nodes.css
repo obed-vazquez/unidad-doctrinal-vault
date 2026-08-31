@@ -63,7 +63,8 @@
 
 .nodo { cursor: pointer; }
 .nodo.atenuado { opacity: 0.26; transition: opacity 280ms ease; }
-.nodo.atenuado.resaltado { opacity: 1; }
+.nodo.atenuado.resaltado,
+.nodo.atenuado.resaltado-religion { opacity: 1; }
 .nodo.deshabilitado { opacity: 0.38; filter: grayscale(0.45); transition: opacity 280ms ease, filter 280ms ease; }
 .nodo.deshabilitado .nodo-caja { fill-opacity: 0.72; }
 /* El transform CSS va en .nodo-cuerpo, no en .nodo: un transform en el
@@ -189,13 +190,47 @@
 }
 .nodo.seleccionado .nodo-anillo { opacity: 0.42; }
 
-/* Camino iluminado del explorador de creencias (por debajo del Ctrl + clic). */
+/* Camino iluminado del explorador de creencias (posturas; dorado). */
 .nodo.camino .nodo-caja { stroke: var(--dorado); stroke-width: 2.2; }
 .nodo.camino .nodo-brillo { stroke: var(--dorado); opacity: 0.4; }
 .nodo.camino.tentativa .nodo-brillo { stroke-dasharray: 8 5; }
 
-/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y selección,
-   salvo cuando el explorador de creencias ya ilumina el nodo en dorado. */
+/* Resaltado de religiones en el panel (tono ámbar, distinto del dorado de posturas). */
+.nodo.resaltado-religion .nodo-brillo {
+  fill: var(--religion-resalte);
+  stroke: var(--religion-resalte-suave);
+  opacity: 0.5;
+  filter: drop-shadow(0 0 8px var(--religion-resalte-glow));
+}
+.nodo.resaltado-religion .nodo-caja {
+  stroke: var(--religion-resalte);
+  stroke-width: 2.2;
+}
+.nodo.camino.resaltado-religion .nodo-brillo {
+  fill: transparent;
+  stroke: var(--dorado);
+  opacity: 0.4;
+  filter: none;
+}
+.nodo.camino.resaltado-religion .nodo-caja {
+  stroke: var(--dorado);
+}
+
+/* Ctrl+clic (blanco) por encima del resaltado ámbar de religiones. */
+.nodo.resaltado-religion.resaltado .nodo-brillo,
+.nodo.camino.resaltado-religion.resaltado .nodo-brillo {
+  fill: var(--resalte);
+  stroke: var(--resalte-suave);
+  opacity: 0.55;
+  filter: drop-shadow(0 0 10px var(--resalte-glow));
+}
+.nodo.resaltado-religion.resaltado .nodo-caja,
+.nodo.camino.resaltado-religion.resaltado .nodo-caja {
+  stroke: var(--resalte);
+  stroke-width: 2.6;
+}
+
+/* Estado + resaltado permanente (Ctrl + clic). Manda sobre camino y religión. */
 .nodo-brillo { fill: var(--resalte); stroke: var(--resalte-suave); stroke-width: 3.4; opacity: 0; pointer-events: none; transition: opacity 200ms ease; filter: drop-shadow(0 0 10px var(--resalte-glow)); }
 .nodo.resaltado .nodo-brillo,
 .nodo.camino.resaltado .nodo-brillo,
@@ -215,22 +250,6 @@
 .nodo.seleccionado.resaltado .nodo-caja {
   stroke: var(--resalte);
   stroke-width: 2.6;
-}
-
-/* El camino dorado del panel de creencias no debe mezclarse con el resaltado
-   Ctrl+clic: se deja solo el amarillo. */
-.nodo.camino.resaltado .nodo-brillo,
-.nodo.camino.seleccionado.resaltado .nodo-brillo {
-  fill: transparent;
-  stroke: var(--dorado);
-  opacity: 0.4;
-  animation: none;
-  filter: none;
-}
-.nodo.camino.resaltado .nodo-caja,
-.nodo.camino.seleccionado.resaltado .nodo-caja {
-  stroke: var(--dorado);
-  stroke-width: 2.2;
 }
 
 /* ----------------------------------------------------------------- botones */

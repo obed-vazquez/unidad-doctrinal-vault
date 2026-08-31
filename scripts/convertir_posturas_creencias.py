@@ -149,15 +149,15 @@ def display_text(value: str) -> str:
 def split_colloquial_question(question: str) -> tuple[str, str | None]:
     """Separa el paréntesis coloquial final de la pregunta formal.
 
-    Solo se extrae un paréntesis final que inicia con ``¿``. Así se conservan
-    aclaraciones formales como ``(especialmente su resurrección)`` dentro de
-    la pregunta principal.
+    Tras el ``?`` que cierra la pregunta principal, un paréntesis final es la
+    versión coloquial (aunque no lleve signos de interrogación). Así se
+    conservan aclaraciones formales internas como ``(estado de “pecador”)``.
     """
 
-    match = re.search(r"\s+\((¿[^()]*)\)\s*$", question)
+    match = re.search(r"(\?)\s+\(([^()]+)\)\s*$", question)
     if not match:
         return question, None
-    return question[: match.start()].rstrip(), match.group(1).strip()
+    return question[: match.start(1) + 1].rstrip(), match.group(2).strip()
 
 
 def output_posture_label(label: str) -> str:

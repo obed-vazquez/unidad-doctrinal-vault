@@ -12,6 +12,25 @@
   var preguntaElegida = null;
   var modoSeleccion = false;
   var UMBRAL_SELECTOR = 4;
+  var UMBRAL_PROMPT_SIMPLIFICADA = 2;
+  var CLAVE_PROMPT_SIMPLIFICADO = 'arbol-cuestionario-prompt-simplificado';
+
+  function leerPromptSimplificadoRespondido() {
+    try {
+      return global.localStorage.getItem(CLAVE_PROMPT_SIMPLIFICADO) === '1';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function marcarPromptSimplificadoRespondido() {
+    promptSimplificadoRespondido = true;
+    try {
+      global.localStorage.setItem(CLAVE_PROMPT_SIMPLIFICADO, '1');
+    } catch (error) { /* nada */ }
+  }
+
+  var promptSimplificadoRespondido = leerPromptSimplificadoRespondido();
 
   function t(clave, vars) {
     return Arbol.I18n ? Arbol.I18n.t(clave, vars) : clave;
@@ -45,9 +64,10 @@
   function pieEnlaceExterno(enlace, etiqueta) {
     var destino = urlNota(enlace);
     if (!destino) return '';
-    return '<a class="quiz-enlace" href="' + escapar(destino)
+    return '<a class="enlace-md-externo" href="' + escapar(destino)
       + '" target="_blank" rel="noopener noreferrer">'
-      + escapar(etiqueta || t('quizAnalisisAbrir')) + ' →</a>';
+      + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+      + '<span>' + escapar(etiqueta || t('quizAnalisisAbrir')) + '</span></a>';
   }
 
   function tarjetaMarkdown(enlace, etiquetaPie) {
@@ -60,9 +80,10 @@
     var destino = urlNota(enlace);
     var titulo = enlace.label || enlace.target || '';
     if (destino) {
-      return '<a class="quiz-enlace" href="' + escapar(destino)
+      return '<a class="enlace-md-externo" href="' + escapar(destino)
         + '" target="_blank" rel="noopener noreferrer">'
-        + escapar(titulo) + ' →</a>';
+        + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+        + '<span>' + escapar(titulo) + '</span></a>';
     }
     return '<p class="quiz-ficha-meta">[[' + escapar(titulo) + ']]</p>';
   }
@@ -74,15 +95,23 @@
   }
 
   function preguntasPendientes(estado) {
+    if (Arbol.Creencias
+      && Arbol.Creencias.enModoDefinitoriasCuestionario(estado)) {
+      var pids = Arbol.Creencias.posturasConPreguntaEnCuestionario(estado) || [];
+      return Arbol.Creencias.preguntasDefinitorias(
+        estado.grafo, estado.datos, pids);
+    }
     var grafo = estado.grafo;
     var respuestas = estado.respuestasEfectivas();
-    var visibles = Arbol.nodosVisibles(grafo, respuestas, 'limpio', estado.expandidos);
+    var visibles = Arbol.nodosVisibles(grafo, respuestas, 'limpio', estado.expandidos,
+      null, estado.ramasSinRespuesta);
     var pendientes = [];
     var vistos = new Set();
     visibles.forEach(function (id) {
       var nodo = grafo.nodos.get(id);
       if (!nodo || !nodo.preguntaId || !nodo.pregunta) return;
       if (respuestas[nodo.preguntaId] != null) return;
+      if (estado.ramasSinRespuesta && estado.ramasSinRespuesta[nodo.preguntaId]) return;
       if (vistos.has(nodo.preguntaId)) return;
       vistos.add(nodo.preguntaId);
       pendientes.push(nodo);
@@ -101,8 +130,27 @@
     return null;
   }
 
-  function debeUsarSelector(pendientes) {
-    return !!(modoSeleccion && pendientes && pendientes.length > 1);
+  function debeUsarModoSimplificado(pendientes) {
+    return !!(modoSeleccion && pendientes && pendientes.length > 0);
+  }
+
+  function debeMostrarPromptSimplificada(estado, pendientes) {
+    if (promptSimplificadoRespondido) return false;
+    if (!pendientes || pendientes.length <= UMBRAL_PROMPT_SIMPLIFICADA) return false;
+    if (estado.panelAbierto) return false;
+    if (modoSeleccion) return false;
+    return true;
+  }
+
+  function registrarRespuestaPrompt(pendientes, aceptar) {
+    marcarPromptSimplificadoRespondido();
+    if (aceptar) {
+      modoSeleccion = true;
+      preguntaElegida = null;
+    } else {
+      modoSeleccion = false;
+      preguntaElegida = null;
+    }
   }
 
   function textoCortoPregunta(pregunta) {
@@ -196,8 +244,29 @@
     return lista;
   }
 
-  /* Una postura nombrada por cada hoja alcanzada (o su ancestro nombrado). */
+  /* Una postura nombrada por cada hoja alcanzada (o su ancestro nombrado).
+     Con el panel abierto en cuestionario solo cuentan las posturas marcadas,
+     no ancestros nombrados del camino virtual. */
   function posturasEspecificas(estado) {
+    if (estado.panelAbierto && estado.posturasSueltas.length) {
+      return estado.posturasSueltas.map(function (pid) {
+        var nodoId = estado.grafo.idDePostura(pid);
+        var nodo = estado.grafo.nodos.get(nodoId);
+        var postura = estado.datos.postures[pid];
+        if (!nodo || !postura || !posturaTieneNombre(postura)) return null;
+        return { nodo: nodo, postura: postura };
+      }).filter(Boolean);
+    }
+    if (estado.divulgacion === 'cuestionario' && estado.posturasExploradasCuestionario
+      && estado.posturasExploradasCuestionario.length) {
+      return estado.posturasExploradasCuestionario.map(function (pid) {
+        var nodoId = estado.grafo.idDePostura(pid);
+        var nodo = estado.grafo.nodos.get(nodoId);
+        var postura = estado.datos.postures[pid];
+        if (!nodo || !postura || !posturaTieneNombre(postura)) return null;
+        return { nodo: nodo, postura: postura };
+      }).filter(Boolean);
+    }
     var camino = estado.caminoElegido();
     var hojas = hojasDelCamino(estado);
     var lista = [];
@@ -345,6 +414,13 @@
           : '')
         + '</span></button>';
     });
+    if (!estado.panelAbierto) {
+      html += '<button type="button" class="quiz-opcion quiz-opcion-sin-respuesta" data-accion="sin-respuesta" data-pregunta="'
+        + escapar(pregunta.id) + '">'
+        + '<span class="quiz-opcion-etiqueta">' + escapar(t('quizSinRespuesta')) + '</span>'
+        + '<span class="quiz-opcion-glosa">' + escapar(t('quizSinRespuestaNota')) + '</span>'
+        + '</button>';
+    }
     html += '</div></section>';
     return html;
   }
@@ -372,7 +448,9 @@
 
   function pintarCabecera(estado, extras) {
     var respondidas = Object.keys(estado.respuestas).length;
-    var paso = historialPreguntas.length + 1;
+    var vistaPrevia = !!(Arbol.Creencias
+      && Arbol.Creencias.enModoDefinitoriasCuestionario(estado));
+    var paso = vistaPrevia ? respondidas + 1 : historialPreguntas.length + 1;
     var pendientes = (extras && extras.pendientes) || [];
     var html = '<header class="quiz-cabecera">'
       + '<div class="quiz-cabecera-textos">'
@@ -390,14 +468,12 @@
       + '<input type="checkbox" data-accion="revelar"'
       + (revelarAdelantos ? ' checked' : '') + '>'
       + '<span>' + escapar(t('quizRevelar')) + '</span>'
+      + '</label>'
+      + '<label class="quiz-revelar" title="' + escapar(t('quizModoSeleccionTitle')) + '">'
+      + '<input type="checkbox" data-accion="modo-seleccion"'
+      + (modoSeleccion ? ' checked' : '') + '>'
+      + '<span>' + escapar(t('quizModoSeleccion')) + '</span>'
       + '</label>';
-    if (pendientes.length > UMBRAL_SELECTOR) {
-      html += '<label class="quiz-revelar" title="' + escapar(t('quizModoSeleccionTitle')) + '">'
-        + '<input type="checkbox" data-accion="modo-seleccion"'
-        + (modoSeleccion ? ' checked' : '') + '>'
-        + '<span>' + escapar(t('quizModoSeleccion')) + '</span>'
-        + '</label>';
-    }
     if (extras && extras.cambiarRama) {
       html += '<button type="button" class="quiz-btn fantasma" data-accion="cambiar-rama">'
         + escapar(t('quizCambiarRama')) + '</button>';
@@ -481,6 +557,26 @@
     delete raiz.dataset.pregunta;
   }
 
+  function pintarPromptVistaSimplificada(estado, pendientes) {
+    mostrandoReporte = false;
+    var html = '<div class="' + clasesEscena() + ' quiz-escena--prompt">'
+      + pintarCabecera(estado, { pendientes: pendientes })
+      + '<section class="quiz-prompt-simplificada" role="dialog" aria-labelledby="quiz-prompt-titulo">'
+      + '<p class="quiz-paso">' + escapar(t('quizVariasRamas')) + '</p>'
+      + '<h1 class="quiz-coloquial" id="quiz-prompt-titulo">'
+      + escapar(t('quizPromptSimplificadaTitulo'))
+      + '</h1>'
+      + '<p class="quiz-formal">' + escapar(t('quizPromptSimplificadaNota')) + '</p>'
+      + '<div class="quiz-prompt-acciones">'
+      + '<button type="button" class="quiz-btn primario" data-accion="vista-simplificada-si">'
+      + escapar(t('quizPromptSimplificadaSi')) + '</button>'
+      + '<button type="button" class="quiz-btn fantasma" data-accion="vista-simplificada-no">'
+      + escapar(t('quizPromptSimplificadaNo')) + '</button>'
+      + '</div></section></div>';
+    raiz.innerHTML = html;
+    delete raiz.dataset.pregunta;
+  }
+
   function pintarPreguntasAbiertas(estado, pendientes) {
     mostrandoReporte = false;
     preguntaElegida = null;
@@ -506,7 +602,7 @@
     raiz.innerHTML = '<div class="' + clasesEscena() + '">'
       + pintarCabecera(estado, {
         pendientes: pendientes,
-        cambiarRama: pendientes && pendientes.length > 1
+        cambiarRama: false
       })
       + '<div class="quiz-bloques">'
       + pintarBloquePregunta(estado, nodo, 0, 1)
@@ -524,15 +620,13 @@
       pintarReporte(estado);
       return;
     }
-    if (pendientes.length <= UMBRAL_SELECTOR) modoSeleccion = false;
-    if (debeUsarSelector(pendientes)) {
-      var enfocada = nodoPendientePorId(pendientes, preguntaElegida);
-      if (enfocada) {
-        pintarPregunta(estado, enfocada, pendientes);
-        return;
-      }
+    if (debeMostrarPromptSimplificada(estado, pendientes)) {
+      pintarPromptVistaSimplificada(estado, pendientes);
+      return;
+    }
+    if (debeUsarModoSimplificado(pendientes)) {
       preguntaElegida = null;
-      pintarSelectorRamas(estado, pendientes);
+      pintarPregunta(estado, pendientes[0], pendientes);
       return;
     }
     pintarPreguntasAbiertas(estado, pendientes);
@@ -804,7 +898,9 @@
     if (accion === 'modo-seleccion') {
       modoSeleccion = !!evento.target.checked;
       preguntaElegida = null;
+      if (modoSeleccion) marcarPromptSimplificadoRespondido();
       if (deps && deps.estado) pintarEscena(deps.estado);
+      return;
     }
   }
 
@@ -816,6 +912,21 @@
       return;
     }
     var estado = deps.estado;
+    if (estado.panelAbierto) {
+      var opcionBloqueada = evento.target.closest
+        ? evento.target.closest('.quiz-opcion') : null;
+      if (opcionBloqueada) return;
+    }
+    var sinRespuesta = evento.target.closest
+      ? evento.target.closest('[data-accion="sin-respuesta"]') : null;
+    if (sinRespuesta) {
+      var qidSin = sinRespuesta.getAttribute('data-pregunta') || raiz.dataset.pregunta;
+      if (!qidSin) return;
+      historialPreguntas.push(qidSin);
+      preguntaElegida = null;
+      estado.marcarSinRespuesta(qidSin);
+      return;
+    }
     var elegir = evento.target.closest ? evento.target.closest('[data-elegir-pregunta]') : null;
     if (elegir) {
       preguntaElegida = elegir.getAttribute('data-elegir-pregunta');
@@ -841,10 +952,29 @@
       pintarEscena(estado);
       return;
     }
+    if (accion === 'vista-simplificada-si') {
+      var pendientesPrompt = preguntasPendientes(estado);
+      registrarRespuestaPrompt(pendientesPrompt, true);
+      pintarEscena(estado);
+      return;
+    }
+    if (accion === 'vista-simplificada-no') {
+      var pendientesRechazo = preguntasPendientes(estado);
+      registrarRespuestaPrompt(pendientesRechazo, false);
+      pintarEscena(estado);
+      return;
+    }
     if (accion === 'atras') {
       var anterior = historialPreguntas.pop();
       preguntaElegida = null;
-      if (anterior) estado.borrarRespuesta(anterior);
+      if (anterior) {
+        if (estado.ramasSinRespuesta && estado.ramasSinRespuesta[anterior]) {
+          delete estado.ramasSinRespuesta[anterior];
+          estado.emitir('respuesta');
+        } else {
+          estado.borrarRespuesta(anterior);
+        }
+      }
       return;
     }
     if (accion === 'arbol') {
@@ -869,7 +999,10 @@
       Object.keys(estado.respuestas).forEach(function (qid) {
         delete estado.respuestas[qid];
       });
+      estado.ramasSinRespuesta = {};
       estado.superpuestas = {};
+      estado.rutasExploradas = {};
+      estado.posturasExploradasCuestionario = [];
       estado.emitir('respuesta');
     }
   }
@@ -882,6 +1015,8 @@
     });
     historialPreguntas = orden.slice();
   }
+
+  var _marcaSeleccionPanel = '';
 
   var Cuestionario = {
     montar: function (opciones) {
@@ -901,9 +1036,18 @@
       if (!raiz) return;
       var activo = estado.divulgacion === 'cuestionario';
       document.body.classList.toggle('en-cuestionario', activo);
+      document.body.classList.toggle('quiz-panel-creencias', activo && estado.panelAbierto);
       raiz.hidden = !activo;
       raiz.setAttribute('aria-hidden', activo ? 'false' : 'true');
       if (!activo) return;
+      var marcaPanel = estado.panelAbierto
+        ? estado.posturasSueltas.slice().sort().join(',')
+        : (estado.posturasExploradasCuestionario || []).slice().sort().join('|');
+      if (marcaPanel !== _marcaSeleccionPanel) {
+        preguntaElegida = null;
+        modoSeleccion = false;
+        _marcaSeleccionPanel = marcaPanel;
+      }
       sembrarHistorial(estado);
       var pendientes = preguntasPendientes(estado);
       if (mostrandoReporte && !pendientes.length) {

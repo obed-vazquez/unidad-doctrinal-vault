@@ -39,6 +39,12 @@ body.en-cuestionario #panel {
   z-index: 20;
 }
 
+body.quiz-panel-creencias .quiz-opcion {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 .quiz-escena {
   width: 85%;
   max-width: none;
@@ -287,6 +293,37 @@ body.en-cuestionario #panel {
   max-width: 820px;
   margin: 0 auto;
   padding: 8px 4px 24px;
+}
+
+.quiz-prompt-simplificada {
+  max-width: 640px;
+  margin: 32px auto 24px;
+  padding: 28px 24px 32px;
+  border-radius: 20px;
+  border: 1px solid var(--borde);
+  background: linear-gradient(180deg, rgba(21, 31, 44, 0.92), rgba(17, 25, 37, 0.88));
+  text-align: center;
+}
+
+:root[data-tema="claro"] .quiz-prompt-simplificada {
+  background: linear-gradient(180deg, #ffffff, #f7f9fd);
+}
+
+.quiz-prompt-simplificada .quiz-formal {
+  margin: 12px auto 0;
+  max-width: 52ch;
+}
+
+.quiz-prompt-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.quiz-escena--prompt .quiz-cabecera {
+  margin-bottom: 0;
 }
 
 .quiz-ramas {
@@ -546,17 +583,40 @@ body.en-cuestionario #panel {
   line-height: 1.5;
 }
 
+.quiz-def-cuerpo .def-fuente {
+  margin: 10px 0 0;
+}
+
+.quiz-def-cuerpo .def-fuente .enlace-md-externo {
+  margin-top: 0;
+}
+
 .quiz-enlace {
   display: inline-block;
   margin-top: 10px;
   color: var(--acento);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 166, 255, 0.35);
+  text-underline-offset: 2px;
   font-size: 0.88rem;
   font-family: "Segoe UI", system-ui, sans-serif;
   font-weight: 600;
+  word-break: break-word;
+  transition: color var(--transicion), text-decoration-color var(--transicion);
 }
 
-.quiz-enlace:hover { text-decoration: underline; }
+:root[data-tema="claro"] .quiz-enlace {
+  text-decoration-color: rgba(31, 111, 235, 0.3);
+}
+
+.quiz-enlace:hover {
+  color: var(--resalte);
+  text-decoration-color: currentColor;
+}
+
+:root[data-tema="claro"] .quiz-enlace:hover {
+  color: var(--acento);
+}
 
 button.quiz-trad-enlace {
   appearance: none;
@@ -571,6 +631,15 @@ button.quiz-trad-enlace {
 }
 
 button.quiz-trad-enlace:hover { text-decoration: underline; }
+
+.quiz-opcion-sin-respuesta {
+  border-style: dashed;
+  opacity: 0.92;
+}
+
+.quiz-opcion-sin-respuesta .quiz-opcion-etiqueta {
+  color: var(--texto-medio);
+}
 
 .quiz-btn {
   appearance: none;

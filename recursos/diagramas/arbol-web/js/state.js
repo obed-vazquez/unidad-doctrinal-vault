@@ -181,6 +181,20 @@
     return pesos;
   }
 
+  /* Indagatorio, limpio y exploración libre comparten expansión; cuestionario,
+     árbol completo y edición guardan la suya por separado. */
+  function slotExpandidos(divulgacion) {
+    var modo = normalizarDivulgacion(divulgacion);
+    if (modo === 'cuestionario') return 'cuestionario';
+    if (modo === 'completo') return 'completo';
+    if (modo === 'edicion') return 'edicion';
+    return 'general';
+  }
+
+  function clonarSet(conjunto) {
+    return new Set(conjunto ? Array.from(conjunto) : []);
+  }
+
   /* true legacy = árbol completo; false/omitido = indagatorio (árbol). */
   function normalizarDivulgacion(valor) {
     if (valor === true) return 'completo';
@@ -195,8 +209,15 @@
      posturas destino (también la no elegida). En limpio y cuestionario,
      solo la elegida. En exploración, un conjunto de nodos expandidos abre
      todas sus salidas. */
-  function nodosVisibles(grafo, respuestas, divulgacion, expandidos) {
+  function nodosVisibles(grafo, respuestas, divulgacion, expandidos, apertura, ramasSinRespuesta) {
     var modo = normalizarDivulgacion(divulgacion);
+    ramasSinRespuesta = ramasSinRespuesta || {};
+    /* Lo que el panel de creencias deja abierto mientras está desplegado. Se
+       suma a las reglas del recorrido en vez de sustituirlas: cada modo sigue
+       decidiendo qué enseña de una pregunta abierta, así que el indagatorio
+       conserva sus hermanos y el limpio su rama única. */
+    var abiertasPanel = (apertura && apertura.respuestas) || {};
+    var nodosPanel = (apertura && apertura.nodos) || null;
     var visibles = new Set();
     if (modo === 'completo') {
       grafo.nodos.forEach(function (_, id) { visibles.add(id); });
@@ -211,16 +232,20 @@
       if (!nodo) continue;
       var abierto;
       if (modo === 'exploracion' || modo === 'edicion') {
-        abierto = !!(expandidos && expandidos.has(id));
+        abierto = !!(expandidos && expandidos.has(id))
+          || !!(nodosPanel && nodosPanel.has(id));
       } else {
         abierto = nodo.tipo === 'postura'
-          || (nodo.preguntaId && respuestas[nodo.preguntaId] != null);
+          || (nodo.preguntaId && (respuestas[nodo.preguntaId] != null
+            || abiertasPanel[nodo.preguntaId] != null));
       }
       if (!abierto) continue;
+      if (nodo.preguntaId && ramasSinRespuesta[nodo.preguntaId]) continue;
       nodo.salidas.forEach(function (arista) {
         if (arista.tipo === 'control') return;
         if ((modo === 'limpio' || modo === 'cuestionario') && arista.tipo === 'respuesta'
-          && respuestas[arista.preguntaId] !== arista.clave) return;
+          && respuestas[arista.preguntaId] !== arista.clave
+          && abiertasPanel[arista.preguntaId] !== arista.clave) return;
         pila.push(arista.hasta);
       });
     }
@@ -243,11 +268,45 @@
       });
       extra.forEach(function (cid) { visibles.add(cid); });
     }
+    /* En exploración libre, un nodo del panel puede quedar fuera del BFS si algún
+       ancestro no estaba marcado como expandido. Se aseguran el nodo y su cadena
+       de padres, y se repite el recorrido para abrir sus hijos. */
+    if ((modo === 'exploracion' || modo === 'edicion') && nodosPanel && nodosPanel.size) {
+      var semilla = [];
+      nodosPanel.forEach(function (nid) {
+        var actual = grafo.nodos.get(nid);
+        while (actual) {
+          if (!visibles.has(actual.id)) {
+            visibles.add(actual.id);
+            semilla.push(actual.id);
+          }
+          if (!actual.entradas || !actual.entradas.length) break;
+          actual = grafo.nodos.get(actual.entradas[0].desde);
+        }
+      });
+      var cola = semilla.slice();
+      while (cola.length) {
+        var sid = cola.pop();
+        var sn = grafo.nodos.get(sid);
+        if (!sn) continue;
+        var abiertoPanel = !!(expandidos && expandidos.has(sid))
+          || nodosPanel.has(sid);
+        if (!abiertoPanel) continue;
+        sn.salidas.forEach(function (arista) {
+          if (arista.tipo === 'control') return;
+          if (!visibles.has(arista.hasta)) {
+            visibles.add(arista.hasta);
+            cola.push(arista.hasta);
+          }
+        });
+      }
+    }
     return visibles;
   }
 
-  function aristasVisibles(grafo, visibles, respuestas, divulgacion) {
+  function aristasVisibles(grafo, visibles, respuestas, divulgacion, apertura) {
     var modo = normalizarDivulgacion(divulgacion);
+    var abiertasPanel = (apertura && apertura.respuestas) || {};
     var resultado = new Set();
     grafo.aristas.forEach(function (arista, id) {
       if (!visibles.has(arista.desde) || !visibles.has(arista.hasta)) return;
@@ -260,17 +319,19 @@
         resultado.add(id);
         return;
       }
-      if (respuestas[arista.preguntaId] == null) return;
+      if (respuestas[arista.preguntaId] == null
+        && abiertasPanel[arista.preguntaId] == null) return;
       if ((modo === 'limpio' || modo === 'cuestionario')
-        && respuestas[arista.preguntaId] !== arista.clave) return;
+        && respuestas[arista.preguntaId] !== arista.clave
+        && abiertasPanel[arista.preguntaId] !== arista.clave) return;
       resultado.add(id);
     });
     return resultado;
   }
 
   /* Nodos del recorrido que el usuario eligió (sin las ramas gemelas). */
-  function nodosEnCaminoElegido(grafo, respuestas) {
-    return nodosVisibles(grafo, respuestas, 'limpio');
+  function nodosEnCaminoElegido(grafo, respuestas, ramasSinRespuesta) {
+    return nodosVisibles(grafo, respuestas, 'limpio', null, null, ramasSinRespuesta);
   }
 
   /* Subárbol de cada respuesta no elegida: visible pero no interactivo. */
@@ -286,13 +347,22 @@
     });
   }
 
-  function nodosDeshabilitados(grafo, respuestas, visibles) {
+  /* Una pregunta que el panel deja abierta atenúa sus destinos no elegidos
+     igual que si el usuario la hubiera respondido: es lo que distingue al
+     indagatorio, y el panel no tiene por qué romperlo. Los nodos de la propia
+     ruta nunca se atenúan. */
+  function nodosDeshabilitados(grafo, respuestas, visibles, apertura) {
     var deshab = new Set();
     if (!grafo || !respuestas) return deshab;
+    var abiertasPanel = (apertura && apertura.respuestas) || {};
     var camino = nodosEnCaminoElegido(grafo, respuestas);
+    if (apertura && apertura.nodos) {
+      apertura.nodos.forEach(function (id) { camino.add(id); });
+    }
     grafo.nodos.forEach(function (nodo) {
       if (!nodo.preguntaId) return;
       var clave = respuestas[nodo.preguntaId];
+      if (clave == null) clave = abiertasPanel[nodo.preguntaId];
       if (clave == null) return;
       nodo.salidas.forEach(function (arista) {
         if (arista.tipo !== 'respuesta') return;
@@ -307,12 +377,13 @@
      alcanzable desde la raíz. Itera hasta el punto fijo porque cada respuesta
      que se cae puede dejar huérfanas a otras más profundas.
      Devuelve la lista de preguntas podadas. */
-  function podarInalcanzables(grafo, respuestas) {
+  function podarInalcanzables(grafo, respuestas, ramasSinRespuesta, respuestasVisibilidad) {
     var podadas = [];
     var seguir = true;
+    var paraVisibilidad = respuestasVisibilidad || respuestas;
     while (seguir) {
       seguir = false;
-      var visibles = nodosVisibles(grafo, respuestas, false);
+      var visibles = nodosVisibles(grafo, paraVisibilidad, false, null, null, ramasSinRespuesta);
       Object.keys(respuestas).forEach(function (preguntaId) {
         var anfitrion = grafo.anfitrionDePregunta(preguntaId);
         if (visibles.has(anfitrion)) return;
@@ -320,6 +391,14 @@
         podadas.push(preguntaId);
         seguir = true;
       });
+      if (ramasSinRespuesta) {
+        Object.keys(ramasSinRespuesta).forEach(function (preguntaId) {
+          var anfitrion = grafo.anfitrionDePregunta(preguntaId);
+          if (visibles.has(anfitrion)) return;
+          delete ramasSinRespuesta[preguntaId];
+          seguir = true;
+        });
+      }
     }
     return podadas;
   }
@@ -423,8 +502,17 @@
     grafo: null,
 
     respuestas: {},          // respuestas del usuario: { Q1: 'A' }
-    superpuestas: {},        // respuestas derivadas del explorador de creencias
+    ramasSinRespuesta: {},   // cuestionario: rama cerrada sin elegir respuesta { Q1: true }
+    superpuestas: {},        // vista previa del cuestionario (solo ese recorrido)
+    rutasExploradas: {},   // respuestas fijadas al pulsar «Explorar»
+    posturasExploradasCuestionario: [], // tras Explorar en cuestionario: solo su pregunta definitoria
+    /* Lo que el panel abre mientras está desplegado: { respuestas, nodos }.
+       Es de dibujado y efímero. No se guarda ni viaja en el enlace, así que
+       al cerrar el panel no hay expansión que devolver a su sitio. */
+    aperturaCreencias: null,
     resaltados: new Set(),   // Ctrl + clic
+    resaltadosCreencias: new Set(), // camino ámbar de religiones en el panel
+    resaltadosCoincidentesCreencias: new Set(), // tarjetas exactas: blanco en panel
     fijados: {},             // { idNodo: {x, y} }
     seleccionado: null,
 
@@ -434,6 +522,12 @@
     divulgacion: 'cuestionario', // cuestionario | indagatorio | limpio | exploracion | completo | edicion
     arbolCompleto: false,    // espejo de divulgacion === 'completo' (URL y tests)
     expandidos: new Set(),   // nodos abiertos en exploración libre
+    expandidosPorRecorrido: {
+      general: [],
+      cuestionario: [],
+      completo: [],
+      edicion: []
+    },
     editTamanos: {},         // { nodoId: { w, h } } exclusivo del modo edición
     editCampos: {},          // { 'p:P1': ['traditions'], 'q:Q1': ['colloquial_hint'] }
     modo: 'libre',           // 'libre' | 'explorador'  (explorador de creencias)
@@ -463,50 +557,65 @@
        la visibilidad no sufre, porque responder revela todas las posturas
        destino, también la que la tradición no toma. */
     respuestasEfectivas: function () {
-      if (this.modo !== 'explorador') return this.respuestas;
       var mezcla = {};
       var clave;
-      for (clave in this.superpuestas) mezcla[clave] = this.superpuestas[clave];
+      for (clave in this.rutasExploradas) mezcla[clave] = this.rutasExploradas[clave];
+      if (this.modo === 'explorador') {
+        for (clave in this.superpuestas) mezcla[clave] = this.superpuestas[clave];
+      }
       for (clave in this.respuestas) mezcla[clave] = this.respuestas[clave];
       return mezcla;
     },
 
     visibles: function () {
       return nodosVisibles(this.grafo, this.respuestasEfectivas(),
-        this.divulgacion, this.expandidos);
+        this.divulgacion, this.expandidos, this.aperturaCreencias, this.ramasSinRespuesta);
     },
 
     aristasDe: function (visibles) {
       return aristasVisibles(this.grafo, visibles, this.respuestasEfectivas(),
-        this.divulgacion);
+        this.divulgacion, this.aperturaCreencias);
     },
 
+    /* Sin la apertura del panel a propósito: el camino elegido es el del
+       usuario, y marcar creencias no lo reescribe. */
     caminoElegido: function () {
-      return nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas());
+      return nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas(), this.ramasSinRespuesta);
     },
 
     fijarDivulgacion: function (valor) {
       var anterior = this.divulgacion;
       var siguiente = normalizarDivulgacion(valor);
+      var slotAnterior = slotExpandidos(anterior);
+      var slotSiguiente = slotExpandidos(siguiente);
+      this.expandidosPorRecorrido[slotAnterior] = Array.from(this.expandidos);
+      var guardados = this.expandidosPorRecorrido[slotSiguiente];
+      this.expandidos = guardados && guardados.length
+        ? new Set(guardados) : new Set();
       var pideExpandir = siguiente === 'exploracion' || siguiente === 'edicion';
       var veniaExpandir = anterior === 'exploracion' || anterior === 'edicion';
-      if (pideExpandir && !veniaExpandir) {
+      if (pideExpandir && !veniaExpandir && !this.expandidos.size) {
         /* Desde el árbol completo no sembramos todos los nodos: eso dejaba
            el diagrama entero abierto y, al ocultar una rama, sus nietos
            seguían marcados como expandidos. Si ya había un conjunto de
            exploración, se conserva; si no, se parte del recorrido
            indagatorio. */
         if (anterior === 'completo') {
-          if (!this.expandidos.size) this.sembrarExpandidos('indagatorio');
+          this.sembrarExpandidos('indagatorio');
         } else if (anterior === 'cuestionario') {
           this.sembrarExpandidos('limpio');
         } else {
           this.sembrarExpandidos(anterior);
         }
+        this.expandidosPorRecorrido[slotSiguiente] = Array.from(this.expandidos);
       }
       this.divulgacion = siguiente;
       this.arbolCompleto = siguiente === 'completo';
       this.emitir('divulgacion');
+    },
+
+    sincronizarExpandidosGuardados: function () {
+      this.expandidosPorRecorrido[slotExpandidos(this.divulgacion)] = Array.from(this.expandidos);
     },
 
     /* Al entrar en exploración libre, los nodos que ya tenían hijos a la vista
@@ -547,22 +656,42 @@
       } else {
         this.expandidos.add(nodoId);
       }
+      this.sincronizarExpandidosGuardados();
       this.emitir('expandir');
+    },
+
+    marcarSinRespuesta: function (preguntaId) {
+      if (!preguntaId) return;
+      delete this.respuestas[preguntaId];
+      delete this.superpuestas[preguntaId];
+      this.ramasSinRespuesta[preguntaId] = true;
+      podarInalcanzables(this.grafo, this.respuestas, this.ramasSinRespuesta,
+        this.respuestasEfectivas());
+      this.limpiarHuérfanos();
+      this.emitir('respuesta');
     },
 
     responder: function (preguntaId, clave) {
       if (this.divulgacion === 'indagatorio' && this.grafo) {
         var anfitrion = this.grafo.anfitrionDePregunta(preguntaId);
-        var camino = nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas());
+        var camino = nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas(),
+          this.ramasSinRespuesta);
         if (anfitrion && !camino.has(anfitrion)) return;
       }
       var anterior = this.respuestas[preguntaId];
       if (anterior && anterior !== clave) {
         delete this.respuestas[preguntaId];
         delete this.superpuestas[preguntaId];
-        podarInalcanzables(this.grafo, this.respuestas);
+        podarInalcanzables(this.grafo, this.respuestas, this.ramasSinRespuesta,
+          this.respuestasEfectivas());
       }
       this.respuestas[preguntaId] = clave;
+      delete this.ramasSinRespuesta[preguntaId];
+      if (this.divulgacion === 'cuestionario' && this.posturasExploradasCuestionario.length
+        && Arbol.Creencias) {
+        this.posturasExploradasCuestionario = Arbol.Creencias.retirarPosturasContestadas(
+          this.grafo, this.datos, this.posturasExploradasCuestionario, preguntaId);
+      }
       this.limpiarHuérfanos();
       this.emitir('respuesta');
     },
@@ -574,7 +703,7 @@
       var clave;
       for (clave in this.respuestas) copia[clave] = this.respuestas[clave];
       delete copia[preguntaId];
-      var podadas = podarInalcanzables(this.grafo, copia);
+      var podadas = podarInalcanzables(this.grafo, copia, null);
       return { respuestas: podadas.length + 1, descendientes: podadas };
     },
 
@@ -592,13 +721,18 @@
       Array.from(this.resaltados).forEach(function (id) {
         if (!visibles.has(id)) self.resaltados.delete(id);
       });
+      Array.from(this.resaltadosCreencias).forEach(function (id) {
+        if (!visibles.has(id)) self.resaltadosCreencias.delete(id);
+      });
       if (this.seleccionado && !visibles.has(this.seleccionado)) this.seleccionado = null;
     },
 
     borrarRespuesta: function (preguntaId) {
       delete this.respuestas[preguntaId];
       delete this.superpuestas[preguntaId];
-      podarInalcanzables(this.grafo, this.respuestas);
+      delete this.ramasSinRespuesta[preguntaId];
+      podarInalcanzables(this.grafo, this.respuestas, this.ramasSinRespuesta,
+        this.respuestasEfectivas());
       this.limpiarHuérfanos();
       this.emitir('respuesta');
     },
@@ -610,6 +744,14 @@
 
     limpiarResaltados: function () {
       this.resaltados = new Set();
+      this.resaltadosCreencias = new Set();
+      this.resaltadosCoincidentesCreencias = new Set();
+      this.emitir('resaltado');
+    },
+
+    limpiarResaltadosCreencias: function () {
+      this.resaltadosCreencias = new Set();
+      this.resaltadosCoincidentesCreencias = new Set();
       this.emitir('resaltado');
     },
 
@@ -636,8 +778,14 @@
 
     reiniciar: function () {
       this.respuestas = {};
+      this.ramasSinRespuesta = {};
       this.superpuestas = {};
+      this.aperturaCreencias = null;
+      this.rutasExploradas = {};
+      this.posturasExploradasCuestionario = [];
       this.resaltados = new Set();
+      this.resaltadosCreencias = new Set();
+      this.resaltadosCoincidentesCreencias = new Set();
       this.fijados = {};
       this.seleccionado = null;
       this.tradiciones = [];
@@ -646,6 +794,12 @@
       this.divulgacion = 'cuestionario';
       this.arbolCompleto = false;
       this.expandidos = new Set();
+      this.expandidosPorRecorrido = {
+        general: [],
+        cuestionario: [],
+        completo: [],
+        edicion: []
+      };
       this.editTamanos = {};
       this.editCampos = {};
       this.panelAbierto = false;
@@ -658,6 +812,9 @@
       try {
         global.localStorage.setItem(CLAVE_ALMACEN, JSON.stringify({
           respuestas: this.respuestas,
+          ramasSinRespuesta: this.ramasSinRespuesta,
+          rutasExploradas: this.rutasExploradas,
+          posturasExploradasCuestionario: this.posturasExploradasCuestionario,
           resaltados: Array.from(this.resaltados),
           fijados: this.fijados,
           camara: this.camara,
@@ -665,6 +822,7 @@
           divulgacion: this.divulgacion,
           arbolCompleto: this.arbolCompleto,
           expandidos: Array.from(this.expandidos),
+          expandidosPorRecorrido: this.expandidosPorRecorrido,
           editTamanos: this.editTamanos,
           editCampos: this.editCampos,
           modo: this.modo,
@@ -695,7 +853,16 @@
       if (!guardado || typeof guardado !== 'object') return;
 
       if (guardado.respuestas) this.respuestas = guardado.respuestas;
+      if (guardado.ramasSinRespuesta) this.ramasSinRespuesta = guardado.ramasSinRespuesta;
+      if (guardado.rutasExploradas) this.rutasExploradas = guardado.rutasExploradas;
+      if (Array.isArray(guardado.posturasExploradasCuestionario)) {
+        this.posturasExploradasCuestionario = guardado.posturasExploradasCuestionario;
+      }
       if (Array.isArray(guardado.resaltados)) this.resaltados = new Set(guardado.resaltados);
+      if (!this.resaltadosCreencias) this.resaltadosCreencias = new Set();
+      if (!this.resaltadosCoincidentesCreencias) {
+        this.resaltadosCoincidentesCreencias = new Set();
+      }
       if (guardado.fijados) this.fijados = guardado.fijados;
       if (guardado.camara) { this.camara = guardado.camara; this.camaraRestaurada = true; }
       if (guardado.tema) this.tema = guardado.tema;
@@ -707,6 +874,14 @@
         this.divulgacion = guardado.arbolCompleto ? 'completo' : 'indagatorio';
       }
       if (Array.isArray(guardado.expandidos)) this.expandidos = new Set(guardado.expandidos);
+      if (guardado.expandidosPorRecorrido && typeof guardado.expandidosPorRecorrido === 'object') {
+        this.expandidosPorRecorrido = guardado.expandidosPorRecorrido;
+        var slot = slotExpandidos(this.divulgacion);
+        if (Array.isArray(this.expandidosPorRecorrido[slot])
+          && this.expandidosPorRecorrido[slot].length) {
+          this.expandidos = new Set(this.expandidosPorRecorrido[slot]);
+        }
+      }
       if (guardado.editTamanos && typeof guardado.editTamanos === 'object') {
         this.editTamanos = guardado.editTamanos;
       }
@@ -736,9 +911,27 @@
       Object.keys(this.respuestas).forEach(function (qid) {
         if (!self.datos.questions[qid]) delete self.respuestas[qid];
       });
+      Object.keys(this.rutasExploradas).forEach(function (qid) {
+        if (!self.datos.questions[qid]) delete self.rutasExploradas[qid];
+      });
+      Object.keys(this.superpuestas).forEach(function (qid) {
+        if (!self.datos.questions[qid]) delete self.superpuestas[qid];
+      });
+      if (!this.ramasSinRespuesta) this.ramasSinRespuesta = {};
+      Object.keys(this.ramasSinRespuesta).forEach(function (qid) {
+        if (!self.datos.questions[qid]) delete self.ramasSinRespuesta[qid];
+      });
       Array.from(this.resaltados).forEach(function (id) {
         if (!self.grafo.nodos.has(id)) self.resaltados.delete(id);
       });
+      Array.from(this.resaltadosCreencias).forEach(function (id) {
+        if (!self.grafo.nodos.has(id)) self.resaltadosCreencias.delete(id);
+      });
+      if (this.resaltadosCoincidentesCreencias) {
+        Array.from(this.resaltadosCoincidentesCreencias).forEach(function (id) {
+          if (!self.grafo.nodos.has(id)) self.resaltadosCoincidentesCreencias.delete(id);
+        });
+      }
       Object.keys(this.fijados).forEach(function (id) {
         if (!self.grafo.nodos.has(id)) delete self.fijados[id];
       });
@@ -748,6 +941,10 @@
       this.posturasSueltas = this.posturasSueltas.filter(function (pid) {
         return !!self.datos.postures[pid];
       });
+      if (Array.isArray(this.posturasExploradasCuestionario)) {
+        this.posturasExploradasCuestionario = this.posturasExploradasCuestionario.filter(
+          function (pid) { return !!self.datos.postures[pid]; });
+      }
       if (this.seleccionado && !this.grafo.nodos.has(this.seleccionado)) this.seleccionado = null;
     }
   };

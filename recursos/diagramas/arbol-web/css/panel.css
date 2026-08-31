@@ -129,9 +129,15 @@
 .ficha-titulo.sin-nombre { color: var(--texto-tenue); font-style: italic; font-weight: 500; }
 .ficha-formal { margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; font-style: italic; color: var(--texto-tenue); }
 .ficha-coloquial { margin: 10px 0 0; font-size: 15px; line-height: 1.45; font-style: normal; color: var(--texto); }
+.ficha-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 2px;
+}
 .ficha-definicion { margin: 12px 0 0; font-size: 13px; line-height: 1.55; color: var(--texto-medio); }
-.ficha-definicion .def-fuente { margin: 6px 0 0; font-size: 11.5px; }
-.ficha-definicion .def-fuente a { color: var(--acento); }
+.ficha-definicion .def-fuente { margin: 10px 0 0; }
+.ficha-definicion .def-fuente .enlace-md-externo { margin-top: 0; }
 
 .ficha-datos { margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; }
 .ficha-datos dt { color: var(--texto-tenue); font-size: 11.5px; }
@@ -149,6 +155,34 @@
 .ficha-opciones li.elegida { border-color: var(--acento); background: var(--acento-suave); color: var(--texto); }
 .ficha-opciones b { color: var(--texto); }
 .ficha-opciones .glosa { display: block; margin-top: 3px; font-size: 11.5px; color: var(--texto-tenue); }
+.ficha-opcion-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.enlace-explorar {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: transparent;
+  color: var(--acento);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.enlace-explorar:hover {
+  border-color: var(--acento);
+  background: var(--acento-suave);
+}
+.mini-boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 /* Nodos que abre la respuesta; resalta el de la rama más poblada. */
 .ficha-opciones .peso-rama { font-size: 11px; font-weight: 700; color: var(--texto-tenue); }
 .ficha-opciones .peso-rama.densa { color: var(--texto); }
@@ -170,13 +204,35 @@
 .etiqueta.tentativa { border-style: dashed; }
 .etiqueta.activa { background: var(--dorado-suave); border-color: var(--dorado); color: var(--dorado); }
 
+.panel-notas-md {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 .enlace-nota {
   display: inline-block;
   margin-top: 8px;
   color: var(--acento);
   font-size: 12px;
-  text-decoration: none;
-  border-bottom: 1px dashed currentColor;
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 166, 255, 0.35);
+  text-underline-offset: 2px;
+  word-break: break-word;
+  transition: color var(--transicion), text-decoration-color var(--transicion);
+}
+
+:root[data-tema="claro"] .enlace-nota {
+  text-decoration-color: rgba(31, 111, 235, 0.3);
+}
+
+.enlace-nota:hover {
+  color: var(--resalte);
+  text-decoration-color: currentColor;
+}
+
+:root[data-tema="claro"] .enlace-nota:hover {
+  color: var(--acento);
 }
 
 /* ------------------------------------------------------------- buscador */
@@ -232,6 +288,16 @@
   transition: border-color 150ms ease, background 150ms ease;
 }
 .tradicion:hover { border-color: var(--dorado); }
+/* Tradiciones en el cuestionario: se ven, se entiende que existen, pero no
+   responden. Ocultarlas dejaría el buscador señalando huecos. */
+.lista-tarjetas.inerte { opacity: 0.45; }
+.tradicion.inerte { cursor: not-allowed; }
+.tradicion.inerte:hover { border-color: var(--borde); }
+.panel-nota.aviso-inerte {
+  border-left: 2px solid var(--dorado);
+  padding-left: 8px;
+  margin-bottom: 10px;
+}
 .tradicion.activa { border-color: var(--dorado); background: var(--dorado-suave); }
 .tradicion input { margin: 2px 0 0; accent-color: var(--dorado); flex: none; }
 .tradicion-nombre {
@@ -269,6 +335,16 @@
   max-width: 100%;
 }
 .lista-tarjetas.compacto .tradicion-meta { display: none; }
+/* Salvo en las posturas sin nombre: quitarles la pregunta las deja a todas
+   llamándose igual y sin nada que las distinga. */
+.lista-tarjetas.compacto .tradicion.sin-nombre {
+  white-space: normal;
+  flex: 1 1 100%;
+}
+.lista-tarjetas.compacto .tradicion.sin-nombre .tradicion-meta {
+  display: block;
+  white-space: normal;
+}
 .lista-tarjetas.compacto .tradicion-nombre {
   font-size: 12px;
   white-space: nowrap;

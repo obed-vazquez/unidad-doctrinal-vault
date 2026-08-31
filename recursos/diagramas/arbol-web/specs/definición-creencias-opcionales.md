@@ -2,7 +2,7 @@
 
 Se había ya definido que la funcionalidad del panel de creencias con respecto a su afectación al árbol variaba dependiendo de la vista que estubiese activa. Pero parece una mejor opción hacer una reestructuración completa de esta funcionalidad.
 
-Debido a la propiedad de las tradiciones/religiones de poder coincidir con muchos nodos, ya no hace sentido que aparezcan en este tipo de funcionalidad. Las religiones seguirán apareciendo y funcionando como lo han hecho hasta ahora en el panel de creencias, al seleccionár la creencia se resaltaran en amarillo (el resaltado que ya se tiene en el sistema) todos los nodos donde aparece esa religion/tradicion y se abrirá el arbol hasta esos nodos, en caso de que esté activa la vista de Cuestionario lo mejor será que la funcionalidad esté deshabilitada para las religiones.
+Debido a la propiedad de las tradiciones/religiones de poder coincidir con muchos nodos, ya no hace sentido que aparezcan en este tipo de funcionalidad. Las religiones seguirán apareciendo y funcionando como lo han hecho hasta ahora en el panel de creencias, al seleccionár la creencia se resaltaran en amarillo (el resaltado que ya se tiene en el sistema) todos los nodos donde aparece esa religion/tradicion y se abrirá el arbol hasta esos nodos, en caso de que esté activa la vista de Cuestionario lo mejor será que la funcionalidad esté deshabilitada para las religiones (de otra manera al usuario le aparecerían preguntas contradictorias, que llevan a ramas opuestas y no tiene sentido).
 
 
 La funcionalidad clásica al cerrar el panel de Creencias también cambiará. Al cerrar el panel ya no se quedará deplegado forzadamente el/los nodo(s) que coincidan con las creencias (posturas + tradicioines/religiones) y en su luguar se añadira una funcionalidad:
@@ -11,6 +11,7 @@ De la misma manera se agregará un botón de "Explorar todas" en el panel de cre
 El modo de Cuestionario debe estár deshabilitada la opcion de responder preguntas cuando el panel de creencias esté abierto. Además, el boton de "Explorar todas" debe estár deshabilitado para esta vista, pues no hace sentido que se respondan preguntas de posturas contrapuestas. 
 
 Otra funcionalidad que se tiene que introducir es la de "buscar por pregunta". Tomando en cuenta la liga entre las preguntas, la respuesta y la postura. Con las religiones esto que se describe a continuación no es posible de implementar (se mantendrá la funcionalidad que se tiene actualmente) pero con las posturas se tiene una liga entre la pregunta que lleva a una postura. La funcionalidad se trata de utilizar esa liga con la que ya se cuenta entre la postura y la pregunta que le lleva a ella para agregar la búsqueda por pregunta de las posturas, no queremos agregar otro campo, sino utilizar el campo de búsqueda que ya se tiene para buscar por posturas TAMBIÉN por medio de su pregunta.
+ - Para el caso de las posturas que no tienen nombre, actualmente las estamos ocultando y seguirían ocultas en el panel, pero en esta búsqueda si aparecerían para buscar y seleccionar, solo que aparecerían "sin nombre" y solo a la hora de la busqueda y al deseleccionarse volverian a desaparecer/ocultarse.
 
 La respuesta de la pregunta que lleva a la postura también se debe incluír en el recuadro cuando el modo compacto está desactivado, actualmente solo tiene la pregunta.
 

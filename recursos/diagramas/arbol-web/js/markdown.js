@@ -41,13 +41,32 @@
     var limpio = prepararMarkdown(markdown);
     var api = global.marked;
     var parse = api && (api.parse || (typeof api === 'function' ? api : null));
+    var html = '';
     if (typeof parse === 'function') {
       try {
         if (api.setOptions) api.setOptions({ gfm: true, breaks: true });
-        return parse.call(api, limpio);
+        html = parse.call(api, limpio);
       } catch (error) { /* caemos al pre */ }
     }
-    return '<pre class="md-fallback">' + escapar(limpio) + '</pre>';
+    if (!html) html = '<pre class="md-fallback">' + escapar(limpio) + '</pre>';
+    return externalizarEnlacesHtml(html);
+  }
+
+  function externalizarEnlacesHtml(html) {
+    return String(html || '').replace(/<a\b([^>]*)>/gi, function (coincidencia, attrs) {
+      if (/\btarget\s*=/i.test(attrs)) return coincidencia;
+      if (!/\bhref\s*=/i.test(attrs)) return coincidencia;
+      var rel = /\brel\s*=/i.test(attrs) ? '' : ' rel="noopener noreferrer"';
+      return '<a' + attrs + ' target="_blank"' + rel + '>';
+    });
+  }
+
+  function externalizarEnlaces(elemento) {
+    if (!elemento || !elemento.querySelectorAll) return;
+    Array.prototype.forEach.call(elemento.querySelectorAll('a[href]'), function (enlace) {
+      enlace.setAttribute('target', '_blank');
+      enlace.setAttribute('rel', 'noopener noreferrer');
+    });
   }
 
   function escaparCss(valor) {
@@ -212,6 +231,7 @@
       elemento.classList.remove('md-cargando');
       if (doc.estado === 'ok') {
         elemento.innerHTML = doc.html;
+        externalizarEnlaces(elemento);
         if (opts.fragmento) {
           var ancla = String(opts.fragmento).replace(/^#/, '');
           var destino = elemento.querySelector('#' + escaparCss(ancla))
@@ -275,6 +295,8 @@
 
   Arbol.Markdown = {
     cargar: cargar,
+    externalizarEnlaces: externalizarEnlaces,
+    externalizarEnlacesHtml: externalizarEnlacesHtml,
     renderizar: renderizar,
     pintarEn: pintarEn,
     pintarCola: pintarCola,

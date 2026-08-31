@@ -39,10 +39,32 @@
      al menos una respuesta del árbol), tenga tradición o no. Las afiliadas
      también se listan: son elegibles una por una, sin arrastrar consigo el
      resto de las posturas de su tradición. */
+  /* Se busca por la pregunta que LLEVA a la postura y por la respuesta concreta
+     que la elige, no por la pregunta que la postura plantea. Antes era al
+     revés y por eso escribir una pregunta no encontraba ninguna de las
+     posturas que esa pregunta abre, sino la que la formula. */
+  function textoBusquedaPostura(datos, grafo, pid) {
+    var postura = datos.postures[pid];
+    if (!postura) return '';
+    var partes = [postura.label];
+    if (postura.is_unnamed) partes.push('sin nombre', 'unnamed');
+    var entrada = Arbol.Creencias
+      ? Arbol.Creencias.entradaDePostura(grafo, datos, pid) : null;
+    if (entrada && entrada.pregunta) {
+      partes.push(entrada.pregunta.formal_text, entrada.pregunta.colloquial_hint);
+      if (entrada.respuesta) {
+        partes.push(entrada.respuesta.label, entrada.respuesta.gloss);
+      }
+    }
+    return normalizar(partes.join(' '));
+  }
+
+  /* Las posturas sin nombre entran en la lista, aunque el panel no las enseñe
+     de entrada: son buscables y seleccionables. Quién las muestra y cuándo lo
+     decide `visiblesEnPanel`. */
   function listaPosturasSueltas(datos, grafo) {
     return Object.keys(datos.postures).filter(function (pid) {
       var postura = datos.postures[pid];
-      if (postura.is_unnamed) return false;
       if (postura.is_root) return false;
       var nodo = grafo.nodos.get(grafo.idDePostura(pid));
       return !!(nodo && nodo.entradas.length);
@@ -56,9 +78,24 @@
         posturaIds: [pid],
         tentativa: false,
         sugerida: !!postura.is_suggested,
-        busqueda: normalizar(postura.label)
+        sinNombre: !!postura.is_unnamed,
+        busqueda: textoBusquedaPostura(datos, grafo, pid)
       };
     }).sort(function (a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
+  }
+
+  /* Medio centenar de posturas sin nombre listadas de golpe no ayudan a nadie:
+     todas se llaman igual y solo se distinguen por la pregunta que lleva a
+     ellas. Aparecen cuando el usuario busca algo, y siguen a la vista mientras
+     estén marcadas para que se puedan desmarcar. */
+  function visiblesEnPanel(lista, consulta, seleccionadas) {
+    var hayConsulta = !!normalizar(consulta);
+    var marcadas = seleccionadas || [];
+    return lista.filter(function (elemento) {
+      if (!elemento.sinNombre) return true;
+      if (hayConsulta) return true;
+      return marcadas.indexOf(elemento.posturaIds[0]) !== -1;
+    });
   }
 
   function filtrar(lista, texto) {
@@ -461,6 +498,7 @@
     listaTradiciones: listaTradiciones,
     listaPosturasSueltas: listaPosturasSueltas,
     filtrar: filtrar,
+    visiblesEnPanel: visiblesEnPanel,
     caminosHacia: caminosCache,
     resolver: resolver,
     combinar: combinar,

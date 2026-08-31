@@ -43,6 +43,9 @@
   --acento-suave: rgba(88, 166, 255, 0.16);
   --dorado: #f2c14e;
   --dorado-suave: rgba(242, 193, 78, 0.18);
+  --religion-resalte: #e8c84a;
+  --religion-resalte-suave: rgba(232, 200, 74, 0.38);
+  --religion-resalte-glow: rgba(232, 200, 74, 0.22);
   --resalte: #f4f7fb;
   --resalte-suave: rgba(244, 247, 251, 0.42);
   --resalte-glow: rgba(255, 255, 255, 0.28);
@@ -113,6 +116,9 @@
   --acento-suave: rgba(31, 111, 235, 0.12);
   --dorado: #b98700;
   --dorado-suave: rgba(185, 135, 0, 0.16);
+  --religion-resalte: #c9a227;
+  --religion-resalte-suave: rgba(201, 162, 39, 0.34);
+  --religion-resalte-glow: rgba(201, 162, 39, 0.18);
   --resalte: #2a3545;
   --resalte-suave: rgba(42, 53, 69, 0.28);
   --resalte-glow: rgba(26, 35, 49, 0.22);

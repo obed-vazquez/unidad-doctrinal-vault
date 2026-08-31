@@ -124,6 +124,13 @@
     });
   }
 
+  function enlaceFuenteExterna(url, textoEscapado) {
+    return '<a class="enlace-md-externo" href="' + escapar(url)
+      + '" target="_blank" rel="noopener noreferrer">'
+      + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+      + '<span>' + textoEscapado + '</span></a>';
+  }
+
   var Definiciones = {
     iniciar: function () { leerDisco(); },
 
@@ -172,13 +179,11 @@
         if (!elemento.isConnected) return;
         if (elemento.getAttribute('data-def') !== String(marca || '')) return;
         if (def.estado === 'ok') {
+          var etiqueta = escapar(I ? I.t('fuenteWikipedia') : 'Wikipedia')
+            + (def.titulo ? ' — ' + escapar(def.titulo) : '');
           elemento.innerHTML = '<p>' + escapar(def.texto) + '</p>'
             + (def.url
-              ? '<p class="def-fuente"><a href="' + escapar(def.url)
-                + '" target="_blank" rel="noopener noreferrer">'
-                + escapar(I ? I.t('fuenteWikipedia') : 'Wikipedia')
-                + (def.titulo ? ' — ' + escapar(def.titulo) : '')
-                + '</a></p>'
+              ? '<p class="def-fuente">' + enlaceFuenteExterna(def.url, etiqueta) + '</p>'
               : '');
         } else if (def.estado === 'offline') {
           elemento.textContent = I ? I.t('definicionOffline') : '';

@@ -380,6 +380,56 @@
   margin: 0 2px;
 }
 
+.enlace-md-externo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 7px 11px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--texto-medio);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--transicion), color var(--transicion),
+    background var(--transicion), transform 160ms ease;
+}
+
+:root[data-tema="claro"] .enlace-md-externo {
+  background: rgba(22, 32, 44, 0.03);
+}
+
+.enlace-md-externo:hover {
+  color: var(--texto);
+  border-color: var(--acento);
+  background: var(--acento-suave);
+  transform: translateY(-1px);
+}
+
+.enlace-md-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--acento);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+:root[data-tema="claro"] .enlace-md-icono {
+  background: rgba(22, 32, 44, 0.06);
+}
+
+.panel-notas-md .enlace-md-externo,
+.md-tarjeta-pie .enlace-md-externo {
+  margin-top: 0;
+}
+
 .md-tarjeta-pie .quiz-enlace {
   font-size: 0.85rem;
 }

@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-30T02:29:32Z",
+  "generated_at": "2026-08-31T07:37:11Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -982,8 +982,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q33": {
       "id": "Q33",
-      "formal_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)",
-      "colloquial_hint": null,
+      "formal_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?",
+      "colloquial_hint": "Cuando un niño muere ¿va a un lugar diferente al cielo?",
       "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)",
       "source_line": 152,
       "origin_posture_ids": [

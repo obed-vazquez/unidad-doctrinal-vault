@@ -371,7 +371,8 @@
       }
     },
     "Q33": {
-      "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin? (When a child dies, does he go to a different place in heaven?)",
+      "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
+      "colloquial": "When a child dies, does he go to a different place in heaven?",
       "answers": {
         "A": {
           "label": "Yes"

@@ -15,6 +15,14 @@
 <body>
 <div id="aplicacion">
 
+  <button type="button" id="btn-volver" class="btn-volver" hidden
+          data-i18n-title="volverTitle" title="Volver a la vista anterior"
+          data-i18n-aria="volverAria" aria-label="Volver a la vista anterior">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path fill="currentColor" d="M14.7 5.3a1 1 0 0 1 0 1.4L10.41 11H20a1 1 0 1 1 0 2h-9.59l4.3 4.3a1 1 0 0 1-1.42 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.41 0z"/>
+    </svg>
+  </button>
+
   <svg id="lienzo" xmlns="http://www.w3.org/2000/svg" role="application"
        tabindex="-1"
        data-i18n-aria="ariaLienzo"
@@ -55,14 +63,29 @@
       <span class="barra-contador" id="contador">—</span>
     </div>
     <div class="barra-acciones">
-      <div class="menu-desplegable menu-izquierda" id="menu-recorrido">
-        <button type="button" class="boton" id="btn-recorrido" data-i18n-title="recorridoTitle"
+      <div class="recorrido-control menu-desplegable menu-izquierda" id="menu-recorrido">
+        <button type="button" class="boton recorrido-compacto" id="btn-recorrido" data-i18n-title="recorridoTitle"
                 title="Cómo se revelan las ramas (A para ciclar)"
                 aria-haspopup="menu" aria-expanded="false">
           <span class="icono">◇</span><span class="rotulo" data-i18n="recorrido">Recorrido</span>
           <span class="valor" id="valor-recorrido">Cuestionario</span>
         </button>
-        <div class="menu-lista" role="menu">
+        <div class="recorrido-segmentos" role="radiogroup"
+             data-i18n-aria="recorridoAria" aria-label="Recorrido">
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="cuestionario"
+                  data-i18n="cuestionario">Cuestionario</button>
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="indagatorio"
+                  data-i18n="indagatorio">Indagatorio</button>
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="limpio"
+                  data-i18n="limpio">Limpio</button>
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="exploracion"
+                  data-i18n="exploracion">Exploración libre</button>
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="completo"
+                  data-i18n="completo">Árbol completo</button>
+          <button type="button" class="recorrido-chip" role="radio" data-recorrido="edicion"
+                  data-i18n="edicion">Edición</button>
+        </div>
+        <div class="menu-lista recorrido-menu" role="menu">
           <button type="button" role="menuitemradio" data-recorrido="cuestionario" data-i18n="cuestionario">Cuestionario</button>
           <button type="button" role="menuitemradio" data-recorrido="indagatorio" data-i18n="indagatorio">Indagatorio</button>
           <button type="button" role="menuitemradio" data-recorrido="limpio" data-i18n="limpio">Limpio</button>
@@ -178,16 +201,18 @@
       <div class="buscador">
         <input type="search" id="buscador-tradiciones"
                data-i18n-placeholder="buscarPlaceholder"
-               placeholder="Buscar tradición, religión o sistema…"
+               placeholder="Buscar tradición, postura o pregunta…"
                autocomplete="off" spellcheck="false">
       </div>
       <div class="panel-controles">
         <button type="button" class="mini-boton alternable" id="btn-compacto" data-i18n="modoCompacto">Modo compacto</button>
         <button type="button" class="mini-boton" id="btn-limpiar-creencias" data-i18n="limpiarSeleccion">Limpiar selección</button>
+        <button type="button" class="mini-boton destacado" id="btn-explorar-todas" hidden data-i18n="explorarTodas">Explorar todas</button>
         <button type="button" class="mini-boton destacado" id="btn-ir-comparar" data-i18n="irComparar">Comparar →</button>
       </div>
       <div id="ficha-creencias"></div>
       <h3 class="panel-subtitulo" data-i18n="tradicionesTitulo">Tradiciones y sistemas de creencias</h3>
+      <p class="panel-nota aviso-inerte" id="nota-religiones-inertes" hidden></p>
       <div id="lista-tradiciones"></div>
       <h3 class="panel-subtitulo" data-i18n="posturasTitulo">Posturas</h3>
       <p class="panel-nota" id="nota-sin-afiliacion"></p>
@@ -264,6 +289,7 @@
 <script src="js/layout.js"></script>
 <script src="js/edit-mode.js"></script>
 <script src="js/search.js"></script>
+<script src="js/creencias.js"></script>
 <script src="js/renderer.js"></script>
 <script src="datos/notas.cache.js?v=2"></script>
 <script src="js/vendor/marked.min.js"></script>
