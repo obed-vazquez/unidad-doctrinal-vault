@@ -36,7 +36,7 @@ git checkout -b migrar-documento-nombre
 
 ### 5. Edición y Migración de Documentos
 - **Formato:** Asegurate de seguir las convenciones descritas en los documentos relativos a tu aporte.
-- **Carpeta `apologética/`:** Google Drive es la fuente de verdad. El script `scripts/sync_drive_markdown.py` **reemplaza** el contenido de `apologética/` en cada ejecución. No uses esa carpeta para notas que existan solo en el vault y deban sobrevivir a una sincronización; colócalas en otra ruta del repositorio.
+- **Carpeta `apologética/`:** Google Drive es la fuente de verdad. Cada vez que alguien ejecuta `run` (o `.\run.ps1`), esa carpeta es **reemplazada** por el contenido del folder de Google Drive. No la uses para notas que existan solo en el vault y deban sobrevivir a una sincronización; colócalas en otra ruta del repositorio.
 
 ### 6. Guardar y Confirmar Cambios (*Commit*)
 Una vez que hayas redactado o revisado tus notas:

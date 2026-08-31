@@ -33,6 +33,44 @@ html, body {
     var(--fondo);
 }
 
+.btn-volver {
+  position: absolute;
+  top: calc(14px + var(--barra-alto, 56px) + 12px);
+  left: 14px;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: var(--superficie);
+  backdrop-filter: blur(14px);
+  color: var(--texto);
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  transition: transform 160ms ease, border-color 160ms ease, color 160ms ease,
+    background 160ms ease;
+}
+
+.btn-volver:hover {
+  transform: translateY(-1px);
+  border-color: var(--acento);
+  color: var(--acento);
+  background: var(--acento-suave);
+}
+
+.btn-volver:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+body.en-cuestionario .btn-volver {
+  display: none !important;
+}
+
 #lienzo {
   position: absolute;
   inset: 0;
@@ -81,6 +119,73 @@ html, body {
 
 .barra-acciones { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .barra-separador { width: 1px; height: 20px; background: var(--borde); }
+
+.recorrido-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.recorrido-segmentos {
+  display: none;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie-alta);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.recorrido-chip {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--texto-medio);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 7px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.recorrido-chip:hover {
+  color: var(--texto);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-tema="claro"] .recorrido-chip:hover {
+  background: rgba(22, 32, 44, 0.04);
+}
+
+.recorrido-chip.activo {
+  color: var(--acento);
+  background: var(--acento-suave);
+  box-shadow: inset 0 0 0 1px rgba(88, 166, 255, 0.22);
+}
+
+.recorrido-chip:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+@media (min-width: 1180px) {
+  .recorrido-control .recorrido-compacto {
+    display: none;
+  }
+
+  .recorrido-segmentos {
+    display: inline-flex;
+  }
+
+  .recorrido-control .recorrido-menu {
+    display: none !important;
+  }
+}
 
 .boton {
   display: inline-flex;
@@ -326,6 +431,7 @@ html, body {
 #minimapa-nodos rect.camino { fill: var(--dorado); }
 #minimapa-nodos rect.seleccionado { fill: var(--acento); }
 #minimapa-nodos rect.resaltado { fill: var(--resalte); }
+#minimapa-nodos rect.resaltado-religion { fill: var(--religion-resalte); }
 #minimapa-vista {
   fill: var(--acento-suave);
   stroke: var(--acento);
@@ -405,8 +511,8 @@ html, body {
 #tooltip .tooltip-tradiciones { margin: 0 0 8px; font-size: 12px; color: var(--dorado); }
 #tooltip .tooltip-peso { margin: 6px 0 0; font-size: 11.5px; color: var(--texto-tenue); }
 #tooltip .tooltip-definicion { margin: 8px 0 0; font-size: 12px; color: var(--texto-medio); }
-#tooltip .def-fuente { margin: 6px 0 0; font-size: 11px; }
-#tooltip .def-fuente a { color: var(--acento); }
+#tooltip .def-fuente { margin: 10px 0 0; }
+#tooltip .def-fuente .enlace-md-externo { margin-top: 0; }
 #tooltip dl { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; }
 #tooltip dt { color: var(--texto-tenue); font-size: 11.5px; }
 #tooltip dd { margin: 0; color: var(--texto-medio); font-size: 11.5px; }

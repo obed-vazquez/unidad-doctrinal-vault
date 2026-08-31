@@ -461,9 +461,15 @@
       if (nodo.esControl) clases.push('control');
       if (nodo.postura && nodo.postura.is_root) clases.push('raiz');
       if (estado.seleccionado === nodo.id) clases.push('seleccionado');
-      if (estado.resaltados.has(nodo.id)) clases.push('resaltado');
+      var resaltadoCtrl = estado.resaltados.has(nodo.id);
+      var resaltadoCoincidente = !!(estado.resaltadosCoincidentesCreencias
+        && estado.resaltadosCoincidentesCreencias.has(nodo.id));
+      var resaltadoReligion = !!(estado.resaltadosCreencias
+        && estado.resaltadosCreencias.has(nodo.id));
+      if (resaltadoCtrl || resaltadoCoincidente) clases.push('resaltado');
+      if (resaltadoReligion) clases.push('resaltado-religion');
       if (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id)) clases.push('fijado');
-      var resaltado = estado.resaltados.has(nodo.id);
+      var resaltado = resaltadoCtrl || resaltadoCoincidente || resaltadoReligion;
       if (camino && !nodo.esControl) {
         if (camino.nodos.has(nodo.id)) {
           clases.push('camino');
@@ -524,7 +530,9 @@
         self.pintarParte(cuerpo, parte, ancho, padX, nodo, respuesta);
       });
 
-      if (contexto.divulgacion !== 'edicion' && nodo.preguntaId && respuesta != null) {
+      if (contexto.divulgacion !== 'edicion' && nodo.preguntaId
+        && contexto.respuestasUsuario
+        && contexto.respuestasUsuario[nodo.preguntaId] != null) {
         cuerpo.appendChild(this.construirPapelera(ancho, nodo));
       }
       if (!nodo.esControl) {
@@ -740,7 +748,31 @@
         self.posiciones.set(id, { x: caja.x, y: caja.y });
       });
       this.aplicarPosiciones();
+      this.elevarNodosResaltados();
       this.dibujarAristas();
+    },
+
+    /* Los nodos con Ctrl+clic se repintan al final del SVG para quedar por
+       encima del camino dorado o del resaltado de religiones. */
+    elevarNodosResaltados: function () {
+      var self = this;
+      var estado = this.contexto && this.contexto.estado;
+      if (!estado || !this.capaNodos) return;
+      Array.from(estado.resaltados).forEach(function (id) {
+        var grupo = self.nodosDOM.get(id);
+        if (grupo && grupo.parentNode === self.capaNodos) {
+          self.capaNodos.appendChild(grupo);
+        }
+      });
+      if (estado.resaltadosCoincidentesCreencias) {
+        Array.from(estado.resaltadosCoincidentesCreencias).forEach(function (id) {
+          if (estado.resaltados.has(id)) return;
+          var grupo = self.nodosDOM.get(id);
+          if (grupo && grupo.parentNode === self.capaNodos) {
+            self.capaNodos.appendChild(grupo);
+          }
+        });
+      }
     },
 
     reducirMovimiento: function () {
@@ -1022,7 +1054,15 @@
         if (nodo && (nodo.tipo === 'pregunta' || nodo.tipo === 'postura')) clase = 'eje';
         if (contexto.camino && contexto.camino.nodos.has(id)) clase = 'camino';
         if (contexto.estado.seleccionado === id) clase = 'seleccionado';
-        if (contexto.estado.resaltados.has(id)) clase = 'resaltado';
+        if (contexto.estado.resaltados.has(id)) {
+          clase = 'resaltado';
+        } else if (contexto.estado.resaltadosCoincidentesCreencias
+          && contexto.estado.resaltadosCoincidentesCreencias.has(id)) {
+          clase = 'resaltado';
+        } else if (contexto.estado.resaltadosCreencias
+          && contexto.estado.resaltadosCreencias.has(id)) {
+          clase = 'resaltado-religion';
+        }
         self.minimapaNodos.appendChild(crear('rect', {
           x: punto.x, y: punto.y, width: caja.ancho, height: caja.alto, rx: 8
         }, clase));

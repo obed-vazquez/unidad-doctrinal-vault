@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
 import logging
+import os
 import re
 import shutil
 import sys
@@ -36,8 +38,93 @@ DRIVE_FIELDS = (
 LIST_FIELDS = f"nextPageToken, files({DRIVE_FIELDS})"
 SCOPE = ["https://www.googleapis.com/auth/drive.readonly"]
 WINDOWS_BAD = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+LOCAL_SA_FILENAME = "sa.json"
 
 log = logging.getLogger("sync_drive")
+
+
+def windows_persistent_credentials() -> str | None:
+    """Lee GOOGLE_APPLICATION_CREDENTIALS del registro (User gana sobre Machine).
+
+    Un cmd/PowerShell abierto antes de setx no hereda la variable; ADC solo mira
+    el entorno del proceso. Recargarla aquí evita ese falso "no hay credenciales".
+    """
+    if sys.platform != "win32":
+        return None
+    import winreg
+
+    value: str | None = None
+    for hive, path in (
+        (
+            winreg.HKEY_LOCAL_MACHINE,
+            r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
+        ),
+        (winreg.HKEY_CURRENT_USER, "Environment"),
+    ):
+        try:
+            with winreg.OpenKey(hive, path) as key:
+                raw, _ = winreg.QueryValueEx(key, "GOOGLE_APPLICATION_CREDENTIALS")
+        except OSError:
+            continue
+        if raw:
+            value = str(raw)
+    return value
+
+
+def local_sa_path() -> Path:
+    return Path(__file__).resolve().parent / LOCAL_SA_FILENAME
+
+
+def describe_credentials_file(path: Path) -> str:
+    if not path.is_file():
+        return "no existe en disco"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return "existe pero no es JSON válido"
+    if not isinstance(data, dict):
+        return "existe pero no es un objeto JSON"
+    kind = data.get("type")
+    if kind == "service_account":
+        return "JSON de cuenta de servicio"
+    if "installed" in data or "web" in data or "client_secret" in data:
+        return "JSON de cliente OAuth (no sirve; hace falta cuenta de servicio)"
+    return f"JSON con type={kind!r} (se espera service_account)"
+
+
+def prepare_credentials_env() -> None:
+    current = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "").strip()
+    if current:
+        log.info(
+            "Credenciales: GOOGLE_APPLICATION_CREDENTIALS ya está en esta sesión (%s).",
+            describe_credentials_file(Path(current)),
+        )
+        return
+
+    persistent = windows_persistent_credentials()
+    if persistent:
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = persistent
+        log.info(
+            "Credenciales: recargadas del entorno persistente de Windows (%s).",
+            describe_credentials_file(Path(persistent)),
+        )
+        return
+
+    local = local_sa_path()
+    if local.is_file():
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(local)
+        log.info(
+            "Credenciales: usando %s (%s).",
+            local.name,
+            describe_credentials_file(local),
+        )
+        return
+
+    log.info(
+        "Credenciales: esta sesión no tiene GOOGLE_APPLICATION_CREDENTIALS; "
+        "tampoco hay entorno persistente de Windows ni scripts/%s.",
+        LOCAL_SA_FILENAME,
+    )
 
 
 def main() -> int:
@@ -45,6 +132,7 @@ def main() -> int:
     args = parse_args()
     out = Path(args.out)
 
+    prepare_credentials_env()
     creds, _ = google.auth.default(scopes=SCOPE)
     drive = build("drive", "v3", credentials=creds, cache_discovery=False)
 
@@ -369,11 +457,12 @@ def replace_out(staging: Path, out: Path) -> None:
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except google.auth.exceptions.DefaultCredentialsError:
-        log = logging.getLogger("sync_drive")
+    except google.auth.exceptions.DefaultCredentialsError as error:
         logging.basicConfig(level=logging.ERROR, format="%(levelname)s %(message)s")
+        logging.error("ADC rechazó las credenciales: %s", error)
         logging.error(
-            "No hay credenciales ADC. Define GOOGLE_APPLICATION_CREDENTIALS "
-            "con el JSON de la cuenta de servicio."
+            "Define GOOGLE_APPLICATION_CREDENTIALS con el JSON de la cuenta de "
+            "servicio, o copia ese archivo a scripts/%s (está en .gitignore).",
+            LOCAL_SA_FILENAME,
         )
         sys.exit(1)

@@ -78,9 +78,23 @@ Para ver los detalles paso a paso sobre cómo hacer un *fork*, clonar la bóveda
 
 ---
 
+## ▶️ Regenerar el vault (`run`)
+
+Desde la **raíz** del repositorio:
+
+- **cmd:** `run` (sin extensión; usa [run.cmd](run.cmd))
+- **PowerShell:** `.\run.ps1`
+- **Explorador:** doble clic en [run.cmd](run.cmd)
+
+Cualquiera de estos comandos ejecuta en orden la sincronización de Google Drive (`apologética/`; Drive es la
+fuente de verdad y **reemplaza** esa carpeta) y la regeneración del visor a partir
+de `recursos/posturas-creencias.md`.
+
+El visor se abre con doble clic en [recursos/diagramas/arbol-web/index.html](recursos/diagramas/arbol-web/index.html).
+
 ## 🔄 Sincronizar Drive (local)
 
-Para actualizar `apologética/` desde Google Drive (Drive es la fuente de verdad). El script **reemplaza** esa carpeta en cada ejecución; el aviso de sobrescritura está en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).
+`run` actualiza `apologética/` desde Google Drive (Drive es la fuente de verdad). Cada ejecución **reemplaza** esa carpeta; el aviso de sobrescritura está en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).
 
 Obtén el JSON de **cuenta de servicio** (no un cliente OAuth):
 
@@ -93,12 +107,9 @@ Obtén el JSON de **cuenta de servicio** (no un cliente OAuth):
 
 Si al crear la clave aparece *Service account key creation is disabled*, la org-policy lo bloquea: no uses **Create client** como alternativa.
 
-Desde la raíz del repositorio, apunta `GOOGLE_APPLICATION_CREDENTIALS` a ese JSON, instala dependencias y ejecuta el script. Configura la variable de entorno para que apunte a tu JSON En PowerShell: `$env:GOOGLE_APPLICATION_CREDENTIALS="C:\ruta\sa.json"`. En cmd: `set GOOGLE_APPLICATION_CREDENTIALS=C:\ruta\sa.json`.
+La primera vez, instala dependencias (`pip install -r scripts/requirements-sync-drive.txt`) y crea una variable de entorno `GOOGLE_APPLICATION_CREDENTIALS` apuntando al JSON. Si la variable ya está en el entorno persistente de Windows, `run` la recarga aunque la terminal se hubiera abierto antes.
 
-```
-pip install -r scripts/requirements-sync-drive.txt
-python scripts/sync_drive_markdown.py
-```
+Después, desde la raíz: **cmd** `run`, **PowerShell** `.\run.ps1`.
 
 ---
 

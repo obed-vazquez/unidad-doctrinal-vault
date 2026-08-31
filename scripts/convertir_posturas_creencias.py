@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Convierte el árbol Markdown de posturas doctrinales a Mermaid, DrawDecisionTree y Graphviz.
+"""Convierte el árbol Markdown de posturas doctrinales al visor web y, bajo petición, a diagramas.
+
+Por defecto solo regenera los datos del visor (JSON/JS). Mermaid, DrawDecisionTree,
+Graphviz y la imagen se generan con ``--diagramas`` o con cada flag por separado.
 
 El documento fuente describe dos clases de líneas en una lista Markdown:
 
@@ -21,6 +24,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -149,15 +153,15 @@ def display_text(value: str) -> str:
 def split_colloquial_question(question: str) -> tuple[str, str | None]:
     """Separa el paréntesis coloquial final de la pregunta formal.
 
-    Solo se extrae un paréntesis final que inicia con ``¿``. Así se conservan
-    aclaraciones formales como ``(especialmente su resurrección)`` dentro de
-    la pregunta principal.
+    Tras el ``?`` que cierra la pregunta principal, un paréntesis final es la
+    versión coloquial (aunque no lleve signos de interrogación). Así se
+    conservan aclaraciones formales internas como ``(estado de “pecador”)``.
     """
 
-    match = re.search(r"\s+\((¿[^()]*)\)\s*$", question)
+    match = re.search(r"(\?)\s+\(([^()]+)\)\s*$", question)
     if not match:
         return question, None
-    return question[: match.start()].rstrip(), match.group(1).strip()
+    return question[: match.start(1) + 1].rstrip(), match.group(2).strip()
 
 
 def output_posture_label(label: str) -> str:
@@ -1076,35 +1080,65 @@ def default_json_path(input_path: Path) -> Path:
     )
 
 
+def optional_output_path(value: str | None, default: Path, enabled: bool) -> Path | None:
+    """None = no generar; cadena vacía o enabled = ruta por defecto; otro = ruta explícita."""
+    if value is not None:
+        return Path(value) if value else default
+    if enabled:
+        return default
+    return None
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Convierte un árbol doctrinal Markdown a Mermaid (.mmd), "
-            "DrawDecisionTree (.dag), Graphviz (.gv) y una imagen."
+            "Convierte un árbol doctrinal Markdown a los datos del visor web. "
+            "Mermaid, DrawDecisionTree, Graphviz y la imagen solo se generan "
+            "con --diagramas o con cada flag por separado."
         )
     )
     parser.add_argument("input", type=Path, help="Archivo Markdown fuente.")
     parser.add_argument(
+        "--diagramas",
+        action="store_true",
+        help=(
+            "Genera Mermaid (.mmd), DrawDecisionTree (.dag), Graphviz (.gv) "
+            "e imagen (SVG por defecto)."
+        ),
+    )
+    parser.add_argument(
         "--mermaid",
-        type=Path,
-        help="Ruta del archivo Mermaid de salida (por defecto: recursos/diagramas, .mmd).",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="RUTA",
+        help="Genera Mermaid. Sin RUTA usa recursos/diagramas, .mmd.",
     )
     parser.add_argument(
         "--draw-decision-tree",
         "--dag",
         dest="dag",
-        type=Path,
-        help="Ruta del archivo DrawDecisionTree de salida (por defecto: recursos/diagramas, .dag).",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="RUTA",
+        help="Genera DrawDecisionTree. Sin RUTA usa recursos/diagramas, .dag.",
     )
     parser.add_argument(
         "--graphviz",
-        type=Path,
-        help="Ruta del archivo DOT de salida (por defecto: recursos/diagramas, .gv).",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="RUTA",
+        help="Genera el DOT de Graphviz. Sin RUTA usa recursos/diagramas, .gv.",
     )
     parser.add_argument(
         "--imagen",
-        type=Path,
-        help="Ruta de la imagen renderizada (por defecto: recursos/diagramas, .svg).",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="RUTA",
+        help="Genera la imagen. Sin RUTA usa recursos/diagramas, .svg.",
     )
     parser.add_argument(
         "--json",
@@ -1125,19 +1159,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--formato",
         choices=IMAGE_FORMATS,
-        help=f"Formato de la imagen (por defecto: {DEFAULT_IMAGE_FORMAT}).",
+        help=f"Formato de la imagen (por defecto: {DEFAULT_IMAGE_FORMAT}). Implica --imagen.",
     )
     parser.add_argument(
         "--dpi",
         type=int,
         default=DEFAULT_DPI,
         help=f"Resolución del PNG; se ignora en svg y pdf (por defecto: {DEFAULT_DPI}).",
-    )
-    parser.add_argument(
-        "--sin-imagen",
-        dest="sin_imagen",
-        action="store_true",
-        help="Escribe el .gv pero no invoca a Graphviz para renderizar la imagen.",
     )
     parser.add_argument(
         "--sin-traduccion",
@@ -1160,28 +1188,30 @@ def main() -> int:
         print(f"Error: no existe el archivo fuente: {input_path}", file=sys.stderr)
         return 2
 
-    image_format = resolve_image_format(args.imagen, args.formato)
-    if args.imagen is not None and args.formato:
-        suffix = args.imagen.suffix.lower().lstrip(".")
+    image_arg = Path(args.imagen) if args.imagen else None
+    image_format = resolve_image_format(image_arg, args.formato)
+    if image_arg is not None and args.formato:
+        suffix = image_arg.suffix.lower().lstrip(".")
         if suffix in IMAGE_FORMATS and suffix != args.formato:
             print(
                 f"Error: --formato {args.formato} no concuerda con la extensión "
-                f"de --imagen ({args.imagen.name}).",
+                f"de --imagen ({image_arg.name}).",
                 file=sys.stderr,
             )
             return 2
 
     default_mermaid, default_dag, default_graphviz = default_outputs(input_path)
-    mermaid_path = args.mermaid or default_mermaid
-    dag_path = args.dag or default_dag
-    graphviz_path = args.graphviz or default_graphviz
-    image_path = args.imagen or default_image_path(input_path, image_format)
+    mermaid_path = optional_output_path(args.mermaid, default_mermaid, args.diagramas)
+    dag_path = optional_output_path(args.dag, default_dag, args.diagramas)
+    graphviz_path = optional_output_path(args.graphviz, default_graphviz, args.diagramas)
+    want_image = args.diagramas or args.imagen is not None or args.formato is not None
+    image_path = optional_output_path(
+        args.imagen, default_image_path(input_path, image_format), want_image
+    )
 
     json_path = args.json_path or default_json_path(input_path)
 
-    outputs = [mermaid_path, dag_path, graphviz_path]
-    if not args.sin_imagen:
-        outputs.append(image_path)
+    outputs = [path for path in (mermaid_path, dag_path, graphviz_path, image_path) if path]
     if not args.sin_json:
         outputs.append(json_path)
     if len({path.resolve() for path in outputs}) != len(outputs):
@@ -1202,13 +1232,31 @@ def main() -> int:
 
     for path in outputs:
         path.parent.mkdir(parents=True, exist_ok=True)
-    mermaid_path.write_text(render_mermaid(model, input_path.name), encoding="utf-8", newline="\n")
-    dag_path.write_text(render_draw_decision_tree(model, input_path.name), encoding="utf-8", newline="\n")
-    graphviz_path.write_text(render_graphviz(model, input_path.name), encoding="utf-8", newline="\n")
 
-    print(f"Mermaid: {mermaid_path}")
-    print(f"DrawDecisionTree: {dag_path}")
-    print(f"Graphviz: {graphviz_path}")
+    if mermaid_path is not None:
+        mermaid_path.write_text(render_mermaid(model, input_path.name), encoding="utf-8", newline="\n")
+        print(f"Mermaid: {mermaid_path}")
+    else:
+        print("Mermaid: omitido.")
+
+    if dag_path is not None:
+        dag_path.write_text(
+            render_draw_decision_tree(model, input_path.name), encoding="utf-8", newline="\n"
+        )
+        print(f"DrawDecisionTree: {dag_path}")
+    else:
+        print("DrawDecisionTree: omitido.")
+
+    graphviz_text = (
+        render_graphviz(model, input_path.name)
+        if graphviz_path is not None or image_path is not None
+        else None
+    )
+    if graphviz_path is not None:
+        graphviz_path.write_text(graphviz_text or "", encoding="utf-8", newline="\n")
+        print(f"Graphviz: {graphviz_path}")
+    else:
+        print("Graphviz: omitido.")
 
     if args.sin_json:
         print("Visor web: omitido (--sin-json).")
@@ -1232,13 +1280,20 @@ def main() -> int:
             generar_traducciones_en(web_model, en_path)
             print(f"Visor web (inglés): {en_path}")
 
-    if args.sin_imagen:
-        print("Imagen: omitida (--sin-imagen).")
+    if image_path is None:
+        print("Imagen: omitida.")
     else:
+        source_gv = graphviz_path
+        delete_gv = False
+        if source_gv is None:
+            handle, tmp_name = tempfile.mkstemp(suffix=".gv", text=True)
+            os.close(handle)
+            source_gv = Path(tmp_name)
+            source_gv.write_text(graphviz_text or "", encoding="utf-8", newline="\n")
+            delete_gv = True
         try:
-            render_image(graphviz_path, image_path, image_format, args.dpi)
+            render_image(source_gv, image_path, image_format, args.dpi)
         except FileNotFoundError:
-            # Sin Graphviz el .gv sigue siendo válido: la conversión no falla.
             print(
                 "Advertencia: no se encontró 'dot' en PATH; no se generó la imagen. "
                 "Instálalo con: winget install Graphviz.Graphviz",
@@ -1252,6 +1307,9 @@ def main() -> int:
             return 1
         else:
             print(f"Imagen: {image_path}")
+        finally:
+            if delete_gv:
+                source_gv.unlink(missing_ok=True)
 
     print(
         f"Convertidos {len(model.questions)} preguntas y {len(model.postures)} posturas "

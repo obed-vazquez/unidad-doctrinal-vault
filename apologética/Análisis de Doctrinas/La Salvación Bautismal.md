@@ -102,9 +102,9 @@
      1) **R:** Lo mismo que [“la casa de Cornelio”](#r:-esto-sería-correcto-si-no-tubiese-grandes-inconsistencias-como-el-espiritu-santo-en-la-vida-de-los-varones-en-casa-de-cornelio-antes-de-su-bautismo.-el-interpretarlo-de-esa-manera-va-en-contra-de-la-regla-usada-para-su-exegesis.)  
         2) **R:** [Al dar una exégesis correcta, esta debería coincidir con el resto de la estructura](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit?tab=t.0#heading=h.73x0pt65vukl), por eso entendemos que no solo es necesario creer [Jn 3.16 (RV-SBT)](https://www.tbsonlinebible.com/#es_JHN_3_16,) “... todo aquel que en él cree ... tenga vida eterna.”  sino también es necesario arrepentirse  [Hch 3.19 (RVR60)](http://www.bible.com/bible/149/act.3.19)  “... arrepentíos y convertíos, para que sean borrados vuestros pecados;...”; estos versículos no se contradicen sino que se agregan de forma sistemática para formar una idea, es necesario creer, y *es necesario arrepentirse para ser convertidos y que sean borrados los pecados*. De la misma manera, es necesario arrepentirse y bautizarse para el perdón de pecados, concluyendo entonces que **es necesario creer, arrepentirse y bautizarse para el perdón de pecados** (además de otros elementos mencionados en otros versiculos).
 
-           1) # **R**: Esto sería correcto si no tubiese grandes inconsistencias como [el Espiritu Santo en la vida de los varones en casa de Cornelio antes de su bautismo](#bookmark=id.7vcxx4mplaq7). El interpretarlo de esa manera va en contra de la regla usada para su exegesis.
+           1) # **R**: Esto sería correcto si no tubiese grandes inconsistencias como [el Espiritu Santo en la vida de los varones en casa de Cornelio antes de su bautismo](#bookmark=id.fzbdlrs7mmb1). El interpretarlo de esa manera va en contra de la regla usada para su exegesis.
 
-           2) **R:** [Explicación del mismo Pedro](#bookmark=id.6qyxls3elato)   
+           2) **R:** [Explicación del mismo Pedro](#bookmark=id.7fqhsrhnc1yn)   
         2) [Mar 16:16](http://bible.com/149/mr.16.16)  **“El que creyere y fuere bautizado, será salvo; mas el que no creyere, será condenado.“**  
            1) **R**: La misma [argumentación de](#heading=h.ou3kucvpn1m5) [Hch 2.38](http://bible.com/149/act.2.38), pero esta vez con la palabra “creer”.  
            2) **R**: La palabra clave en el versículo es “creer”.  
@@ -126,7 +126,7 @@
 
         6) [1 Pedro 3.20-21](http://bible.com/149/1pe.3.20-21) **“...fueron salvadas por agua. 21 El bautismo que corresponde a esto ahora nos salva…”**
 
-           1) # **R:** Para la respuesta a este versículo, explicación viene más [adelante](#bookmark=id.6qyxls3elato)
+           1) # **R:** Para la respuesta a este versículo, explicación viene más [adelante](#bookmark=id.7fqhsrhnc1yn)
 
         7) [Tito 3.5 (RV-SBT)](https://www.tbsonlinebible.com/#es_TIT_3_5,) “nos salvó, ... por el lavamiento de la regeneración ... ”;  
         8) [2 Reyes 5.14](http://bible.com/149/2ki.5.14) “... descendió, y se zambulló siete veces ... y quedó limpio ...”; la lepra es una figura del pecado.  

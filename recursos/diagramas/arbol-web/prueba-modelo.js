@@ -434,8 +434,13 @@ comprobar('el JSON exportado es válido',
 console.log('\n== Lista de posturas del panel ==');
 const sueltas = Arbol.Busqueda.listaPosturasSueltas(datos, grafo);
 console.log('  ' + sueltas.length + ' posturas nombradas con respuestas asignadas');
-comprobar('las posturas sin nombre quedan fuera de la lista',
-  sueltas.every((p) => p.nombre !== '?'));
+// Ya no quedan fuera de la lista: son buscables y seleccionables. Lo que las
+// mantiene ocultas es `visiblesEnPanel`, que solo las deja pasar cuando el
+// usuario busca algo o las tiene marcadas.
+comprobar('las posturas sin nombre entran en la lista para poder buscarlas',
+  sueltas.some((p) => p.sinNombre));
+comprobar('pero el panel no las enseña mientras no se busque nada',
+  Arbol.Busqueda.visiblesEnPanel(sueltas, '', []).every((p) => !p.sinNombre));
 comprobar('las posturas afiliadas también se pueden elegir una por una',
   sueltas.some((p) => (datos.postures[p.posturaIds[0]].traditions || []).length > 0),
   'ninguna postura con tradición llegó a la lista');

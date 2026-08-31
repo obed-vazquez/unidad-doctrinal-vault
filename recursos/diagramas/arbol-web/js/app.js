@@ -10,6 +10,7 @@
   var Vista = Arbol.Vista;
   var Layout = Arbol.Layout;
   var Busqueda = Arbol.Busqueda;
+  var Creencias = Arbol.Creencias;
   var Router = Arbol.Router;
   var Edits = Arbol.Edits;
   var I18n = Arbol.I18n;
@@ -27,6 +28,7 @@
   var plegados = {};
   var listaTradiciones = [];
   var listaPosturasSueltas = [];
+  var historialRecorridos = [];
 
   /* ------------------------------------------------------------- carga --- */
 
@@ -218,19 +220,81 @@
 
   /* --------------------------------------------------------- explorador -- */
 
-  function sujetosSeleccionados() {
-    var sujetos = [];
-    Estado.tradiciones.forEach(function (nombre) {
-      var encontrada = listaTradiciones.filter(function (t) { return t.nombre === nombre; })[0];
-      if (encontrada) sujetos.push(encontrada);
-    });
-    Estado.posturasSueltas.forEach(function (pid) {
-      var encontrada = listaPosturasSueltas.filter(function (p) {
+  function sujetosPosturasSeleccionados() {
+    return Estado.posturasSueltas.map(function (pid) {
+      return listaPosturasSueltas.filter(function (p) {
         return p.posturaIds[0] === pid;
       })[0];
-      if (encontrada) sujetos.push(encontrada);
-    });
-    return sujetos;
+    }).filter(Boolean);
+  }
+
+  function sujetosTradicionesSeleccionados() {
+    return Estado.tradiciones.map(function (nombre) {
+      return listaTradiciones.filter(function (t) { return t.nombre === nombre; })[0];
+    }).filter(Boolean);
+  }
+
+  function sujetosSeleccionados() {
+    return sujetosTradicionesSeleccionados().concat(sujetosPosturasSeleccionados());
+  }
+
+  /* Las religiones no operan en el cuestionario. Si alguna quedara marcada por
+     un enlace o por la sesión guardada, aquí deja de contar. */
+  function tradicionesActivas() {
+    return Creencias.religionesDisponibles(Estado.divulgacion)
+      ? sujetosTradicionesSeleccionados() : [];
+  }
+
+  function creenciasAfectanArbol() {
+    return Creencias.afectaArbol(Estado.panelAbierto,
+      tradicionesActivas(), Estado.posturasSueltas);
+  }
+
+  function calcularResaltadoTradiciones() {
+    Estado.resaltadosCreencias = Estado.panelAbierto
+      ? Creencias.resaltadoDeTradiciones(Estado.grafo, Estado.datos,
+        tradicionesActivas(), Estado.divulgacion)
+      : new Set();
+    return Estado.resaltadosCreencias;
+  }
+
+  function calcularResaltadoCoincidentes() {
+    if (!creenciasAfectanArbol()) {
+      Estado.resaltadosCoincidentesCreencias = new Set();
+      return Estado.resaltadosCoincidentesCreencias;
+    }
+    Estado.resaltadosCoincidentesCreencias = Creencias.nodosCoincidentes(
+      Estado.grafo, tradicionesActivas().concat(sujetosPosturasSeleccionados()));
+    return Estado.resaltadosCoincidentesCreencias;
+  }
+
+  /* Lo que el panel deja abierto mientras está desplegado, religiones y
+     posturas juntas. Se recalcula en cada repintado y no se guarda en ninguna
+     parte: por eso cerrar el panel no necesita devolver nada a su sitio, que
+     era de donde salía que la expansión se restaurara sobre el recorrido
+     equivocado al cambiar de vista con el panel abierto. */
+  function calcularAperturaCreencias() {
+    if (!creenciasAfectanArbol()) {
+      Estado.aperturaCreencias = null;
+      return null;
+    }
+    Estado.aperturaCreencias = Creencias.apertura(Estado.grafo, Estado.datos,
+      tradicionesActivas().concat(sujetosPosturasSeleccionados()));
+    return Estado.aperturaCreencias;
+  }
+
+  function limpiarEfectosCreencias() {
+    Estado.resaltadosCreencias = new Set();
+    Estado.resaltadosCoincidentesCreencias = new Set();
+    Estado.superpuestas = {};
+    Estado.aperturaCreencias = null;
+    if (Estado.modo === 'explorador') Estado.modo = 'libre';
+  }
+
+  function limpiarSeleccionCreencias() {
+    Estado.tradiciones = [];
+    Estado.posturasSueltas = [];
+    limpiarEfectosCreencias();
   }
 
   function sujetoUsuario() {
@@ -245,16 +309,21 @@
   }
 
   function calcularExploracion() {
-    var sujetos = sujetosSeleccionados();
-    if (Estado.modo !== 'explorador' || !sujetos.length) {
+    var sujetos = sujetosPosturasSeleccionados();
+    if (!creenciasAfectanArbol() || !sujetos.length) {
       Estado.superpuestas = {};
+      if (!creenciasAfectanArbol() && Estado.modo === 'explorador') Estado.modo = 'libre';
       return null;
     }
+    Estado.modo = 'explorador';
     var resoluciones = sujetos.map(function (sujeto) {
       return Busqueda.resolver(Estado.grafo, Estado.datos, sujeto);
     });
     var combinado = Busqueda.combinar(resoluciones);
-    Estado.superpuestas = combinado.respuestas;
+    /* El cuestionario no tiene lienzo: la vista previa es solo la pregunta
+       definitoria de cada postura (véase Creencias.preguntasDefinitorias), no
+       el camino completo superpuesto. */
+    Estado.superpuestas = {};
 
     var destinosTentativos = new Set();
     combinado.aristasTentativas.forEach(function (aristaId) {
@@ -278,8 +347,15 @@
   var caminoActual = null;
 
   function encuadrarCaminoActual() {
-    if (!caminoActual) { Vista.encuadrar(null, true); return; }
-    Vista.encuadrar(Array.from(caminoActual.nodos), true);
+    if (caminoActual && caminoActual.nodos && caminoActual.nodos.size) {
+      Vista.encuadrar(Array.from(caminoActual.nodos), true);
+      return;
+    }
+    if (Estado.resaltadosCreencias && Estado.resaltadosCreencias.size) {
+      Vista.encuadrar(Array.from(Estado.resaltadosCreencias), true);
+      return;
+    }
+    Vista.encuadrar(null, true);
   }
 
   function reunirRamaInmediata(id, ids) {
@@ -312,14 +388,19 @@
   }
 
   function refrescar() {
+    calcularResaltadoTradiciones();
+    calcularResaltadoCoincidentes();
+    var apertura = calcularAperturaCreencias();
     var exploracion = calcularExploracion();
     caminoActual = exploracion;
     var respuestas = Estado.respuestasEfectivas();
     var enEdicion = Estado.divulgacion === 'edicion';
     var grafoVista = (enEdicion && Arbol.grafoConControles)
       ? Arbol.grafoConControles(Estado.grafo) : Estado.grafo;
-    var visibles = Arbol.nodosVisibles(grafoVista, respuestas, Estado.divulgacion, Estado.expandidos);
-    var aristasIds = Arbol.aristasVisibles(grafoVista, visibles, respuestas, Estado.divulgacion);
+    var visibles = Arbol.nodosVisibles(grafoVista, respuestas, Estado.divulgacion,
+      Estado.expandidos, apertura, Estado.ramasSinRespuesta);
+    var aristasIds = Arbol.aristasVisibles(grafoVista, visibles, respuestas,
+      Estado.divulgacion, apertura);
 
     var descendientes = Arbol.descendientesPorNodo(Estado.grafo);
     var pesosRespuesta = Arbol.pesoDeRespuestas(Estado.grafo);
@@ -358,10 +439,11 @@
       aristasIds: aristasIds,
       disposicion: disposicion,
       respuestas: respuestas,
+      respuestasUsuario: Estado.respuestas,
       camino: exploracion,
       caminoUsuario: caminoUsuario,
       deshabilitados: Estado.divulgacion === 'indagatorio'
-        ? Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles)
+        ? Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles, apertura)
         : new Set(),
       tradicionesDestacadas: destacadas,
       divulgacion: Estado.divulgacion,
@@ -397,8 +479,21 @@
       function (opcion) {
         var activa = opcion.getAttribute('data-recorrido') === Estado.divulgacion;
         opcion.classList.toggle('activo', activa);
-        opcion.setAttribute('aria-checked', activa ? 'true' : 'false');
+        if (opcion.getAttribute('role') === 'radio') {
+          opcion.setAttribute('aria-checked', activa ? 'true' : 'false');
+          opcion.tabIndex = activa ? 0 : -1;
+        } else {
+          opcion.setAttribute('aria-checked', activa ? 'true' : 'false');
+        }
       });
+    actualizarBotonVolver();
+  }
+
+  function actualizarBotonVolver() {
+    if (!dom.btnVolver) return;
+    var visible = Estado.divulgacion !== 'cuestionario' && historialRecorridos.length > 0;
+    dom.btnVolver.hidden = !visible;
+    sincronizarAltoBarra();
   }
 
   function actualizarBarra(visibles) {
@@ -453,6 +548,24 @@
     return insignias;
   }
 
+  function posturaIdExplorableDeNodo(nodo) {
+    if (!nodo) return null;
+    var datos = Estado.datos;
+    var pid = nodo.posturaId;
+    if (pid) {
+      var postura = datos.postures[pid];
+      if (postura && !postura.is_root) return pid;
+    }
+    if (nodo.pregunta) {
+      var origenes = nodo.pregunta.origin_posture_ids || [];
+      if (origenes.length === 1) {
+        var origen = datos.postures[origenes[0]];
+        if (origen && !origen.is_root) return origenes[0];
+      }
+    }
+    return null;
+  }
+
   function fichaDeNodo(nodo) {
     if (!nodo) {
       return '<p class="panel-vacio">' + escapar(t('panelVacio')) + '</p>';
@@ -485,6 +598,14 @@
           + ' posturas distintas desembocan en esta misma pregunta, que se dibuja'
           + ' como un nodo único con varias aristas entrantes.</p>');
       }
+    }
+
+    var pidExplorar = posturaIdExplorableDeNodo(nodo);
+    if (pidExplorar) {
+      partes.push('<div class="ficha-acciones">'
+        + '<button type="button" class="enlace-explorar" data-explorar-postura="'
+        + escapar(pidExplorar) + '">' + escapar(t('explorarPostura')) + '</button>'
+        + '</div>');
     }
 
     if (nodo.pregunta) {
@@ -606,17 +727,19 @@
           var pie = '';
           var destino = urlMDRender(enlace);
           if (destino) {
-            pie = '<a class="quiz-enlace enlace-nota" href="' + escapar(destino)
+            pie = '<a class="enlace-md-externo" href="' + escapar(destino)
               + '" target="_blank" rel="noopener noreferrer">'
-              + escapar(t('quizAclaracionAbrir')) + ' →</a>';
+              + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+              + '<span>' + escapar(t('quizAclaracionAbrir')) + '</span></a>';
           }
           partes.push(Arbol.Markdown.tarjeta(enlace, { pie: pie }));
         } else {
           var fallback = urlMDRender(enlace);
           if (fallback) {
-            partes.push('<a class="enlace-nota" href="' + escapar(fallback)
+            partes.push('<a class="enlace-md-externo" href="' + escapar(fallback)
               + '" target="_blank" rel="noopener noreferrer">'
-              + escapar(enlace.label) + ' →</a>');
+              + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+              + '<span>' + escapar(enlace.label) + '</span></a>');
           } else {
             partes.push('<p class="panel-nota">Enlace a nota: [['
               + escapar(enlace.target) + ']]</p>');
@@ -881,6 +1004,16 @@
 
   /* §7.5: ficha completa del sujeto explorado — sus posturas, la naturaleza de
      cada adhesión y las notas históricas que el documento dejó anotadas. */
+  /* Pregunta y respuesta salen de la misma entrada, así que siempre casan.
+     Cuando se calculaban por separado la tarjeta llegaba a enseñar la pregunta
+     que la postura plantea junto a la respuesta de la pregunta anterior. */
+  function respuestaQueDefinePostura(pid) {
+    var entrada = Creencias.entradaDePostura(Estado.grafo, Estado.datos, pid);
+    if (!entrada || !entrada.respuesta) return '';
+    return dato('q.' + entrada.pregunta.id + '.' + entrada.clave + '.label',
+      entrada.respuesta.label);
+  }
+
   function fichaDeSujetos() {
     var sujetos = sujetosSeleccionados();
     if (!sujetos.length) {
@@ -923,7 +1056,12 @@
         if (adhesion && adhesion.is_tentative) glosa.push(t('adhesionTentativa'));
         glosa.push(t('respuestasHeredadas', { n: Object.keys(resolucion.respuestas).length }));
         return '<li class="elegida" data-nodo="' + escapar(Estado.grafo.idDePostura(pid)) + '">'
-          + '<b>' + escapar(Layout.rotuloPostura(postura)) + '</b>'
+          + '<div class="ficha-opcion-cabecera"><b>' + escapar(Layout.rotuloPostura(postura)) + '</b>'
+          + (sujeto.tipo === 'postura'
+            ? '<button type="button" class="enlace-explorar" data-explorar-postura="'
+              + escapar(pid) + '">' + escapar(t('explorarPostura')) + '</button>'
+            : '')
+          + '</div>'
           + '<span class="glosa">' + escapar(glosa.join(' · ')) + '</span></li>';
       }).join('') + '</ul>');
 
@@ -944,16 +1082,10 @@
     return texto.slice(0, corte).replace(/[,;:\s¿¡]+$/, '') + '…';
   }
 
+  /* La que lleva a la postura, no la que la postura plantea. */
   function preguntaQueDefinePostura(pid) {
-    var nodo = Estado.grafo.nodos.get(Estado.grafo.idDePostura(pid));
-    if (!nodo) return null;
-    if (nodo.pregunta) return nodo.pregunta;
-    var i;
-    for (i = 0; i < (nodo.entradas || []).length; i++) {
-      var qid = nodo.entradas[i].preguntaId;
-      if (qid && Estado.datos.questions[qid]) return Estado.datos.questions[qid];
-    }
-    return null;
+    var entrada = Creencias.entradaDePostura(Estado.grafo, Estado.datos, pid);
+    return entrada ? entrada.pregunta : null;
   }
 
   function textoPreguntaDePostura(pid) {
@@ -976,12 +1108,25 @@
 
   function pintarListaCreencias() {
     dom.fichaCreencias.innerHTML = fichaDeSujetos();
+    if (dom.btnExplorarTodas) {
+      var hayPosturas = Estado.posturasSueltas.length > 0;
+      dom.btnExplorarTodas.hidden = !hayPosturas;
+      dom.btnExplorarTodas.disabled = !hayPosturas
+        || Estado.divulgacion === 'cuestionario';
+    }
     var consulta = dom.buscador.value;
     var tradiciones = Busqueda.filtrar(listaTradiciones, consulta);
-    var posturas = Busqueda.filtrar(listaPosturasSueltas, consulta);
+    var posturas = Busqueda.visiblesEnPanel(
+      Busqueda.filtrar(listaPosturasSueltas, consulta), consulta, Estado.posturasSueltas);
+    var religionesInertes = !Creencias.religionesDisponibles(Estado.divulgacion);
+    if (dom.notaReligionesInertes) {
+      dom.notaReligionesInertes.hidden = !religionesInertes;
+      dom.notaReligionesInertes.textContent = religionesInertes
+        ? t('religionesInertes') : '';
+    }
 
     var claseLista = 'lista-tarjetas' + (Estado.compactoCreencias ? ' compacto' : '');
-    dom.listaTradiciones.className = claseLista;
+    dom.listaTradiciones.className = claseLista + (religionesInertes ? ' inerte' : '');
     dom.listaPosturasSueltas.className = claseLista;
 
     dom.listaTradiciones.innerHTML = tradiciones.length
@@ -993,9 +1138,10 @@
         }
         var cuantas = tradicion.posturaIds.length;
         meta.push(t(cuantas === 1 ? 'posturasSostenidas' : 'posturasSostenidasPlural', { n: cuantas }));
-        return '<label class="tradicion' + (activa ? ' activa' : '') + '">'
+        return '<label class="tradicion' + (activa ? ' activa' : '')
+          + (religionesInertes ? ' inerte' : '') + '">'
           + '<input type="checkbox" data-tradicion="' + escapar(tradicion.nombre) + '"'
-          + (activa ? ' checked' : '') + '>'
+          + (activa ? ' checked' : '') + (religionesInertes ? ' disabled' : '') + '>'
           + '<span><span class="tradicion-nombre' + (tradicion.tentativa ? ' tentativa' : '') + '">'
           + escapar(dato('t.' + tradicion.nombre, tradicion.nombre)) + '</span>'
           + '<span class="tradicion-meta">' + escapar(meta.join(' · ')) + '</span></span>'
@@ -1010,14 +1156,22 @@
         var pid = postura.posturaIds[0];
         var activa = Estado.posturasSueltas.indexOf(pid) !== -1;
         var meta = [];
-        if (!Estado.compactoCreencias) {
+        /* Una postura sin nombre solo se distingue por la pregunta que lleva a
+           ella, así que ese par se enseña también en compacto: si no, serían
+           decenas de tarjetas idénticas. */
+        if (!Estado.compactoCreencias || postura.sinNombre) {
           var pregunta = textoPreguntaDePostura(pid);
           if (pregunta) meta.push(pregunta);
+          var respuesta = respuestaQueDefinePostura(pid);
+          if (respuesta) meta.push(respuesta);
+        }
+        if (!Estado.compactoCreencias) {
           var vinculos = vinculosTradicionDePostura(Estado.datos.postures[pid] || {});
           if (vinculos.length) meta.push(vinculos.join(' · '));
           if (postura.sugerida) meta.push('término sugerido');
         }
-        return '<label class="tradicion' + (activa ? ' activa' : '') + '">'
+        return '<label class="tradicion' + (activa ? ' activa' : '')
+          + (postura.sinNombre ? ' sin-nombre' : '') + '">'
           + '<input type="checkbox" data-postura="' + escapar(pid) + '"'
           + (activa ? ' checked' : '') + '>'
           + '<span><span class="tradicion-nombre">'
@@ -1202,23 +1356,137 @@
     });
   }
 
-  function expandirCaminoCreencias() {
-    if (Estado.divulgacion !== 'edicion') return;
-    var expl = calcularExploracion();
-    if (!expl || !expl.nodos) return;
-    expl.nodos.forEach(function (id) { Estado.expandidos.add(id); });
+  function sujetoDePostura(pid) {
+    var postura = Estado.datos.postures[pid];
+    if (!postura) return null;
+    return {
+      tipo: 'postura',
+      id: 'postura:' + pid,
+      nombre: postura.label,
+      alias: [],
+      posturaIds: [pid],
+      tentativa: false,
+      sugerida: !!postura.is_suggested,
+      sinNombre: !!postura.is_unnamed,
+      busqueda: ''
+    };
+  }
+
+  function resolverRutaPostura(pid) {
+    var sujeto = sujetoDePostura(pid);
+    if (!sujeto) return null;
+    var nodoId = Estado.grafo.idDePostura(pid);
+    if (!nodoId) return null;
+    return {
+      pid: pid,
+      nodoId: nodoId,
+      resolucion: Busqueda.resolver(Estado.grafo, Estado.datos, sujeto)
+    };
+  }
+
+  function persistirRutaExplorada(resolucion, reemplazar, omitir) {
+    if (reemplazar) Estado.rutasExploradas = {};
+    Object.keys(resolucion.respuestas).forEach(function (qid) {
+      if (omitir && omitir[qid]) return;
+      Estado.rutasExploradas[qid] = resolucion.respuestas[qid];
+    });
+  }
+
+  /* «Explorar» sí deja huella, al contrario que el panel: en los recorridos
+     que se dibujan por expansión hay que fijar los nodos, porque ahí las
+     respuestas no bastan para hacer visible la rama. */
+  function expandirNodosExplorados(resolucion) {
+    if (Estado.divulgacion === 'cuestionario' || Estado.divulgacion === 'completo') return;
+    resolucion.nodos.forEach(function (id) { Estado.expandidos.add(id); });
+    Estado.sincronizarExpandidosGuardados();
+  }
+
+  function expandirCaminoPostura(pid) {
+    var ruta = resolverRutaPostura(pid);
+    if (!ruta) return null;
+    return ruta.nodoId;
+  }
+
+  function expandirTodasPosturasSeleccionadas() {
+    var ids = [];
+    Estado.posturasSueltas.forEach(function (pid) {
+      var nodoId = expandirCaminoPostura(pid);
+      if (nodoId) ids.push(nodoId);
+    });
+    return ids;
+  }
+
+  function explorarPostura(pid) {
+    var ruta = resolverRutaPostura(pid);
+    if (!ruta || !ruta.nodoId) return;
+    var omitir = null;
+    /* En cuestionario «Explorar» abre el camino hasta la postura pero deja
+       pendiente su pregunta definitoria para que el usuario la conteste. */
+    if (Estado.divulgacion === 'cuestionario') {
+      var entrada = Creencias.entradaDePostura(Estado.grafo, Estado.datos, pid);
+      if (entrada && entrada.pregunta) {
+        omitir = {};
+        omitir[entrada.pregunta.id] = true;
+      }
+    }
+    persistirRutaExplorada(ruta.resolucion, true, omitir);
+    if (Estado.divulgacion === 'cuestionario') {
+      Estado.posturasExploradasCuestionario = [pid];
+    } else {
+      Estado.posturasExploradasCuestionario = [];
+    }
+    expandirNodosExplorados(ruta.resolucion);
+    limpiarSeleccionCreencias();
+    Estado.seleccionado = ruta.nodoId;
+    Estado.panelAbierto = false;
+    Estado.vista = 'grafo';
+    Estado.emitir('panel');
+    global.setTimeout(function () {
+      Vista.encuadrarNodoYDescendientes(ruta.nodoId, true);
+    }, 120);
+  }
+
+  function explorarTodasPosturas() {
+    var sujetos = sujetosPosturasSeleccionados();
+    if (!sujetos.length) return;
+    var resoluciones = sujetos.map(function (sujeto) {
+      return Busqueda.resolver(Estado.grafo, Estado.datos, sujeto);
+    });
+    var combinado = Busqueda.combinar(resoluciones);
+    Estado.rutasExploradas = {};
+    Object.keys(combinado.respuestas).forEach(function (qid) {
+      Estado.rutasExploradas[qid] = combinado.respuestas[qid];
+    });
+    expandirNodosExplorados(combinado);
+    var ids = sujetos.map(function (sujeto) {
+      return Estado.grafo.idDePostura(sujeto.posturaIds[0]);
+    }).filter(Boolean);
+    if (!ids.length) return;
+    Estado.posturasExploradasCuestionario = [];
+    limpiarSeleccionCreencias();
+    Estado.seleccionado = ids[0];
+    Estado.panelAbierto = false;
+    Estado.vista = 'grafo';
+    Estado.emitir('panel');
+    global.setTimeout(function () {
+      Vista.encuadrar(ids, true);
+    }, 120);
   }
 
   function trasCambiarSujetos() {
-    Estado.modo = Estado.tradiciones.length || Estado.posturasSueltas.length
-      ? 'explorador' : 'libre';
-    expandirCaminoCreencias();
+    if (creenciasAfectanArbol()) {
+      if (Estado.posturasSueltas.length) Estado.modo = 'explorador';
+      else Estado.modo = 'libre';
+    } else {
+      Estado.modo = Estado.tradiciones.length || Estado.posturasSueltas.length
+        ? 'explorador' : 'libre';
+    }
     Estado.emitir('creencias');
-    // El layout se anima 300 ms; encuadramos el camino cuando ya reposó.
     global.setTimeout(encuadrarCaminoActual, 330);
   }
 
   function alternarTradicion(nombre) {
+    if (!Creencias.religionesDisponibles(Estado.divulgacion)) return;
     var indice = Estado.tradiciones.indexOf(nombre);
     if (indice === -1) Estado.tradiciones.push(nombre);
     else Estado.tradiciones.splice(indice, 1);
@@ -1286,8 +1554,9 @@
     }
     Estado.tradiciones = aporte.tradiciones.slice();
     Estado.posturasSueltas = aporte.posturasSueltas.slice();
-    if (Estado.panelAbierto && Estado.pestana === 'creencias'
-      && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
+    if (Estado.panelAbierto
+      && (Estado.tradiciones.length || Estado.posturasSueltas.length)
+      && Estado.posturasSueltas.length) {
       Estado.modo = 'explorador';
     }
   }
@@ -1313,7 +1582,8 @@
   }
 
   function sincronizarHojasRecorrido() {
-    if (Estado.divulgacion !== 'indagatorio' && Estado.divulgacion !== 'limpio') return;
+    if (Estado.divulgacion !== 'indagatorio' && Estado.divulgacion !== 'limpio'
+      && Estado.divulgacion !== 'cuestionario') return;
     var hojas = hojasDelRecorrido();
     if (!hojas.length) return;
     var tradiciones = [];
@@ -1329,6 +1599,19 @@
       });
     });
     aplicarAporteCreencias({ tradiciones: tradiciones, posturasSueltas: posturasSueltas });
+  }
+
+  function sincronizarCreenciasAlAbrir() {
+    if (Estado.divulgacion === 'cuestionario'
+      && Estado.posturasExploradasCuestionario
+      && Estado.posturasExploradasCuestionario.length) {
+      aplicarAporteCreencias({
+        tradiciones: [],
+        posturasSueltas: Estado.posturasExploradasCuestionario.slice()
+      });
+      return;
+    }
+    sincronizarHojasRecorrido();
   }
 
   /* Pulsar la etiqueta de una postura la elige a ella, no a su tradición:
@@ -1355,16 +1638,17 @@
     Estado.vista = nombre === 'comparar' ? 'lista' : 'grafo';
     if (nombre === 'creencias'
       && (Estado.tradiciones.length || Estado.posturasSueltas.length)) {
-      Estado.modo = 'explorador';
-      expandirCaminoCreencias();
+      if (Estado.posturasSueltas.length) Estado.modo = 'explorador';
     }
     Estado.emitir('panel');
   }
 
+  /* Sin instantáneas que deshacer: el panel nunca escribió en la expansión
+     guardada, así que basta con dejar de calcular su apertura. */
   function cerrarPanel() {
+    limpiarSeleccionCreencias();
     Estado.panelAbierto = false;
     Estado.vista = 'grafo';
-    Estado.modo = 'libre';
     Estado.emitir('panel');
   }
 
@@ -1534,7 +1818,6 @@
       }
       if (!nodoId && pids.length) nodoId = Estado.grafo.idDePostura(pids[0]);
     } else if (opts.posturaId) {
-      // Preferimos la postura concreta (no toda su tradición), como en la ficha.
       posturas = [opts.posturaId];
       nodoId = Estado.grafo.idDePostura(opts.posturaId);
     }
@@ -1544,11 +1827,13 @@
       avisar(t('recorridoAviso', { nombre: t('indagatorio') }));
     }
 
-    // sincronizarHojasRecorrido corre al emitir divulgacion y carga todo el
-    // recorrido; aquí lo sustituimos por el sujeto elegido.
     Estado.tradiciones = tradiciones;
     Estado.posturasSueltas = posturas;
-    Estado.modo = tradiciones.length || posturas.length ? 'explorador' : 'libre';
+    if (posturas.length) {
+      explorarPostura(posturas[0]);
+      return;
+    }
+    Estado.modo = tradiciones.length ? 'libre' : 'libre';
     Estado.panelAbierto = true;
     Estado.pestana = 'creencias';
     Estado.seleccionado = nodoId;
@@ -1559,13 +1844,15 @@
     }, 120);
   }
 
-  function fijarRecorrido(valor) {
+  function fijarRecorrido(valor, opciones) {
     if (!valor || valor === Estado.divulgacion) return;
+    var opts = opciones || {};
+    if (!opts.desdeHistorial) historialRecorridos.push(Estado.divulgacion);
     Estado.fijarDivulgacion(valor);
-    if (Estado.divulgacion === 'edicion') {
-      var antes = Estado.expandidos.size;
-      expandirCaminoCreencias();
-      if (Estado.expandidos.size !== antes) Estado.emitir('expandir');
+    /* En el cuestionario las religiones no operan, así que no se quedan
+       marcadas fingiendo que hacen algo: se sueltan al entrar. */
+    if (Estado.divulgacion === 'cuestionario' && Estado.tradiciones.length) {
+      Estado.tradiciones = [];
     }
     if (Estado.divulgacion === 'cuestionario' && Arbol.Cuestionario) {
       Arbol.Cuestionario.reiniciarHistorial();
@@ -1575,6 +1862,13 @@
       || Estado.divulgacion === 'limpio') {
       global.setTimeout(function () { Vista.encuadrar(null, true); }, 80);
     }
+    actualizarBotonVolver();
+  }
+
+  function volverRecorrido() {
+    if (!historialRecorridos.length) return;
+    var anterior = historialRecorridos.pop();
+    fijarRecorrido(anterior, { desdeHistorial: true });
   }
 
   function reconstruirModelo(despues) {
@@ -1994,6 +2288,9 @@
 
   function registrarEventos() {
     dom.btnAjustar.addEventListener('click', function () { Vista.encuadrar(null, true); });
+    if (dom.btnVolver) {
+      dom.btnVolver.addEventListener('click', volverRecorrido);
+    }
 
     dom.btnReorganizar.addEventListener('click', function () {
       Estado.liberarTodos();
@@ -2001,15 +2298,43 @@
     });
 
     registrarMenu(dom.menuRecorrido, dom.btnRecorrido, 'data-recorrido', fijarRecorrido);
+    if (dom.recorridoSegmentos) {
+      dom.recorridoSegmentos.addEventListener('click', function (evento) {
+        var chip = evento.target.closest ? evento.target.closest('.recorrido-chip') : null;
+        if (!chip) return;
+        var valor = chip.getAttribute('data-recorrido');
+        if (valor) fijarRecorrido(valor);
+      });
+      dom.recorridoSegmentos.addEventListener('keydown', function (evento) {
+        var chip = evento.target.closest ? evento.target.closest('.recorrido-chip') : null;
+        if (!chip) return;
+        var chips = Array.prototype.slice.call(
+          dom.recorridoSegmentos.querySelectorAll('.recorrido-chip'));
+        var indice = chips.indexOf(chip);
+        if (indice < 0) return;
+        if (evento.key === 'ArrowRight' || evento.key === 'ArrowLeft') {
+          evento.preventDefault();
+          var delta = evento.key === 'ArrowRight' ? 1 : -1;
+          var siguiente = chips[(indice + delta + chips.length) % chips.length];
+          fijarRecorrido(siguiente.getAttribute('data-recorrido'));
+          siguiente.focus();
+        }
+      });
+    }
+
+    dom.fichaDetalle.addEventListener('click', function (evento) {
+      var explorar = evento.target.closest
+        ? evento.target.closest('[data-explorar-postura]') : null;
+      if (!explorar) return;
+      evento.stopPropagation();
+      explorarPostura(explorar.getAttribute('data-explorar-postura'));
+    });
 
     // Un solo interruptor para el panel: abre en «Creencias» y cierra desde
     // cualquier pestaña.
     dom.btnCreencias.addEventListener('click', function () {
       if (Estado.panelAbierto) { cerrarPanel(); return; }
-      sincronizarHojasRecorrido();
-      if (Estado.tradiciones.length || Estado.posturasSueltas.length) {
-        Estado.modo = 'explorador';
-      }
+      sincronizarCreenciasAlAbrir();
       abrirPestana('creencias');
     });
 
@@ -2130,6 +2455,7 @@
         if (!aceptado) return;
         Estado.olvidar();
         Estado.reiniciar();
+        historialRecorridos = [];
         if (Arbol.Cuestionario) Arbol.Cuestionario.reiniciarHistorial();
         if (Vista.nodosDOM) {
           Vista.nodosDOM.forEach(function (grupo) {
@@ -2162,6 +2488,13 @@
     dom.buscador.addEventListener('input', pintarListaCreencias);
 
     dom.fichaCreencias.addEventListener('click', function (evento) {
+      var explorar = evento.target.closest
+        ? evento.target.closest('[data-explorar-postura]') : null;
+      if (explorar) {
+        evento.stopPropagation();
+        explorarPostura(explorar.getAttribute('data-explorar-postura'));
+        return;
+      }
       var fila = evento.target.closest ? evento.target.closest('[data-nodo]') : null;
       if (!fila) return;
       var nodoId = fila.getAttribute('data-nodo');
@@ -2170,6 +2503,10 @@
       Estado.emitir('seleccion');
       Vista.encuadrarNodoYDescendientes(nodoId);
     });
+
+    if (dom.btnExplorarTodas) {
+      dom.btnExplorarTodas.addEventListener('click', explorarTodasPosturas);
+    }
 
     dom.listaTradiciones.addEventListener('change', function (evento) {
       var nombre = evento.target.getAttribute('data-tradicion');
@@ -2182,9 +2519,7 @@
     });
 
     dom.btnLimpiarCreencias.addEventListener('click', function () {
-      Estado.tradiciones = [];
-      Estado.posturasSueltas = [];
-      Estado.modo = 'libre';
+      limpiarSeleccionCreencias();
       Estado.emitir('creencias');
     });
 
@@ -2249,6 +2584,19 @@
 
     global.addEventListener('keydown', function (evento) {
       if (evento.target && /^(INPUT|TEXTAREA|SELECT)$/.test(evento.target.tagName)) return;
+      if ((evento.ctrlKey || evento.metaKey) && !evento.altKey && !evento.shiftKey
+        && (evento.key === 'ArrowLeft' || evento.key === 'ArrowRight')) {
+        evento.preventDefault();
+        var orden = ORDEN_DIVULGACION;
+        var indice = orden.indexOf(Estado.divulgacion);
+        if (indice < 0) indice = 0;
+        if (evento.key === 'ArrowRight') {
+          fijarRecorrido(orden[(indice + 1) % orden.length]);
+        } else {
+          fijarRecorrido(orden[(indice - 1 + orden.length) % orden.length]);
+        }
+        return;
+      }
       if (evento.ctrlKey || evento.metaKey || evento.altKey) return;
       var tecla = evento.key.toLowerCase();
       if (tecla === 'f') { Vista.encuadrar(null, true); }
@@ -2288,6 +2636,7 @@
       listaTradiciones: document.getElementById('lista-tradiciones'),
       listaPosturasSueltas: document.getElementById('lista-posturas-sueltas'),
       notaSinAfiliacion: document.getElementById('nota-sin-afiliacion'),
+      notaReligionesInertes: document.getElementById('nota-religiones-inertes'),
       salidaComparar: document.getElementById('salida-comparar'),
       chkDesacuerdos: document.getElementById('chk-desacuerdos'),
       selProfundidad: document.getElementById('sel-profundidad'),
@@ -2295,7 +2644,9 @@
       btnReorganizar: document.getElementById('btn-reorganizar'),
       menuRecorrido: document.getElementById('menu-recorrido'),
       btnRecorrido: document.getElementById('btn-recorrido'),
+      recorridoSegmentos: document.querySelector('.recorrido-segmentos'),
       valorRecorrido: document.getElementById('valor-recorrido'),
+      btnVolver: document.getElementById('btn-volver'),
       btnCreencias: document.getElementById('btn-creencias'),
       btnExportar: document.getElementById('btn-exportar'),
       menuExportar: document.getElementById('menu-exportar'),
@@ -2311,6 +2662,7 @@
       conteoResaltados: document.getElementById('conteo-resaltados'),
       sepResaltados: document.getElementById('sep-resaltados'),
       btnLimpiarCreencias: document.getElementById('btn-limpiar-creencias'),
+      btnExplorarTodas: document.getElementById('btn-explorar-todas'),
       btnIrComparar: document.getElementById('btn-ir-comparar'),
       btnAnalizarDetalle: document.getElementById('btn-analizar-detalle'),
       btnAnalizarComparar: document.getElementById('btn-analizar-comparar'),
@@ -2327,10 +2679,8 @@
     dom.cargando.querySelector('p').innerHTML =
       'No se pudieron cargar los datos del árbol.<br>'
       + escapar(error && error.message ? error.message : String(error)) + '<br><br>'
-      + 'Genera el modelo con <code>Generar-Diagramas.cmd</code> o con '
-      + '<code>python scripts/convertir_posturas_creencias.py recursos/posturas-creencias.md</code>, '
-      + 'que escribe <code>datos/posturas-creencias.json</code> y su respaldo '
-      + '<code>datos/posturas-creencias.js</code>.';
+      + 'Genera el modelo desde la raíz del repositorio: en cmd <code>run</code>, '
+      + 'en PowerShell <code>.\\run.ps1</code> (o doble clic en <code>run.cmd</code>).';
   }
 
   function iniciar(datos) {

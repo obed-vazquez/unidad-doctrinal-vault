@@ -5,19 +5,22 @@
 .EXAMPLE
     .\scripts\convertir-posturas-creencias.ps1
 
-.EXAMPLE
-    .\scripts\convertir-posturas-creencias.ps1 -Strict
+    Regenera solo los datos del visor web
+    (recursos\diagramas\arbol-web\datos\posturas-creencias.json).
+    No escribe Mermaid, DrawDecisionTree, Graphviz ni imagen.
 
-    Genera recursos\diagramas\posturas-creencias.mmd,
+.EXAMPLE
+    .\scripts\convertir-posturas-creencias.ps1 -Diagramas
+
+    Además genera recursos\diagramas\posturas-creencias.mmd,
     recursos\diagramas\posturas-creencias.dag,
-    recursos\diagramas\posturas-creencias.gv,
-    recursos\diagramas\posturas-creencias.svg y los datos del visor web
-    recursos\diagramas\arbol-web\datos\posturas-creencias.json.
+    recursos\diagramas\posturas-creencias.gv y
+    recursos\diagramas\posturas-creencias.svg.
 
 .EXAMPLE
-    .\scripts\convertir-posturas-creencias.ps1 -Format png -Dpi 300
+    .\scripts\convertir-posturas-creencias.ps1 -Imagen -Format png -Dpi 300
 
-    Renderiza un PNG de 300 ppp en lugar del SVG.
+    Renderiza un PNG de 300 ppp. El resto de diagramas estáticos sigue omitido.
 
 .EXAMPLE
     .\scripts\convertir-posturas-creencias.ps1 `
@@ -25,7 +28,7 @@
         -DagPath .\salidas\posturas.dag
 
 .NOTES
-    Si falta Graphviz (el programa `dot`) y se necesita una imagen, este script
+    Si falta Graphviz (el programa `dot`) y se pide una imagen, este script
     intenta instalarlo solo con winget. Puede aparecer un aviso de Windows
     pidiendo permiso de administrador; es normal, acéptalo para continuar.
     Usa -NoAutoInstallGraphviz para desactivar ese intento.
@@ -34,11 +37,21 @@
 param(
     [string]$InputPath,
 
+    [switch]$Diagramas,
+
+    [switch]$Mermaid,
+
     [string]$MermaidPath,
+
+    [switch]$Dag,
 
     [string]$DagPath,
 
+    [switch]$Graphviz,
+
     [string]$GraphvizPath,
+
+    [switch]$Imagen,
 
     [string]$ImagePath,
 
@@ -48,8 +61,6 @@ param(
     [string]$Format,
 
     [int]$Dpi,
-
-    [switch]$NoImage,
 
     [switch]$NoJson,
 
@@ -161,22 +172,34 @@ if (-not $python) {
     exit 1
 }
 
-if (-not $NoImage) {
+$wantImage = $Diagramas -or $Imagen -or $ImagePath -or $Format
+if ($wantImage) {
     Ensure-Dot -AllowInstall:(-not $NoAutoInstallGraphviz) | Out-Null
 }
 
 $arguments = @($converter, $InputPath)
+if ($Diagramas) {
+    $arguments += '--diagramas'
+}
 if ($MermaidPath) {
     $arguments += @('--mermaid', $MermaidPath)
+} elseif ($Mermaid) {
+    $arguments += '--mermaid'
 }
 if ($DagPath) {
     $arguments += @('--dag', $DagPath)
+} elseif ($Dag) {
+    $arguments += '--dag'
 }
 if ($GraphvizPath) {
     $arguments += @('--graphviz', $GraphvizPath)
+} elseif ($Graphviz) {
+    $arguments += '--graphviz'
 }
 if ($ImagePath) {
     $arguments += @('--imagen', $ImagePath)
+} elseif ($Imagen) {
+    $arguments += '--imagen'
 }
 if ($JsonPath) {
     $arguments += @('--json', $JsonPath)
@@ -190,9 +213,6 @@ if ($Format) {
 if ($Dpi) {
     $arguments += @('--dpi', $Dpi)
 }
-if ($NoImage) {
-    $arguments += '--sin-imagen'
-}
 if ($Strict) {
     $arguments += '--strict'
 }
@@ -201,7 +221,7 @@ if ($Strict) {
 $exitCode = $LASTEXITCODE
 
 if ($Interactive) {
-    if ($exitCode -eq 0 -and -not $NoImage) {
+    if ($exitCode -eq 0 -and $wantImage) {
         $imageFormat = if ($Format) { $Format } elseif ($ImagePath) { [IO.Path]::GetExtension($ImagePath).TrimStart('.') } else { 'svg' }
         $resolvedImagePath = if ($ImagePath) {
             $ImagePath
