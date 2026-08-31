@@ -2679,10 +2679,8 @@
     dom.cargando.querySelector('p').innerHTML =
       'No se pudieron cargar los datos del árbol.<br>'
       + escapar(error && error.message ? error.message : String(error)) + '<br><br>'
-      + 'Genera el modelo con <code>Generar-Diagramas.cmd</code> o con '
-      + '<code>python scripts/convertir_posturas_creencias.py recursos/posturas-creencias.md</code>, '
-      + 'que escribe <code>datos/posturas-creencias.json</code> y su respaldo '
-      + '<code>datos/posturas-creencias.js</code>.';
+      + 'Genera el modelo desde la raíz del repositorio: en cmd <code>run</code>, '
+      + 'en PowerShell <code>.\\run.ps1</code> (o doble clic en <code>run.cmd</code>).';
   }
 
   function iniciar(datos) {

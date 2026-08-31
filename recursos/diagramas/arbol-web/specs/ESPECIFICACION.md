@@ -35,11 +35,6 @@ unidad-doctrinal-vault/
 ├── recursos/
 │   ├── posturas-creencias.md
 │   └── diagramas/
-│       ├── Generar-Diagramas.cmd
-│       ├── posturas-creencias.svg
-│       ├── posturas-creencias.gv
-│       ├── posturas-creencias.mmd
-│       ├── posturas-creencias.dag
 │       └── arbol-web/
 │           ├── index.html
 │           ├── css/
@@ -57,6 +52,7 @@ unidad-doctrinal-vault/
 │           └── datos/
 │               └── posturas-creencias.json
 └── scripts/
+    ├── Generar-Diagramas.cmd
     ├── convertir_posturas_creencias.py
     └── convertir-posturas-creencias.ps1
 ```

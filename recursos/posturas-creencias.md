@@ -39,18 +39,14 @@ Consecuencias para quien lea o edite el archivo:
     Un * en el nombre de la postura significa que es un termino sugerido debido a falta de un término oficial.
     Un ? en el nombre de la postura significa que no se cuenta actualmente con un nombre de la misma o se tiene duda; no significa que este incompleto, es posible que no exista un termino para el mismo.
 
-## Generar diagramas
+## Regenerar el visor
 
-Doble clic en **[Generar-Diagramas.cmd](diagramas/Generar-Diagramas.cmd)**. Regenera
-`recursos/diagramas` (Mermaid, DrawDecisionTree, Graphviz, imagen SVG y los datos del
-visor interactivo) a partir de este documento, instalando Graphviz solo si hace falta,
-y abre la imagen al terminar. No necesita edición manual ni comandos.
+Desde la raíz del repositorio: en **cmd** `run`, en **PowerShell** `.\run.ps1`,
+o doble clic en **[run.cmd](../run.cmd)**. Sincroniza Drive y regenera los datos
+de este árbol para el visor.
+
 El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/index.html)**.
 
-Opciones avanzadas (rutas, formato, resolución, `-Strict`):
-`Get-Help .\scripts\convertir-posturas-creencias.ps1 -Full`.
-
-[DrawDesitionTree](https://www.drawdecisiontree.com/embed/card/obed-vazquez/posturas-creencias?f=inline)
 
 
 ## Árbol de Decisión:
