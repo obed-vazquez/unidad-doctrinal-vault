@@ -19,12 +19,14 @@
        pregunta cuelga en un recuadro de acento.
      Las preguntas convergentes (`A & B -> ...`) son un nodo único con varias
      aristas entrantes; nunca se duplican. */
-  function construirGrafo(datos) {
+  function construirGrafo(datos, opciones) {
     var nodos = new Map();
     var aristas = new Map();
     var raices = [];
+    var separarSiempre = !!(opciones && opciones.separarSiempre);
 
     function preguntaEsSuelta(qid) {
+      if (separarSiempre) return true;
       var q = datos.questions[qid];
       if (!q) return true;
       var origenes = q.origin_posture_ids || [];
@@ -247,6 +249,22 @@
           && respuestas[arista.preguntaId] !== arista.clave
           && abiertasPanel[arista.preguntaId] !== arista.clave) return;
         pila.push(arista.hasta);
+      });
+    }
+    if (grafo.forzarNodos && grafo.forzarNodos.size) {
+      grafo.forzarNodos.forEach(function (fid) {
+        var pilaF = [fid];
+        while (pilaF.length) {
+          var hid = pilaF.pop();
+          if (!hid || visibles.has(hid)) continue;
+          visibles.add(hid);
+          var hn = grafo.nodos.get(hid);
+          if (!hn) continue;
+          (hn.salidas || []).forEach(function (arista) {
+            if (arista.tipo === 'control') return;
+            pilaF.push(arista.hasta);
+          });
+        }
       });
     }
     if (modo === 'edicion') {
@@ -491,7 +509,8 @@
       idDePostura: grafo.idDePostura,
       idDePregunta: grafo.idDePregunta,
       anfitrionDePregunta: grafo.anfitrionDePregunta,
-      preguntaEsSuelta: grafo.preguntaEsSuelta
+      preguntaEsSuelta: grafo.preguntaEsSuelta,
+      forzarNodos: grafo.forzarNodos || null
     };
   }
 
@@ -530,6 +549,7 @@
     },
     editTamanos: {},         // { nodoId: { w, h } } exclusivo del modo edición
     editCampos: {},          // { 'p:P1': ['traditions'], 'q:Q1': ['colloquial_hint'] }
+    forzarNodos: null,       // Set de ids visibles aunque no se alcancen desde la raíz (huérfanos en edición)
     modo: 'libre',           // 'libre' | 'explorador'  (explorador de creencias)
     vista: 'grafo',          // 'grafo' | 'lista'
     panelAbierto: false,
@@ -611,6 +631,11 @@
       }
       this.divulgacion = siguiente;
       this.arbolCompleto = siguiente === 'completo';
+      if (this.datos && Arbol.construirGrafo) {
+        this.grafo = Arbol.construirGrafo(this.datos,
+          siguiente === 'edicion' ? { separarSiempre: true } : null);
+        this.sanear();
+      }
       this.emitir('divulgacion');
     },
 

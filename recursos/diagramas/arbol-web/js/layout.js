@@ -460,6 +460,10 @@
     return compuesto;
   }
 
+  function limpiarCacheComposicion() {
+    cacheComposicion.clear();
+  }
+
   function limpiarCache() {
     cacheComposicion.clear();
     cacheAncho.clear();
@@ -940,6 +944,7 @@
     rotuloPostura: rotuloPostura,
     componer: componerConCache,
     limpiarCache: limpiarCache,
+    limpiarCacheComposicion: limpiarCacheComposicion,
     calcular: calcular
   };
 

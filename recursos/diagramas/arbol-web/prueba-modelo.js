@@ -725,6 +725,124 @@ comprobar('la cámara viaja con la vista exacta',
 
 ventana.location.search = '';
 
+console.log('\n== Edición: preguntas separadas y huérfanos ==');
+const grafoEdicion = Arbol.construirGrafo(datos, { separarSiempre: true });
+let tarjetasConPregunta = 0;
+let ejesSueltos = 0;
+grafoEdicion.nodos.forEach((n) => {
+  if (n.tipo === 'tarjeta' && n.pregunta) tarjetasConPregunta++;
+  if (n.tipo === 'pregunta') ejesSueltos++;
+});
+comprobar('en edición no hay tarjetas unificadas postura+eje', tarjetasConPregunta === 0,
+  String(tarjetasConPregunta));
+comprobar('en edición cada eje es un nodo suelto', ejesSueltos === Object.keys(datos.questions).length,
+  ejesSueltos + ' vs ' + Object.keys(datos.questions).length);
+comprobar('sin la opción, la raíz unificada se conserva',
+  Arbol.construirGrafo(datos).raices[0] === 'T:PR1');
+
+const Edits = Arbol.Edits;
+comprobar('postura innominada sin datos está vacía',
+  Edits.posturaCompletamenteVacia({ is_unnamed: true, label: '?', traditions: [], notes: [], question_axes: [] }));
+comprobar('postura con nombre no está vacía',
+  !Edits.posturaCompletamenteVacia({ is_unnamed: false, label: 'Teísmo', traditions: [], notes: [], question_axes: [] }));
+comprobar('eje sin texto ni respuestas está vacío',
+  Edits.preguntaCompletamenteVacia({ formal_text: '', colloquial_hint: '', answers: [] }));
+comprobar('eje con respuesta no está vacío',
+  !Edits.preguntaCompletamenteVacia({ formal_text: '', answers: [{ key: 'A' }] }));
+
+const mini = {
+  root_postures: ['P1'],
+  postures: {
+    P1: { id: 'P1', label: 'Raíz', is_unnamed: false, question_axes: ['Q1'], traditions: [], notes: [] },
+    P2: { id: 'P2', label: '?', is_unnamed: true, question_axes: [], traditions: [], notes: [] }
+  },
+  questions: {
+    Q1: {
+      id: 'Q1', formal_text: '¿Hay Dios?', colloquial_hint: '', origin_posture_ids: ['P1'],
+      answers: [{ key: 'A', label: 'Sí', target_posture_id: 'P2', gloss: null }]
+    }
+  }
+};
+comprobar('P2 quedaría huérfana al quitar su única entrada',
+  Edits.quedariaHuerfanaPostura(mini, 'P2', { questionId: 'Q1', key: 'A' }));
+const editsMini = Edits.vacio();
+Edits.desconectarRespuesta(editsMini, 'Q1', 'A');
+const trasQuitar = Edits.aplicar(mini, editsMini);
+comprobar('desconectar la respuesta deja a Q1 sin answers',
+  (trasQuitar.questions.Q1.answers || []).length === 0);
+comprobar('la postura huérfana sigue en los datos hasta que se borre', !!trasQuitar.postures.P2);
+
+console.log('\n== Edición: campos hermanos no se pisan ==');
+const qidTexto = Object.keys(datos.questions)[0];
+const pidTexto = Object.keys(datos.postures)[0];
+const editsCoal = Edits.vacio();
+Edits.fijarPregunta(editsCoal, qidTexto, undefined, 'a');
+Edits.fijarPregunta(editsCoal, qidTexto, undefined, 'ab');
+comprobar('teclas seguidas en el mismo campo se coalescen',
+  editsCoal.ops.length === 1 && editsCoal.ops[0].colloquial === 'ab',
+  JSON.stringify(editsCoal.ops));
+
+const editsTexto = Edits.vacio();
+Edits.fijarPregunta(editsTexto, qidTexto, undefined, 'coloquial nueva');
+Edits.fijarPregunta(editsTexto, qidTexto, 'formal nueva', undefined);
+const aplicadoTexto = Edits.aplicar(datos, editsTexto);
+comprobar('editar formal no borra la coloquial recién puesta',
+  aplicadoTexto.questions[qidTexto].colloquial_hint === 'coloquial nueva'
+  && aplicadoTexto.questions[qidTexto].formal_text === 'formal nueva',
+  JSON.stringify({
+    formal: aplicadoTexto.questions[qidTexto].formal_text,
+    coloquial: aplicadoTexto.questions[qidTexto].colloquial_hint,
+    ops: editsTexto.ops
+  }));
+Edits.fijarPregunta(editsTexto, qidTexto, undefined, 'coloquial otra');
+const aplicado2 = Edits.aplicar(datos, editsTexto);
+comprobar('editar coloquial no borra la formal recién puesta',
+  aplicado2.questions[qidTexto].formal_text === 'formal nueva'
+  && aplicado2.questions[qidTexto].colloquial_hint === 'coloquial otra',
+  JSON.stringify({
+    formal: aplicado2.questions[qidTexto].formal_text,
+    coloquial: aplicado2.questions[qidTexto].colloquial_hint
+  }));
+
+const editsPostura = Edits.vacio();
+Edits.nombrarPostura(editsPostura, pidTexto, 'Nombre nuevo');
+Edits.fijarMetaPostura(editsPostura, pidTexto, 'traditions', 'Catolicismo');
+Edits.fijarMetaPostura(editsPostura, pidTexto, 'notes', 'una nota');
+Edits.fijarMetaPostura(editsPostura, pidTexto, 'wikilinks', '[[Wiki]]');
+Edits.fijarMetaPostura(editsPostura, pidTexto, 'notes', 'nota corregida');
+const aplicadoPostura = Edits.aplicar(datos, editsPostura);
+const metaP = aplicadoPostura.postures[pidTexto];
+comprobar('nombre, religiones, notas y enlaces de una postura conviven',
+  metaP.label === 'Nombre nuevo'
+  && (metaP.traditions || []).some((t) => t.name === 'Catolicismo')
+  && (metaP.notes || []).indexOf('nota corregida') !== -1
+  && (metaP.wikilinks || []).length > 0,
+  JSON.stringify({
+    label: metaP.label,
+    traditions: metaP.traditions,
+    notes: metaP.notes,
+    wikilinks: metaP.wikilinks,
+    ops: editsPostura.ops
+  }));
+
+const qConRespuesta = Object.keys(datos.questions).find((id) =>
+  (datos.questions[id].answers || []).length > 0);
+const claveA = datos.questions[qConRespuesta].answers[0].key;
+const editsArista = Edits.vacio();
+Edits.fijarRespuesta(editsArista, qConRespuesta, claveA, 'Sí', 'glosa inicial');
+Edits.fijarRespuesta(editsArista, qConRespuesta, claveA, 'No', undefined);
+const aplicadoArista = Edits.aplicar(datos, editsArista);
+const respA = aplicadoArista.questions[qConRespuesta].answers.find((r) => r.key === claveA);
+comprobar('cambiar la etiqueta de una arista no borra la glosa',
+  respA && respA.label === 'No' && respA.gloss === 'glosa inicial',
+  JSON.stringify(respA));
+Edits.fijarRespuesta(editsArista, qConRespuesta, claveA, undefined, 'glosa nueva');
+const aplicadoArista2 = Edits.aplicar(datos, editsArista);
+const respA2 = aplicadoArista2.questions[qConRespuesta].answers.find((r) => r.key === claveA);
+comprobar('cambiar la glosa no borra la etiqueta de la arista',
+  respA2 && respA2.label === 'No' && respA2.gloss === 'glosa nueva',
+  JSON.stringify(respA2));
+
 console.log('\n' + (fallos.length
   ? fallos.length + ' comprobación(es) fallidas: ' + fallos.join(' | ')
   : 'Todas las comprobaciones pasaron.') + '\n');

@@ -573,6 +573,13 @@
 
 #capa-asas { pointer-events: none; }
 .reenganche-asa { pointer-events: all; cursor: grab; }
+.reenganche-asa:active { cursor: grabbing; }
+#lienzo.deslizando-ancla { cursor: grabbing; }
+#lienzo.reenganchando { cursor: grabbing; }
+#lienzo.enlazando-padre,
+.enlazando-padre { cursor: crosshair !important; }
+.modo-edicion-activo #capa-aristas { pointer-events: none; }
+.modo-edicion-activo #capa-aristas .arista-etiqueta-caja { pointer-events: none; }
 .reenganche-asa-hit { fill: transparent; }
 .reenganche-asa-disco {
   fill: var(--acento, #58a6ff);
@@ -585,8 +592,9 @@
 .arista-reenganche-preview {
   fill: none;
   stroke: var(--acento, #58a6ff);
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
+  stroke-width: 2.4;
+  stroke-dasharray: 7 5;
+  stroke-linecap: round;
   marker-end: url(#punta);
   pointer-events: none;
 }

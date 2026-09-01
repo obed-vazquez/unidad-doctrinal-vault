@@ -36,14 +36,56 @@
     }
   }
 
+  var guardarTimer = null;
+  var guardarRef = null;
+
   function guardar(edits) {
     try {
       global.localStorage.setItem(CLAVE_EDITS, JSON.stringify(edits));
     } catch (error) { /* modo privado o cuota llena */ }
   }
 
+  function programarGuardar(edits) {
+    guardarRef = edits;
+    if (guardarTimer) return;
+    guardarTimer = global.setTimeout(function () {
+      guardarTimer = null;
+      var pendiente = guardarRef;
+      guardarRef = null;
+      if (pendiente) guardar(pendiente);
+    }, 400);
+    if (guardarTimer && typeof guardarTimer.unref === 'function') guardarTimer.unref();
+  }
+
+  function flushGuardar() {
+    if (guardarTimer) {
+      global.clearTimeout(guardarTimer);
+      guardarTimer = null;
+    }
+    if (guardarRef) {
+      var pendiente = guardarRef;
+      guardarRef = null;
+      guardar(pendiente);
+    }
+  }
+
   function olvidar() {
+    if (guardarTimer) {
+      global.clearTimeout(guardarTimer);
+      guardarTimer = null;
+    }
+    guardarRef = null;
     try { global.localStorage.removeItem(CLAVE_EDITS); } catch (error) { /* nada */ }
+  }
+
+  if (global.addEventListener) {
+    global.addEventListener('pagehide', flushGuardar);
+    global.addEventListener('beforeunload', flushGuardar);
+  }
+  if (global.document && global.document.addEventListener) {
+    global.document.addEventListener('visibilitychange', function () {
+      if (global.document.visibilityState === 'hidden') flushGuardar();
+    });
   }
 
   function siguienteClave(pregunta) {
@@ -452,6 +494,55 @@
       }
       return;
     }
+    if (op.op === 'removeAnswer') {
+      var qQuitar = datos.questions[op.questionId];
+      if (!qQuitar) return;
+      qQuitar.answers = (qQuitar.answers || []).filter(function (respuesta) {
+        return respuesta.key !== op.key;
+      });
+      marcarLocal(qQuitar);
+      return;
+    }
+    if (op.op === 'removeAxis') {
+      var qEjeQuitar = datos.questions[op.questionId];
+      var fromQuitar = datos.postures[op.fromPostureId];
+      if (!qEjeQuitar || !fromQuitar) return;
+      quitarEjeDePostura(fromQuitar, qEjeQuitar.id);
+      quitarOrigenDePregunta(qEjeQuitar, fromQuitar.id);
+      return;
+    }
+    if (op.op === 'attachAnswer') {
+      var qLigar = datos.questions[op.questionId];
+      var pLigar = datos.postures[op.postureId];
+      if (!qLigar || !pLigar) return;
+      if (seriaCicloRespuesta(datos, qLigar.id, pLigar.id)) return;
+      var claveLigar = op.key || siguienteClave(qLigar);
+      var etiquetaLigar = Object.prototype.hasOwnProperty.call(op, 'answerLabel')
+        ? String(op.answerLabel || '') : '';
+      qLigar.answers = (qLigar.answers || []).concat([{
+        key: claveLigar,
+        label: etiquetaLigar,
+        full_label: componerFullLabel(etiquetaLigar, op.gloss),
+        gloss: op.gloss || null,
+        target_posture_id: pLigar.id,
+        source_line: 0
+      }]);
+      marcarLocal(qLigar);
+      if ((datos.root_postures || []).indexOf(pLigar.id) !== -1
+          && (datos.root_postures || []).length > 1) {
+        quitarRaiz(datos, pLigar.id);
+      }
+      return;
+    }
+    if (op.op === 'attachAxis') {
+      var qEjeLigar = datos.questions[op.questionId];
+      var pEjeLigar = datos.postures[op.postureId];
+      if (!qEjeLigar || !pEjeLigar) return;
+      if (seriaCicloEje(datos, pEjeLigar.id, qEjeLigar.id)) return;
+      añadirEjeAPostura(pEjeLigar, qEjeLigar.id);
+      añadirOrigenAPregunta(qEjeLigar, pEjeLigar.id);
+      return;
+    }
     if (op.op === 'ensureRoot') {
       asegurarRaiz(datos, op.postureId);
       return;
@@ -491,27 +582,33 @@
 
   function empujar(edits, op) {
     edits.ops.push(op);
-    guardar(edits);
+    programarGuardar(edits);
     return edits;
   }
 
+  /* Misma entidad, no necesariamente el mismo campo: formal y coloquial, o
+     etiqueta y glosa, se editan en inputs distintos. Si se sustituye el op
+     entero, el replay desde el canónico borra el campo hermano. */
   function mismaOpCampo(a, b) {
     if (!a || !b || a.op !== b.op) return false;
-    if (a.op === 'rename') return a.postureId === b.postureId;
+    if (a.op === 'rename' || a.op === 'setPostureMeta') return a.postureId === b.postureId;
     if (a.op === 'setQuestion') return a.id === b.id;
-    if (a.op === 'setPostureMeta') {
-      return a.postureId === b.postureId
-        && Object.keys(a).sort().join() === Object.keys(b).sort().join();
-    }
     if (a.op === 'setAnswer') return a.questionId === b.questionId && a.key === b.key;
     return false;
   }
 
+  function mezclarOp(base, extra) {
+    var out = {};
+    Object.keys(base).forEach(function (k) { out[k] = base[k]; });
+    Object.keys(extra).forEach(function (k) { out[k] = extra[k]; });
+    return out;
+  }
+
   function empujarOReemplazar(edits, op) {
     var last = edits.ops[edits.ops.length - 1];
-    if (last && mismaOpCampo(last, op)) edits.ops[edits.ops.length - 1] = op;
+    if (last && mismaOpCampo(last, op)) edits.ops[edits.ops.length - 1] = mezclarOp(last, op);
     else edits.ops.push(op);
-    guardar(edits);
+    programarGuardar(edits);
     return edits;
   }
 
@@ -535,9 +632,8 @@
   }
 
   function fijarRespuesta(edits, questionId, key, label, gloss) {
-    var op = {
-      op: 'setAnswer', questionId: questionId, key: key, label: String(label || '')
-    };
+    var op = { op: 'setAnswer', questionId: questionId, key: key };
+    if (label !== undefined) op.label = String(label || '');
     if (gloss !== undefined) op.gloss = gloss;
     return empujarOReemplazar(edits, op);
   }
@@ -619,6 +715,37 @@
     });
   }
 
+  function desconectarRespuesta(edits, questionId, key) {
+    empujar(edits, { op: 'removeAnswer', questionId: questionId, key: key });
+  }
+
+  function desconectarEje(edits, questionId, fromPostureId) {
+    empujar(edits, {
+      op: 'removeAxis', questionId: questionId, fromPostureId: fromPostureId
+    });
+  }
+
+  function ligarRespuesta(edits, datos, questionId, postureId, label, gloss) {
+    var pregunta = datos.questions[questionId];
+    if (!pregunta || !datos.postures[postureId]) return null;
+    var key = siguienteClave(pregunta);
+    empujar(edits, {
+      op: 'attachAnswer',
+      questionId: questionId,
+      postureId: postureId,
+      key: key,
+      answerLabel: String(label || ''),
+      gloss: gloss || null
+    });
+    return key;
+  }
+
+  function ligarEje(edits, questionId, postureId) {
+    empujar(edits, {
+      op: 'attachAxis', questionId: questionId, postureId: postureId
+    });
+  }
+
   function alcanceBorrado(grafo, nodoId) {
     var resultado = { nodos: [], postureIds: [], questionIds: [] };
     if (!grafo || !nodoId) return resultado;
@@ -668,6 +795,35 @@
       });
     });
     return n === 0;
+  }
+
+  function quedariaHuerfanaPregunta(datos, qid, omitOriginPid) {
+    var pregunta = datos.questions[qid];
+    if (!pregunta) return true;
+    var n = 0;
+    (pregunta.origin_posture_ids || []).forEach(function (pid) {
+      if (omitOriginPid && pid === omitOriginPid) return;
+      n++;
+    });
+    return n === 0;
+  }
+
+  function posturaCompletamenteVacia(postura) {
+    if (!postura) return true;
+    if (!postura.is_unnamed && String(postura.label || '').trim()
+      && String(postura.label || '').trim() !== '?') return false;
+    if ((postura.traditions || []).length) return false;
+    if ((postura.notes || []).length) return false;
+    if ((postura.question_axes || []).length) return false;
+    return true;
+  }
+
+  function preguntaCompletamenteVacia(pregunta) {
+    if (!pregunta) return true;
+    if (String(pregunta.formal_text || '').trim()) return false;
+    if (String(pregunta.colloquial_hint || '').trim()) return false;
+    if ((pregunta.answers || []).length) return false;
+    return true;
   }
 
   function etiquetaFuente(postura) {
@@ -752,6 +908,8 @@
     olvidar: olvidar,
     vacio: estadoVacio,
     aplicar: aplicar,
+    aplicarOp: aplicarOp,
+    flushGuardar: flushGuardar,
     nombrarPostura: nombrarPostura,
     fijarPregunta: fijarPregunta,
     fijarMetaPostura: fijarMetaPostura,
@@ -762,11 +920,18 @@
     extraerYCrearEje: extraerYCrearEje,
     reengancharRespuesta: reengancharRespuesta,
     reengancharEje: reengancharEje,
+    desconectarRespuesta: desconectarRespuesta,
+    desconectarEje: desconectarEje,
+    ligarRespuesta: ligarRespuesta,
+    ligarEje: ligarEje,
     alcanceBorrado: alcanceBorrado,
     borrarSubarbol: borrarSubarbol,
     seriaCicloRespuesta: seriaCicloRespuesta,
     seriaCicloEje: seriaCicloEje,
     quedariaHuerfanaPostura: quedariaHuerfanaPostura,
+    quedariaHuerfanaPregunta: quedariaHuerfanaPregunta,
+    posturaCompletamenteVacia: posturaCompletamenteVacia,
+    preguntaCompletamenteVacia: preguntaCompletamenteVacia,
     valorTradiciones: function (postura) {
       return (postura.traditions || []).map(function (t) {
         return t.name + (t.is_tentative ? '?' : '');

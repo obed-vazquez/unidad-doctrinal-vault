@@ -506,14 +506,15 @@
       }
     },
     "Q45": {
-      "formal": "Are the Father and the Son personally distinct subjects, who coexist simultaneously and eternally and can relate to each other as an I and a you, although they share the same and identical divine substance, rather than being a single subject who manifests successively under different modes or roles?",
-      "colloquial": "Are the Father and the Son really two distinct persons, even though they are both fully God?",
+      "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles?",
+      "colloquial": "Did God transform Himself into Jesus Christ and when He speaks to the Father does He not speak to another person of the Trinity, but to Himself?",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No",
+          "gloss": "Although they are two different persons, they both share the same and identical divine substance"
         }
       }
     },
@@ -641,7 +642,7 @@
     "P78": "Resistible Grace",
     "P81": "Baptismal Salvation",
     "P83": "Perseverance of the Saints /Eternal Security",
-    "P84": "Loss of Salvation /Conditional Perseverance",
+    "P84": "Conditional Perseverance of Saints",
     "P85": "Homoiousianism / Semi-Arrianism",
     "P86": "Consubstantialism",
     "P87": "Modalism / Oneness / Unitarianism",

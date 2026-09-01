@@ -29,6 +29,8 @@
   var listaTradiciones = [];
   var listaPosturasSueltas = [];
   var historialRecorridos = [];
+  var historialEdicion = { pila: [], redo: [], marca: null, aplicando: false };
+  var TOPE_HISTORIAL = 100;
 
   /* ------------------------------------------------------------- carga --- */
 
@@ -138,43 +140,60 @@
     return { tradiciones: tradiciones, posturas: posturas };
   }
 
-  function avisar(mensaje) {
+  function avisar(mensaje, duracion) {
     dom.aviso.textContent = mensaje;
     dom.aviso.classList.add('visible');
     global.clearTimeout(avisar._temporizador);
     avisar._temporizador = global.setTimeout(function () {
       dom.aviso.classList.remove('visible');
-    }, 2600);
+    }, duracion == null ? 2600 : duracion);
   }
 
   /* Confirmación modal propia: `window.confirm` bloquea el hilo y desentona
-     con el resto de la interfaz. Devuelve una promesa con la decisión. */
+     con el resto de la interfaz. Devuelve una promesa con la decisión.
+     `opciones.tercero` añade un tercer botón; la promesa resuelve
+     'aceptar' | 'cancelar' | 'tercero'. Sin tercero, true/false como antes. */
   function confirmar(opciones) {
     return new Promise(function (resolver) {
+      var conTercero = !!(opciones && opciones.tercero);
       dom.dialogoTitulo.textContent = opciones.titulo;
       dom.dialogoTexto.innerHTML = opciones.texto;
       dom.dialogoAceptar.textContent = opciones.aceptar || 'Eliminar';
+      if (dom.dialogoTercero) {
+        if (conTercero) {
+          dom.dialogoTercero.hidden = false;
+          dom.dialogoTercero.textContent = opciones.tercero;
+        } else {
+          dom.dialogoTercero.hidden = true;
+        }
+      }
       dom.dialogo.classList.remove('oculto');
-      dom.dialogoAceptar.focus();
+      (conTercero && dom.dialogoTercero ? dom.dialogoTercero : dom.dialogoAceptar).focus();
 
       function cerrar(decision) {
         dom.dialogo.classList.add('oculto');
+        if (dom.dialogoTercero) dom.dialogoTercero.hidden = true;
         dom.dialogoAceptar.removeEventListener('click', aceptar);
         dom.dialogoCancelar.removeEventListener('click', cancelar);
+        if (dom.dialogoTercero) dom.dialogoTercero.removeEventListener('click', tercero);
         dom.dialogo.removeEventListener('click', fuera);
         document.removeEventListener('keydown', tecla);
         resolver(decision);
       }
-      function aceptar() { cerrar(true); }
-      function cancelar() { cerrar(false); }
-      function fuera(evento) { if (evento.target === dom.dialogo) cerrar(false); }
+      function aceptar() { cerrar(conTercero ? 'aceptar' : true); }
+      function cancelar() { cerrar(conTercero ? 'cancelar' : false); }
+      function tercero() { cerrar('tercero'); }
+      function fuera(evento) { if (evento.target === dom.dialogo) cancelar(); }
       function tecla(evento) {
-        if (evento.key === 'Escape') { evento.stopPropagation(); cerrar(false); }
-        if (evento.key === 'Enter') { evento.preventDefault(); cerrar(true); }
+        if (evento.key === 'Escape') { evento.stopPropagation(); cancelar(); }
+        if (evento.key === 'Enter' && !conTercero) { evento.preventDefault(); aceptar(); }
       }
 
       dom.dialogoAceptar.addEventListener('click', aceptar);
       dom.dialogoCancelar.addEventListener('click', cancelar);
+      if (conTercero && dom.dialogoTercero) {
+        dom.dialogoTercero.addEventListener('click', tercero);
+      }
       dom.dialogo.addEventListener('click', fuera);
       document.addEventListener('keydown', tecla);
     });
@@ -387,7 +406,23 @@
     }, 340);
   }
 
+  var refrescoRaf = null;
+  function pedirRefresco() {
+    if (refrescoRaf != null) return;
+    refrescoRaf = global.requestAnimationFrame(function () {
+      refrescoRaf = null;
+      refrescar();
+    });
+  }
+
   function refrescar() {
+    if (Estado.divulgacion === 'edicion' && Estado.grafo) {
+      var fusionado = false;
+      Estado.grafo.nodos.forEach(function (nodo) {
+        if (nodo.tipo === 'tarjeta' && nodo.pregunta) fusionado = true;
+      });
+      if (fusionado) Estado.grafo = grafoDeEstado();
+    }
     calcularResaltadoTradiciones();
     calcularResaltadoCoincidentes();
     var apertura = calcularAperturaCreencias();
@@ -397,6 +432,7 @@
     var enEdicion = Estado.divulgacion === 'edicion';
     var grafoVista = (enEdicion && Arbol.grafoConControles)
       ? Arbol.grafoConControles(Estado.grafo) : Estado.grafo;
+    if (Estado.forzarNodos) grafoVista.forzarNodos = Estado.forzarNodos;
     var visibles = Arbol.nodosVisibles(grafoVista, respuestas, Estado.divulgacion,
       Estado.expandidos, apertura, Estado.ramasSinRespuesta);
     var aristasIds = Arbol.aristasVisibles(grafoVista, visibles, respuestas,
@@ -1632,6 +1668,7 @@
   }
 
   function abrirPestana(nombre) {
+    var abriendo = !Estado.panelAbierto;
     Estado.pestana = nombre;
     Estado.panelAbierto = true;
     // `vista` sigue siendo lo que viaja en el enlace; la pestaña la gobierna.
@@ -1641,6 +1678,16 @@
       if (Estado.posturasSueltas.length) Estado.modo = 'explorador';
     }
     Estado.emitir('panel');
+    if (abriendo && nombre === 'creencias') enfocarBuscadorCreencias();
+  }
+
+  function enfocarBuscadorCreencias() {
+    var campo = dom.buscador;
+    if (!campo) return;
+    global.requestAnimationFrame(function () {
+      try { campo.focus({ preventScroll: true }); }
+      catch (error) { campo.focus(); }
+    });
   }
 
   /* Sin instantáneas que deshacer: el panel nunca escribió en la expansión
@@ -1871,15 +1918,130 @@
     fijarRecorrido(anterior, { desdeHistorial: true });
   }
 
+  function grafoDeEstado() {
+    return Arbol.construirGrafo(Estado.datos,
+      Estado.divulgacion === 'edicion' ? { separarSiempre: true } : null);
+  }
+
+  function snapshotEdicion() {
+    return {
+      edits: JSON.parse(JSON.stringify(editsEstado)),
+      tamanos: JSON.parse(JSON.stringify(Estado.editTamanos || {})),
+      fijados: JSON.parse(JSON.stringify(Estado.fijados || {}))
+    };
+  }
+
+  function marcarUndo() {
+    if (historialEdicion.aplicando) return;
+    if (!historialEdicion.marca) historialEdicion.marca = snapshotEdicion();
+  }
+
+  function commitUndo() {
+    if (historialEdicion.aplicando || !historialEdicion.marca) return;
+    var ahora = {
+      edits: editsEstado,
+      tamanos: Estado.editTamanos || {},
+      fijados: Estado.fijados || {}
+    };
+    if (firmaHistorial(historialEdicion.marca) === firmaHistorial(ahora)) {
+      historialEdicion.marca = null;
+      return;
+    }
+    historialEdicion.pila.push(historialEdicion.marca);
+    if (historialEdicion.pila.length > TOPE_HISTORIAL) historialEdicion.pila.shift();
+    historialEdicion.redo = [];
+    historialEdicion.marca = null;
+  }
+
+  function firmaHistorial(s) {
+    return JSON.stringify(s.edits && s.edits.ops)
+      + '\0' + JSON.stringify(s.tamanos || {})
+      + '\0' + JSON.stringify(s.fijados || {});
+  }
+
+  function abortarUndo(snap) {
+    historialEdicion.marca = null;
+    if (snap) restaurarEdicion(snap);
+  }
+
+  function restaurarEdicion(snap) {
+    historialEdicion.aplicando = true;
+    editsEstado = JSON.parse(JSON.stringify(snap.edits));
+    Edits.guardar(editsEstado);
+    Estado.editTamanos = JSON.parse(JSON.stringify(snap.tamanos || {}));
+    Estado.fijados = JSON.parse(JSON.stringify(snap.fijados || {}));
+    reconstruirModelo();
+    historialEdicion.aplicando = false;
+  }
+
+  function deshacerEdicion() {
+    if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre && Arbol.EditMode.hayEnlacePadre()) return;
+    if (historialEdicion.marca) commitUndo();
+    if (!historialEdicion.pila.length) return;
+    var actual = snapshotEdicion();
+    var prev = historialEdicion.pila.pop();
+    historialEdicion.redo.push(actual);
+    restaurarEdicion(prev);
+  }
+
+  function rehacerEdicion() {
+    if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre && Arbol.EditMode.hayEnlacePadre()) return;
+    if (!historialEdicion.redo.length) return;
+    var actual = snapshotEdicion();
+    var sig = historialEdicion.redo.pop();
+    historialEdicion.pila.push(actual);
+    restaurarEdicion(sig);
+  }
+
+  function conHistorial(fn) {
+    if (historialEdicion.aplicando) {
+      fn();
+      return;
+    }
+    volcarCampoActivo();
+    marcarUndo();
+    fn();
+    commitUndo();
+  }
+
   function reconstruirModelo(despues) {
+    cancelarRefrescoTexto();
     Estado.datos = Edits.aplicar(datosCanon, editsEstado);
-    Estado.grafo = Arbol.construirGrafo(Estado.datos);
-    Layout.limpiarCache();
+    Estado.grafo = grafoDeEstado();
+    if (Layout.limpiarCacheComposicion) Layout.limpiarCacheComposicion();
+    else Layout.limpiarCache();
     listaTradiciones = Busqueda.listaTradiciones(Estado.datos);
     listaPosturasSueltas = Busqueda.listaPosturasSueltas(Estado.datos, Estado.grafo);
     Estado.sanear();
     if (despues) despues();
     Estado.emitir('edicion');
+  }
+
+  function parcharDatosVivos() {
+    var op = editsEstado.ops[editsEstado.ops.length - 1];
+    if (op && Estado.datos && Edits.aplicarOp) Edits.aplicarOp(Estado.datos, op, editsEstado);
+  }
+
+  var recargaTextoTimer = null;
+  function cancelarRefrescoTexto() {
+    if (!recargaTextoTimer) return;
+    global.clearTimeout(recargaTextoTimer);
+    recargaTextoTimer = null;
+  }
+
+  function pedirRefrescoTexto() {
+    cancelarRefrescoTexto();
+    recargaTextoTimer = global.setTimeout(function () {
+      recargaTextoTimer = null;
+      Estado.emitir('edicion');
+    }, 160);
+  }
+
+  function cerrarEdicionCampo() {
+    parcharDatosVivos();
+    commitUndo();
+    if (Edits.flushGuardar) Edits.flushGuardar();
+    pedirRefrescoTexto();
   }
 
   function leerCampo(contenedor, nombre) {
@@ -1892,26 +2054,32 @@
     if (accion === 'nombrar') {
       var nombre = leerCampo(contenedor, 'nombre');
       if (!nombre) { avisar('Escribe un nombre para la postura.'); return; }
-      Edits.nombrarPostura(editsEstado, boton.getAttribute('data-postura'), nombre);
-      reconstruirModelo();
+      conHistorial(function () {
+        Edits.nombrarPostura(editsEstado, boton.getAttribute('data-postura'), nombre);
+        reconstruirModelo();
+      });
       avisar('Nombre guardado en el borrador local.');
       return;
     }
     if (accion === 'agregar-pregunta') {
       var formal = leerCampo(contenedor, 'formal');
       if (!formal) { avisar('Escribe la pregunta formal.'); return; }
-      Edits.agregarPregunta(editsEstado, boton.getAttribute('data-postura'),
-        formal, leerCampo(contenedor, 'coloquial'));
-      reconstruirModelo();
+      conHistorial(function () {
+        Edits.agregarPregunta(editsEstado, boton.getAttribute('data-postura'),
+          formal, leerCampo(contenedor, 'coloquial'));
+        reconstruirModelo();
+      });
       avisar('Pregunta añadida al borrador local.');
       return;
     }
     if (accion === 'agregar-respuesta') {
       var etiqueta = leerCampo(contenedor, 'respuesta') || 'Sí';
       var destino = leerCampo(contenedor, 'destino') || '?';
-      Edits.agregarRespuesta(editsEstado, Estado.datos, boton.getAttribute('data-pregunta'),
-        etiqueta, destino);
-      reconstruirModelo();
+      conHistorial(function () {
+        Edits.agregarRespuesta(editsEstado, Estado.datos, boton.getAttribute('data-pregunta'),
+          etiqueta, destino);
+        reconstruirModelo();
+      });
       avisar('Respuesta añadida al borrador local.');
       return;
     }
@@ -1923,9 +2091,12 @@
         aceptar: 'Descartar'
       }).then(function (aceptado) {
         if (!aceptado) return;
-        Edits.olvidar();
-        editsEstado = Edits.vacio();
-        reconstruirModelo();
+        conHistorial(function () {
+          Edits.olvidar();
+          editsEstado = Edits.vacio();
+          Edits.guardar(editsEstado);
+          reconstruirModelo();
+        });
         avisar('Aportes locales descartados.');
       });
     }
@@ -1950,6 +2121,7 @@
     var reconstruir = !(opciones && opciones.sinReconstruir);
     if (reconstruir) {
       if (Arbol.EditMode && Arbol.EditMode.soltarFoco) Arbol.EditMode.soltarFoco();
+      marcarUndo();
     } else if (Arbol.EditMode) {
       Arbol.EditMode.guardarFoco(el);
     }
@@ -1962,7 +2134,8 @@
         if (valor === mostrado) valor = posturaNom.label || valor;
       }
       Edits.nombrarPostura(editsEstado, titulo, valor);
-      if (reconstruir) reconstruirModelo();
+      if (reconstruir) cerrarEdicionCampo();
+      else parcharDatosVivos();
       return;
     }
     var aristaId = el.getAttribute('data-edit-arista');
@@ -1974,7 +2147,8 @@
         el.getAttribute('data-edit-clave'),
         labelEl ? labelEl.value : valor,
         glossEl ? glossEl.value : undefined);
-      if (reconstruir) reconstruirModelo();
+      if (reconstruir) cerrarEdicionCampo();
+      else parcharDatosVivos();
       return;
     }
     var campo = el.getAttribute('data-edit-campo');
@@ -1982,17 +2156,20 @@
     var posturaId = el.getAttribute('data-edit-postura');
     if (campo === 'formal_text' && preguntaId) {
       Edits.fijarPregunta(editsEstado, preguntaId, valor, undefined);
-      if (reconstruir) reconstruirModelo();
+      if (reconstruir) cerrarEdicionCampo();
+      else parcharDatosVivos();
       return;
     }
     if (campo === 'colloquial_hint' && preguntaId) {
       Edits.fijarPregunta(editsEstado, preguntaId, undefined, valor);
-      if (reconstruir) reconstruirModelo();
+      if (reconstruir) cerrarEdicionCampo();
+      else parcharDatosVivos();
       return;
     }
     if (campo && posturaId) {
       Edits.fijarMetaPostura(editsEstado, posturaId, campo, valor);
-      if (reconstruir) reconstruirModelo();
+      if (reconstruir) cerrarEdicionCampo();
+      else parcharDatosVivos();
     }
   }
 
@@ -2026,6 +2203,7 @@
 
   function crearDesdeControl(id) {
     if (!id) return;
+    conHistorial(function () {
     volcarCampoActivo();
     if (id.indexOf('+:') === 0) {
       var qid = id.slice(2);
@@ -2057,6 +2235,7 @@
       });
       avisar('Eje añadido al borrador local.');
     }
+    });
   }
 
   function nombreDeNodo(nodo) {
@@ -2101,8 +2280,10 @@
       aceptar: t('eliminarNodo')
     }).then(function (aceptado) {
       if (!aceptado) return;
-      Edits.borrarSubarbol(editsEstado, alcance);
-      reconstruirModelo();
+      conHistorial(function () {
+        Edits.borrarSubarbol(editsEstado, alcance);
+        reconstruirModelo();
+      });
       avisar('Nodo eliminado del borrador local.');
     });
   }
@@ -2123,15 +2304,45 @@
 
   function redimensionarNodoEdicion(id, w, h) {
     if (!id) return;
-    Estado.editTamanos[id] = { w: Math.round(w), h: Math.round(h) };
-    Estado.emitir('edicion');
+    conHistorial(function () {
+      Estado.editTamanos[id] = { w: Math.round(w), h: Math.round(h) };
+      Estado.emitir('edicion');
+    });
   }
 
-  function reengancharDesdeVista(arista, extremo, nodo) {
-    if (!arista || !nodo) return;
-    volcarCampoActivo();
+  function etiquetaDeArista(arista) {
+    if (!arista || arista.tipo !== 'respuesta') return { label: '', gloss: null };
+    var q = Estado.datos.questions[arista.preguntaId];
+    var hallada = null;
+    if (q) {
+      (q.answers || []).forEach(function (respuesta) {
+        if (respuesta.key === arista.clave) hallada = respuesta;
+      });
+    }
+    return {
+      label: hallada ? String(hallada.label || '') : String(arista.etiqueta || ''),
+      gloss: hallada ? hallada.gloss : (arista.glosa || null)
+    };
+  }
+
+  function idHuerfano(posturaId, preguntaId) {
+    if (preguntaId && !posturaId) return Estado.grafo.idDePregunta(preguntaId);
+    if (posturaId) return Estado.grafo.idDePostura(posturaId);
+    return null;
+  }
+
+  function esVacioHuerfano(posturaId, preguntaId) {
+    if (preguntaId && !posturaId) {
+      return Edits.preguntaCompletamenteVacia(Estado.datos.questions[preguntaId]);
+    }
+    return Edits.posturaCompletamenteVacia(Estado.datos.postures[posturaId]);
+  }
+
+  function calcularHuerfano(arista, extremo, modo) {
+    if (!arista) return null;
+    var roots = Estado.datos.root_postures || [];
     if (arista.tipo === 'respuesta') {
-      if (extremo === 'hasta') {
+      if (modo === 'desconectar' || extremo === 'hasta') {
         var viejoPid = null;
         var pregunta = Estado.datos.questions[arista.preguntaId];
         if (pregunta) {
@@ -2139,36 +2350,51 @@
             if (respuesta.key === arista.clave) viejoPid = respuesta.target_posture_id;
           });
         }
-        var huerfana = viejoPid
-          && (Estado.datos.root_postures || []).indexOf(viejoPid) === -1
-          && Edits.quedariaHuerfanaPostura(Estado.datos, viejoPid, {
-            questionId: arista.preguntaId, key: arista.clave
-          });
-        var aplicar = function (comoRaiz) {
-          Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
-            newPostureId: nodo.posturaId,
-            huérfanoComoRaiz: !!comoRaiz
-          });
-          reconstruirModelo();
-        };
-        if (huerfana) {
-          var nombre = Layout.rotuloPostura(Estado.datos.postures[viejoPid]);
-          confirmar({
-            titulo: t('huerfanoTitulo'),
-            texto: t('huerfanoTexto', { nombre: escapar(nombre) }),
-            aceptar: t('huerfanoAceptar')
-          }).then(function (ok) {
-            if (ok) aplicar(true);
-          });
-          return;
-        }
-        aplicar(false);
-        return;
+        if (!viejoPid || roots.indexOf(viejoPid) !== -1) return null;
+        if (!Edits.quedariaHuerfanaPostura(Estado.datos, viejoPid, {
+          questionId: arista.preguntaId, key: arista.clave
+        })) return null;
+        return { tipo: 'postura', posturaId: viejoPid, preguntaId: null };
       }
-      Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
-        newQuestionId: nodo.preguntaId
-      });
-      reconstruirModelo();
+      return null;
+    }
+    if (arista.tipo === 'eje') {
+      var fromNodo = Estado.grafo.nodos.get(arista.desde);
+      var fromPid = fromNodo && fromNodo.posturaId;
+      if (modo === 'desconectar' || extremo === 'hasta') {
+        var qid = arista.preguntaId;
+        if (!qid || !fromPid) return null;
+        if (!Edits.quedariaHuerfanaPregunta(Estado.datos, qid, fromPid)) return null;
+        return { tipo: 'pregunta', posturaId: null, preguntaId: qid };
+      }
+      return null;
+    }
+    return null;
+  }
+
+  function aplicarDesconexion(arista) {
+    if (arista.tipo === 'respuesta') {
+      Edits.desconectarRespuesta(editsEstado, arista.preguntaId, arista.clave);
+      return;
+    }
+    if (arista.tipo === 'eje') {
+      var fromNodo = Estado.grafo.nodos.get(arista.desde);
+      var fromPid = fromNodo && fromNodo.posturaId;
+      if (fromPid) Edits.desconectarEje(editsEstado, arista.preguntaId, fromPid);
+    }
+  }
+
+  function aplicarReenganche(arista, extremo, nodo) {
+    if (arista.tipo === 'respuesta') {
+      if (extremo === 'hasta') {
+        Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
+          newPostureId: nodo.posturaId
+        });
+      } else {
+        Edits.reengancharRespuesta(editsEstado, arista.preguntaId, arista.clave, {
+          newQuestionId: nodo.preguntaId
+        });
+      }
       return;
     }
     if (arista.tipo === 'eje') {
@@ -2184,8 +2410,161 @@
           toQuestionId: nodo.preguntaId
         });
       }
-      reconstruirModelo();
     }
+  }
+
+  function borrarEntidadHuerfana(huerfano) {
+    if (huerfano.tipo === 'postura' && huerfano.posturaId) {
+      Edits.borrarSubarbol(editsEstado, {
+        nodos: [], postureIds: [huerfano.posturaId], questionIds: []
+      });
+    } else if (huerfano.tipo === 'pregunta' && huerfano.preguntaId) {
+      Edits.borrarSubarbol(editsEstado, {
+        nodos: [], postureIds: [], questionIds: [huerfano.preguntaId]
+      });
+    }
+  }
+
+  function mostrarHuerfano(huerfano) {
+    var nodoId = idHuerfano(huerfano.posturaId, huerfano.preguntaId);
+    Estado.forzarNodos = nodoId ? new Set([nodoId]) : null;
+    huerfano.nodoId = nodoId;
+    huerfano.teniaPin = !!(nodoId && Estado.fijados[nodoId]);
+    if (nodoId && Vista.posiciones && Vista.posiciones.get(nodoId) && !huerfano.teniaPin) {
+      var pt = Vista.posiciones.get(nodoId);
+      Estado.fijados[nodoId] = { x: pt.x, y: pt.y };
+      huerfano.pinTemporal = true;
+    }
+  }
+
+  function limpiarHuerfanoVisual(huerfano) {
+    Estado.forzarNodos = null;
+    if (huerfano && huerfano.pinTemporal && huerfano.nodoId) {
+      delete Estado.fijados[huerfano.nodoId];
+    }
+  }
+
+  function pedirPadreHuerfano(huerfano, snap, etiqueta) {
+    mostrarHuerfano(huerfano);
+    reconstruirModelo(function () {
+      huerfano.nodoId = idHuerfano(huerfano.posturaId, huerfano.preguntaId);
+      if (huerfano.nodoId) Estado.forzarNodos = new Set([huerfano.nodoId]);
+    });
+    Arbol.EditMode.iniciarEnlacePadre(Vista, {
+      nodoId: huerfano.nodoId || idHuerfano(huerfano.posturaId, huerfano.preguntaId),
+      tipo: huerfano.tipo,
+      posturaId: huerfano.posturaId,
+      preguntaId: huerfano.preguntaId,
+      label: etiqueta && etiqueta.label,
+      gloss: etiqueta && etiqueta.gloss,
+      onInvalido: function () {
+        avisar(t('padreInvalido'), 2000);
+      },
+      onCancelar: function () {
+        limpiarHuerfanoVisual(huerfano);
+        abortarUndo(snap);
+      },
+      onExito: function (spec) {
+        limpiarHuerfanoVisual(huerfano);
+        var claveNueva = null;
+        var qidFoco = null;
+        if (spec.tipo === 'postura') {
+          qidFoco = spec.nodo.preguntaId;
+          claveNueva = Edits.ligarRespuesta(editsEstado, Estado.datos, spec.nodo.preguntaId,
+            spec.posturaId, spec.label, spec.gloss);
+          if (qidFoco) {
+            var anfitrion = Estado.grafo.anfitrionDePregunta(qidFoco);
+            if (anfitrion) Estado.expandidos.add(anfitrion);
+            Estado.expandidos.add(Estado.grafo.idDePregunta(qidFoco));
+          }
+        } else {
+          Edits.ligarEje(editsEstado, spec.preguntaId, spec.nodo.posturaId);
+          var idP = Estado.grafo.idDePostura(spec.nodo.posturaId);
+          if (idP) Estado.expandidos.add(idP);
+        }
+        reconstruirModelo(function () {
+          if (claveNueva && qidFoco && Arbol.EditMode) {
+            Estado.grafo.aristas.forEach(function (arista) {
+              if (arista.tipo === 'respuesta' && arista.preguntaId === qidFoco
+                  && arista.clave === claveNueva) {
+                Arbol.EditMode.pedirFocoArista(arista.id, true);
+              }
+            });
+          }
+        });
+        commitUndo();
+      }
+    });
+  }
+
+  function resolverHuerfano(huerfano, snap, etiqueta) {
+    if (esVacioHuerfano(huerfano.posturaId, huerfano.preguntaId)) {
+      borrarEntidadHuerfana(huerfano);
+      reconstruirModelo();
+      commitUndo();
+      return;
+    }
+    var nodo = Estado.grafo.nodos.get(idHuerfano(huerfano.posturaId, huerfano.preguntaId));
+    confirmar({
+      titulo: t('huerfanoTitulo'),
+      texto: t('huerfanoTexto', { nombre: escapar(nombreDeNodo(nodo)) }),
+      aceptar: t('huerfanoEliminar'),
+      tercero: t('huerfanoAsignar')
+    }).then(function (decision) {
+      if (decision === 'cancelar' || decision === false) {
+        limpiarHuerfanoVisual(huerfano);
+        abortarUndo(snap);
+        return;
+      }
+      if (decision === 'aceptar' || decision === true) {
+        limpiarHuerfanoVisual(huerfano);
+        var nodoId = idHuerfano(huerfano.posturaId, huerfano.preguntaId);
+        var alcance = Edits.alcanceBorrado(Estado.grafo, nodoId);
+        Edits.borrarSubarbol(editsEstado, alcance);
+        reconstruirModelo();
+        commitUndo();
+        return;
+      }
+      pedirPadreHuerfano(huerfano, snap, etiqueta);
+    });
+  }
+
+  function trasAccionArista(arista, extremo, modo, destino) {
+    volcarCampoActivo();
+    var etiqueta = etiquetaDeArista(arista);
+    var huerfano = calcularHuerfano(arista, extremo, modo);
+    marcarUndo();
+    var snap = historialEdicion.marca;
+    if (modo === 'desconectar') aplicarDesconexion(arista);
+    else aplicarReenganche(arista, extremo, destino);
+    if (Arbol.EditMode && Arbol.EditMode.olvidarAncla) {
+      Arbol.EditMode.olvidarAncla(arista.id);
+    }
+    if (!huerfano) {
+      reconstruirModelo();
+      commitUndo();
+      return;
+    }
+    if (esVacioHuerfano(huerfano.posturaId, huerfano.preguntaId)) {
+      borrarEntidadHuerfana(huerfano);
+      reconstruirModelo();
+      commitUndo();
+      return;
+    }
+    reconstruirModelo(function () {
+      mostrarHuerfano(huerfano);
+    });
+    resolverHuerfano(huerfano, snap, etiqueta);
+  }
+
+  function desconectarDesdeVista(arista, extremo) {
+    if (!arista) return;
+    trasAccionArista(arista, extremo, 'desconectar', null);
+  }
+
+  function reengancharDesdeVista(arista, extremo, nodo) {
+    if (!arista || !nodo) return;
+    trasAccionArista(arista, extremo, 'reenganchar', nodo);
   }
 
   function registrarEventosEdicion() {
@@ -2193,7 +2572,9 @@
     if (!lienzo) return;
     lienzo.addEventListener('focusin', function (evento) {
       if (esInputEdicion(evento.target) && Arbol.EditMode) {
+        cancelarRefrescoTexto();
         Arbol.EditMode.guardarFoco(evento.target);
+        marcarUndo();
       }
     });
     lienzo.addEventListener('input', function (evento) {
@@ -2293,7 +2674,11 @@
     }
 
     dom.btnReorganizar.addEventListener('click', function () {
-      Estado.liberarTodos();
+      if (Estado.divulgacion === 'edicion') {
+        conHistorial(function () { Estado.liberarTodos(); });
+      } else {
+        Estado.liberarTodos();
+      }
       avisar('Posiciones automáticas restauradas.');
     });
 
@@ -2583,7 +2968,27 @@
     });
 
     global.addEventListener('keydown', function (evento) {
-      if (evento.target && /^(INPUT|TEXTAREA|SELECT)$/.test(evento.target.tagName)) return;
+      var enCampo = evento.target && /^(INPUT|TEXTAREA|SELECT)$/.test(evento.target.tagName);
+      var esc = evento.key === 'Escape' || evento.key === 'Esc' || evento.code === 'Escape';
+      if (enCampo) {
+        if (esc && Estado.panelAbierto && evento.target === dom.buscador) {
+          evento.preventDefault();
+          if (hayMenuAbierto()) cerrarMenus();
+          else cerrarPanel();
+        }
+        return;
+      }
+      if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre && Arbol.EditMode.hayEnlacePadre()) {
+        if (!esc) evento.preventDefault();
+        return;
+      }
+      if (Estado.divulgacion === 'edicion' && (evento.ctrlKey || evento.metaKey) && !evento.altKey) {
+        var z = evento.key === 'z' || evento.key === 'Z';
+        var y = evento.key === 'y' || evento.key === 'Y';
+        if (z && evento.shiftKey) { evento.preventDefault(); rehacerEdicion(); return; }
+        if (z) { evento.preventDefault(); deshacerEdicion(); return; }
+        if (y && !evento.shiftKey) { evento.preventDefault(); rehacerEdicion(); return; }
+      }
       if ((evento.ctrlKey || evento.metaKey) && !evento.altKey && !evento.shiftKey
         && (evento.key === 'ArrowLeft' || evento.key === 'ArrowRight')) {
         evento.preventDefault();
@@ -2605,10 +3010,10 @@
       else if (tecla === 'c') { dom.btnCreencias.click(); }
       else if (tecla === 't') { dom.btnTema.click(); }
       else if (tecla === 'h' && Estado.resaltados.size) { dom.btnResaltados.click(); }
-      else if (evento.key === 'Escape') {
+      else if (esc) {
         if (hayMenuAbierto()) cerrarMenus();
-        else if (Estado.seleccionado) Estado.seleccionar(null);
         else if (Estado.panelAbierto) cerrarPanel();
+        else if (Estado.seleccionado) Estado.seleccionar(null);
       }
     });
   }
@@ -2625,6 +3030,7 @@
       dialogoTexto: document.getElementById('dialogo-texto'),
       dialogoAceptar: document.getElementById('dialogo-aceptar'),
       dialogoCancelar: document.getElementById('dialogo-cancelar'),
+      dialogoTercero: document.getElementById('dialogo-tercero'),
       panel: document.getElementById('panel'),
       panelCerrar: document.getElementById('panel-cerrar'),
       pestanas: document.querySelectorAll('.pestana'),
@@ -2687,7 +3093,6 @@
     datosCanon = datos;
     editsEstado = Edits.cargar();
     Estado.datos = Edits.aplicar(datosCanon, editsEstado);
-    Estado.grafo = Arbol.construirGrafo(Estado.datos);
 
     var lectura = Router.leer();
     // El estado vive en localStorage (§8.1), así que sobrevive a recargas y a
@@ -2699,6 +3104,9 @@
     else Estado.cargar();
 
     var aplicado = Router.aplicar(lectura, Estado);
+    /* El grafo depende del recorrido: en edición los ejes van siempre sueltos.
+       Hay que construirlo DESPUÉS de restaurar divulgacion, no antes. */
+    Estado.grafo = grafoDeEstado();
     Estado.sanear();
     // «Comparar» no es una pestaña de entrada: se llega a ella desde el panel.
     // Una sesión guardada ahí (o un enlace con vista=lista) abre en «Creencias».
@@ -2761,14 +3169,25 @@
         Vista.centrarEnNodo(nodoId);
       },
       alResaltar: function (nodoId) { Estado.alternarResaltado(nodoId); },
-      alFijar: function (nodoId, punto) { Estado.fijar(nodoId, punto); },
+      alFijar: function (nodoId, punto) {
+        if (Estado.divulgacion === 'edicion') {
+          conHistorial(function () { Estado.fijar(nodoId, punto); });
+        } else {
+          Estado.fijar(nodoId, punto);
+        }
+      },
       alDesanclar: function (nodoId) {
-        Estado.desanclar(nodoId);
+        if (Estado.divulgacion === 'edicion') {
+          conHistorial(function () { Estado.desanclar(nodoId); });
+        } else {
+          Estado.desanclar(nodoId);
+        }
         avisar('Nodo devuelto a su posición automática.');
       },
       alCambiarCamara: function (camara) { Estado.camara = camara; },
       alCrearControl: crearDesdeControl,
       alReenganchar: reengancharDesdeVista,
+      alDesconectar: desconectarDesdeVista,
       alRedimensionar: redimensionarNodoEdicion,
       alBorrarNodoEdicion: borrarNodoEdicion,
       alAgregarCampo: agregarCampoEdicion,
@@ -2784,7 +3203,7 @@
       if (motivo === 'respuesta' || motivo === 'divulgacion') {
         sincronizarHojasRecorrido();
       }
-      refrescar();
+      pedirRefresco();
     });
     var recargaIdioma = null;
     I18n.suscribir(function () {

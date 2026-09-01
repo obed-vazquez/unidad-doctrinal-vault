@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-31T10:06:15Z",
+  "generated_at": "2026-09-01T12:20:58Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -983,8 +983,8 @@ window.__ARBOL_POSTURAS__ = {
     "Q33": {
       "id": "Q33",
       "formal_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?",
-      "colloquial_hint": "Cuando un niño muere ¿va a un lugar diferente al cielo?",
-      "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)",
+      "colloquial_hint": "¿Al morir un niño, va a un lugar diferente al cielo?",
+      "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)",
       "source_line": 148,
       "origin_posture_ids": [
         "P63"
@@ -1341,9 +1341,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q45": {
       "id": "Q45",
-      "formal_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles?",
-      "colloquial_hint": "¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?",
-      "full_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?)",
+      "formal_text": "¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles?",
+      "colloquial_hint": "¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?",
+      "full_text": "¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?)",
       "source_line": 183,
       "origin_posture_ids": [
         "P86"
@@ -1353,17 +1353,17 @@ window.__ARBOL_POSTURAS__ = {
       "answers": [
         {
           "key": "A",
-          "label": "No",
-          "full_label": "No",
+          "label": "Sí",
+          "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P87",
           "source_line": 184
         },
         {
           "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
+          "label": "No",
+          "full_label": "No, Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
+          "gloss": "Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
           "target_posture_id": "P88",
           "source_line": 185
         }
@@ -2703,7 +2703,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P84": {
       "id": "P84",
-      "label": "Pérdida de la Salvación / Perseverancia Condicional",
+      "label": "Perseverancia Condicional de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,

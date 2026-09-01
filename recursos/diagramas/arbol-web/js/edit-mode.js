@@ -54,6 +54,9 @@
   var popupActivo = null;
   var reenganche = null;
   var resizeActivo = null;
+  var anclasSesion = {};
+  var enlacePadre = null;
+  var UMBRAL_DESLIZ_PX = 36;
 
   function lay() { return Arbol.Layout; }
 
@@ -128,6 +131,7 @@
   }
 
   var medidorCampo = null;
+  var cacheAltoCampo = new Map();
 
   function asegurarMedidorCampo() {
     if (medidorCampo && medidorCampo.isConnected) return medidorCampo;
@@ -142,13 +146,19 @@
   }
 
   function altoDeTexto(valor, ancho) {
+    var texto = (valor == null || String(valor) === '') ? ' ' : String(valor);
+    var clave = ancho + '\0' + texto;
+    var hit = cacheAltoCampo.get(clave);
+    if (hit != null) return hit;
     var el = asegurarMedidorCampo();
     el.style.width = Math.max(40, ancho) + 'px';
-    el.value = (valor == null || String(valor) === '') ? ' ' : String(valor);
+    el.value = texto;
     el.style.height = '0px';
-    var h = el.scrollHeight;
+    var h = Math.max(42, el.scrollHeight + 6);
     el.style.height = 'auto';
-    return Math.max(42, h + 6);
+    if (cacheAltoCampo.size > 4000) cacheAltoCampo.clear();
+    cacheAltoCampo.set(clave, h);
+    return h;
   }
 
   function anchoNodo(nodo, contexto) {
@@ -189,7 +199,8 @@
     var titulo = '';
     var esPostura = !!postura;
     if (postura) {
-      rotulo = nodo.tipo === 'postura'
+      var nEjes = (postura.question_axes || []).length;
+      rotulo = nodo.tipo === 'postura' && nEjes > 1
         ? tUI('posturaVarios', 'POSTURA · VARIOS EJES')
         : (postura.is_root ? tUI('origen', 'ORIGEN') : tUI('postura', 'POSTURA'));
       titulo = postura.is_unnamed ? '' : lay().rotuloPostura(postura);
@@ -1081,17 +1092,22 @@
 
   function dibujarAsas(vista) {
     var capa = asegurarCapaAsas(vista);
+    var prev = capa.querySelector('.arista-reenganche-preview');
     while (capa.firstChild) capa.removeChild(capa.firstChild);
-    if (!vista.contexto || vista.contexto.divulgacion !== 'edicion') return;
+    if (!vista.contexto || vista.contexto.divulgacion !== 'edicion') {
+      if (prev) capa.appendChild(prev);
+      return;
+    }
     var contexto = vista.contexto;
     contexto.aristasIds.forEach(function (aristaId) {
       var arista = contexto.grafo.aristas.get(aristaId);
       if (!arista || arista.tipo === 'control') return;
-      var extremos = vista.anclas(arista.desde, arista.hasta);
+      var extremos = vista.anclas(arista.desde, arista.hasta, arista);
       if (!extremos) return;
       capa.appendChild(asa(arista, 'desde', extremos.desde));
       capa.appendChild(asa(arista, 'hasta', extremos.hasta));
     });
+    if (prev) capa.appendChild(prev);
   }
 
   function asa(arista, extremo, punto) {
@@ -1287,10 +1303,12 @@
     if (!activo) {
       app.classList.remove('edit-lod');
       cerrarPopupCampos();
+      cancelarEnlacePadre(false);
       var capa = document.getElementById('capa-asas');
       if (capa) while (capa.firstChild) capa.removeChild(capa.firstChild);
       vaciarEtiquetasArista();
     }
+    ordenarCapas(!!activo);
   }
 
   /* ------------------------------------------------ popup agregar campo -- */
@@ -1393,7 +1411,10 @@
       el.focus();
       campoActivo = el;
       try {
-        if (typeof spec.start === 'number' && el.setSelectionRange) {
+        if (spec.seleccionarTodo && el.setSelectionRange) {
+          var len = String(el.value || '').length;
+          el.setSelectionRange(0, len);
+        } else if (typeof spec.start === 'number' && el.setSelectionRange) {
           el.setSelectionRange(spec.start, spec.end == null ? spec.start : spec.end);
         }
       } catch (e) { /* nada */ }
@@ -1401,9 +1422,11 @@
     }
   }
 
-  function pedirFocoArista(aristaId) {
+  function pedirFocoArista(aristaId, seleccionarTodo) {
     omitirRestaurar = false;
-    focoPendiente = { arista: aristaId, start: 0, end: 0 };
+    focoPendiente = {
+      arista: aristaId, start: 0, end: 0, seleccionarTodo: !!seleccionarTodo
+    };
   }
 
   /* ---------------------------------------------- tooltips de ayuda ---- */
@@ -1481,63 +1504,438 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* ---------------------------------------------- reenganche / resize -- */
+  /* ------------------------------------- anclas en el perímetro ---- */
 
-  function iniciarReenganche(evento, vista) {
-    var asaEl = evento.target && evento.target.closest
-      ? evento.target.closest('.reenganche-asa') : null;
-    if (!asaEl) return false;
-    var arista = vista.contexto.grafo.aristas.get(asaEl.getAttribute('data-edit-asa'));
-    if (!arista) return false;
-    reenganche = {
-      arista: arista,
-      extremo: asaEl.getAttribute('data-edit-extremo'),
-      vista: vista
-    };
-    vista.svg.classList.add('reenganchando');
-    return true;
+  function tAncla(aristaId, extremo) {
+    var g = anclasSesion[aristaId];
+    if (!g || g[extremo] == null) return null;
+    return g[extremo];
   }
 
-  function moverReenganche(evento, vista) {
-    if (!reenganche) return false;
-    var mundo = vista.aMundo(evento.clientX, evento.clientY);
+  function fijarTAncla(aristaId, extremo, t) {
+    if (!anclasSesion[aristaId]) anclasSesion[aristaId] = {};
+    anclasSesion[aristaId][extremo] = ((t % 1) + 1) % 1;
+  }
+
+  function olvidarAncla(aristaId) {
+    if (aristaId) delete anclasSesion[aristaId];
+  }
+
+  function longitudPerimetro(caja) {
+    return 2 * ((caja && caja.ancho) + (caja && caja.alto) || 0);
+  }
+
+  function tDeLado(caja, lado) {
+    var w = caja.ancho;
+    var h = caja.alto;
+    var L = 2 * (w + h);
+    if (L <= 0) return 0;
+    if (lado === 'arriba') return (w / 2) / L;
+    if (lado === 'derecha') return (w + h / 2) / L;
+    if (lado === 'abajo') return (w + h + w / 2) / L;
+    return (2 * w + h + h / 2) / L;
+  }
+
+  function puntoEnPerimetro(pos, caja, t) {
+    var w = caja.ancho;
+    var h = caja.alto;
+    var L = 2 * (w + h);
+    var d = (((t % 1) + 1) % 1) * (L || 1);
+    var x = pos.x;
+    var y = pos.y;
+    if (d <= w) return { x: x + d, y: y, nx: 0, ny: -1 };
+    d -= w;
+    if (d <= h) return { x: x + w, y: y + d, nx: 1, ny: 0 };
+    d -= h;
+    if (d <= w) return { x: x + w - d, y: y + h, nx: 0, ny: 1 };
+    d -= w;
+    return { x: x, y: y + h - d, nx: -1, ny: 0 };
+  }
+
+  function proyectarBorde(pos, caja, mx, my) {
+    var x = pos.x;
+    var y = pos.y;
+    var w = caja.ancho;
+    var h = caja.alto;
+    var dentro = mx >= x && mx <= x + w && my >= y && my <= y + h;
+    var px;
+    var py;
+    if (!dentro) {
+      px = Math.max(x, Math.min(x + w, mx));
+      py = Math.max(y, Math.min(y + h, my));
+    } else {
+      var dT = my - y;
+      var dB = y + h - my;
+      var dL = mx - x;
+      var dR = x + w - mx;
+      var m = Math.min(dT, dB, dL, dR);
+      if (m === dT) { px = mx; py = y; }
+      else if (m === dB) { px = mx; py = y + h; }
+      else if (m === dL) { px = x; py = my; }
+      else { px = x + w; py = my; }
+    }
+    return { x: px, y: py, dentro: dentro };
+  }
+
+  function tDePunto(pos, caja, mx, my) {
+    var w = caja.ancho;
+    var h = caja.alto;
+    var L = 2 * (w + h);
+    if (L <= 0) return 0;
+    var p = proyectarBorde(pos, caja, mx, my);
+    var x = pos.x;
+    var y = pos.y;
+    var eps = 1.5;
+    if (Math.abs(p.y - y) <= eps) return Math.max(0, Math.min(w, p.x - x)) / L;
+    if (Math.abs(p.x - (x + w)) <= eps) return (w + Math.max(0, Math.min(h, p.y - y))) / L;
+    if (Math.abs(p.y - (y + h)) <= eps) return (w + h + Math.max(0, Math.min(w, x + w - p.x))) / L;
+    return (2 * w + h + Math.max(0, Math.min(h, y + h - p.y))) / L;
+  }
+
+  function distBordePantalla(vista, pos, caja, mx, my) {
+    var p = proyectarBorde(pos, caja, mx, my);
+    var dx = mx - p.x;
+    var dy = my - p.y;
+    var distMundo = Math.sqrt(dx * dx + dy * dy);
+    if (p.dentro) return 0;
+    return distMundo * (vista.camara && vista.camara.k ? vista.camara.k : 1);
+  }
+
+  function ladoDeNormal(pt) {
+    if (!pt) return 'abajo';
+    if (pt.ny < -0.5) return 'arriba';
+    if (pt.ny > 0.5) return 'abajo';
+    if (pt.nx > 0.5) return 'derecha';
+    return 'izquierda';
+  }
+
+  function aplicarOffsetsAncla(arista, extremos, vista) {
+    if (!arista || !extremos || !vista) return extremos;
+    var g = anclasSesion[arista.id];
+    if (!g) return extremos;
+    function aplicar(extremo, id) {
+      if (g[extremo] == null) return;
+      var pos = vista.posiciones.get(id);
+      var caja = vista.contexto && vista.contexto.disposicion.get(id);
+      if (!pos || !caja) return;
+      extremos[extremo] = puntoEnPerimetro(pos, caja, g[extremo]);
+    }
+    aplicar('desde', arista.desde);
+    aplicar('hasta', arista.hasta);
+    return extremos;
+  }
+
+  function ordenarCapas(encima) {
+    var mundo = document.getElementById('mundo');
+    if (!mundo) return;
+    var nodos = document.getElementById('capa-nodos');
+    var aristas = document.getElementById('capa-aristas');
+    var etiquetas = document.getElementById('capa-etiquetas');
+    var asas = document.getElementById('capa-asas');
+    if (!nodos || !aristas) return;
+    if (encima) {
+      mundo.insertBefore(nodos, aristas);
+      if (etiquetas) mundo.appendChild(etiquetas);
+      if (asas) mundo.appendChild(asas);
+    } else {
+      mundo.insertBefore(aristas, nodos);
+      if (etiquetas) mundo.appendChild(etiquetas);
+      if (asas) mundo.appendChild(asas);
+    }
+  }
+
+  function quitarPreview(vista) {
+    var capa = document.getElementById('capa-asas');
+    if (!capa) capa = vista && vista.mundo && vista.mundo.querySelector('#capa-asas');
+    if (!capa) return;
+    var prev = capa.querySelector('.arista-reenganche-preview');
+    if (prev) prev.remove();
+  }
+
+  function dibujarPreview(vista, desde, hasta, invalido) {
     var capa = asegurarCapaAsas(vista);
     var prev = capa.querySelector('.arista-reenganche-preview');
     if (!prev) {
       prev = crearSVG('path', {}, 'arista-reenganche-preview');
-      capa.appendChild(prev);
     }
+    var x0 = desde.x;
+    var y0 = desde.y;
+    var x1 = hasta.x;
+    var y1 = hasta.y;
+    var dist = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+    var tiron = Math.max(28, Math.min(150, dist * 0.42));
+    var nx0 = desde.nx != null ? desde.nx : 0;
+    var ny0 = desde.ny != null ? desde.ny : 0;
+    var nx1 = hasta.nx != null ? hasta.nx : 0;
+    var ny1 = hasta.ny != null ? hasta.ny : 0;
+    if (!nx0 && !ny0 && dist) {
+      ny0 = (y1 - y0) / dist;
+      nx0 = (x1 - x0) / dist;
+    }
+    if (!nx1 && !ny1 && dist) {
+      ny1 = (y0 - y1) / dist;
+      nx1 = (x0 - x1) / dist;
+    }
+    prev.setAttribute('d', 'M ' + x0 + ' ' + y0
+      + ' C ' + (x0 + nx0 * tiron) + ' ' + (y0 + ny0 * tiron)
+      + ', ' + (x1 + nx1 * tiron) + ' ' + (y1 + ny1 * tiron)
+      + ', ' + x1 + ' ' + y1);
+    prev.classList.toggle('invalido', !!invalido);
+    capa.appendChild(prev);
+  }
+
+  function puntoAnclaNodo(vista, nodoId, haciaX, haciaY) {
+    var pos = vista.posiciones.get(nodoId);
+    var caja = vista.contexto && vista.contexto.disposicion.get(nodoId);
+    if (!pos || !caja) return null;
+    return puntoEnPerimetro(pos, caja, tDePunto(pos, caja, haciaX, haciaY));
+  }
+
+  function puntoSuperiorNodo(vista, nodoId) {
+    var pos = vista.posiciones.get(nodoId);
+    var caja = vista.contexto && vista.contexto.disposicion.get(nodoId);
+    if (!pos || !caja) return null;
+    return { x: pos.x + caja.ancho / 2, y: pos.y };
+  }
+
+  /* ---------------------------------------------- reenganche / resize -- */
+
+  function iniciarReenganche(evento, vista) {
+    if (enlacePadre) return false;
+    var asaEl = evento.target && evento.target.closest
+      ? evento.target.closest('.reenganche-asa') : null;
+    if (!asaEl) return false;
+    var arista = vista.contexto.grafo.aristas.get(asaEl.getAttribute('data-edit-asa'));
+    if (!arista || arista.tipo === 'control') return false;
+    var extremo = asaEl.getAttribute('data-edit-extremo');
+    var nodoLocalId = extremo === 'desde' ? arista.desde : arista.hasta;
+    var pos = vista.posiciones.get(nodoLocalId);
+    var caja = vista.contexto.disposicion.get(nodoLocalId);
+    var t0 = tAncla(arista.id, extremo);
+    if (t0 == null && pos && caja) {
+      var auto = vista.anclas(arista.desde, arista.hasta, arista);
+      var pt = auto && auto[extremo];
+      t0 = pt ? tDePunto(pos, caja, pt.x, pt.y) : tDeLado(caja, extremo === 'desde' ? 'abajo' : 'arriba');
+    }
+    reenganche = {
+      arista: arista,
+      extremo: extremo,
+      vista: vista,
+      nodoLocalId: nodoLocalId,
+      tOriginal: t0,
+      teniaOffset: tAncla(arista.id, extremo) != null,
+      modo: 'slide'
+    };
+    vista.svg.classList.add('deslizando-ancla');
+    return true;
+  }
+
+  function clasificarArrastre(evento, vista) {
+    var mundo = vista.aMundo(evento.clientX, evento.clientY);
+    var pos = vista.posiciones.get(reenganche.nodoLocalId);
+    var caja = vista.contexto.disposicion.get(reenganche.nodoLocalId);
+    var nodo = nodoBajo(evento, vista);
+    if (!pos || !caja) return { modo: 'rewire', mundo: mundo, nodo: nodo };
+    var dist = distBordePantalla(vista, pos, caja, mundo.x, mundo.y);
+    if (dist <= UMBRAL_DESLIZ_PX || (nodo && nodo.id === reenganche.nodoLocalId)) {
+      return { modo: 'slide', mundo: mundo, nodo: nodo, pos: pos, caja: caja };
+    }
+    return { modo: 'rewire', mundo: mundo, nodo: nodo };
+  }
+
+  function moverReenganche(evento, vista) {
+    if (!reenganche) return false;
+    var info = clasificarArrastre(evento, vista);
+    reenganche.modo = info.modo;
+    if (info.modo === 'slide') {
+      quitarPreview(vista);
+      marcarDestinos(vista, null, false);
+      vista.svg.classList.remove('reenganchando');
+      vista.svg.classList.add('deslizando-ancla');
+      var t = tDePunto(info.pos, info.caja, info.mundo.x, info.mundo.y);
+      fijarTAncla(reenganche.arista.id, reenganche.extremo, t);
+      if (vista.dibujarAristas) vista.dibujarAristas();
+      dibujarAsas(vista);
+      return true;
+    }
+    if (reenganche.teniaOffset) {
+      fijarTAncla(reenganche.arista.id, reenganche.extremo, reenganche.tOriginal);
+    } else if (anclasSesion[reenganche.arista.id]) {
+      delete anclasSesion[reenganche.arista.id][reenganche.extremo];
+    }
+    vista.svg.classList.remove('deslizando-ancla');
+    vista.svg.classList.add('reenganchando');
     var fijoId = reenganche.extremo === 'desde' ? reenganche.arista.hasta : reenganche.arista.desde;
     var fijo = vista.posiciones.get(fijoId);
-    var caja = vista.contexto.disposicion.get(fijoId);
-    if (!fijo || !caja) return true;
-    var fx = fijo.x + caja.ancho / 2;
-    var fy = reenganche.extremo === 'desde' ? fijo.y : fijo.y + caja.alto;
-    prev.setAttribute('d', 'M ' + fx + ' ' + fy + ' L ' + mundo.x + ' ' + mundo.y);
-    var nodo = nodoBajo(evento, vista);
-    var valido = nodo && esObjetivoValido(reenganche.arista, reenganche.extremo, nodo,
+    var cajaFijo = vista.contexto.disposicion.get(fijoId);
+    var origen = { x: info.mundo.x, y: info.mundo.y, nx: 0, ny: 0 };
+    if (fijo && cajaFijo) {
+      var tFijo = tAncla(reenganche.arista.id, reenganche.extremo === 'desde' ? 'hasta' : 'desde');
+      origen = tFijo != null
+        ? puntoEnPerimetro(fijo, cajaFijo, tFijo)
+        : puntoEnPerimetro(fijo, cajaFijo, tDePunto(fijo, cajaFijo, info.mundo.x, info.mundo.y));
+    }
+    var valido = info.nodo && esObjetivoValido(reenganche.arista, reenganche.extremo, info.nodo,
       vista.contexto.datos);
-    prev.classList.toggle('invalido', !valido);
-    marcarDestinos(vista, nodo, valido);
+    var libre = { x: info.mundo.x, y: info.mundo.y, nx: 0, ny: 0 };
+    if (info.nodo && info.nodo.id !== reenganche.nodoLocalId) {
+      var anclaDest = puntoAnclaNodo(vista, info.nodo.id, origen.x, origen.y);
+      if (anclaDest) libre = anclaDest;
+    }
+    marcarDestinos(vista, info.nodo, valido);
+    if (vista.dibujarAristas) vista.dibujarAristas();
+    dibujarAsas(vista);
+    dibujarPreview(vista, origen, libre, info.nodo ? !valido : false);
     return true;
   }
 
   function soltarReenganche(evento, vista, alReenganchar) {
     if (!reenganche) return false;
-    var nodo = nodoBajo(evento, vista);
+    var info = clasificarArrastre(evento, vista);
     var arista = reenganche.arista;
     var extremo = reenganche.extremo;
+    var modo = info.modo;
+    var tOrig = reenganche.tOriginal;
+    var tenia = reenganche.teniaOffset;
     reenganche = null;
-    vista.svg.classList.remove('reenganchando');
-    var capa = document.getElementById('capa-asas');
-    if (capa) {
-      var prev = capa.querySelector('.arista-reenganche-preview');
-      if (prev) prev.remove();
-    }
+    vista.svg.classList.remove('reenganchando', 'deslizando-ancla');
+    quitarPreview(vista);
     marcarDestinos(vista, null, false);
-    if (!nodo || !esObjetivoValido(arista, extremo, nodo, vista.contexto.datos)) return true;
+    if (modo === 'slide') {
+      var pos = info.pos || vista.posiciones.get(arista[extremo === 'desde' ? 'desde' : 'hasta']);
+      var caja = info.caja || vista.contexto.disposicion.get(arista[extremo === 'desde' ? 'desde' : 'hasta']);
+      if (pos && caja) {
+        fijarTAncla(arista.id, extremo, tDePunto(pos, caja, info.mundo.x, info.mundo.y));
+      }
+      if (vista.dibujarAristas) vista.dibujarAristas();
+      dibujarAsas(vista);
+      return true;
+    }
+    if (tenia) fijarTAncla(arista.id, extremo, tOrig);
+    else if (anclasSesion[arista.id]) delete anclasSesion[arista.id][extremo];
+    var nodo = info.nodo;
+    if (!nodo) {
+      olvidarAncla(arista.id);
+      if (vista.opciones && vista.opciones.alDesconectar) {
+        vista.opciones.alDesconectar(arista, extremo);
+      }
+      return true;
+    }
+    if (!esObjetivoValido(arista, extremo, nodo, vista.contexto.datos)) {
+      if (vista.dibujarAristas) vista.dibujarAristas();
+      dibujarAsas(vista);
+      return true;
+    }
+    olvidarAncla(arista.id);
     if (alReenganchar) alReenganchar(arista, extremo, nodo);
     return true;
+  }
+
+  /* ---------------------------------------------- ligar padre huérfano -- */
+
+  function hayEnlacePadre() {
+    return !!enlacePadre;
+  }
+
+  function iniciarEnlacePadre(vista, spec) {
+    cancelarEnlacePadre(true);
+    enlacePadre = spec || {};
+    enlacePadre.vista = vista;
+    var app = document.getElementById('aplicacion');
+    if (app) app.classList.add('enlazando-padre');
+    if (vista && vista.svg) vista.svg.classList.add('enlazando-padre');
+    function mover(evento) {
+      if (!enlacePadre || !enlacePadre.vista) return;
+      var origen = puntoSuperiorNodo(enlacePadre.vista, enlacePadre.nodoId);
+      if (!origen) return;
+      var mundo = enlacePadre.vista.aMundo(evento.clientX, evento.clientY);
+      var nodo = nodoBajo(evento, enlacePadre.vista);
+      var valido = nodo && esPadreValidoEnlace(nodo);
+      var libre = { x: mundo.x, y: mundo.y, nx: 0, ny: 0 };
+      if (nodo && nodo.id !== enlacePadre.nodoId) {
+        var ancla = puntoAnclaNodo(enlacePadre.vista, nodo.id, origen.x, origen.y);
+        if (ancla) libre = ancla;
+      }
+      dibujarPreview(enlacePadre.vista, origen, libre, nodo ? !valido : false);
+      marcarDestinos(enlacePadre.vista, nodo, valido);
+    }
+    function tecla(evento) {
+      if (!enlacePadre) return;
+      if (evento.key === 'Escape' || evento.key === 'Esc' || evento.code === 'Escape') {
+        evento.preventDefault();
+        evento.stopPropagation();
+        if (typeof evento.stopImmediatePropagation === 'function') evento.stopImmediatePropagation();
+        cancelarEnlacePadre(false);
+      }
+    }
+    function bloqueo(evento) {
+      if (!enlacePadre) return;
+      if (evento.target && evento.target.closest && evento.target.closest('#aviso')) return;
+      if (evento.target && evento.target.closest && evento.target.closest('#lienzo')) return;
+      evento.preventDefault();
+      evento.stopPropagation();
+    }
+    document.addEventListener('pointermove', mover, true);
+    document.addEventListener('keydown', tecla, true);
+    document.addEventListener('pointerdown', bloqueo, true);
+    enlacePadre._mover = mover;
+    enlacePadre._tecla = tecla;
+    enlacePadre._bloqueo = bloqueo;
+  }
+
+  function esPadreValidoEnlace(nodo) {
+    if (!enlacePadre || !nodo || nodo.esControl) return false;
+    if (nodo.id === enlacePadre.nodoId) return false;
+    var datos = enlacePadre.vista && enlacePadre.vista.contexto
+      ? enlacePadre.vista.contexto.datos : null;
+    if (!datos) return false;
+    if (enlacePadre.tipo === 'postura') {
+      if (!nodo.preguntaId) return false;
+      return !Arbol.Edits.seriaCicloRespuesta(datos, nodo.preguntaId, enlacePadre.posturaId);
+    }
+    if (enlacePadre.tipo === 'pregunta') {
+      if (!nodo.posturaId || nodo.tipo === 'pregunta') return false;
+      return !Arbol.Edits.seriaCicloEje(datos, nodo.posturaId, enlacePadre.preguntaId);
+    }
+    return false;
+  }
+
+  function clicEnlacePadre(evento, vista) {
+    if (!enlacePadre) return false;
+    var nodo = nodoBajo(evento, vista || enlacePadre.vista);
+    if (!nodo || !esPadreValidoEnlace(nodo)) {
+      if (enlacePadre.onInvalido) enlacePadre.onInvalido();
+      return true;
+    }
+    var exito = enlacePadre.onExito;
+    var spec = {
+      tipo: enlacePadre.tipo,
+      posturaId: enlacePadre.posturaId,
+      preguntaId: enlacePadre.preguntaId,
+      label: enlacePadre.label,
+      gloss: enlacePadre.gloss,
+      nodo: nodo
+    };
+    cancelarEnlacePadre(true);
+    if (exito) exito(spec);
+    return true;
+  }
+
+  function cancelarEnlacePadre(silencio) {
+    var prev = enlacePadre;
+    if (!prev) return;
+    if (prev._mover) document.removeEventListener('pointermove', prev._mover, true);
+    if (prev._tecla) document.removeEventListener('keydown', prev._tecla, true);
+    if (prev._bloqueo) document.removeEventListener('pointerdown', prev._bloqueo, true);
+    if (prev.vista) {
+      quitarPreview(prev.vista);
+      marcarDestinos(prev.vista, null, false);
+      if (prev.vista.svg) prev.vista.svg.classList.remove('enlazando-padre');
+    }
+    var app = document.getElementById('aplicacion');
+    if (app) app.classList.remove('enlazando-padre');
+    enlacePadre = null;
+    if (!silencio && prev.onCancelar) prev.onCancelar();
   }
 
   function nodoBajo(evento, vista) {
@@ -1731,7 +2129,7 @@
   }
 
   function hayGesto() {
-    return !!(reenganche || resizeActivo);
+    return !!(reenganche || resizeActivo || enlacePadre);
   }
 
   function cancelarGestos(vista) {
@@ -1741,12 +2139,10 @@
     }
     reenganche = null;
     resizeActivo = null;
-    if (vista && vista.svg) vista.svg.classList.remove('reenganchando');
-    var capa = document.getElementById('capa-asas');
-    if (capa) {
-      var prev = capa.querySelector('.arista-reenganche-preview');
-      if (prev) prev.remove();
+    if (vista && vista.svg) {
+      vista.svg.classList.remove('reenganchando', 'deslizando-ancla');
     }
+    quitarPreview(vista);
     if (vista) marcarDestinos(vista, null, false);
   }
 
@@ -1779,6 +2175,13 @@
     soltarResize: soltarResize,
     hayGesto: hayGesto,
     cancelarGestos: cancelarGestos,
+    hayEnlacePadre: hayEnlacePadre,
+    iniciarEnlacePadre: iniciarEnlacePadre,
+    clicEnlacePadre: clicEnlacePadre,
+    cancelarEnlacePadre: cancelarEnlacePadre,
+    aplicarOffsetsAncla: aplicarOffsetsAncla,
+    olvidarAncla: olvidarAncla,
+    ordenarCapas: ordenarCapas,
     claveCampos: claveCampos,
     valorWidget: valorWidget,
     quitarFocoCampos: quitarFocoCampos
