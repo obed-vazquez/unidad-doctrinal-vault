@@ -145,7 +145,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                           - No: ?
                                                   - No: ?
                                               - Sí: Depravación Total del hombre
-                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)
+                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
                                                   - Sí: ?
                                                     - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
                                                       - Sí: ?
@@ -176,13 +176,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                                   - No: ?
                                                         - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? {[[La Perdida de la Salvación]]}
                                                           - No: Perseverancia de los Santos / Seguridad Eterna {Calvinismo, Bautistas}
-                                                          - Sí: Pérdida de la Salvación / Perseverancia Condicional {Arminianismo, Metodismo, Pentecostalismo}
+                                                          - Sí: Perseverancia Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo
-                            -  Consustancialismo -> ¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?)
-                              - No: Modalismo / Unicitarismo / Unicitarianismo
-                              - Sí: Trinitarianismo
+                            -  Consustancialismo -> ¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?)
+                              - Sí: Modalismo / Unicitarismo / Unicitarianismo
+                              - No, Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina: Trinitarianismo
                                 - Trinitarianismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?
                                   - No (solo apariencia): Docetismo
                                   - Sí: ?
