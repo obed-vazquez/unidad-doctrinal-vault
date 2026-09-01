@@ -69,7 +69,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                         - Reduccionismo histórico* -> ¿Jesús fue un engañador?
                           - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
                           - No: ?
-                            - ? -> ¿Jesús fue solo un sabio? 
+                            - ? -> ¿Jesús fue solo un sabio?
                               - Sí: ?
                               - No: ?
                                 - ? -> ¿Jesús fue solamente una persona confundida?
@@ -156,13 +156,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                               - Sí: ? {Catolicismo Moderno?}
                                                               - No: ?
                                                   - No, la inocencia le da acceso al cielo y no puede pecar: ?
-                                                - Depravación Total del hombre -> ¿**Después del Discernimiento** es posible para el humano alcanzar el cielo haciendo buenas obras?
+                                                - Depravación Total del hombre -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
                                                   - Sí: ?
                                                   - No: ?
-                                                    - ? -> ¿El ser humano necesita una **transformación/conversión/regeneración espiritual** para entrar al cielo?
-                                                      - No: ? 
-                                                      - Sí: ?
-                                                        - ? -> ¿Puede el humano rechazar el llamado de Dios hacia esa conversión? (¿Es posible para el humano resistir **el** llamado de Dios?)
+                                                    - ? -> ¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)
+                                                      - No: ?
+                                                      - Sí: Conversionismo
+                                                        - Conversionismo -> ¿Es posible que el humano rechace el llamado de Dios hacia a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado de Dios?)
                                                           - No: Gracia Irresistible {Calvinismo / Tradición Reformada}
                                                             - Gracia Irresistible -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
                                                               - Sí: ?
@@ -174,9 +174,9 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                                 - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
                                                                   - Sí: Salvación Bautismal
                                                                   - No: ?
-                                                        - ? -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? {[[La Perdida de la Salvación]]}
-                                                          - No: Perseverancia de los Santos / Seguridad Eterna {Calvinismo, Bautistas}
-                                                          - Sí: Perseverancia Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
+                                                        - Conversionismo -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? {[[La Perdida de la Salvación]]}
+                                                          - No: Perseverancia de los Santos {Calvinismo, Bautistas}
+                                                          - Sí: Preservación Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo
