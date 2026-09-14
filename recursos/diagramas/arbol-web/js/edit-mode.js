@@ -49,6 +49,8 @@
   var CAMPOS_PREGUNTA = ['colloquial_hint'];
 
   var focoPendiente = null;
+  var wrapAlFrente = null;
+  var seguimientoEtiquetas = false;
   var omitirRestaurar = false;
   var campoActivo = null;
   var popupActivo = null;
@@ -883,6 +885,40 @@
     return Math.max(glosa ? 13 : 17, el.scrollHeight);
   }
 
+  /* Respuestas muy cercanas se tapan la etiqueta entre sí: la que está bajo el
+     puntero pasa al frente y se resalta. Va delegado en document porque los
+     nodos de etiqueta se recrean en cada render, y porque traer el fo al
+     frente mueve el nodo bajo el cursor y rompe el enter/leave del propio
+     elemento (por eso antes el brillo se quedaba pegado al salir). */
+  function limpiarEtiquetaAlFrente() {
+    if (!wrapAlFrente) return;
+    wrapAlFrente.classList.remove('al-frente');
+    wrapAlFrente = null;
+  }
+
+  function seguirEtiquetaBajoPuntero(destino) {
+    var wrap = destino && destino.closest ? destino.closest('.edit-arista-wrap') : null;
+    if (wrap === wrapAlFrente) return;
+    limpiarEtiquetaAlFrente();
+    if (!wrap) return;
+    var fo = wrap.closest('foreignObject');
+    if (fo && fo.contains(document.activeElement)) return;
+    wrap.classList.add('al-frente');
+    wrapAlFrente = wrap;
+    if (fo && fo.parentNode) fo.parentNode.appendChild(fo);
+  }
+
+  function asegurarSeguimientoEtiquetas() {
+    if (seguimientoEtiquetas) return;
+    seguimientoEtiquetas = true;
+    document.addEventListener('pointerover', function (evento) {
+      seguirEtiquetaBajoPuntero(evento.target);
+    }, true);
+    document.addEventListener('pointerleave', function () {
+      limpiarEtiquetaAlFrente();
+    }, true);
+  }
+
   function medidasEtiquetaArista(label, gloss, vacia, enVivo) {
     var L = lay();
     var fuente = fuenteEtiqueta();
@@ -891,7 +927,7 @@
     var ratio = 1.65;
     var corto = String(label || '').replace(/\s+$/g, '');
     var extra = String(gloss || '').replace(/\s+$/g, '');
-    if (vacia || (!corto && !extra)) return { ancho: 20, alto: 20 };
+    if (vacia || (!corto && !extra)) return { ancho: 20, alto: 20, altoC: 0, altoG: 0 };
     var mostrarExtra = !!extra || !!enVivo;
     var ancho;
     var altoC;
@@ -905,7 +941,7 @@
       });
       ancho = Math.max(32, Math.ceil(maxW) + padX + 22);
       altoC = renglones.length * lh + 2;
-      if (!mostrarExtra) return { ancho: ancho, alto: altoC + 2 };
+      if (!mostrarExtra) return { ancho: ancho, alto: altoC + 2, altoC: altoC, altoG: 0 };
       if (extra) {
         ancho = Math.max(ancho, 96);
         altoG = altoBloqueEtiqueta(extra, ancho, true);
@@ -913,7 +949,7 @@
         ancho = Math.max(ancho, 120);
         altoG = 16;
       }
-      return { ancho: ancho, alto: altoC + altoG };
+      return { ancho: ancho, alto: altoC + altoG, altoC: altoC, altoG: altoG };
     }
     if (!extra) {
       var una = L.medir(corto.replace(/\n/g, ' '), fuente);
@@ -921,22 +957,27 @@
         ancho = Math.max(28, Math.ceil(una) + padX + 6);
         altoC = altoBloqueEtiqueta(corto, ancho, false);
         if (ancho < altoC * ratio) ancho = Math.ceil(altoC * ratio);
-        return { ancho: ancho, alto: altoC };
+        return { ancho: ancho, alto: altoC, altoC: altoC, altoG: 0 };
       }
     }
     var unaG = extra ? L.medir(extra.replace(/\n/g, ' '), '400 10px ' + L.PILA) : 0;
     var unaC = L.medir(corto.replace(/\n/g, ' ') || ' ', fuente);
-    var n = Math.max(1, Math.round(Math.sqrt(Math.max(unaG, unaC) / (ratio * 13))));
-    ancho = Math.max(48, Math.ceil(Math.max(unaC, unaG / n)) + padX + 6);
+    // Estimación de ancho cuadrado a partir del área total de texto (label +
+    // glosa): antes esto usaba siempre el ancho de una sola línea de la
+    // respuesta como piso, así que una respuesta larga sin glosa nunca
+    // llegaba a partirse en varios renglones. El bucle de abajo corrige la
+    // estimación si aun así queda desproporcionada.
+    var area = unaC * lh + unaG * 13;
+    ancho = Math.max(48, Math.ceil(Math.sqrt(ratio * area)) + padX + 6);
     altoC = altoBloqueEtiqueta(corto || ' ', ancho, false);
     altoG = extra ? altoBloqueEtiqueta(extra, ancho, true) : 0;
-    for (i = 0; i < 6 && (altoC + altoG) > ancho / ratio; i++) {
+    for (i = 0; i < 8 && (altoC + altoG) > ancho / ratio; i++) {
       ancho = Math.min(320, Math.max(ancho + 18, Math.ceil((altoC + altoG) * ratio)));
       altoC = altoBloqueEtiqueta(corto || ' ', ancho, false);
       altoG = extra ? altoBloqueEtiqueta(extra, ancho, true) : 0;
     }
     if (ancho < (altoC + altoG) * 1.15) ancho = Math.ceil((altoC + altoG) * 1.15);
-    return { ancho: ancho, alto: altoC + altoG };
+    return { ancho: ancho, alto: altoC + altoG, altoC: altoC, altoG: altoG };
   }
 
   function colocarEtiquetaArista(fo, caja, mx, my, tam) {
@@ -1023,6 +1064,9 @@
     input.setAttribute('data-edit-pregunta', arista.preguntaId || '');
     input.setAttribute('data-edit-clave', arista.clave || '');
     input.setAttribute('aria-label', tUI('respuestaEnLinea', 'Respuesta'));
+    // rows=1 no crece con el contenido: sin esto, una respuesta larga sin
+    // aclaración queda recortada a un renglón aunque la caja ya mida más.
+    input.style.height = Math.max(15, tam.altoC || 0) + 'px';
     var glosa = document.createElement('textarea');
     glosa.rows = 1;
     glosa.className = 'edit-arista-glosa';
@@ -1033,6 +1077,7 @@
     glosa.setAttribute('data-edit-pregunta', arista.preguntaId || '');
     glosa.setAttribute('data-edit-clave', arista.clave || '');
     glosa.setAttribute('aria-label', tUI('aclaracionRespuesta', 'Aclaración'));
+    glosa.style.height = Math.max(13, tam.altoG || 0) + 'px';
     var mas = document.createElement('span');
     mas.className = 'edit-arista-ghost';
     mas.setAttribute('aria-hidden', 'true');
@@ -1040,6 +1085,7 @@
     wrap.appendChild(input);
     wrap.appendChild(glosa);
     wrap.appendChild(mas);
+    asegurarSeguimientoEtiquetas();
     function redimensionarVivo() {
       var escrito = valoresVivosArista(fo, arista);
       wrap.classList.toggle('vacia', !escrito.label.trim() && !escrito.gloss.trim());
@@ -1053,10 +1099,14 @@
     glosa.addEventListener('input', redimensionarVivo);
     input.addEventListener('focus', function () {
       wrap.classList.add('escribiendo');
+      input.style.height = '';
+      glosa.style.height = '';
       redimensionarVivo();
     });
     glosa.addEventListener('focus', function () {
       wrap.classList.add('escribiendo');
+      input.style.height = '';
+      glosa.style.height = '';
       redimensionarVivo();
     });
     input.addEventListener('blur', function () { wrap.classList.remove('escribiendo'); });
@@ -1066,17 +1116,24 @@
     fo.appendChild(wrap);
     if (capa) capa.appendChild(fo);
     else grupo.appendChild(fo);
+    // El alto se estima con un div medidor, pero quien envuelve de verdad es
+    // el textarea y no corta en los mismos puntos: aquí el DOM real manda y
+    // corrige lo que la estimación dejó corto. Antes esto exigía que la caja
+    // ya midiera más de 22px, así que las de uno o dos renglones —las que se
+    // comían palabras— nunca se corregían.
     global.requestAnimationFrame(function () {
-      if (!fo.isConnected || fo.querySelector(':focus')) return;
-      var extraH = Math.max(0, input.scrollHeight - input.clientHeight)
-        + Math.max(0, glosa.scrollHeight - glosa.clientHeight);
+      if (vacia || !fo.isConnected || fo.querySelector(':focus')) return;
+      var extraInput = Math.max(0, input.scrollHeight - input.clientHeight);
+      var extraGlosa = Math.max(0, glosa.scrollHeight - glosa.clientHeight);
+      var extraH = extraInput + extraGlosa;
+      if (extraH < 1) return;
       var altoActual = parseFloat(fo.getAttribute('height')) || 0;
-      if (altoActual > 22 && extraH > 4) {
-        colocarEtiquetaArista(fo, caja, mx, my, {
-          ancho: parseFloat(fo.getAttribute('width')),
-          alto: altoActual + extraH
-        });
-      }
+      if (extraInput > 0) input.style.height = (input.clientHeight + extraInput) + 'px';
+      if (extraGlosa > 0) glosa.style.height = (glosa.clientHeight + extraGlosa) + 'px';
+      colocarEtiquetaArista(fo, caja, mx, my, {
+        ancho: parseFloat(fo.getAttribute('width')),
+        alto: altoActual + extraH
+      });
     });
   }
 

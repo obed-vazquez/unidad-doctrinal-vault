@@ -153,7 +153,7 @@ En este documento se argumentará sobre las siguientes doctrinas; habiendo tanta
 
      1. ### **Versículos**
 
-        1) [Jn 1.18](http://bible.com/149/jhn.1.18) **“A Dios nadie le vio jamás;...” **  “A Dios \[Todopoderoso\] ningún hombre lo ha visto jamás”. [Sin embargo, algunos seres humanos sí vieron al Hijo de Dios, Jesús](http://wol.jw.org/en/wol/d/r4/lp-s/1102005153)  
+        1) [Jn 1.18](http://bible.com/149/jhn.1.18) **“A Dios nadie le vio jamás;...”**   “A Dios \[Todopoderoso\] ningún hombre lo ha visto jamás”. [Sin embargo, algunos seres humanos sí vieron al Hijo de Dios, Jesús](http://wol.jw.org/en/wol/d/r4/lp-s/1102005153)  
            1) **R:** el versículo continúa con **“... el unigénito Hijo, que está en el seno del Padre, él le ha dado a conocer.”**; también [Jn 14.9](http://bible.com/149/jhn.14.9) **“...El que me ha visto a mí, ha visto al Padre...”**;  
               1) Por ejemplo. [Jueces 13:22](http://bible.com/149/jdg.13.22) **“Y dijo Manoa a su mujer: Ciertamente moriremos, porque a Dios hemos visto.”**;  
               2) [Éxodo 33:11](http://bible.com/149/exo.33.11) **“Y hablaba Jehová a Moisés cara a cara, como habla cualquiera a su compañero ...”**;  

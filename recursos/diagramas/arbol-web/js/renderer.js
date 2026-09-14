@@ -495,7 +495,7 @@
         + (respuesta == null ? '' : respuesta) + ':'
         + compuesto.partes.map(function (p) {
           return p.k + (p.expandido ? 'e' : '') + (p.conteo || '') + (p.sello || '')
-            + (p.valor ? p.valor : '');
+            + (p.valor ? p.valor : '') + (p.tieneRama ? 'r' : '') + (p.tieneAgregar ? 'a' : '');
         }).join(',')
         + ':' + ((nodo.postura && nodo.postura.label) || '')
         + (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id) ? ':f' : '')
@@ -861,8 +861,22 @@
           grupo = crear('g', { 'data-id': aristaId }, 'arista-grupo');
           grupo.appendChild(crear('path', { pathLength: 1 }, 'arista'));
           if (arista.tipo === 'respuesta' && (arista.etiqueta || contexto.divulgacion === 'edicion')) {
-            grupo.appendChild(crear('rect', {}, 'arista-etiqueta-caja'));
-            grupo.appendChild(texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto'));
+            var cajaEtq = crear('rect', {}, 'arista-etiqueta-caja');
+            var textoEtq = texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto');
+            // Respuestas muy cercanas pueden taparse la etiqueta entre sí; al
+            // pasar el cursor o tocarla, esa etiqueta pasa al frente y se
+            // resalta su borde para distinguirla de la caja que tapaba.
+            // Aquí es SVG normal, así que el brillo lo da el :hover del CSS;
+            // esto solo reordena para que la etiqueta quede encima.
+            var alFrente = function () {
+              if (grupo.parentNode) grupo.parentNode.appendChild(grupo);
+            };
+            cajaEtq.addEventListener('pointerenter', alFrente);
+            cajaEtq.addEventListener('pointerdown', alFrente);
+            textoEtq.addEventListener('pointerenter', alFrente);
+            textoEtq.addEventListener('pointerdown', alFrente);
+            grupo.appendChild(cajaEtq);
+            grupo.appendChild(textoEtq);
           }
           self.capaAristas.appendChild(grupo);
           self.aristasDOM.set(aristaId, grupo);

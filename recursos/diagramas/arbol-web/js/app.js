@@ -2032,7 +2032,25 @@
 
   function parcharDatosVivos() {
     var op = editsEstado.ops[editsEstado.ops.length - 1];
-    if (op && Estado.datos && Edits.aplicarOp) Edits.aplicarOp(Estado.datos, op, editsEstado);
+    if (!op || !Estado.datos || !Edits.aplicarOp) return;
+    Edits.aplicarOp(Estado.datos, op, editsEstado);
+    if (op.op === 'setAnswer' && Estado.grafo) {
+      var pregunta = Estado.datos.questions[op.questionId];
+      var respuesta = pregunta && (pregunta.answers || []).filter(function (r) {
+        return r.key === op.key;
+      })[0];
+      // El grafo ya construido guarda una copia de etiqueta/glosa (no una
+      // referencia viva a la respuesta), así que hay que parcharla a mano
+      // o el cambio no se ve hasta la próxima reconstrucción completa.
+      if (respuesta) {
+        Estado.grafo.aristas.forEach(function (arista) {
+          if (arista.tipo !== 'respuesta' || arista.preguntaId !== op.questionId
+            || arista.clave !== op.key) return;
+          arista.etiqueta = respuesta.label;
+          arista.glosa = respuesta.gloss;
+        });
+      }
+    }
   }
 
   var recargaTextoTimer = null;

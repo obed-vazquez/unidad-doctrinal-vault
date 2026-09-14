@@ -876,13 +876,13 @@
     return texto + sufijoWikilinks(pregunta.wikilinks);
   }
 
+  /* Estándar de aclaración en posturas-creencias.md: `<Respuesta> -- <Aclaración>`. */
   function componerFullLabel(label, gloss) {
     var corto = String(label || '').replace(/\s+$/g, '');
-    var extra = String(gloss || '').trim();
+    var extra = String(gloss || '').trim().replace(/^--\s*/, '');
     if (!corto) return extra;
     if (!extra) return corto;
-    if (/^[,;(]/.test(extra)) return corto + extra;
-    return corto + ', ' + extra;
+    return corto + ' -- ' + extra;
   }
 
   function etiquetaRespuesta(respuesta) {
