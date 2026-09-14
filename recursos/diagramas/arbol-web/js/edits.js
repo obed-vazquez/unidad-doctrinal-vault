@@ -826,26 +826,54 @@
     return true;
   }
 
-  function etiquetaFuente(postura) {
+  function nombrePostura(postura) {
     if (!postura) return '?';
-    var texto = postura.is_unnamed ? '?' : (postura.label || '?');
-    var grupos = [];
-    (postura.traditions || []).forEach(function (tradicion) {
-      grupos.push(tradicion.name + (tradicion.is_tentative ? '?' : ''));
-    });
-    (postura.notes || []).forEach(function (nota) { grupos.push(nota); });
-    if (grupos.length) texto += ' {' + grupos.join(' / ') + '}';
-    (postura.wikilinks || []).forEach(function (enlace) {
-      var destino = enlace.target || enlace.label;
-      if (destino) texto += ' [[' + destino + ']]';
-    });
+    return postura.is_unnamed ? '?' : (postura.label || '?');
+  }
+
+  function gruposTradicion(postura) {
+    return (postura.traditions || []).map(function (tradicion) {
+      return tradicion.name + (tradicion.is_tentative ? '?' : '');
+    }).filter(Boolean);
+  }
+
+  function formatoWikilink(enlace) {
+    var destino = enlace && (enlace.target || enlace.label);
+    if (!destino) return '';
+    var etiqueta = (enlace.label || destino).trim();
+    destino = String(destino).trim();
+    if (!destino) return '';
+    if (etiqueta && etiqueta !== destino) return '[[' + destino + '|' + etiqueta + ']]';
+    return '[[' + destino + ']]';
+  }
+
+  function sufijoWikilinks(enlaces) {
+    if (!enlaces || !enlaces.length) return '';
+    var piezas = enlaces.map(formatoWikilink).filter(Boolean);
+    if (!piezas.length) return '';
+    return ' { ' + piezas.join(', ') + ' }';
+  }
+
+  /* En el documento fuente las tradiciones van en la arista que INTRODUCE la
+     postura (`Sí: Nombre {…}`), no al repetir el nombre como origen de `->`.
+     Un wikilink en la postura sustituye el nombre visible (`[[ruta|Nombre]]`). */
+  function etiquetaDestino(postura) {
+    if (!postura) return '?';
+    var texto = nombrePostura(postura);
+    var enlaces = postura.wikilinks || [];
+    if (enlaces.length) {
+      var wiki = formatoWikilink(enlaces[0]);
+      if (wiki) texto = wiki;
+    }
+    var grupos = gruposTradicion(postura);
+    if (grupos.length) texto += ' {' + grupos.join(', ') + '}';
     return texto;
   }
 
   function textoPregunta(pregunta) {
     var formal = pregunta.formal_text || pregunta.full_text || '';
-    if (pregunta.colloquial_hint) return formal + ' (' + pregunta.colloquial_hint + ')';
-    return formal;
+    var texto = pregunta.colloquial_hint ? formal + ' (' + pregunta.colloquial_hint + ')' : formal;
+    return texto + sufijoWikilinks(pregunta.wikilinks);
   }
 
   function componerFullLabel(label, gloss) {
@@ -862,21 +890,31 @@
     return componerFullLabel(respuesta.label, respuesta.gloss);
   }
 
+  function lineaFuente(item) {
+    var n = item && Number(item.source_line);
+    return n > 0 ? n : 1e9;
+  }
+
+  function origenCanónico(pregunta) {
+    return (pregunta.origin_posture_ids || [])[0] || null;
+  }
+
   function aMarkdown(datos) {
-    var lineas = [
-      '## Propuesta de árbol (generada desde el visor)',
-      '',
-      'Fecha: ' + new Date().toISOString().slice(0, 10),
-      'Origen: visor interactivo. Revisar antes de integrar en posturas-creencias.md.',
-      '',
-      '## Árbol de Decisión:'
-    ];
+    /* Solo el árbol: el preámbulo de posturas-creencias.md se deja intacto
+       al sustituir desde «## Árbol de Decisión:». */
+    var lineas = ['## Árbol de Decisión:'];
     var emitidas = {};
 
     function emitirPostura(pid, indent) {
       var postura = datos.postures[pid];
       if (!postura) return;
-      (postura.question_axes || []).forEach(function (qid) {
+      var ejes = (postura.question_axes || []).slice().sort(function (a, b) {
+        return lineaFuente(datos.questions[a]) - lineaFuente(datos.questions[b]);
+      });
+      ejes.forEach(function (qid) {
+        var pregunta = datos.questions[qid];
+        if (!pregunta) return;
+        if (origenCanónico(pregunta) && origenCanónico(pregunta) !== pid) return;
         if (emitidas[qid]) return;
         emitidas[qid] = true;
         emitirPregunta(qid, indent);
@@ -887,12 +925,15 @@
       var pregunta = datos.questions[qid];
       if (!pregunta) return;
       var origenes = (pregunta.origin_posture_ids || []).map(function (pid) {
-        return etiquetaFuente(datos.postures[pid]);
+        return nombrePostura(datos.postures[pid]);
       }).join(' & ');
       lineas.push(indent + '- ' + origenes + ' -> ' + textoPregunta(pregunta));
-      (pregunta.answers || []).forEach(function (respuesta) {
+      var respuestas = (pregunta.answers || []).slice().sort(function (a, b) {
+        return lineaFuente(a) - lineaFuente(b);
+      });
+      respuestas.forEach(function (respuesta) {
         var destino = datos.postures[respuesta.target_posture_id];
-        lineas.push(indent + '  - ' + etiquetaRespuesta(respuesta) + ': ' + etiquetaFuente(destino));
+        lineas.push(indent + '  - ' + etiquetaRespuesta(respuesta) + ': ' + etiquetaDestino(destino));
         emitirPostura(respuesta.target_posture_id, indent + '    ');
       });
     }

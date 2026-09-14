@@ -1,6 +1,6 @@
 # Análisis
 
-## Monergismo \[[Folder](https://drive.google.com/drive/folders/1eJGGBPkSDuAfoR2D5SzimkGbCucSfK0p), [Base](#monergismo-[folder,-base,-pub]), [Pub](https://docs.google.com/document/d/e/2PACX-1vSgCFbSMGWlEJcdprKpzZuhvLDPqsk4fyWYTh-4Y5q0Co0vWpTRCRbGTQDfK7zgjH2PTBeAmfPnHcAk/pub)\]
+## Monergismo \[[Folder](https://drive.google.com/drive/folders/1eJGGBPkSDuAfoR2D5SzimkGbCucSfK0p), [Base](#monergismo-[folder,-base,-pub]), [Pub](https://docs.google.com/document/d/e/2PACX-1vSgCFbSMGWlEJcdprKpzZuhvLDPqsk4fyWYTh-4Y5q0Co0vWpTRCRbGTQDfK7zgjH2PTBeAmfPnHcAk/pub)\] {#monergismo-[folder,-base,-pub]}
 
 1. # Definiciónes
 

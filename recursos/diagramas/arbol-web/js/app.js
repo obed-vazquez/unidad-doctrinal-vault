@@ -17,7 +17,9 @@
   var Definiciones = Arbol.Definiciones;
 
   var RUTA_JSON = 'datos/posturas-creencias.json';
-  var RUTA_RESPALDO = 'datos/posturas-creencias.js';
+  /* La query tiene que coincidir con ?v= de index.html: si no, file:// y
+     GitHub Pages siguen sirviendo el JS de datos viejo. */
+  var RUTA_RESPALDO = 'datos/posturas-creencias.js?v=20260912d';
 
   var dom = {};
   var datosCanon = null;
@@ -2017,6 +2019,17 @@
     Estado.emitir('edicion');
   }
 
+  /* Quita el borrador del árbol de memoria, localStorage y el undo.
+     Solo lo llama el basurero y «Descartar aportes». F5 no debe pasar por aquí. */
+  function vaciarAportesLocales() {
+    cancelarRefrescoTexto();
+    Edits.olvidar();
+    editsEstado = Edits.vacio();
+    historialEdicion.pila = [];
+    historialEdicion.redo = [];
+    historialEdicion.marca = null;
+  }
+
   function parcharDatosVivos() {
     var op = editsEstado.ops[editsEstado.ops.length - 1];
     if (op && Estado.datos && Edits.aplicarOp) Edits.aplicarOp(Estado.datos, op, editsEstado);
@@ -2091,12 +2104,8 @@
         aceptar: 'Descartar'
       }).then(function (aceptado) {
         if (!aceptado) return;
-        conHistorial(function () {
-          Edits.olvidar();
-          editsEstado = Edits.vacio();
-          Edits.guardar(editsEstado);
-          reconstruirModelo();
-        });
+        vaciarAportesLocales();
+        reconstruirModelo();
         avisar('Aportes locales descartados.');
       });
     }
@@ -2739,7 +2748,7 @@
       }
       if (tipo === 'md') {
         descargar('propuesta-posturas-creencias.md', Edits.aMarkdown(Estado.datos), 'text/markdown');
-        avisar('Markdown generado para enviarlo al equipo de mantenimiento.');
+        avisar('Markdown del árbol. Sustituye desde «## Árbol de Decisión:» en posturas-creencias.md.');
         return;
       }
       if (tipo === 'svg') {
@@ -2827,19 +2836,21 @@
     dom.btnReiniciar.addEventListener('click', function () {
       var cuantas = Object.keys(Estado.respuestas).length;
       var cuantosAnclajes = Object.keys(Estado.fijados).length;
+      var cuantosResaltados = Estado.resaltados.size;
       confirmar({
-        titulo: 'Reiniciar el árbol',
-        texto: 'Se borran <b>' + cuantas + ' respuesta' + (cuantas === 1 ? '' : 's') + '</b>, '
-          + '<b>' + Estado.resaltados.size + ' resaltado'
-          + (Estado.resaltados.size === 1 ? '' : 's') + '</b> y '
-          + '<b>' + cuantosAnclajes + ' anclaje'
-          + (cuantosAnclajes === 1 ? '' : 's') + '</b>, también los guardados en '
-          + 'este navegador. El tema y el documento no se tocan.',
-        aceptar: 'Borrar todo'
+        titulo: t('reiniciarTitulo'),
+        texto: t('reiniciarTexto', {
+          respuestas: t(cuantas === 1 ? 'nRespuesta' : 'nRespuestas', { n: cuantas }),
+          resaltados: t(cuantosResaltados === 1 ? 'nResaltado' : 'nResaltados', { n: cuantosResaltados }),
+          anclajes: t(cuantosAnclajes === 1 ? 'nAnclaje' : 'nAnclajes', { n: cuantosAnclajes })
+        }),
+        aceptar: t('reiniciarAceptar')
       }).then(function (aceptado) {
         if (!aceptado) return;
+        vaciarAportesLocales();
         Estado.olvidar();
         Estado.reiniciar();
+        reconstruirModelo();
         historialRecorridos = [];
         if (Arbol.Cuestionario) Arbol.Cuestionario.reiniciarHistorial();
         if (Vista.nodosDOM) {
@@ -3091,14 +3102,14 @@
 
   function iniciar(datos) {
     datosCanon = datos;
+    /* Los cambios de edición viven en otra clave de localStorage y sobreviven
+       a F5 / Ctrl+F5. Solo los borra el basurero (y «Descartar aportes»). */
     editsEstado = Edits.cargar();
     Estado.datos = Edits.aplicar(datosCanon, editsEstado);
 
     var lectura = Router.leer();
-    // El estado vive en localStorage (§8.1), así que sobrevive a recargas y a
-    // borrar la consulta de la barra de direcciones. `?limpio=1` lo salta.
-    // Si la URL no lleva ningún parámetro, el usuario borró la consulta a mano
-    // y espera arrancar de cero: tratamos ese caso como limpio.
+    // El recorrido (respuestas, resaltados, anclajes) también vive en
+    // localStorage. `?limpio=1` lo salta para esta carga; no toca el árbol.
     var sinParametros = !global.location.search || global.location.search === '?';
     if (lectura.limpio || sinParametros) Estado.olvidar();
     else Estado.cargar();

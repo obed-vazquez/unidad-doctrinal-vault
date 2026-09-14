@@ -52,7 +52,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
 ## Árbol de Decisión:
 - Existencia -> ¿El universo fue causado por un Creador? { [[La inexistencia de un Dios creador]] }
   - Sí: Creacionismo
-    - Creacionismo -> ¿El Creador se identifica como Dios?
+    - Creacionismo -> ¿Identificas a ese Creador como "Dios"?
       - No: Deísmo
       - Sí: Teísmo
         - Teísmo & Deísmo -> ¿Jesucristo realmente existió?

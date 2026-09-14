@@ -17,11 +17,14 @@ const almacen = new Map();
 const ventana = {
   localStorage: {
     getItem: (k) => (almacen.has(k) ? almacen.get(k) : null),
-    setItem: (k, v) => almacen.set(k, String(v))
+    setItem: (k, v) => almacen.set(k, String(v)),
+    removeItem: (k) => almacen.delete(k)
   },
   matchMedia: () => ({ matches: false }),
   requestAnimationFrame: () => 0,
-  cancelAnimationFrame: () => {}
+  cancelAnimationFrame: () => {},
+  setTimeout,
+  clearTimeout
 };
 ventana.window = ventana;
 
@@ -681,6 +684,39 @@ comprobar('renombrar una postura no toca el JSON canónico',
 const md = Arbol.Edits.aMarkdown(datos);
 comprobar('el export Markdown arranca como el documento fuente',
   md.indexOf('## Árbol de Decisión:') !== -1 && md.indexOf('Creacionismo') !== -1);
+comprobar('el export conserva el wikilink de la pregunta raíz',
+  md.indexOf('¿El universo fue causado por un Creador? { [[La inexistencia de un Dios creador]] }') !== -1);
+comprobar('el wikilink de La Perdida de la Salvación queda en la pregunta',
+  md.indexOf('¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? { [[La Perdida de la Salvación]] }') !== -1);
+const idxDeismo = md.indexOf('- No: Deísmo');
+const idxTeismo = md.indexOf('- Sí: Teísmo');
+const idxConvergencia = md.indexOf('Teísmo & Deísmo ->');
+comprobar('Sí: Teísmo queda junto a Deísmo, no al final del archivo',
+  idxDeismo !== -1 && idxTeismo !== -1 && idxTeismo - idxDeismo < 80,
+  'delta=' + (idxTeismo - idxDeismo));
+comprobar('la pregunta compartida cuelga de Teísmo, no de Deísmo',
+  idxConvergencia !== -1 && idxTeismo !== -1 && idxConvergencia > idxTeismo
+  && (idxDeismo === -1 || idxConvergencia > idxTeismo),
+  String(idxConvergencia));
+comprobar('el origen de una pregunta no repite las religiones de la postura',
+  md.indexOf('Gracia Irresistible -> ¿Es necesaria la intervención activa y directa de Dios') !== -1
+  && md.indexOf('Gracia Irresistible {Calvinismo / Tradición Reformada} ->') === -1);
+comprobar('las religiones sí aparecen al introducir la postura',
+  md.indexOf('No: Gracia Irresistible {Calvinismo / Tradición Reformada}') !== -1);
+comprobar('el export no incluye el preámbulo del documento fuente',
+  md.indexOf('## Sintaxis') === -1 && md.indexOf('## Propósito') === -1);
+comprobar('el destino con wikilink usa la forma [[ruta|etiqueta]]',
+  md.indexOf('[[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]]') !== -1);
+comprobar('el wikilink de destino no va en la línea origen',
+  md.indexOf('[[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] ->') === -1);
+
+Arbol.Edits.guardar(edits);
+comprobar('guardar deja el borrador en localStorage',
+  !!almacen.get('arbol-posturas/edits/v1'));
+Arbol.Edits.olvidar();
+comprobar('olvidar quita el borrador de localStorage',
+  !almacen.has('arbol-posturas/edits/v1')
+  && Arbol.Edits.cargar().ops.length === 0);
 
 console.log('\n== URL compartible ==');
 Arbol.Estado.respuestas = { Q1: 'A', Q2: 'B', Q5: 'A' };

@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-09-01T12:20:58Z",
+  "generated_at": "2026-09-12T07:41:45Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -50,9 +50,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q2": {
       "id": "Q2",
-      "formal_text": "¿El Creador se identifica como Dios?",
+      "formal_text": "¿Identificas a ese Creador como \"Dios\"?",
       "colloquial_hint": null,
-      "full_text": "¿El Creador se identifica como Dios?",
+      "full_text": "¿Identificas a ese Creador como \"Dios\"?",
       "source_line": 55,
       "origin_posture_ids": [
         "P1"
@@ -1094,9 +1094,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q37": {
       "id": "Q37",
-      "formal_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo haciendo buenas obras?",
-      "colloquial_hint": null,
-      "full_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo haciendo buenas obras?",
+      "formal_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras?",
+      "colloquial_hint": "¿Puede un adulto ir al cielo siendo bueno?",
+      "full_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)",
       "source_line": 159,
       "origin_posture_ids": [
         "P63"
@@ -1124,9 +1124,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q38": {
       "id": "Q38",
-      "formal_text": "¿El ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
-      "colloquial_hint": null,
-      "full_text": "¿El ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
+      "formal_text": "¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
+      "colloquial_hint": "¿Se necesita una conversión para entrar al cielo?",
+      "full_text": "¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)",
       "source_line": 162,
       "origin_posture_ids": [
         "P72"
@@ -1154,9 +1154,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q39": {
       "id": "Q39",
-      "formal_text": "¿Puede el humano rechazar el llamado de Dios hacia esa conversión?",
-      "colloquial_hint": "¿Es posible para el humano resistir el llamado de Dios?",
-      "full_text": "¿Puede el humano rechazar el llamado de Dios hacia esa conversión? (¿Es posible para el humano resistir el llamado de Dios?)",
+      "formal_text": "¿Es posible que el humano rechace el llamado de Dios hacia a recibir la gracia que le lleva a esa conversión?",
+      "colloquial_hint": "¿Puede el hombre resistir el llamado de Dios?",
+      "full_text": "¿Es posible que el humano rechace el llamado de Dios hacia a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado de Dios?)",
       "source_line": 165,
       "origin_posture_ids": [
         "P74"
@@ -2551,8 +2551,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P74": {
       "id": "P74",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Conversionismo",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -2679,7 +2679,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P83": {
       "id": "P83",
-      "label": "Perseverancia de los Santos / Seguridad Eterna",
+      "label": "Perseverancia de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2703,7 +2703,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P84": {
       "id": "P84",
-      "label": "Perseverancia Condicional de los Santos",
+      "label": "Preservación Condicional de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -3180,7 +3180,7 @@ window.__ARBOL_POSTURAS__ = {
     "questions": 52,
     "postures": 104,
     "traditions": 21,
-    "unnamed_postures": 50,
+    "unnamed_postures": 49,
     "convergences": 2,
     "source_lines": 207
   }

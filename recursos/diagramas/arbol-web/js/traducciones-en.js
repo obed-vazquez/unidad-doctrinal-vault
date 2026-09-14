@@ -21,7 +21,7 @@
       }
     },
     "Q2": {
-      "formal": "Does the Creator identify as God?",
+      "formal": "Do you identify that Creator as “God”?",
       "answers": {
         "A": {
           "label": "No"
@@ -415,7 +415,8 @@
       }
     },
     "Q37": {
-      "formal": "After Discernment is it possible for the human to reach heaven by doing good works?",
+      "formal": "After Discernment, is it possible for man to reach heaven through his good works?",
+      "colloquial": "Can an adult go to heaven being good?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -426,7 +427,8 @@
       }
     },
     "Q38": {
-      "formal": "Does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
+      "formal": "After sinning, does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
+      "colloquial": "Does it take a conversion to get into heaven?",
       "answers": {
         "A": {
           "label": "No"
@@ -437,8 +439,8 @@
       }
     },
     "Q39": {
-      "formal": "Can the human reject God's call to that conversion?",
-      "colloquial": "Is it possible for the human to resist God's call?",
+      "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion?",
+      "colloquial": "Can man resist God's call?",
       "answers": {
         "A": {
           "label": "No"
@@ -638,11 +640,12 @@
     "P49": "Inspirationalism / Theopneustia",
     "P59": "Pelagianism",
     "P63": "Total Depravity of Man",
+    "P74": "Conversionism",
     "P75": "IRRESISTIBLE GRACE",
     "P78": "Resistible Grace",
     "P81": "Baptismal Salvation",
-    "P83": "Perseverance of the Saints /Eternal Security",
-    "P84": "Conditional Perseverance of Saints",
+    "P83": "THE PERSEVERANCE OF THE SAINTS",
+    "P84": "Conditional Preservation of Saints",
     "P85": "Homoiousianism / Semi-Arrianism",
     "P86": "Consubstantialism",
     "P87": "Modalism / Oneness / Unitarianism",

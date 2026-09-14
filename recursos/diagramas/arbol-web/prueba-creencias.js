@@ -20,10 +20,14 @@ const almacen = new Map();
 const ventana = {
   localStorage: {
     getItem: (k) => (almacen.has(k) ? almacen.get(k) : null),
-    setItem: (k, v) => almacen.set(k, String(v))
+    setItem: (k, v) => almacen.set(k, String(v)),
+    removeItem: (k) => almacen.delete(k)
   },
   matchMedia: () => ({ matches: false }),
   requestAnimationFrame: () => 0,
+  cancelAnimationFrame: () => {},
+  setTimeout,
+  clearTimeout
   cancelAnimationFrame: () => {}
 };
 ventana.window = ventana;

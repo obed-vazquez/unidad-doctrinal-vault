@@ -21,7 +21,7 @@
 
       1. Order and the design in the cosmos point to a designer
 
-      2. # Everything that has a beginning has a cause (The Universe has a beginning)
+      2. # Everything that has a beginning has a cause (The Universe has a beginning) {#everything-that-has-a-beginning-has-a-cause-(the-universe-has-a-beginning)}
 
       3. Entropic principle. It is not logical to think that everything has happened by chance.  
       4. The amount of information and design in the smallest systems of the universe is so densely packed that it demands an intelligent mind as a designer.  

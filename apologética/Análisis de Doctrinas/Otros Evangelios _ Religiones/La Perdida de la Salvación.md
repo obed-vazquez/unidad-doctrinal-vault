@@ -36,7 +36,7 @@
 
       1. ### Versiculos
 
-* # [Mt 25:10-12](http://bible.com/149/mat.25.10-12) **“...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”**;
+* # [Mt 25:10-12](http://bible.com/149/mat.25.10-12) **“...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”**; {#mt-25:10-12-“...vinieron-también-las-otras-vírgenes,-diciendo:-¡señor,-señor,-ábrenos!-mas-él,-respondiendo,-dijo:-de-cierto-os-digo,-que-no-os-conozco.”;}
 
   * # **R:** [Analizando el Contexto Situacional Cronológico, es necesario preguntarnos: ¿De qué tiempo se escribe?](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.hr31klkj5pgx) Como respuesta a esta pregunta, nos damos cuenta de que se está hablando de *las señales antes del fin*. El versículo [Mt 25.1](http://bible.com/149/mat.25.1) está hablando en tiempo futuro **“Entonces el reino de los cielos será semejante a diez vírgenes…”**; y si leemos el capítulo anterior, entendemos el contexto en el que está hablando, entendemos que el versículo tiene diferentes aplicaciones, pero su principal no puede ser el de la pérdida de la salvación, ya que su [contexto](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.6bhr7ohcom4t) lo limita.
 

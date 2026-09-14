@@ -4,7 +4,7 @@
 
    1. Definicion
 
-      1. # La palabra misión es un [terminus technicus](https://docs.google.com/document/d/10dsVYVD6P5Ew3C5PfFYRNA0KHXOucXU3gs7gLT-jt_E/edit?tab=t.0#heading=h.aov1v6lpbf53) y será tratada como tal a lo largo del documento.
+      1. # La palabra misión es un [terminus technicus](https://docs.google.com/document/d/10dsVYVD6P5Ew3C5PfFYRNA0KHXOucXU3gs7gLT-jt_E/edit?tab=t.0#heading=h.aov1v6lpbf53) y será tratada como tal a lo largo del documento. {#la-palabra-misión-es-un-terminus-technicus-y-será-tratada-como-tal-a-lo-largo-del-documento.}
 
       2. Definicion  
    2. Explicación de la postura.  
