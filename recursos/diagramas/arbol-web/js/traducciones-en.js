@@ -496,7 +496,7 @@
       }
     },
     "Q44": {
-      "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God? (Has the whole Bible been inspired?)",
+      "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God? (Has the whole Bible been inspired?) (Was every part of the Bible inspired?)",
       "answers": {
         "A": {
           "label": "Yes"
@@ -523,6 +523,30 @@
       }
     },
     "Q46": {
+      "formal": "What God inspired were the words and not just themes or concepts to the writers?",
+      "colloquial": "Did God inspire the words he commanded to be written?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q47": {
+      "formal": "Did God directly dictate word for word to his writers, without them contributing their own words?",
+      "colloquial": "Did God dictate every word of what had to be written?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q48": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -534,7 +558,7 @@
         }
       }
     },
-    "Q47": {
+    "Q49": {
       "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles?",
       "colloquial": "Did God transform Himself into Jesus Christ and when He speaks to the Father does He not speak to another person of the Trinity, but to Himself?",
       "answers": {
@@ -547,7 +571,7 @@
         }
       }
     },
-    "Q48": {
+    "Q50": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -559,7 +583,7 @@
         }
       }
     },
-    "Q49": {
+    "Q51": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -570,7 +594,7 @@
         }
       }
     },
-    "Q50": {
+    "Q52": {
       "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
@@ -582,7 +606,7 @@
         }
       }
     },
-    "Q51": {
+    "Q53": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -596,7 +620,7 @@
         }
       }
     },
-    "Q52": {
+    "Q54": {
       "formal": "In Gethsemane Christ asked the Father to pass the cup, he had the will to die while he did not want to do it, did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -610,7 +634,7 @@
         }
       }
     },
-    "Q53": {
+    "Q55": {
       "formal": "Is matter/physical reality eternal and was not created by a God?",
       "answers": {
         "A": {
@@ -621,7 +645,7 @@
         }
       }
     },
-    "Q54": {
+    "Q56": {
       "formal": "Is the universe itself, in its entirety, divine in nature?",
       "answers": {
         "A": {
@@ -677,21 +701,25 @@
     "P86": "Limited Inspirationalism",
     "P87": "Selective Limited Inspirationalism",
     "P88": "Inspirationalism Limited Partial",
-    "P90": "Homoiousianism / Semi-Arrianism",
-    "P91": "Consubstantialism",
-    "P92": "Modalism / Oneness / Unitarianism",
-    "P93": "Trinitarianism",
-    "P94": "Docetism",
-    "P96": "Apollinarianism",
-    "P98": "Christ's Hypostatic Duality *",
-    "P99": "Monoprosopism",
-    "P100": "Monophysicism / Eutychianism",
-    "P101": "Diophysicism / Chalcedonianism (also Miaphysicism)",
-    "P102": "Monothelitism / Monothelitism",
-    "P103": "Diothelitism",
-    "P104": "Cosmological Atheism *",
-    "P105": "Cosmological materialism",
-    "P107": "Pantheism / Panentheism*",
+    "P90": "Verbal Inspirationalism",
+    "P91": "Dynamic / Conceptual Inspirationalism",
+    "P92": "Mechanical Inspirationalism / Dictation",
+    "P93": "Organic / Bankruptcy / Confluent Inspirationalism",
+    "P94": "Homoiousianism / Semi-Arrianism",
+    "P95": "Consubstantialism",
+    "P96": "Modalism / Oneness / Unitarianism",
+    "P97": "Trinitarianism",
+    "P98": "Docetism",
+    "P100": "Apollinarianism",
+    "P102": "Christ's Hypostatic Duality *",
+    "P103": "Monoprosopism",
+    "P104": "Monophysicism / Eutychianism",
+    "P105": "Diophysicism / Chalcedonianism (also Miaphysicism)",
+    "P106": "Monothelitism / Monothelitism",
+    "P107": "Diothelitism",
+    "P108": "Cosmological Atheism *",
+    "P109": "Cosmological materialism",
+    "P111": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {

@@ -124,7 +124,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                         - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                           - No: Anti-inspiracionalismo
                                           - Sí: Inspiracionismo / Teopneustia
-                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible? 
+                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
                                               - Sí: ?
                                               - No: ?
                                             - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
@@ -177,13 +177,19 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                         - Conversionismo -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? { [[La Perdida de la Salvación]] }
                                                           - No: Perseverancia de los Santos {Calvinismo, Bautistas}
                                                           - Sí: Preservación Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
-                                            - Inspiracionismo / Teopneustia -> ¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Toda la Biblia ha sido inspirada?) { [[tipos-de-inspiracion-biblica.md]] }
+                                            - Inspiracionismo / Teopneustia -> ¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Toda la Biblia ha sido inspirada?) (¿Cada parte de la Biblia fue inspirada?) { [[tipos-de-inspiracion-biblica.md]] }
                                               - Sí: Inspiracionalismo Plenario
-                                              -No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
+                                              - No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
                                                 - Inspiracionalismo Limitado -> ¿Cuál es, en este sentido, el límite o la extensión de la inspiración?
                                                   - Ciertos Hechos o Dichos de los apóstoles fueron inspirados: Inspiracionalismo Limitado Selectivo
                                                   - Ciertas Secciónes (físicas) de la Biblia: Inspiracionalismo Limitado Parcial
                                                   - Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado): ?
+                                            - Inspiracionismo / Teopneustia -> ¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)
+                                              - Sí: Inspiracionalismo Verbal
+                                              - No: Inspiracionalismo Dinámico / Conceptual
+                                            - Inspiracionismo / Teopneustia -> ¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)
+                                              - Sí: Inspiracionalismo Mecánicó / Dictado
+                                              - No: Inspiracionalismo Orgánico / Concursal / Confluente
                         - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo
@@ -201,9 +207,9 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                           - Sí: Monoprosopismo
                                             - Monoprosopismo -> ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)
                                               - Sí -- subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino: Monofisismo / Eutiquianismo
-                                              -No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo (también Miafisismo)
+                                              - No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo (también Miafisismo)
                                                 - Diofisismo -> En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
-                                                  -No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
+                                                  - No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
                                                   - Sí -- el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {Ortodoxia calcedonense}
   - No: Ateísmo cosmológico*
     - Ateísmo cosmológico* -> ¿La materia/realidad física es eterna y no fue creada por un Dios?
