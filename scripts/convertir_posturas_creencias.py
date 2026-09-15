@@ -44,7 +44,9 @@ LABEL_WIDTH = 30
 QUESTION_COLORS = ("#FFF3CD", "#8A6D3B", "#2F250D")
 POSTURE_COLORS = ("#E7F1FF", "#2E6DA4", "#102A43")
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
-LIST_ITEM = re.compile(r"^(?P<indent>[ \t]*)-\s+(?P<text>.+?)\s*$")
+# El espacio tras el guion es opcional: el árbol trae aristas escritas como
+# `-No -- aclaración`. El (?!-) evita que una regla horizontal `---` entre.
+LIST_ITEM = re.compile(r"^(?P<indent>[ \t]*)-(?!-)\s*(?P<text>.+?)\s*$")
 
 # --- Modelo de datos del visor web (arbol-web) --------------------------------
 JSON_SCHEMA_VERSION = "1.0.0"
@@ -57,6 +59,8 @@ GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
 ANSWER_HEAD = re.compile(r"^(s[íi]|no)\b[\s,;:.—–-]*(.*)$", re.IGNORECASE | re.DOTALL)
+# Estándar de aclaración: `<Respuesta> -- <Aclaración>`.
+ANSWER_GLOSS = re.compile(r"\s--\s")
 
 
 @dataclass
@@ -753,9 +757,19 @@ def parse_groups(raw_label: str) -> list[dict]:
 
 
 def split_answer(label: str) -> tuple[str, str | None]:
-    """Separa la respuesta corta (Sí / No) de su glosa aclaratoria."""
+    """Separa la respuesta corta de su glosa aclaratoria.
+
+    El estándar es `<Respuesta> -- <Aclaración>` y aplica a cualquier
+    respuesta, no solo a Sí / No. Sin `--` se conserva la heurística
+    antigua (cabeza Sí/No y paréntesis) para las aristas ya escritas así.
+    """
 
     text = plain_text(label)
+    doble = ANSWER_GLOSS.search(text)
+    if doble:
+        short = text[: doble.start()].strip()
+        rest = text[doble.end() :].strip()
+        return (short or text), (rest or None)
     match = ANSWER_HEAD.match(text)
     if not match:
         return text, None

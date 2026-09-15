@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-08-31T10:06:15Z",
+  "generated_at": "2026-09-15T00:10:59Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -43,16 +43,16 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P99",
-          "source_line": 201
+          "target_posture_id": "P108",
+          "source_line": 214
         }
       ]
     },
     "Q2": {
       "id": "Q2",
-      "formal_text": "¿El Creador se identifica como Dios?",
+      "formal_text": "¿Identificas a ese Creador como \"Dios\"?",
       "colloquial_hint": null,
-      "full_text": "¿El Creador se identifica como Dios?",
+      "full_text": "¿Identificas a ese Creador como \"Dios\"?",
       "source_line": 55,
       "origin_posture_ids": [
         "P1"
@@ -815,7 +815,7 @@ window.__ARBOL_POSTURAS__ = {
         {
           "key": "A",
           "label": "No",
-          "full_label": "No, El hombre nace sin pecado y con la capacidad de hacer el bien y alcanzar el cielo",
+          "full_label": "No -- El hombre nace sin pecado y con la capacidad de hacer el bien y alcanzar el cielo",
           "gloss": "El hombre nace sin pecado y con la capacidad de hacer el bien y alcanzar el cielo",
           "target_posture_id": "P52",
           "source_line": 131
@@ -983,8 +983,8 @@ window.__ARBOL_POSTURAS__ = {
     "Q33": {
       "id": "Q33",
       "formal_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?",
-      "colloquial_hint": "Cuando un niño muere ¿va a un lugar diferente al cielo?",
-      "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (Cuando un niño muere ¿va a un lugar diferente al cielo?)",
+      "colloquial_hint": "¿Al morir un niño, va a un lugar diferente al cielo?",
+      "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)",
       "source_line": 148,
       "origin_posture_ids": [
         "P63"
@@ -1003,7 +1003,7 @@ window.__ARBOL_POSTURAS__ = {
         {
           "key": "B",
           "label": "No",
-          "full_label": "No, la inocencia le da acceso al cielo y no puede pecar",
+          "full_label": "No -- la inocencia le da acceso al cielo y no puede pecar",
           "gloss": "la inocencia le da acceso al cielo y no puede pecar",
           "target_posture_id": "P70",
           "source_line": 158
@@ -1094,9 +1094,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q37": {
       "id": "Q37",
-      "formal_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo haciendo buenas obras?",
-      "colloquial_hint": null,
-      "full_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo haciendo buenas obras?",
+      "formal_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras?",
+      "colloquial_hint": "¿Puede un adulto ir al cielo siendo bueno?",
+      "full_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)",
       "source_line": 159,
       "origin_posture_ids": [
         "P63"
@@ -1124,9 +1124,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q38": {
       "id": "Q38",
-      "formal_text": "¿El ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
-      "colloquial_hint": null,
-      "full_text": "¿El ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
+      "formal_text": "¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo?",
+      "colloquial_hint": "¿Se necesita una conversión para entrar al cielo?",
+      "full_text": "¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)",
       "source_line": 162,
       "origin_posture_ids": [
         "P72"
@@ -1154,9 +1154,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q39": {
       "id": "Q39",
-      "formal_text": "¿Puede el humano rechazar el llamado de Dios hacia esa conversión?",
-      "colloquial_hint": "¿Es posible para el humano resistir el llamado de Dios?",
-      "full_text": "¿Puede el humano rechazar el llamado de Dios hacia esa conversión? (¿Es posible para el humano resistir el llamado de Dios?)",
+      "formal_text": "¿Es posible que el humano rechace el llamado de Dios hacia a recibir la gracia que le lleva a esa conversión?",
+      "colloquial_hint": "¿Puede el hombre resistir el llamado de Dios?",
+      "full_text": "¿Es posible que el humano rechace el llamado de Dios hacia a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado de Dios?)",
       "source_line": 165,
       "origin_posture_ids": [
         "P74"
@@ -1311,10 +1311,145 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q44": {
       "id": "Q44",
+      "formal_text": "¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Toda la Biblia ha sido inspirada?) (¿Cada parte de la Biblia fue inspirada?)",
+      "colloquial_hint": null,
+      "full_text": "¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Toda la Biblia ha sido inspirada?) (¿Cada parte de la Biblia fue inspirada?)",
+      "source_line": 180,
+      "origin_posture_ids": [
+        "P49"
+      ],
+      "is_convergence": false,
+      "wikilinks": [
+        {
+          "target": "tipos-de-inspiracion-biblica.md",
+          "label": "tipos-de-inspiracion-biblica.md",
+          "href": null,
+          "vault_path": null
+        }
+      ],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P85",
+          "source_line": 181
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No -- la Biblia fue inspirada parcialmente",
+          "gloss": "la Biblia fue inspirada parcialmente",
+          "target_posture_id": "P86",
+          "source_line": 182
+        }
+      ]
+    },
+    "Q45": {
+      "id": "Q45",
+      "formal_text": "¿Cuál es, en este sentido, el límite o la extensión de la inspiración?",
+      "colloquial_hint": null,
+      "full_text": "¿Cuál es, en este sentido, el límite o la extensión de la inspiración?",
+      "source_line": 183,
+      "origin_posture_ids": [
+        "P86"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Ciertos Hechos o Dichos de los apóstoles fueron inspirados",
+          "full_label": "Ciertos Hechos o Dichos de los apóstoles fueron inspirados",
+          "gloss": null,
+          "target_posture_id": "P87",
+          "source_line": 184
+        },
+        {
+          "key": "B",
+          "label": "Ciertas Secciónes (físicas) de la Biblia",
+          "full_label": "Ciertas Secciónes (físicas) de la Biblia",
+          "gloss": null,
+          "target_posture_id": "P88",
+          "source_line": 185
+        },
+        {
+          "key": "C",
+          "label": "Cierto Contenido o Temas fueron inspirados",
+          "full_label": "Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado)",
+          "gloss": "(por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado)",
+          "target_posture_id": "P89",
+          "source_line": 186
+        }
+      ]
+    },
+    "Q46": {
+      "id": "Q46",
+      "formal_text": "¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores?",
+      "colloquial_hint": "¿Dios inspiró las palabras que mandó escribir?",
+      "full_text": "¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)",
+      "source_line": 187,
+      "origin_posture_ids": [
+        "P49"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P90",
+          "source_line": 188
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P91",
+          "source_line": 189
+        }
+      ]
+    },
+    "Q47": {
+      "id": "Q47",
+      "formal_text": "¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras?",
+      "colloquial_hint": "¿Dios dictó cada palabra de lo que se tenía que escribir?",
+      "full_text": "¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)",
+      "source_line": 190,
+      "origin_posture_ids": [
+        "P49"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P92",
+          "source_line": 191
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P93",
+          "source_line": 192
+        }
+      ]
+    },
+    "Q48": {
+      "id": "Q48",
       "formal_text": "¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina?",
       "colloquial_hint": "¿Dios es la misma sustancia que Jesús?",
       "full_text": "¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)",
-      "source_line": 180,
+      "source_line": 193,
       "origin_posture_ids": [
         "P33"
       ],
@@ -1326,57 +1461,57 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P85",
-          "source_line": 181
+          "target_posture_id": "P94",
+          "source_line": 194
         },
         {
           "key": "B",
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P86",
-          "source_line": 182
+          "target_posture_id": "P95",
+          "source_line": 195
         }
       ]
     },
-    "Q45": {
-      "id": "Q45",
-      "formal_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles?",
-      "colloquial_hint": "¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?",
-      "full_text": "¿El Padre y el Hijo son sujetos personalmente distintos, que coexisten simultánea y eternamente y pueden relacionarse entre sí como un yo y un tú, aunque comparten una misma e idéntica sustancia divina, en lugar de ser un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿El Padre y el Hijo son realmente dos personas distintas, aunque ambos sean plenamente Dios?)",
-      "source_line": 183,
+    "Q49": {
+      "id": "Q49",
+      "formal_text": "¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles?",
+      "colloquial_hint": "¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?",
+      "full_text": "¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?)",
+      "source_line": 196,
       "origin_posture_ids": [
-        "P86"
+        "P95"
       ],
       "is_convergence": false,
       "wikilinks": [],
       "answers": [
         {
           "key": "A",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P87",
-          "source_line": 184
-        },
-        {
-          "key": "B",
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P88",
-          "source_line": 185
+          "target_posture_id": "P96",
+          "source_line": 197
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No -- Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
+          "gloss": "Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
+          "target_posture_id": "P97",
+          "source_line": 198
         }
       ]
     },
-    "Q46": {
-      "id": "Q46",
+    "Q50": {
+      "id": "Q50",
       "formal_text": "¿Jesús tuvo un cuerpo y naturaleza humana real?",
       "colloquial_hint": null,
       "full_text": "¿Jesús tuvo un cuerpo y naturaleza humana real?",
-      "source_line": 186,
+      "source_line": 199,
       "origin_posture_ids": [
-        "P88"
+        "P97"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1386,144 +1521,24 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No (solo apariencia)",
           "gloss": "solo apariencia",
-          "target_posture_id": "P89",
-          "source_line": 187
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P90",
-          "source_line": 188
-        }
-      ]
-    },
-    "Q47": {
-      "id": "Q47",
-      "formal_text": "¿Jesús tuvo una mente/alma humana racional completa?",
-      "colloquial_hint": null,
-      "full_text": "¿Jesús tuvo una mente/alma humana racional completa?",
-      "source_line": 189,
-      "origin_posture_ids": [
-        "P90"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P91",
-          "source_line": 190
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P92",
-          "source_line": 191
-        }
-      ]
-    },
-    "Q48": {
-      "id": "Q48",
-      "formal_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas?",
-      "colloquial_hint": "¿Es la misma persona quien perdonó pecados y quien murió en la cruz?",
-      "full_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)",
-      "source_line": 192,
-      "origin_posture_ids": [
-        "P92"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P93",
-          "source_line": 193
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P94",
-          "source_line": 194
-        }
-      ]
-    },
-    "Q49": {
-      "id": "Q49",
-      "formal_text": "¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos?",
-      "colloquial_hint": "¿la divinidad de Cristo anuló su humanidad?",
-      "full_text": "¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)",
-      "source_line": 195,
-      "origin_posture_ids": [
-        "P94"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "Sí",
-          "full_label": "Sí, subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
-          "gloss": "subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
-          "target_posture_id": "P95",
-          "source_line": 196
-        },
-        {
-          "key": "B",
-          "label": "No",
-          "full_label": "No, Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
-          "gloss": "Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
-          "target_posture_id": "P96",
-          "source_line": 197
-        }
-      ]
-    },
-    "Q50": {
-      "id": "Q50",
-      "formal_text": "En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades?",
-      "colloquial_hint": "¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?",
-      "full_text": "En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)",
-      "source_line": 198,
-      "origin_posture_ids": [
-        "P96"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "No",
-          "full_label": "No, el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
-          "gloss": "el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
-          "target_posture_id": "P97",
-          "source_line": 199
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí, el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
-          "gloss": "el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
           "target_posture_id": "P98",
           "source_line": 200
+        },
+        {
+          "key": "B",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P99",
+          "source_line": 201
         }
       ]
     },
     "Q51": {
       "id": "Q51",
-      "formal_text": "¿La materia/realidad física es eterna y no fue creada por un Dios?",
+      "formal_text": "¿Jesús tuvo una mente/alma humana racional completa?",
       "colloquial_hint": null,
-      "full_text": "¿La materia/realidad física es eterna y no fue creada por un Dios?",
+      "full_text": "¿Jesús tuvo una mente/alma humana racional completa?",
       "source_line": 202,
       "origin_posture_ids": [
         "P99"
@@ -1533,16 +1548,16 @@ window.__ARBOL_POSTURAS__ = {
       "answers": [
         {
           "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
+          "label": "No",
+          "full_label": "No",
           "gloss": null,
           "target_posture_id": "P100",
           "source_line": 203
         },
         {
           "key": "B",
-          "label": "No",
-          "full_label": "No",
+          "label": "Sí",
+          "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P101",
           "source_line": 204
@@ -1551,12 +1566,102 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q52": {
       "id": "Q52",
-      "formal_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
-      "colloquial_hint": null,
-      "full_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
+      "formal_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas?",
+      "colloquial_hint": "¿Es la misma persona quien perdonó pecados y quien murió en la cruz?",
+      "full_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)",
       "source_line": 205,
       "origin_posture_ids": [
-        "P99"
+        "P101"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P102",
+          "source_line": 206
+        },
+        {
+          "key": "B",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P103",
+          "source_line": 207
+        }
+      ]
+    },
+    "Q53": {
+      "id": "Q53",
+      "formal_text": "¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos?",
+      "colloquial_hint": "¿la divinidad de Cristo anuló su humanidad?",
+      "full_text": "¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)",
+      "source_line": 208,
+      "origin_posture_ids": [
+        "P103"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí -- subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
+          "gloss": "subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
+          "target_posture_id": "P104",
+          "source_line": 209
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
+          "gloss": "Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
+          "target_posture_id": "P105",
+          "source_line": 210
+        }
+      ]
+    },
+    "Q54": {
+      "id": "Q54",
+      "formal_text": "En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades?",
+      "colloquial_hint": "¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?",
+      "full_text": "En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)",
+      "source_line": 211,
+      "origin_posture_ids": [
+        "P105"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "No",
+          "full_label": "No -- el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
+          "gloss": "el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
+          "target_posture_id": "P106",
+          "source_line": 212
+        },
+        {
+          "key": "B",
+          "label": "Sí",
+          "full_label": "Sí -- el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
+          "gloss": "el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
+          "target_posture_id": "P107",
+          "source_line": 213
+        }
+      ]
+    },
+    "Q55": {
+      "id": "Q55",
+      "formal_text": "¿La materia/realidad física es eterna y no fue creada por un Dios?",
+      "colloquial_hint": null,
+      "full_text": "¿La materia/realidad física es eterna y no fue creada por un Dios?",
+      "source_line": 215,
+      "origin_posture_ids": [
+        "P108"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1566,16 +1671,46 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P102",
-          "source_line": 206
+          "target_posture_id": "P109",
+          "source_line": 216
         },
         {
           "key": "B",
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P103",
-          "source_line": 207
+          "target_posture_id": "P110",
+          "source_line": 217
+        }
+      ]
+    },
+    "Q56": {
+      "id": "Q56",
+      "formal_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
+      "colloquial_hint": null,
+      "full_text": "¿Es el universo mismo, en su totalidad, de naturaleza divina?",
+      "source_line": 218,
+      "origin_posture_ids": [
+        "P108"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P111",
+          "source_line": 219
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P112",
+          "source_line": 220
         }
       ]
     }
@@ -2031,7 +2166,7 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": [
         "Q18",
-        "Q44"
+        "Q48"
       ]
     },
     "P34": {
@@ -2248,7 +2383,10 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": [
         "Q26",
-        "Q27"
+        "Q27",
+        "Q44",
+        "Q46",
+        "Q47"
       ]
     },
     "P50": {
@@ -2551,8 +2689,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P74": {
       "id": "P74",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Conversionismo",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -2679,7 +2817,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P83": {
       "id": "P83",
-      "label": "Perseverancia de los Santos / Seguridad Eterna",
+      "label": "Perseverancia de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2703,7 +2841,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P84": {
       "id": "P84",
-      "label": "Pérdida de la Salvación / Perseverancia Condicional",
+      "label": "Preservación Condicional de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2733,7 +2871,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P85": {
       "id": "P85",
-      "label": "Homoiousianismo / Semi-Arrianismo",
+      "label": "Inspiracionalismo Plenario",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2744,7 +2882,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P86": {
       "id": "P86",
-      "label": "Consustancialismo",
+      "label": "Inspiracionalismo Limitado",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2757,7 +2895,7 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P87": {
       "id": "P87",
-      "label": "Modalismo / Unicitarismo / Unicitarianismo",
+      "label": "Inspiracionalismo Limitado Selectivo",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2768,21 +2906,19 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P88": {
       "id": "P88",
-      "label": "Trinitarianismo",
+      "label": "Inspiracionalismo Limitado Parcial",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q46"
-      ]
+      "question_axes": []
     },
     "P89": {
       "id": "P89",
-      "label": "Docetismo",
-      "is_unnamed": false,
+      "label": "?",
+      "is_unnamed": true,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -2792,20 +2928,18 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P90": {
       "id": "P90",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Inspiracionalismo Verbal",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q47"
-      ]
+      "question_axes": []
     },
     "P91": {
       "id": "P91",
-      "label": "Apolinarismo",
+      "label": "Inspiracionalismo Dinámico / Conceptual",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -2816,6 +2950,87 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P92": {
       "id": "P92",
+      "label": "Inspiracionalismo Mecánicó / Dictado",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P93": {
+      "id": "P93",
+      "label": "Inspiracionalismo Orgánico / Concursal / Confluente",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P94": {
+      "id": "P94",
+      "label": "Homoiousianismo / Semi-Arrianismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P95": {
+      "id": "P95",
+      "label": "Consustancialismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q49"
+      ]
+    },
+    "P96": {
+      "id": "P96",
+      "label": "Modalismo / Unicitarismo / Unicitarianismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P97": {
+      "id": "P97",
+      "label": "Trinitarianismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q50"
+      ]
+    },
+    "P98": {
+      "id": "P98",
+      "label": "Docetismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P99": {
+      "id": "P99",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -2824,11 +3039,35 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q48"
+        "Q51"
       ]
     },
-    "P93": {
-      "id": "P93",
+    "P100": {
+      "id": "P100",
+      "label": "Apolinarismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P101": {
+      "id": "P101",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q52"
+      ]
+    },
+    "P102": {
+      "id": "P102",
       "label": "Dualidad hipostática de Cristo*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -2845,8 +3084,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P94": {
-      "id": "P94",
+    "P103": {
+      "id": "P103",
       "label": "Monoprosopismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2855,11 +3094,11 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q49"
+        "Q53"
       ]
     },
-    "P95": {
-      "id": "P95",
+    "P104": {
+      "id": "P104",
       "label": "Monofisismo / Eutiquianismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2869,8 +3108,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P96": {
-      "id": "P96",
+    "P105": {
+      "id": "P105",
       "label": "Diofisismo / Calcedonianismo (también Miafisismo)",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2879,11 +3118,11 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q50"
+        "Q54"
       ]
     },
-    "P97": {
-      "id": "P97",
+    "P106": {
+      "id": "P106",
       "label": "Monotelitismo / monotelismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2893,8 +3132,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P98": {
-      "id": "P98",
+    "P107": {
+      "id": "P107",
       "label": "Diotelitismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2918,8 +3157,8 @@ window.__ARBOL_POSTURAS__ = {
       ],
       "question_axes": []
     },
-    "P99": {
-      "id": "P99",
+    "P108": {
+      "id": "P108",
       "label": "Ateísmo cosmológico*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -2928,12 +3167,12 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q51",
-        "Q52"
+        "Q55",
+        "Q56"
       ]
     },
-    "P100": {
-      "id": "P100",
+    "P109": {
+      "id": "P109",
       "label": "Materialismo cosmológico",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2943,8 +3182,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P101": {
-      "id": "P101",
+    "P110": {
+      "id": "P110",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -2954,8 +3193,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P102": {
-      "id": "P102",
+    "P111": {
+      "id": "P111",
       "label": "Panteísmo / Panenteísmo*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -2965,8 +3204,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P103": {
-      "id": "P103",
+    "P112": {
+      "id": "P112",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3131,7 +3370,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Nestorianismo",
       "aliases": [],
       "posture_ids": [
-        "P93"
+        "P102"
       ],
       "tentative": false
     },
@@ -3147,7 +3386,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Ortodoxia calcedonense",
       "aliases": [],
       "posture_ids": [
-        "P98"
+        "P107"
       ],
       "tentative": false
     },
@@ -3177,11 +3416,11 @@ window.__ARBOL_POSTURAS__ = {
     }
   },
   "stats": {
-    "questions": 52,
-    "postures": 104,
+    "questions": 56,
+    "postures": 113,
     "traditions": 21,
     "unnamed_postures": 50,
     "convergences": 2,
-    "source_lines": 207
+    "source_lines": 220
   }
 };

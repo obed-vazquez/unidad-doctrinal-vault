@@ -59,6 +59,14 @@
 .arista-grupo.atenuada { opacity: 0.48; }
 .arista-grupo.deshabilitada { opacity: 0.62; }
 
+/* Dos respuestas muy cercanas pueden compartir casi el mismo color de fondo;
+   al pasar el cursor por una, un borde más grueso y un brillo blanco marcan
+   dónde termina esa caja. */
+.arista-grupo:hover .arista-etiqueta-caja {
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
+}
+
 /* --------------------------------------------------------------------- nodo */
 
 .nodo { cursor: pointer; }

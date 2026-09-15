@@ -13,7 +13,7 @@
       7. Divine Scripture. “The Bible”. Any communication represented by symbols in any printable surface “originated” from God.  
       8. The Bible. The collection of \[books?|scripture?\] “We” believe are God’s Revelation to Man.
 
-      9. # **Canon:**
+      9. # **Canon:** {#canon:}
 
          * Most accepted local definition: List of books that one can logically prove are God’s revelation (or inspired by God, for that matter)  
       10. **Criteria**. One of the elements or filters used to identify a book as God’s revelation (for example, written by an apostle)  

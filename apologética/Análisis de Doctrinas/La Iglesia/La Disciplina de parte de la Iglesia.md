@@ -1,4 +1,4 @@
-## **La Disciplina de parte de la Iglesia**  **\[**[Folder](https://drive.google.com/drive/folders/0B-9PnaxsQwDUcTdFbk9qUVBFXzg)**/**[Base](#la-disciplina-de-parte-de-la-iglesia-[folder/base]-[example\(iva\),-])**\]** \[[Example(IVA)](http://google.com), \]
+## **La Disciplina de parte de la Iglesia**  **\[**[Folder](https://drive.google.com/drive/folders/0B-9PnaxsQwDUcTdFbk9qUVBFXzg)**/**[Base](#la-disciplina-de-parte-de-la-iglesia-[folder/base]-[example\(iva\),-])**\]** \[[Example(IVA)](http://google.com), \] {#la-disciplina-de-parte-de-la-iglesia-[folder/base]-[example(iva),-]}
 
 Descripción del Tema a Discutir y los diferentes puntos de vista:
 

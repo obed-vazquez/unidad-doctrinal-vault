@@ -73,9 +73,8 @@
       lectura.divulgacion = rec;
     }
 
-    // `?limpio=1` ignora lo guardado en localStorage para esta carga. Sirve
-    // para compartir un enlace que se vea igual en cualquier navegador y para
-    // arrancar de cero sin tocar el almacenamiento a mano.
+    // `?limpio=1` ignora el recorrido guardado (respuestas, resaltados, anclajes)
+    // para esta carga. No borra los cambios de edición del árbol.
     lectura.limpio = parametros.get('limpio') === '1';
 
     var lang = parametros.get('lang') || parametros.get('idioma');

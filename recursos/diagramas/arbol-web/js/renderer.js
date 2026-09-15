@@ -495,7 +495,7 @@
         + (respuesta == null ? '' : respuesta) + ':'
         + compuesto.partes.map(function (p) {
           return p.k + (p.expandido ? 'e' : '') + (p.conteo || '') + (p.sello || '')
-            + (p.valor ? p.valor : '');
+            + (p.valor ? p.valor : '') + (p.tieneRama ? 'r' : '') + (p.tieneAgregar ? 'a' : '');
         }).join(',')
         + ':' + ((nodo.postura && nodo.postura.label) || '')
         + (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id) ? ':f' : '')
@@ -797,7 +797,7 @@
        de las dos cajas. Con los puntos fijos abajo→arriba, arrastrar un nodo
        a un costado o por encima de su padre dejaba el trazo pasando por
        detrás de los recuadros. */
-    anclas: function (desdeId, hastaId) {
+    anclas: function (desdeId, hastaId, arista) {
       var puntoA = this.posiciones.get(desdeId);
       var cajaA = this.contexto.disposicion.get(desdeId);
       var puntoB = this.posiciones.get(hastaId);
@@ -830,10 +830,14 @@
         ladoA = dy > 0 ? 'abajo' : 'arriba';
         ladoB = dy > 0 ? 'arriba' : 'abajo';
       }
-      return {
+      var extremos = {
         desde: puntoDeLado(puntoA, cajaA, ladoA),
         hasta: puntoDeLado(puntoB, cajaB, ladoB)
       };
+      if (arista && Arbol.EditMode && Arbol.EditMode.aplicarOffsetsAncla) {
+        extremos = Arbol.EditMode.aplicarOffsetsAncla(arista, extremos, this);
+      }
+      return extremos;
     },
 
     dibujarAristas: function () {
@@ -845,7 +849,7 @@
         var arista = contexto.grafo.aristas.get(aristaId);
         if (!arista) return;
         if (!self.nodosDOM.has(arista.desde) || !self.nodosDOM.has(arista.hasta)) return;
-        var extremos = self.anclas(arista.desde, arista.hasta);
+        var extremos = self.anclas(arista.desde, arista.hasta, arista);
         if (!extremos) return;
         var desde = extremos.desde;
         var hasta = extremos.hasta;
@@ -857,8 +861,22 @@
           grupo = crear('g', { 'data-id': aristaId }, 'arista-grupo');
           grupo.appendChild(crear('path', { pathLength: 1 }, 'arista'));
           if (arista.tipo === 'respuesta' && (arista.etiqueta || contexto.divulgacion === 'edicion')) {
-            grupo.appendChild(crear('rect', {}, 'arista-etiqueta-caja'));
-            grupo.appendChild(texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto'));
+            var cajaEtq = crear('rect', {}, 'arista-etiqueta-caja');
+            var textoEtq = texto(arista.etiqueta, 0, 0, 'arista-etiqueta-texto');
+            // Respuestas muy cercanas pueden taparse la etiqueta entre sí; al
+            // pasar el cursor o tocarla, esa etiqueta pasa al frente y se
+            // resalta su borde para distinguirla de la caja que tapaba.
+            // Aquí es SVG normal, así que el brillo lo da el :hover del CSS;
+            // esto solo reordena para que la etiqueta quede encima.
+            var alFrente = function () {
+              if (grupo.parentNode) grupo.parentNode.appendChild(grupo);
+            };
+            cajaEtq.addEventListener('pointerenter', alFrente);
+            cajaEtq.addEventListener('pointerdown', alFrente);
+            textoEtq.addEventListener('pointerenter', alFrente);
+            textoEtq.addEventListener('pointerdown', alFrente);
+            grupo.appendChild(cajaEtq);
+            grupo.appendChild(textoEtq);
           }
           self.capaAristas.appendChild(grupo);
           self.aristasDOM.set(aristaId, grupo);
@@ -1320,6 +1338,10 @@
 
       this.svg.addEventListener('pointerdown', function (evento) {
         if (evento.button != null && evento.button !== 0) return;
+        if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre && Arbol.EditMode.hayEnlacePadre()) {
+          evento.preventDefault();
+          return;
+        }
         var bajo = elementoBajoPuntero(evento);
         var tag = evento.target && evento.target.tagName;
         var enCampo = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'
@@ -1442,6 +1464,11 @@
       this.svg.addEventListener('pointerup', function (evento) {
         if (self.svg.hasPointerCapture && self.svg.hasPointerCapture(evento.pointerId)) {
           self.svg.releasePointerCapture(evento.pointerId);
+        }
+        if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre && Arbol.EditMode.hayEnlacePadre()) {
+          Arbol.EditMode.clicEnlacePadre(evento, self);
+          self.ignorarSiguienteClic = true;
+          return;
         }
         if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
           if (Arbol.EditMode.soltarReenganche(evento, self, self.opciones.alReenganchar)) {

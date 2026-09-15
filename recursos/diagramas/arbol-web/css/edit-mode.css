@@ -374,6 +374,13 @@
   color-scheme: inherit;
   overflow: hidden;
 }
+/* La caja visible aquí es este div (el rect SVG detrás solo tapa la línea,
+   sin borde propio), así que el brillo de "traída al frente" va en el div,
+   no en el rect. */
+.edit-arista-wrap:hover,
+.edit-arista-wrap.al-frente {
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.85);
+}
 .edit-arista-wrap.escribiendo,
 .edit-arista-wrap:focus-within {
   overflow: visible;
@@ -383,6 +390,10 @@
   box-sizing: border-box;
   -webkit-appearance: none;
   appearance: none;
+  /* Un textarea no hereda la fuente del documento. Sin esto se mide el alto
+     con la pila del visor y se pinta con la del navegador: el texto ocupa más
+     renglones de los previstos y se corta el final. */
+  font-family: var(--pila-fuente);
   width: 100%;
   height: auto;
   flex: 0 0 auto;
@@ -423,9 +434,12 @@
   box-sizing: border-box;
   -webkit-appearance: none;
   appearance: none;
+  font-family: var(--pila-fuente);
   width: 100%;
   height: auto;
-  flex: 1 1 auto;
+  /* Sin encogerse: con flex-shrink la aclaración cedía alto y perdía su
+     último renglón cuando la caja quedaba justa. */
+  flex: 0 0 auto;
   min-width: 0;
   min-height: 13px;
   border: 0;
@@ -573,6 +587,13 @@
 
 #capa-asas { pointer-events: none; }
 .reenganche-asa { pointer-events: all; cursor: grab; }
+.reenganche-asa:active { cursor: grabbing; }
+#lienzo.deslizando-ancla { cursor: grabbing; }
+#lienzo.reenganchando { cursor: grabbing; }
+#lienzo.enlazando-padre,
+.enlazando-padre { cursor: crosshair !important; }
+.modo-edicion-activo #capa-aristas { pointer-events: none; }
+.modo-edicion-activo #capa-aristas .arista-etiqueta-caja { pointer-events: none; }
 .reenganche-asa-hit { fill: transparent; }
 .reenganche-asa-disco {
   fill: var(--acento, #58a6ff);
@@ -585,8 +606,9 @@
 .arista-reenganche-preview {
   fill: none;
   stroke: var(--acento, #58a6ff);
-  stroke-width: 2;
-  stroke-dasharray: 6 4;
+  stroke-width: 2.4;
+  stroke-dasharray: 7 5;
+  stroke-linecap: round;
   marker-end: url(#punta);
   pointer-events: none;
 }
