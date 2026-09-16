@@ -139,13 +139,11 @@
     };
   }
 
-  /* Cuántos nodos distintos cuelgan de cada nodo, en el árbol entero y no solo
-     en lo que está desplegado. Las ramas se comparten (convergencias), así que
-     se unen conjuntos en vez de sumar: un nodo al que se llega por dos caminos
-     se cuenta una vez. Se memoriza en el propio grafo, que es inmutable
-     mientras no se reconstruya. */
-  function descendientesPorNodo(grafo) {
-    if (grafo.conteoDescendientes) return grafo.conteoDescendientes;
+  /* Todos los descendientes de un nodo (recursivo, siguiendo salidas), con un
+     Set por nodo para no duplicar en convergencias. Se memoriza en el propio
+     grafo, que es inmutable mientras no se reconstruya. */
+  function descendientesDeNodoMapa(grafo) {
+    if (grafo._descendientesDeNodo) return grafo._descendientesDeNodo;
     var bajo = new Map();
     function recoger(id) {
       if (bajo.has(id)) return bajo.get(id);
@@ -160,8 +158,25 @@
       }
       return acumulado;
     }
+    grafo.nodos.forEach(function (_, id) { recoger(id); });
+    grafo._descendientesDeNodo = bajo;
+    return bajo;
+  }
+
+  function descendientesDeNodo(grafo, nodoId) {
+    return descendientesDeNodoMapa(grafo).get(nodoId) || new Set();
+  }
+
+  /* Cuántos nodos distintos cuelgan de cada nodo, en el árbol entero y no solo
+     en lo que está desplegado. Las ramas se comparten (convergencias), así que
+     se unen conjuntos en vez de sumar: un nodo al que se llega por dos caminos
+     se cuenta una vez. Se memoriza en el propio grafo, que es inmutable
+     mientras no se reconstruya. */
+  function descendientesPorNodo(grafo) {
+    if (grafo.conteoDescendientes) return grafo.conteoDescendientes;
+    var bajo = descendientesDeNodoMapa(grafo);
     var conteo = new Map();
-    grafo.nodos.forEach(function (_, id) { conteo.set(id, recoger(id).size); });
+    grafo.nodos.forEach(function (_, id) { conteo.set(id, (bajo.get(id) || new Set()).size); });
     grafo.conteoDescendientes = conteo;
     return conteo;
   }
@@ -547,6 +562,7 @@
       completo: [],
       edicion: []
     },
+    ramasGuardadas: {},      // { nodoId: [idsDescendientesExpandidos] } al colapsar con el botón normal
     editTamanos: {},         // { nodoId: { w, h } } exclusivo del modo edición
     editCampos: {},          // { 'p:P1': ['traditions'], 'q:Q1': ['colloquial_hint'] }
     forzarNodos: null,       // Set de ids visibles aunque no se alcancen desde la raíz (huérfanos en edición)
@@ -674,12 +690,55 @@
       });
     },
 
+    /* Colapsar guarda, antes de olvidar, qué descendientes seguían abiertos
+       (para restaurar esa misma profundidad al volver a expandir con este
+       botón); expandir restaura esa memoria si existe. «Expandir/colapsar
+       todo» (alternarExpandidoTotal) es un camino aparte que no pasa por
+       aquí. */
     alternarExpandido: function (nodoId) {
+      var self = this;
       if (this.expandidos.has(nodoId)) {
+        var descendientes = descendientesDeNodo(this.grafo, nodoId);
+        var guardado = [];
+        descendientes.forEach(function (id) {
+          if (self.expandidos.has(id)) guardado.push(id);
+        });
+        this.ramasGuardadas[nodoId] = guardado;
         this.expandidos.delete(nodoId);
         this.olvidarExpandidosOcultos();
       } else {
         this.expandidos.add(nodoId);
+        var restaurar = this.ramasGuardadas[nodoId];
+        if (restaurar && restaurar.length) {
+          restaurar.forEach(function (id) {
+            if (self.grafo.nodos.has(id)) self.expandidos.add(id);
+          });
+        }
+      }
+      this.sincronizarExpandidosGuardados();
+      this.emitir('expandir');
+    },
+
+    /* Expande o colapsa el subárbol completo de un nodo de una sola vez. Si
+       el nodo ya está expandido (con lo que sea que tenga abierto debajo,
+       venga de un «expandir todo» previo o de toques manuales nodo por
+       nodo), el botón actúa como «colapsar todo»: así los botones de nivel
+       y de todo siempre están de acuerdo en si el nodo está abierto o
+       cerrado, en vez de que «todo» dependa de una bandera propia que podía
+       quedar desincronizada (decisión revisada: ver spec). Colapsar todo
+       borra la memoria de «alternarExpandido» de todo el subárbol: ningún
+       descendiente conserva profundidad propia después. */
+    alternarExpandidoTotal: function (nodoId) {
+      var self = this;
+      var descendientes = descendientesDeNodo(this.grafo, nodoId);
+      if (this.expandidos.has(nodoId)) {
+        this.expandidos.delete(nodoId);
+        descendientes.forEach(function (id) { self.expandidos.delete(id); });
+        delete this.ramasGuardadas[nodoId];
+        descendientes.forEach(function (id) { delete self.ramasGuardadas[id]; });
+      } else {
+        this.expandidos.add(nodoId);
+        descendientes.forEach(function (id) { self.expandidos.add(id); });
       }
       this.sincronizarExpandidosGuardados();
       this.emitir('expandir');
@@ -825,6 +884,7 @@
         completo: [],
         edicion: []
       };
+      this.ramasGuardadas = {};
       this.editTamanos = {};
       this.editCampos = {};
       this.panelAbierto = false;
@@ -848,6 +908,7 @@
           arbolCompleto: this.arbolCompleto,
           expandidos: Array.from(this.expandidos),
           expandidosPorRecorrido: this.expandidosPorRecorrido,
+          ramasGuardadas: this.ramasGuardadas,
           editTamanos: this.editTamanos,
           editCampos: this.editCampos,
           modo: this.modo,
@@ -906,6 +967,9 @@
           && this.expandidosPorRecorrido[slot].length) {
           this.expandidos = new Set(this.expandidosPorRecorrido[slot]);
         }
+      }
+      if (guardado.ramasGuardadas && typeof guardado.ramasGuardadas === 'object') {
+        this.ramasGuardadas = guardado.ramasGuardadas;
       }
       if (guardado.editTamanos && typeof guardado.editTamanos === 'object') {
         this.editTamanos = guardado.editTamanos;
@@ -979,6 +1043,7 @@
   Arbol.construirGrafo = construirGrafo;
   Arbol.grafoConControles = grafoConControles;
   Arbol.descendientesPorNodo = descendientesPorNodo;
+  Arbol.descendientesDeNodo = descendientesDeNodo;
   Arbol.pesoDeRespuestas = pesoDeRespuestas;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;

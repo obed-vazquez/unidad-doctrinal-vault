@@ -439,8 +439,7 @@
       }
     },
     "Q39": {
-      "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion?",
-      "colloquial": "Can man resist God's call?",
+      "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion? (Can man resist the call to conversion?)",
       "answers": {
         "A": {
           "label": "No"
@@ -559,8 +558,7 @@
       }
     },
     "Q49": {
-      "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles?",
-      "colloquial": "Did God transform Himself into Jesus Christ and when He speaks to the Father does He not speak to another person of the Trinity, but to Himself?",
+      "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles? (Did God transform Himself into Jesus Christ and when He speaks to the Father He does not speak to another person of the Trinity, but to Himself?)",
       "answers": {
         "A": {
           "label": "Yes"
@@ -692,8 +690,8 @@
     "P59": "Pelagianism",
     "P63": "Total Depravity of Man",
     "P74": "Conversionism",
-    "P75": "IRRESISTIBLE GRACE",
-    "P78": "Resistible Grace",
+    "P75": "Irresistible Grace/ Monerguism",
+    "P78": "Resistible Grace/ Synergism",
     "P81": "Baptismal Salvation",
     "P83": "THE PERSEVERANCE OF THE SAINTS",
     "P84": "Conditional Preservation of Saints",
@@ -705,21 +703,22 @@
     "P91": "Dynamic / Conceptual Inspirationalism",
     "P92": "Mechanical Inspirationalism / Dictation",
     "P93": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P94": "Homoiousianism / Semi-Arrianism",
-    "P95": "Consubstantialism",
-    "P96": "Modalism / Oneness / Unitarianism",
-    "P97": "Trinitarianism",
-    "P98": "Docetism",
-    "P100": "Apollinarianism",
-    "P102": "Christ's Hypostatic Duality *",
-    "P103": "Monoprosopism",
-    "P104": "Monophysicism / Eutychianism",
-    "P105": "Diophysicism / Chalcedonianism (also Miaphysicism)",
-    "P106": "Monothelitism / Monothelitism",
-    "P107": "Diothelitism",
-    "P108": "Cosmological Atheism *",
-    "P109": "Cosmological materialism",
-    "P111": "Pantheism / Panentheism*",
+    "P94": "Incarnationism / Pre-existentialism",
+    "P95": "Homoiousianism / Semi-Arrianism",
+    "P96": "Consubstantialism",
+    "P97": "Modalism / Oneness / Unitarianism",
+    "P98": "Trinitarianism/Trinitarianism",
+    "P99": "Docetism",
+    "P101": "Apollinarianism",
+    "P103": "Christ's Hypostatic Duality *",
+    "P104": "Monoprosopism",
+    "P105": "Monophysicism / Eutychianism",
+    "P106": "Diophysicism / Chalcedonianism / Myaphysicism",
+    "P107": "Monothelitism / Monothelitism",
+    "P108": "Diothelitism",
+    "P109": "Cosmological Atheism *",
+    "P110": "Cosmological materialism",
+    "P112": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {

@@ -17,6 +17,8 @@
   var ALTO_PIE = 30;
   var ALTO_SECCION = 18;
   var GAP = 8;
+  var ANCHO_ICONO_RAMA = 26;
+  var GAP_ICONO_RAMA = 4;
   var ALTO_CONTROL_MAS = 48;
   var ANCHO_CONTROL_MAS = 48;
   var ANCHO_CONTROL_EJE = 48;
@@ -89,6 +91,28 @@
     return el;
   }
 
+  /* Chevron(es) de los botones de expandir/colapsar: la misma geometría de
+     "chevron-down"/"chevrons-down" de Lucide (lucide.dev, MIT) —un ícono de
+     librería reconocible, no una figura improvisada— referenciada como una
+     cadena de coordenadas fija en su rejilla de 24×24, sin cargar la
+     librería ni ninguna dependencia nueva. Mismo criterio que la papelera
+     (pintarPapelera) y el resize (pintarResize): trazos a mano en vez de
+     depender del glifo de una fuente. Apunta hacia abajo cuando invita a
+     abrir y hacia arriba cuando la acción vigente es «ya está abierto, pulsa
+     para cerrar» (se voltea con un `scale(1,-1)`, sin recalcular puntos). */
+  var CHEVRON_D = 'M6 9l6 6 6-6';
+  var CHEVRON_DOBLE_D = 'M7 6l5 5 5-5M7 13l5 5 5-5';
+  var CHEVRON_ESCALA = 0.68;
+
+  function chevronD(doble) {
+    return doble ? CHEVRON_DOBLE_D : CHEVRON_D;
+  }
+
+  function chevronTransform(cx, cy, arriba) {
+    var s = CHEVRON_ESCALA;
+    return 'translate(' + cx + ',' + cy + ') scale(' + s + ',' + (arriba ? -s : s) + ') translate(-12,-12)';
+  }
+
   function cajaSuperior(ancho, alto, radio) {
     return 'M 0 ' + radio
       + ' A ' + radio + ' ' + radio + ' 0 0 1 ' + radio + ' 0'
@@ -147,11 +171,14 @@
     return medidorCampo;
   }
 
+  var _perfAltoMs = 0, _perfAltoMiss = 0; // TEMP-PERF
+
   function altoDeTexto(valor, ancho) {
     var texto = (valor == null || String(valor) === '') ? ' ' : String(valor);
     var clave = ancho + '\0' + texto;
     var hit = cacheAltoCampo.get(clave);
     if (hit != null) return hit;
+    var _t0 = performance.now(); // TEMP-PERF
     var el = asegurarMedidorCampo();
     el.style.width = Math.max(40, ancho) + 'px';
     el.value = texto;
@@ -160,6 +187,7 @@
     el.style.height = 'auto';
     if (cacheAltoCampo.size > 4000) cacheAltoCampo.clear();
     cacheAltoCampo.set(clave, h);
+    _perfAltoMs += performance.now() - _t0; _perfAltoMiss++; // TEMP-PERF
     return h;
   }
 
@@ -268,6 +296,9 @@
     var tieneSalidasReales = (nodo.salidas || []).some(function (a) {
       return a.tipo !== 'control';
     });
+    /* Los dos botones (nivel y todo) comparten el mismo estado abierto/
+       cerrado: no hay una bandera aparte que pueda desincronizarse de lo
+       que se ve en pantalla (ver spec, corrección posterior). */
     var expandido = !!(contexto.expandidos && contexto.expandidos.has(nodo.id));
     var tam = mapaDe(contexto, 'editTamanos')[nodo.id];
     var altoContenido = Math.round(y + ALTO_PIE + PAD_INF);
@@ -280,6 +311,7 @@
       campos: faltantes,
       clave: clave,
       expandido: expandido,
+      expandidoTotal: expandido,
       nodoId: nodo.id,
       xDerecha: anchoInterno - 26,
       anchoInterno: anchoInterno,
@@ -646,7 +678,8 @@
       'data-y': parte.y
     }, 'edit-pie-grupo edit-sigue-alto');
     if (parte.tieneAgregar) {
-      var anchoAg = parte.tieneRama ? parte.anchoInterno - 36 : parte.anchoInterno;
+      var reserva = parte.tieneRama ? (ANCHO_ICONO_RAMA * 2 + GAP_ICONO_RAMA + 10) : 0;
+      var anchoAg = parte.anchoInterno - reserva;
       var ag = crearSVG('g', {
         'data-edit-control': 'agregar',
         'data-edit-campos': parte.campos.join(','),
@@ -661,18 +694,36 @@
       g.appendChild(ag);
     }
     if (parte.tieneRama) {
+      /* «Todo» va en el extremo derecho de la tarjeta (el sitio más buscado
+         para la acción más fuerte); el nivel simple queda a su izquierda. */
+      var xNivel = parte.xDerecha - ANCHO_ICONO_RAMA - GAP_ICONO_RAMA;
       var rama = crearSVG('g', {
         'data-edit-control': 'rama',
         'data-edit-expandir': parte.nodoId,
         'data-control': 'expandir'
       }, 'edit-rama' + (parte.expandido ? ' expandido' : ''));
       rama.appendChild(crearSVG('rect', {
-        x: padX + parte.xDerecha, y: 2,
-        width: 26, height: 26, rx: 6
+        x: padX + xNivel, y: 2,
+        width: ANCHO_ICONO_RAMA, height: 26, rx: 6
       }, 'edit-rama-caja'));
-      rama.appendChild(textoSVG(parte.expandido ? '▾' : '▸',
-        padX + parte.xDerecha + 13, 15, 'edit-rama-icono'));
+      rama.appendChild(crearSVG('path', {
+        d: chevronD(false), transform: chevronTransform(padX + xNivel + 13, 15, parte.expandido)
+      }, 'edit-rama-icono'));
       g.appendChild(rama);
+
+      var ramaTodo = crearSVG('g', {
+        'data-edit-control': 'ramaTodo',
+        'data-edit-expandir-todo': parte.nodoId,
+        'data-control': 'expandir-todo'
+      }, 'edit-rama-todo' + (parte.expandidoTotal ? ' expandido' : ''));
+      ramaTodo.appendChild(crearSVG('rect', {
+        x: padX + parte.xDerecha, y: 2,
+        width: ANCHO_ICONO_RAMA, height: 26, rx: 6
+      }, 'edit-rama-todo-caja'));
+      ramaTodo.appendChild(crearSVG('path', {
+        d: chevronD(true), transform: chevronTransform(padX + parte.xDerecha + 13, 15, parte.expandidoTotal)
+      }, 'edit-rama-todo-icono'));
+      g.appendChild(ramaTodo);
     }
     grupo.appendChild(g);
   }
@@ -875,14 +926,26 @@
     return medidorEtiqueta;
   }
 
+  var _perfEtiqMs = 0, _perfEtiqMiss = 0; // TEMP-PERF
+
   function altoBloqueEtiqueta(texto, ancho, glosa) {
+    var _t0 = performance.now(); // TEMP-PERF
     var el = asegurarMedidorEtiqueta();
     el.style.font = glosa ? ('400 10px ' + lay().PILA) : fuenteEtiqueta();
     el.style.lineHeight = glosa ? '13px' : '15px';
     el.style.padding = glosa ? '0 4px 2px' : '1px 4px';
     el.style.width = Math.max(20, Math.ceil(ancho)) + 'px';
     el.textContent = texto || ' ';
-    return Math.max(glosa ? 13 : 17, el.scrollHeight);
+    var _r = Math.max(glosa ? 13 : 17, el.scrollHeight);
+    _perfEtiqMs += performance.now() - _t0; _perfEtiqMiss++; // TEMP-PERF
+    return _r;
+  }
+
+  function _perfReset() { // TEMP-PERF
+    _perfAltoMs = 0; _perfAltoMiss = 0; _perfEtiqMs = 0; _perfEtiqMiss = 0;
+  }
+  function _perfGet() { // TEMP-PERF
+    return { altoMs: _perfAltoMs, altoMiss: _perfAltoMiss, etiqMs: _perfEtiqMs, etiqMiss: _perfEtiqMiss };
   }
 
   /* Respuestas muy cercanas se tapan la etiqueta entre sí: la que está bajo el
@@ -1192,7 +1255,8 @@
         || el.classList.contains('edit-arista-ghost')
         || el.classList.contains('edit-chip-quitar'))) return true;
     if (el.closest && (el.closest('.edit-fo') || el.closest('.edit-agregar')
-        || el.closest('.edit-rama') || el.closest('.edit-papelera')
+        || el.closest('.edit-rama') || el.closest('.edit-rama-todo')
+        || el.closest('.edit-papelera')
         || el.closest('.edit-resize') || el.closest('.reenganche-asa')
         || el.closest('.tipo-control-mas') || el.closest('.tipo-control-eje'))) {
       return true;
@@ -1520,6 +1584,14 @@
     if (tipo === 'rama' || tipo === 'expandir') {
       return '<h4>' + escapar(tUI('mostrarRamas', 'Mostrar ramas')) + '</h4><p>'
         + escapar(tUI('ramasCompactasDesc', 'Muestra u oculta los hijos de esta tarjeta.'))
+        + '</p>';
+    }
+    if (tipo === 'ramaTodo') {
+      var activoTodo = control.classList && control.classList.contains('expandido');
+      var tituloTodo = activoTodo ? tUI('colapsarRamasTodo', 'Colapsar todo')
+        : tUI('expandirRamasTodo', 'Expandir todo');
+      return '<h4>' + escapar(tituloTodo) + '</h4><p>'
+        + escapar(tUI('ramasTodoDesc', 'Muestra u oculta todo el subárbol de esta tarjeta de una vez.'))
         + '</p>';
     }
     if (tipo === 'borrar') {
@@ -2121,13 +2193,29 @@
       if (cajaAg) {
         var xAg = parseFloat(cajaAg.getAttribute('x'));
         if (isNaN(xAg)) xAg = PAD_X;
-        cajaAg.setAttribute('width', Math.max(40, w - xAg - PAD_X - (rama ? 36 : 0)));
+        var reservaRamas = rama ? (ANCHO_ICONO_RAMA * 2 + GAP_ICONO_RAMA + 10) : 0;
+        cajaAg.setAttribute('width', Math.max(40, w - xAg - PAD_X - reservaRamas));
+      }
+      var ramaTodo = pie.querySelector('.edit-rama-todo');
+      var ramaTodoCaja = pie.querySelector('.edit-rama-todo-caja');
+      if (ramaTodoCaja) {
+        var xTodo = w - PAD_X - ANCHO_ICONO_RAMA;
+        ramaTodoCaja.setAttribute('x', xTodo);
+        var iconoRamaTodo = pie.querySelector('.edit-rama-todo-icono');
+        if (iconoRamaTodo) {
+          iconoRamaTodo.setAttribute('transform',
+            chevronTransform(xTodo + 13, 15, ramaTodo && ramaTodo.classList.contains('expandido')));
+        }
       }
       var ramaCaja = pie.querySelector('.edit-rama-caja');
       if (ramaCaja) {
-        ramaCaja.setAttribute('x', w - PAD_X - 26);
+        var xRama = w - PAD_X - ANCHO_ICONO_RAMA * 2 - GAP_ICONO_RAMA;
+        ramaCaja.setAttribute('x', xRama);
         var iconoRama = pie.querySelector('.edit-rama-icono');
-        if (iconoRama) iconoRama.setAttribute('x', w - PAD_X - 13);
+        if (iconoRama) {
+          iconoRama.setAttribute('transform',
+            chevronTransform(xRama + 13, 15, rama && rama.classList.contains('expandido')));
+        }
       }
     }
     var resizeEl = cuerpo.querySelector('.edit-resize');
@@ -2209,6 +2297,8 @@
     componer: componer,
     pintarParte: pintarParte,
     pintarEtiquetaArista: pintarEtiquetaArista,
+    _perfReset: _perfReset, // TEMP-PERF
+    _perfGet: _perfGet, // TEMP-PERF
     quitarEtiquetaArista: quitarEtiquetaArista,
     dibujarAsas: dibujarAsas,
     esEventoDeEdicion: esEventoDeEdicion,

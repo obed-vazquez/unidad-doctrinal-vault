@@ -249,27 +249,32 @@
 .edit-agregar:hover .edit-agregar-mas,
 .edit-agregar:hover .edit-agregar-texto { fill: var(--acento, #58a6ff); }
 
-.edit-rama { cursor: pointer; }
-.edit-rama-caja {
+.edit-rama, .edit-rama-todo { cursor: pointer; }
+.edit-rama-caja, .edit-rama-todo-caja {
   fill: var(--nodo-fondo-2, #111925);
   stroke: var(--borde, #26313f);
   stroke-width: 1;
   transition: fill 0.15s ease, stroke 0.15s ease;
 }
 .edit-rama:hover .edit-rama-caja,
-.edit-rama.expandido .edit-rama-caja {
+.edit-rama.expandido .edit-rama-caja,
+.edit-rama-todo:hover .edit-rama-todo-caja,
+.edit-rama-todo.expandido .edit-rama-todo-caja {
   fill: var(--acento-suave, rgba(88, 166, 255, 0.16));
   stroke: var(--acento, #58a6ff);
 }
-.edit-rama-icono {
-  fill: var(--texto-tenue, #708197);
-  font-size: 12px;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: middle;
+.edit-rama-icono, .edit-rama-todo-icono {
+  fill: none;
+  stroke: var(--texto-tenue, #708197);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.15s ease;
 }
 .edit-rama:hover .edit-rama-icono,
-.edit-rama.expandido .edit-rama-icono { fill: var(--acento, #58a6ff); }
+.edit-rama.expandido .edit-rama-icono,
+.edit-rama-todo:hover .edit-rama-todo-icono,
+.edit-rama-todo.expandido .edit-rama-todo-icono { stroke: var(--acento, #58a6ff); }
 
 .edit-papelera { cursor: pointer; opacity: 0; transition: opacity 150ms ease; }
 .nodo.modo-edicion:hover .edit-papelera { opacity: 1; }

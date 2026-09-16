@@ -46,6 +46,27 @@
     return elemento;
   }
 
+  /* Chevron(es) de los botones de expandir/colapsar: la misma geometría de
+     "chevron-down"/"chevrons-down" de Lucide (lucide.dev, MIT), un ícono de
+     librería reconocible en vez de una figura improvisada. Se referencia solo
+     el trazo (una cadena fija de coordenadas en su rejilla de 24×24), sin
+     cargar la librería ni ninguna dependencia nueva: es tan barato como el
+     trazo a mano que reemplaza. Apunta hacia abajo cuando invita a abrir y
+     hacia arriba cuando la acción vigente es «ya está abierto, pulsa para
+     cerrar» (se voltea con un solo `scale(1,-1)`, sin recalcular puntos). */
+  var CHEVRON_D = 'M6 9l6 6 6-6';
+  var CHEVRON_DOBLE_D = 'M7 6l5 5 5-5M7 13l5 5 5-5';
+  var CHEVRON_ESCALA = 0.68;
+
+  function chevronD(doble) {
+    return doble ? CHEVRON_DOBLE_D : CHEVRON_D;
+  }
+
+  function chevronTransform(cx, cy, arriba) {
+    var s = CHEVRON_ESCALA;
+    return 'translate(' + cx + ',' + cy + ') scale(' + s + ',' + (arriba ? -s : s) + ') translate(-12,-12)';
+  }
+
   function ancestro(elemento, selector) {
     if (!elemento || !elemento.closest) return null;
     return elemento.closest(selector);
@@ -650,16 +671,26 @@
           });
         });
 
-      } else if (parte.k === 'expandir') {
-        var gExp = crear('g', {
-          'data-expandir': parte.nodoId,
-          'data-control': 'expandir'
-        }, 'opcion expandir' + (parte.expandido ? ' elegida' : ''));
+      } else if (parte.k === 'expandir' || parte.k === 'expandirTodo') {
+        var esTodo = parte.k === 'expandirTodo';
+        var activo = esTodo ? parte.expandidoTotal : parte.expandido;
+        var offsetX = padX + (parte.x || 0);
+        var atributosExp = { 'data-control': esTodo ? 'expandir-todo' : 'expandir' };
+        atributosExp[esTodo ? 'data-expandir-todo' : 'data-expandir'] = parte.nodoId;
+        var gExp = crear('g', atributosExp, 'opcion expandir' + (activo ? ' elegida' : ''));
         gExp.appendChild(crear('rect', {
-          x: padX, y: parte.y, width: parte.ancho, height: parte.alto, rx: 8
+          x: offsetX, y: parte.y, width: parte.ancho, height: parte.alto, rx: 8
         }, 'opcion-caja'));
-        gExp.appendChild(texto(parte.texto, padX + parte.ancho / 2,
-          parte.y + parte.alto / 2, 'opcion-texto'));
+        var iconoW = Arbol.Layout.alturas.iconoExpandir;
+        var iconoGap = Arbol.Layout.alturas.gapIconoExpandir;
+        var anchoTexto = Arbol.Layout.medir(parte.texto, Arbol.Layout.fuentes.botonExpandir);
+        var anchoContenido = iconoW + iconoGap + anchoTexto;
+        var x0 = offsetX + (parte.ancho - anchoContenido) / 2;
+        var cy = parte.y + parte.alto / 2;
+        gExp.appendChild(crear('path', {
+          d: chevronD(esTodo), transform: chevronTransform(x0 + iconoW / 2, cy, activo)
+        }, 'opcion-expandir-icono'));
+        gExp.appendChild(texto(parte.texto, x0 + iconoW + iconoGap, cy, 'opcion-expandir-texto'));
         grupo.appendChild(gExp);
 
       } else if (parte.k === 'chipRespuesta') {
@@ -1570,6 +1601,13 @@
           }
           return;
         }
+        if (opcion && opcion.getAttribute('data-expandir-todo')) {
+          evento.stopPropagation();
+          if (self.opciones.alExpandirTodo) {
+            self.opciones.alExpandirTodo(opcion.getAttribute('data-expandir-todo'));
+          }
+          return;
+        }
         if (opcion) {
           evento.stopPropagation();
           if (self.opciones.alResponder) {
@@ -1600,6 +1638,14 @@
           evento.stopPropagation();
           if (self.opciones.alExpandir) {
             self.opciones.alExpandir(ramaEdit.getAttribute('data-edit-expandir'));
+          }
+          return;
+        }
+        var ramaTodoEdit = ancestro(bajo, '[data-edit-expandir-todo]');
+        if (ramaTodoEdit) {
+          evento.stopPropagation();
+          if (self.opciones.alExpandirTodo) {
+            self.opciones.alExpandirTodo(ramaTodoEdit.getAttribute('data-edit-expandir-todo'));
           }
           return;
         }

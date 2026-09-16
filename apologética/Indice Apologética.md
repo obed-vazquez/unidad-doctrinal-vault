@@ -60,9 +60,11 @@
 
    10. # [Personas de Dios](https://docs.google.com/document/d/1nLDkMUiteNTyl9QVqoX2vYXaRGbnJaI3HzX_87V4ZMY/pub)
 
-       1. # Unitarismo / Modalismo / Sabelianismo / Unicitarismo / Solo Jesús.
+       1. # [Modalismo / Unicitarismo / Unicitarianismo](https://docs.google.com/document/d/1tdt1XAXxMjlzBAxbO55qY7ZZdn0Ice_yX0zUogF0IRw/edit?tab=t.0)
 
-       2. # Triteísmo
+       2. # Unitarismo / Modalismo / Sabelianismo / Unicitarismo / Solo Jesús.
+
+       3. # Triteísmo
 
           1) # Subordinacionismo
 
@@ -70,7 +72,7 @@
 
                 1) # [Arrianismo de TJ](https://docs.google.com/document/d/1FuV2ZlZvgNfpZrhF-K5I-eg4GQs8ZT4jX0qZfcWmYRQ/pub)
 
-       3. # [Cristo no omnisciente](https://docs.google.com/document/d/1rgdxaEdorBvPvhO_ba5SnC4gxbzROEqSNc7JAa8R6Q0/pub)
+       4. # [Cristo no omnisciente](https://docs.google.com/document/d/1rgdxaEdorBvPvhO_ba5SnC4gxbzROEqSNc7JAa8R6Q0/pub)
 
    11. # [Imperfección de Dios](https://docs.google.com/document/d/1V3PrbD0j1X1POzQwWw2mguZJ4pZfXi8rvfVXJNrZtac/pub)
 
