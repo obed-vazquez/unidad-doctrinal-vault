@@ -418,6 +418,7 @@
   }
 
   function refrescar() {
+    var _t0 = performance.now(); // TEMP-PERF
     if (Estado.divulgacion === 'edicion' && Estado.grafo) {
       var fusionado = false;
       Estado.grafo.nodos.forEach(function (nodo) {
@@ -454,6 +455,8 @@
       editCampos: Estado.editCampos,
       estado: Estado
     };
+    var _t1 = performance.now(); // TEMP-PERF
+    if (Arbol.EditMode && Arbol.EditMode._perfReset) Arbol.EditMode._perfReset(); // TEMP-PERF
     var tamanos = new Map();
     visibles.forEach(function (id) {
       var nodo = grafoVista.nodos.get(id);
@@ -462,8 +465,10 @@
       var compuesto = Layout.componer(nodo, respuesta == null ? null : respuesta, contextoMedida);
       tamanos.set(id, { ancho: compuesto.ancho, alto: compuesto.alto });
     });
+    var _t2 = performance.now(); // TEMP-PERF
 
     var disposicion = Layout.calcular(grafoVista, visibles, aristasIds, tamanos, Estado.fijados);
+    var _t3 = performance.now(); // TEMP-PERF
 
     var destacadas = new Set(Estado.tradiciones);
     var caminoUsuario = Estado.caminoElegido();
@@ -491,6 +496,17 @@
       editTamanos: Estado.editTamanos,
       editCampos: Estado.editCampos
     });
+    var _t4 = performance.now(); // TEMP-PERF
+    if (visibles.size > 40) { // TEMP-PERF
+      var _perfEM = (Arbol.EditMode && Arbol.EditMode._perfGet) ? Arbol.EditMode._perfGet() : null; // TEMP-PERF
+      console.log('[perf] refrescar total=' + (_t4 - _t0).toFixed(0) // TEMP-PERF
+        + 'ms setup=' + (_t1 - _t0).toFixed(0) // TEMP-PERF
+        + ' medida(' + visibles.size + ' nodos)=' + (_t2 - _t1).toFixed(0) // TEMP-PERF
+        + ' layout=' + (_t3 - _t2).toFixed(0) // TEMP-PERF
+        + ' render=' + (_t4 - _t3).toFixed(0) // TEMP-PERF
+        + (_perfEM ? (' | altoDeTexto=' + _perfEM.altoMs.toFixed(0) + 'ms/' + _perfEM.altoMiss + 'miss' // TEMP-PERF
+          + ' etiquetaArista=' + _perfEM.etiqMs.toFixed(0) + 'ms/' + _perfEM.etiqMiss + 'llamadas') : '')); // TEMP-PERF
+    } // TEMP-PERF
 
     if (Arbol.EditMode) {
       Arbol.EditMode.marcarModo(enEdicion);
@@ -3174,6 +3190,15 @@
       alExpandir: function (nodoId) {
         volcarCampoActivo();
         Estado.alternarExpandido(nodoId);
+        if (Estado.expandidos.has(nodoId)) {
+          global.setTimeout(function () {
+            Vista.encuadrarNodoYDescendientes(nodoId, true);
+          }, 340);
+        }
+      },
+      alExpandirTodo: function (nodoId) {
+        volcarCampoActivo();
+        Estado.alternarExpandidoTotal(nodoId);
         if (Estado.expandidos.has(nodoId)) {
           global.setTimeout(function () {
             Vista.encuadrarNodoYDescendientes(nodoId, true);

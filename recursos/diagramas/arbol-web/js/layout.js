@@ -17,6 +17,7 @@
   var F_COLOQUIAL = '400 14px ' + PILA;
   var F_FORMAL = 'italic 400 12.5px ' + PILA;
   var F_BOTON = '600 12.5px ' + PILA;
+  var F_BOTON_EXPANDIR = '600 11px ' + PILA;
   var F_CHIP = '600 12px ' + PILA;
   var F_TRADICION = '500 11px ' + PILA;
   var F_NOTA = 'italic 400 11.5px ' + PILA;
@@ -39,6 +40,8 @@
   var LH_NOTA = 16;
   var ALTO_BOTON = 32;
   var GAP_BOTON = 8;
+  var ANCHO_ICONO_EXPANDIR = 13;
+  var GAP_ICONO_EXPANDIR = 5;
   var ALTO_CHIP_RESPUESTA = 26;
   var ALTO_CHIP_TRADICION = 22;
   var GAP_CHIP = 6;
@@ -245,15 +248,50 @@
     return y + lineasF.length * LH_FORMAL;
   }
 
+  /* Botón de expandir/colapsar un nivel (alineado a la izquierda) y, en la
+     misma fila, el de expandir/colapsar todo el subárbol (alineado a la
+     derecha). Nunca saltan de línea: si no caben ambos con su ancho natural,
+     el de la derecha cede terreno y queda pegado al de la izquierda, pero
+     siempre en la misma fila. Ambos llevan un icono SVG (uno o dos
+     chevrones, ver renderer.js) además del texto: en Exploración libre el
+     texto siempre acompaña al icono. */
+  var PAD_BOTON_EXPANDIR = ANCHO_ICONO_EXPANDIR + GAP_ICONO_EXPANDIR + 22;
+  var ANCHO_MIN_BOTON_EXPANDIR = ANCHO_ICONO_EXPANDIR + 20;
+
+  /* Ajusta un botón de expandir a lo que quepa en `anchoDisponible`: si el
+     texto natural no cabe, se trunca con elipsis (mismo `recortar` que usa
+     el resto del proyecto) en vez de dejar que el botón se salga del borde
+     de la tarjeta. */
+  function ajustarBotonExpandir(texto, anchoDisponible) {
+    var anchoTextoMax = Math.max(8, anchoDisponible - PAD_BOTON_EXPANDIR);
+    var textoAjustado = medir(texto, F_BOTON_EXPANDIR) <= anchoTextoMax
+      ? texto : recortar(texto, F_BOTON_EXPANDIR, anchoTextoMax);
+    var ancho = Math.min(anchoDisponible,
+      Math.max(ANCHO_MIN_BOTON_EXPANDIR, medir(textoAjustado, F_BOTON_EXPANDIR) + PAD_BOTON_EXPANDIR));
+    return { texto: textoAjustado, ancho: ancho };
+  }
+
   function parteExpandir(nodo, contexto, anchoInterno, y, partes) {
     if (!nodo.salidas || !nodo.salidas.length) return y;
+    /* Los dos botones comparten el mismo estado abierto/cerrado: si el nodo
+       está expandido (venga de «expandir todo» o de toques manuales), los
+       dos muestran «colapsar» — no hay una bandera aparte que se pueda
+       desincronizar de lo que se ve en pantalla. */
     var expandido = !!(contexto.expandidos && contexto.expandidos.has(nodo.id));
-    var texto = expandido ? tUI('ocultarRamas', '▾ Ocultar ramas')
-      : tUI('mostrarRamas', '▸ Mostrar ramas');
+    var textoNivel = expandido ? tUI('colapsarRamas', 'Colapsar') : tUI('expandirRamas', 'Expandir');
+    var textoTodo = expandido ? tUI('colapsarRamasTodo', 'Colapsar todo')
+      : tUI('expandirRamasTodo', 'Expandir todo');
+    var nivel = ajustarBotonExpandir(textoNivel, anchoInterno);
+    var restante = Math.max(0, anchoInterno - nivel.ancho - GAP_BOTON);
+    var todo = ajustarBotonExpandir(textoTodo, restante);
     partes.push({
-      k: 'expandir', y: y, alto: ALTO_BOTON,
-      texto: texto, expandido: expandido, nodoId: nodo.id,
-      ancho: Math.min(anchoInterno, Math.max(148, medir(texto, F_BOTON) + 28))
+      k: 'expandir', y: y, x: 0, alto: ALTO_BOTON,
+      texto: nivel.texto, expandido: expandido, nodoId: nodo.id, ancho: nivel.ancho
+    });
+    partes.push({
+      k: 'expandirTodo', y: y, x: anchoInterno - todo.ancho,
+      alto: ALTO_BOTON, texto: todo.texto, expandidoTotal: expandido,
+      nodoId: nodo.id, ancho: todo.ancho
     });
     return y + ALTO_BOTON;
   }
@@ -619,6 +657,54 @@
     return cruces;
   }
 
+  /* Índice nodo → segmentos que lo tocan (como origen o destino), para no
+     recorrer todas las aristas cada vez que se evalúa un intercambio. Los
+     segmentos no cambian de forma (solo su posición) mientras dura
+     `reducirCruces`, así que el índice se construye una sola vez. */
+  function indiceSegmentosPorNodo(segmentos) {
+    var indice = new Map();
+    function agregar(id, seg) {
+      var lista = indice.get(id);
+      if (!lista) { lista = []; indice.set(id, lista); }
+      lista.push(seg);
+    }
+    segmentos.forEach(function (seg, i) {
+      seg._i = i; // índice estable para no contar dos veces un mismo par
+      agregar(seg.desde, seg);
+      agregar(seg.hasta, seg);
+    });
+    return indice;
+  }
+
+  function combinarSinDuplicar(a, b) {
+    var vistos = new Set();
+    var out = [];
+    (a || []).forEach(function (s) { if (!vistos.has(s)) { vistos.add(s); out.push(s); } });
+    (b || []).forEach(function (s) { if (!vistos.has(s)) { vistos.add(s); out.push(s); } });
+    return out;
+  }
+
+  /* Cruces de los segmentos «relevantes» (los que tocan alguno de los dos
+     nodos que se acaban de intercambiar) contra el resto. Cualquier par de
+     segmentos donde NINGUNO de los dos toca esos nodos no pudo cambiar de
+     cruce con el intercambio, así que no hace falta volver a evaluarlo: esto
+     evita recontar el grafo entero (`contarCruces`, O(aristas²)) en cada uno
+     de los cientos de intercambios que prueba `reducirCruces`. */
+  function contarCrucesLocal(relevantes, segmentos, tamanos, posiciones) {
+    var cruces = 0;
+    var relevanteIdx = new Set(relevantes.map(function (s) { return s._i; }));
+    for (var a = 0; a < relevantes.length; a++) {
+      var segA = relevantes[a];
+      for (var b = 0; b < segmentos.length; b++) {
+        var segB = segmentos[b];
+        if (segB === segA) continue;
+        if (relevanteIdx.has(segB._i) && segB._i < segA._i) continue; // ya contado desde el otro lado
+        if (aristasSeCruzan(segA, segB, tamanos, posiciones)) cruces++;
+      }
+    }
+    return cruces;
+  }
+
   function segmentosDe(salidas) {
     var segs = [];
     salidas.forEach(function (destinos, desde) {
@@ -635,6 +721,7 @@
      que el usuario haya fijado. El intercambio respeta anchos: un swap de
      x crudo entre cajas distintas reintroducía solapes. */
   function reducirCruces(segmentos, porRango, tamanos, posiciones, fijados) {
+    var indice = indiceSegmentosPorNodo(segmentos);
     var actual = contarCruces(segmentos, tamanos, posiciones);
     for (var pasada = 0; pasada < 12; pasada++) {
       var cambio = false;
@@ -647,13 +734,18 @@
           var derecha = orden[i + 1];
           if (Object.prototype.hasOwnProperty.call(fijados, izquierda)
             || Object.prototype.hasOwnProperty.call(fijados, derecha)) continue;
+          var relevantes = combinarSinDuplicar(indice.get(izquierda), indice.get(derecha));
           var posicionIzquierda = posiciones.get(izquierda);
           var posicionDerecha = posiciones.get(derecha);
           var xIzq = posicionIzquierda.x;
           var xDer = posicionDerecha.x;
+          var antes = relevantes.length
+            ? contarCrucesLocal(relevantes, segmentos, tamanos, posiciones) : 0;
           posicionDerecha.x = xIzq;
           posicionIzquierda.x = xIzq + tamanos.get(derecha).ancho + GAP_X;
-          var nuevo = contarCruces(segmentos, tamanos, posiciones);
+          var despues = relevantes.length
+            ? contarCrucesLocal(relevantes, segmentos, tamanos, posiciones) : 0;
+          var nuevo = actual - antes + despues;
           if (nuevo < actual) {
             actual = nuevo;
             cambio = true;
@@ -930,12 +1022,13 @@
     PILA: PILA,
     fuentes: {
       banda: F_BANDA, titulo: F_TITULO, tipo: F_TIPO, formal: F_FORMAL,
-      coloquial: F_COLOQUIAL, boton: F_BOTON, chip: F_CHIP,
+      coloquial: F_COLOQUIAL, boton: F_BOTON, botonExpandir: F_BOTON_EXPANDIR, chip: F_CHIP,
       tradicion: F_TRADICION, nota: F_NOTA
     },
     alturas: {
       chipTradicion: ALTO_CHIP_TRADICION, chipRespuesta: ALTO_CHIP_RESPUESTA,
-      boton: ALTO_BOTON, gapBoton: GAP_BOTON, gapChip: GAP_CHIP
+      boton: ALTO_BOTON, gapBoton: GAP_BOTON, gapChip: GAP_CHIP,
+      iconoExpandir: ANCHO_ICONO_EXPANDIR, gapIconoExpandir: GAP_ICONO_EXPANDIR
     },
     medir: medir,
     envolver: envolver,

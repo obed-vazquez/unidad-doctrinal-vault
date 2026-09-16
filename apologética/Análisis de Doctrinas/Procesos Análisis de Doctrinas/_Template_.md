@@ -1,6 +1,6 @@
 ## **\<Title\>** \[Folder/Base\] \[[Example (IVB2)](http://google.com), \]
 
-description of the topic of discussion and different points of view:
+Description of the topic of discussion and different points of view:
 
 1. **\<Idea1 Title\>**. Idea/Doctrine Description.  
 2. **\<Idea2 Title\>**. Idea/Doctrine Description.  

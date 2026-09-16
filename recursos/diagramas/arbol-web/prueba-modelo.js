@@ -622,9 +622,61 @@ if (hijoConSalida) {
     !Arbol.Estado.expandidos.has(hijoConSalida),
     Array.from(Arbol.Estado.expandidos).join(','));
   Arbol.Estado.alternarExpandido(raizExp);
-  comprobar('volver a expandir la raíz no reabre el subárbol anterior',
-    !Arbol.Estado.visibles().has(nieto)
-    && !Arbol.Estado.expandidos.has(hijoConSalida));
+  comprobar('volver a expandir la raíz reabre el subárbol que tenía antes de colapsar',
+    Arbol.Estado.visibles().has(nieto)
+    && Arbol.Estado.expandidos.has(hijoConSalida));
+
+  // Estado limpio: alternarExpandidoTotal decide expandir-vs-colapsar según
+  // si el nodo YA está expandido (Arbol.Estado.expandidos), y a esta altura
+  // la raíz sigue expandida por la prueba anterior.
+  Arbol.Estado.expandidos = new Set();
+  Arbol.Estado.ramasGuardadas = {};
+  Arbol.Estado.alternarExpandidoTotal(raizExp);
+  comprobar('expandir todo revela el árbol completo desde la raíz',
+    Arbol.Estado.visibles().size === grafo.nodos.size,
+    Arbol.Estado.visibles().size + ' de ' + grafo.nodos.size);
+
+  Arbol.Estado.alternarExpandido(hijoConSalida);
+  comprobar('colapsar un nodo en medio de «expandir todo» guarda los descendientes que seguían abiertos',
+    !!Arbol.Estado.ramasGuardadas[hijoConSalida]
+    && Arbol.Estado.ramasGuardadas[hijoConSalida].indexOf(nieto) !== -1);
+
+  Arbol.Estado.alternarExpandidoTotal(raizExp);
+  comprobar('colapsar todo oculta el subárbol',
+    Arbol.Estado.visibles().size === 1);
+  comprobar('colapsar todo borra en cascada la memoria del botón normal de todo el subárbol',
+    !Object.prototype.hasOwnProperty.call(Arbol.Estado.ramasGuardadas, hijoConSalida));
+
+  Arbol.Estado.alternarExpandido(raizExp);
+  var visTrasNivel = Arbol.Estado.visibles().size;
+  Arbol.Estado.alternarExpandidoTotal(raizExp);
+  comprobar('«todo» sobre un nodo ya expandido a mano (sin pasar por «todo» antes) colapsa, no expande más',
+    visTrasNivel > 1 && Arbol.Estado.visibles().size === 1,
+    'antes=' + visTrasNivel + ' después=' + Arbol.Estado.visibles().size);
+}
+
+console.log('\n== Rendimiento: layout con el grafo casi completo (edición, "expandir todo") ==');
+{
+  // Con controles (+ y nuevo eje) el grafo de edición triplica más o menos
+  // el número de nodos y aristas de uno solo; es el escenario real detrás
+  // del bug de 15+ segundos de `reducirCruces` recontando cruces globales
+  // en cada intercambio candidato en vez de solo el cambio local.
+  const grafoCtrl = Arbol.grafoConControles(grafo);
+  const visCtrl = new Set();
+  grafoCtrl.nodos.forEach((_, id) => visCtrl.add(id));
+  const arCtrl = new Set();
+  grafoCtrl.aristas.forEach((_, id) => arCtrl.add(id));
+  const tamCtrl = new Map();
+  visCtrl.forEach((id) => {
+    const nodo = grafoCtrl.nodos.get(id);
+    const c = Arbol.Layout.componer(nodo, null, { datos, divulgacion: 'completo', expandidos: new Set() });
+    tamCtrl.set(id, { ancho: c.ancho, alto: c.alto });
+  });
+  const inicioLayout = Date.now();
+  Arbol.Layout.calcular(grafoCtrl, visCtrl, arCtrl, tamCtrl, {});
+  const duracionLayout = Date.now() - inicioLayout;
+  comprobar('el layout de ' + visCtrl.size + ' nodos / ' + arCtrl.size
+    + ' aristas termina en menos de 3s', duracionLayout < 3000, duracionLayout + 'ms');
 }
 
 function disposicionDeEstado() {

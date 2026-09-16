@@ -278,6 +278,22 @@
 .opcion.tenue:hover { opacity: 1; }
 .opcion-glosa { fill: var(--texto-tenue); font-size: 10px; font-weight: 700; }
 
+.opcion-expandir-texto {
+  fill: var(--texto); font-size: 11px; font-weight: 600; text-anchor: start;
+}
+.opcion:hover .opcion-expandir-texto { fill: var(--acento); }
+.opcion.elegida .opcion-expandir-texto { fill: var(--acento); }
+.opcion-expandir-icono {
+  fill: none;
+  stroke: var(--texto-tenue);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 150ms ease;
+}
+.opcion:hover .opcion-expandir-icono,
+.opcion.elegida .opcion-expandir-icono { stroke: var(--acento); }
+
 .opcion-conteo { fill: var(--texto-tenue); font-size: 10.5px; font-weight: 700; }
 .opcion:hover .opcion-conteo { fill: var(--acento); }
 .opcion.elegida .opcion-conteo { fill: var(--acento); }
