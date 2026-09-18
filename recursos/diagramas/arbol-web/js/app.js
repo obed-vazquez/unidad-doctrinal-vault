@@ -485,6 +485,9 @@
       respuestasUsuario: Estado.respuestas,
       camino: exploracion,
       caminoUsuario: caminoUsuario,
+      grupoConvergencia: Estado.divulgacion === 'edicion'
+        ? Arbol.grupoConvergenciaDeSeleccion(Estado.grafo, Estado.datos, Estado.seleccionado)
+        : null,
       deshabilitados: Estado.divulgacion === 'indagatorio'
         ? Arbol.nodosDeshabilitados(Estado.grafo, respuestas, visibles, apertura)
         : new Set(),
@@ -890,7 +893,7 @@
 
   function tooltipDeNodo(nodo) {
     if (Estado.divulgacion === 'edicion' && Arbol.EditMode) {
-      return Arbol.EditMode.tooltipDeNodo(nodo);
+      return Arbol.EditMode.tooltipDeNodo(nodo, Estado.datos);
     }
     if (!nodo) return null;
     var respuestas = Estado.respuestasEfectivas();
@@ -2610,6 +2613,90 @@
     trasAccionArista(arista, extremo, 'reenganchar', nodo);
   }
 
+  /* R1/R2 de specs/convergencias.md: "sumar postura de origen" (desde la
+     pregunta) y "converger con pregunta existente" (desde la postura) son
+     la misma operación de datos (Edits.ligarEje) vista desde cada extremo,
+     así que comparten el gesto de clic-clic que ya usa el flujo de nodo
+     huérfano (Arbol.EditMode.iniciarEnlacePadre) — ver esPadreValidoEnlace
+     en edit-mode.js para la validez (tipo correcto, sin ciclo, sin
+     duplicado) de los tipos 'pregunta' y 'ejePostura'. A diferencia del
+     huérfano, aquí no hay nada que deshacer si el usuario cancela: no se
+     muta nada hasta onExito. */
+  function iniciarSumarOrigen(preguntaId) {
+    var idPregunta = Estado.grafo.idDePregunta(preguntaId);
+    if (!idPregunta) return;
+    Arbol.EditMode.iniciarEnlacePadre(Vista, {
+      nodoId: idPregunta,
+      tipo: 'pregunta',
+      preguntaId: preguntaId,
+      cancelarEnVacio: true,
+      onInvalido: function () { avisar(t('convergenciaInvalida'), 2000); },
+      onExito: function (spec) {
+        conHistorial(function () {
+          Edits.ligarEje(editsEstado, preguntaId, spec.nodo.posturaId);
+          reconstruirModelo(function () {
+            var idP = Estado.grafo.idDePostura(spec.nodo.posturaId);
+            if (idP) Estado.expandidos.add(idP);
+          });
+        });
+      }
+    });
+  }
+
+  function iniciarConvergerConPregunta(posturaId) {
+    var idPostura = Estado.grafo.idDePostura(posturaId);
+    if (!idPostura) return;
+    Arbol.EditMode.iniciarEnlacePadre(Vista, {
+      nodoId: idPostura,
+      tipo: 'ejePostura',
+      posturaId: posturaId,
+      cancelarEnVacio: true,
+      onInvalido: function () { avisar(t('convergenciaInvalida'), 2000); },
+      onExito: function (spec) {
+        conHistorial(function () {
+          Edits.ligarEje(editsEstado, spec.nodo.preguntaId, posturaId);
+          reconstruirModelo(function () {
+            var idQ = Estado.grafo.idDePregunta(spec.nodo.preguntaId);
+            if (idQ) Estado.expandidos.add(idQ);
+          });
+        });
+      }
+    });
+  }
+
+  function iniciarConvergencia(nodoId) {
+    var nodo = nodoId && Estado.grafo.nodos.get(nodoId);
+    if (!nodo) return;
+    volcarCampoActivo();
+    if (nodo.tipo === 'pregunta' && nodo.preguntaId) {
+      iniciarSumarOrigen(nodo.preguntaId);
+    } else if (nodo.posturaId) {
+      iniciarConvergerConPregunta(nodo.posturaId);
+    }
+  }
+
+  /* R3: copiar un eje arrastrando su asa de origen con Ctrl/⌥ Alt sostenido
+     (ver edit-mode.js, moverReenganche/soltarReenganche). El destino ya
+     puede ser origen de la pregunta (duplicado, R5): Edits.ligarEje es
+     idempotente, así que no hace falta caso especial para "no ocurre
+     nada". */
+  function copiarEjeDesdeVista(arista, nodo) {
+    if (!arista || !nodo || arista.tipo !== 'eje') return;
+    conHistorial(function () {
+      Edits.ligarEje(editsEstado, arista.preguntaId, nodo.posturaId);
+      reconstruirModelo();
+    });
+  }
+
+  /* R4: control de cierre en el lienzo, junto al punto de unión con la
+     postura. Reusa el mismo camino que soltar esa asa en el vacío, así que
+     hereda el diálogo de huérfano (R6) sin lógica adicional. */
+  function quitarEjeDesdeVista(aristaId) {
+    var arista = aristaId && Estado.grafo.aristas.get(aristaId);
+    if (!arista) return;
+    desconectarDesdeVista(arista, 'desde');
+  }
+
   function registrarEventosEdicion() {
     var lienzo = document.getElementById('lienzo');
     if (!lienzo) return;
@@ -3242,6 +3329,9 @@
       alCrearControl: crearDesdeControl,
       alReenganchar: reengancharDesdeVista,
       alDesconectar: desconectarDesdeVista,
+      alIniciarConvergencia: iniciarConvergencia,
+      alCopiarEje: copiarEjeDesdeVista,
+      alQuitarEje: quitarEjeDesdeVista,
       alRedimensionar: redimensionarNodoEdicion,
       alBorrarNodoEdicion: borrarNodoEdicion,
       alAgregarCampo: agregarCampoEdicion,

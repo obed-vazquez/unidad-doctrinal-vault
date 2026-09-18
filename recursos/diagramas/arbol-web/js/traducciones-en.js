@@ -507,6 +507,10 @@
       }
     },
     "Q45": {
+      "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
+      "colloquial": "Can man understand what the Bible says about at least one thing?"
+    },
+    "Q46": {
       "formal": "What, in this sense, is the limit or extent of inspiration?",
       "answers": {
         "A": {
@@ -521,7 +525,7 @@
         }
       }
     },
-    "Q46": {
+    "Q47": {
       "formal": "What God inspired were the words and not just themes or concepts to the writers?",
       "colloquial": "Did God inspire the words he commanded to be written?",
       "answers": {
@@ -533,7 +537,7 @@
         }
       }
     },
-    "Q47": {
+    "Q48": {
       "formal": "Did God directly dictate word for word to his writers, without them contributing their own words?",
       "colloquial": "Did God dictate every word of what had to be written?",
       "answers": {
@@ -545,7 +549,7 @@
         }
       }
     },
-    "Q48": {
+    "Q49": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -557,7 +561,7 @@
         }
       }
     },
-    "Q49": {
+    "Q50": {
       "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles? (Did God transform Himself into Jesus Christ and when He speaks to the Father He does not speak to another person of the Trinity, but to Himself?)",
       "answers": {
         "A": {
@@ -569,7 +573,7 @@
         }
       }
     },
-    "Q50": {
+    "Q51": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -581,7 +585,7 @@
         }
       }
     },
-    "Q51": {
+    "Q52": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -592,7 +596,7 @@
         }
       }
     },
-    "Q52": {
+    "Q53": {
       "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
@@ -604,7 +608,7 @@
         }
       }
     },
-    "Q53": {
+    "Q54": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -618,7 +622,7 @@
         }
       }
     },
-    "Q54": {
+    "Q55": {
       "formal": "In Gethsemane Christ asked the Father to pass the cup, he had the will to die while he did not want to do it, did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -632,7 +636,7 @@
         }
       }
     },
-    "Q55": {
+    "Q56": {
       "formal": "Is matter/physical reality eternal and was not created by a God?",
       "answers": {
         "A": {
@@ -643,7 +647,7 @@
         }
       }
     },
-    "Q56": {
+    "Q57": {
       "formal": "Is the universe itself, in its entirety, divine in nature?",
       "answers": {
         "A": {
@@ -703,22 +707,21 @@
     "P91": "Dynamic / Conceptual Inspirationalism",
     "P92": "Mechanical Inspirationalism / Dictation",
     "P93": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P94": "Incarnationism / Pre-existentialism",
-    "P95": "Homoiousianism / Semi-Arrianism",
-    "P96": "Consubstantialism",
-    "P97": "Modalism / Oneness / Unitarianism",
-    "P98": "Trinitarianism/Trinitarianism",
-    "P99": "Docetism",
-    "P101": "Apollinarianism",
-    "P103": "Christ's Hypostatic Duality *",
-    "P104": "Monoprosopism",
-    "P105": "Monophysicism / Eutychianism",
-    "P106": "Diophysicism / Chalcedonianism / Myaphysicism",
-    "P107": "Monothelitism / Monothelitism",
-    "P108": "Diothelitism",
-    "P109": "Cosmological Atheism *",
-    "P110": "Cosmological materialism",
-    "P112": "Pantheism / Panentheism*",
+    "P94": "Homoiousianism / Semi-Arrianism",
+    "P95": "Consubstantialism",
+    "P96": "Modalism / Oneness / Unitarianism",
+    "P97": "Trinitarianism/Trinitarianism",
+    "P98": "Docetism",
+    "P100": "Apollinarianism",
+    "P102": "Christ's Hypostatic Duality *",
+    "P103": "Monoprosopism",
+    "P104": "Monophysicism / Eutychianism",
+    "P105": "Diophysicism / Chalcedonianism / Myaphysicism",
+    "P106": "Monothelitism / Monothelitism",
+    "P107": "Diothelitism",
+    "P108": "Cosmological Atheism *",
+    "P109": "Cosmological materialism",
+    "P111": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {

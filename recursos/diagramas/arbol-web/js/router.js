@@ -182,7 +182,12 @@
     if (lectura.presentacion) { estado.vista = lectura.presentacion; huboCambio = true; }
     if (lectura.divulgacion) {
       estado.divulgacion = lectura.divulgacion;
-      estado.arbolCompleto = lectura.divulgacion === 'completo';
+      /* `full` solo se escribe cuando arbolCompleto era true, así que si viene
+         manda: deducirlo del recorrido perdía el dato en la combinación
+         «árbol completo desplegado dentro de otro recorrido». */
+      estado.arbolCompleto = lectura.completo !== null
+        ? lectura.completo
+        : lectura.divulgacion === 'completo';
       huboCambio = true;
     } else if (lectura.completo !== null) {
       estado.arbolCompleto = lectura.completo;

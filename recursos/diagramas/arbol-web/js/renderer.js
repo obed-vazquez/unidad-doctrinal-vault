@@ -510,14 +510,38 @@
       if (contexto.deshabilitados && contexto.deshabilitados.has(nodo.id)) {
         clases.push('deshabilitado');
       }
+      /* R7 de specs/convergencias.md: una postura cuyo eje lleva a una
+         pregunta compartida debe reconocerse sin seleccionar nada. */
+      if (nodo.postura && (nodo.postura.question_axes || []).some(function (qid) {
+        var q = contexto.datos.questions[qid];
+        return q && q.is_convergence;
+      })) {
+        clases.push('postura-convergente');
+      }
+      /* R8: al seleccionar la pregunta o cualquiera de sus posturas de
+         origen, resaltar el grupo completo (solo Modo de Edición). */
+      if (contexto.grupoConvergencia && contexto.grupoConvergencia.nodos.has(nodo.id)) {
+        clases.push('convergencia-activa');
+      }
       grupo.setAttribute('class', clases.join(' '));
+
+      /* Cuántas líneas entran hoy al nodo: decide el puerto «&» de abajo y,
+         en una pregunta, si su banda dice EJE o CONVERGENCIA. Va en la firma
+         porque converger no cambia ningún otro dato de la tarjeta: sin esto
+         el cuerpo no se repintaba y la convergencia recién creada solo se
+         veía tras recargar (specs/convergencias.md, addendum). */
+      var entradasVisibles = nodo.entradas.filter(function (arista) {
+        return contexto.aristasIds.has(arista.id);
+      });
 
       var firma = compuesto.ancho + 'x' + compuesto.alto + ':'
         + (respuesta == null ? '' : respuesta) + ':'
         + compuesto.partes.map(function (p) {
           return p.k + (p.expandido ? 'e' : '') + (p.conteo || '') + (p.sello || '')
-            + (p.valor ? p.valor : '') + (p.tieneRama ? 'r' : '') + (p.tieneAgregar ? 'a' : '');
+            + (p.valor ? p.valor : '') + (p.tieneRama ? 'r' : '') + (p.tieneAgregar ? 'a' : '')
+            + (p.rotulo || '') + (p.titulo || '');
         }).join(',')
+        + ':' + entradasVisibles.length
         + ':' + ((nodo.postura && nodo.postura.label) || '')
         + (Object.prototype.hasOwnProperty.call(estado.fijados, nodo.id) ? ':f' : '')
         + ':' + ((Arbol.I18n && Arbol.I18n.idioma) || 'es')
@@ -560,9 +584,6 @@
         cuerpo.appendChild(this.construirAsaNodo(nodo, ancho));
       }
 
-      var entradasVisibles = nodo.entradas.filter(function (arista) {
-        return contexto.aristasIds.has(arista.id);
-      });
       if (entradasVisibles.length > 1) {
         cuerpo.appendChild(crear('path', {
           d: 'M ' + (ancho / 2 - 16) + ' -9 Q ' + (ancho / 2) + ' -20 '
@@ -970,6 +991,10 @@
           && !contexto.caminoUsuario.has(arista.hasta)) {
           clases.push('deshabilitada');
           clasesTrazo.push('deshabilitada');
+        }
+        if (contexto.grupoConvergencia && contexto.grupoConvergencia.aristas.has(aristaId)) {
+          clases.push('convergencia-activa');
+          clasesTrazo.push('convergencia-activa');
         }
         var seguirEntrando = !esNueva && grupo.classList.contains('entrando');
         if ((esNueva || seguirEntrando) && !self.reducirMovimiento()) {
@@ -1393,6 +1418,13 @@
             evento.preventDefault();
             return;
           }
+          /* El «+» de convergencia se arma aquí, no en el clic, para que el
+             mismo control sirva como clic y como arrastre. */
+          if (Arbol.EditMode.iniciarArrastreConverger(evento, self)) {
+            try { self.svg.setPointerCapture(evento.pointerId); } catch (e) { /* nada */ }
+            evento.preventDefault();
+            return;
+          }
           return;
         }
         var nodoDOM = ancestro(bajo, '.nodo');
@@ -1447,6 +1479,9 @@
       });
 
       this.svg.addEventListener('pointermove', function (evento) {
+        if (Arbol.EditMode && Arbol.EditMode.seguirProximidad) {
+          Arbol.EditMode.seguirProximidad(evento, self);
+        }
         if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
           if (Arbol.EditMode.moverReenganche(evento, self)) return;
           if (Arbol.EditMode.moverResize(evento)) return;
@@ -1502,7 +1537,8 @@
           return;
         }
         if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
-          if (Arbol.EditMode.soltarReenganche(evento, self, self.opciones.alReenganchar)) {
+          if (Arbol.EditMode.soltarReenganche(evento, self, self.opciones.alReenganchar,
+              self.opciones.alCopiarEje)) {
             self.ignorarSiguienteClic = true;
             return;
           }
@@ -1541,6 +1577,12 @@
         self._huboPellizco = false;
       });
 
+      this.svg.addEventListener('pointerleave', function () {
+        if (Arbol.EditMode && Arbol.EditMode.olvidarProximidad) {
+          Arbol.EditMode.olvidarProximidad();
+        }
+      });
+
       this.svg.addEventListener('pointercancel', function (evento) {
         if (Arbol.EditMode && Arbol.EditMode.hayGesto()) {
           Arbol.EditMode.cancelarGestos(self);
@@ -1554,6 +1596,11 @@
       });
 
       this.svg.addEventListener('click', function (evento) {
+        /* Con un gesto de ligar armado, el clic ya lo resolvió el pointerup
+           (clicEnlacePadre). Dejarlo seguir aquí seleccionaba una tarjeta por
+           el respaldo _ultimoNodoPuntero, que puede venir de otra maniobra. */
+        if (Arbol.EditMode && Arbol.EditMode.hayEnlacePadre
+          && Arbol.EditMode.hayEnlacePadre()) return;
         var bajo = elementoBajoPuntero(evento);
         var esControl = !!(ancestro(bajo, '.asa-nodo') || ancestro(bajo, '.chincheta')
           || ancestro(bajo, '.papelera')
@@ -1561,7 +1608,8 @@
           || ancestro(bajo, '.edit-agregar') || ancestro(bajo, '.edit-rama')
           || ancestro(bajo, '.tipo-control-mas') || ancestro(bajo, '.tipo-control-eje')
           || ancestro(bajo, '.edit-fo') || ancestro(bajo, '.reenganche-asa')
-          || ancestro(bajo, '.edit-resize'));
+          || ancestro(bajo, '.edit-resize') || ancestro(bajo, '.edit-converger')
+          || ancestro(bajo, '.edit-quitar-eje') || ancestro(bajo, '.edit-liga-mas'));
         var asaNodo = ancestro(bajo, '.asa-nodo');
         if (asaNodo) {
           if (self.ignorarSiguienteClic || Date.now() < (self._ignorarClicHasta || 0)) {
@@ -1659,6 +1707,12 @@
         if (borrarEdit && self.opciones.alBorrarNodoEdicion) {
           evento.stopPropagation();
           self.opciones.alBorrarNodoEdicion(borrarEdit.getAttribute('data-edit-borrar'));
+          return;
+        }
+        var quitarEjeEdit = ancestro(bajo, '[data-edit-quitar-eje]');
+        if (quitarEjeEdit && self.opciones.alQuitarEje) {
+          evento.stopPropagation();
+          self.opciones.alQuitarEje(quitarEjeEdit.getAttribute('data-edit-quitar-eje'));
           return;
         }
         if (nodoBajoCursor && (nodoBajoCursor.classList.contains('tipo-control-mas')
