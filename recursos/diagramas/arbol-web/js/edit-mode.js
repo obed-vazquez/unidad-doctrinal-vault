@@ -319,6 +319,17 @@
       tieneRama: tieneSalidasReales
     });
     partes.push({ k: 'editPapelera', y: 6, nodoId: nodo.id });
+    if (postura) {
+      partes.push({
+        k: 'editConverger', y: 6, nodoId: nodo.id,
+        tipoConverger: 'postura', posturaId: postura.id
+      });
+    } else if (pregunta) {
+      partes.push({
+        k: 'editConverger', y: 6, nodoId: nodo.id,
+        tipoConverger: 'pregunta', preguntaId: pregunta.id
+      });
+    }
     partes.push({
       k: 'editResize', y: alto - 16, ancho: ancho, nodoId: nodo.id,
       hMin: altoContenido
@@ -381,6 +392,7 @@
     else if (parte.k === 'editPie') pintarPie(grupo, parte, padX);
     else if (parte.k === 'editRegion') pintarRegion(grupo, parte, ancho);
     else if (parte.k === 'editPapelera') pintarPapelera(grupo, parte, ancho);
+    else if (parte.k === 'editConverger') pintarConverger(grupo, parte);
     else if (parte.k === 'editResize') pintarResize(grupo, parte);
     else if (parte.k === 'editLod') pintarLod(grupo, parte);
     else if (parte.k === 'controlMas') pintarControlMas(grupo, ancho);
@@ -830,6 +842,28 @@
     grupo.appendChild(g);
   }
 
+  /* Dispara el gesto de convergencia (R1/R2 de specs/convergencias.md): en
+     una pregunta, "sumar postura de origen"; en una postura, "converger con
+     pregunta existente". Mismo glifo (git-merge de Lucide, MIT) en ambas,
+     porque es la misma operación de datos vista desde cada extremo. */
+  function pintarConverger(grupo, parte) {
+    var g = crearSVG('g', {
+      transform: 'translate(36,' + parte.y + ')',
+      'data-edit-converger': parte.nodoId,
+      'data-edit-converger-tipo': parte.tipoConverger,
+      'data-edit-control': 'converger'
+    }, 'edit-converger');
+    g.appendChild(crearSVG('rect', { x: 0, y: 0, width: 22, height: 20, rx: 6 }, 'converger-caja'));
+    var icono = crearSVG('g', {
+      transform: 'translate(11,10) scale(0.6) translate(-12,-12)'
+    }, 'converger-icono');
+    icono.appendChild(crearSVG('circle', { cx: 18, cy: 18, r: 3 }));
+    icono.appendChild(crearSVG('circle', { cx: 6, cy: 6, r: 3 }));
+    icono.appendChild(crearSVG('path', { d: 'M6 21V9a9 9 0 0 0 9 9' }));
+    g.appendChild(icono);
+    grupo.appendChild(g);
+  }
+
   function pintarResize(grupo, parte) {
     var g = crearSVG('g', {
       transform: 'translate(0,' + parte.y + ')',
@@ -1226,8 +1260,24 @@
       if (!extremos) return;
       capa.appendChild(asa(arista, 'desde', extremos.desde));
       capa.appendChild(asa(arista, 'hasta', extremos.hasta));
+      /* Controles de la línea de eje, en el lienzo y no dentro de la tarjeta
+         (R4 y addendum de specs/convergencias.md): junto al punto de unión
+         con la postura, la «x» que quita esa unión; junto al punto donde la
+         flecha entra a la pregunta, el «+» que suma otra liga hacia arriba.
+         Ambos aparecen por cercanía del cursor, no de forma permanente. */
+      if (arista.tipo === 'eje') {
+        capa.appendChild(botonQuitarEje(arista, extremos.desde, 14));
+        capa.appendChild(botonSumarOrigen(arista, extremos.hasta, 14));
+        /* La misma «x» también abajo, junto al «+» y al otro lado de la
+           línea: quitar la unión debe poder hacerse desde cualquiera de sus
+           dos extremos (addendum de specs/convergencias.md). */
+        capa.appendChild(botonQuitarEje(arista, extremos.hasta, -14));
+      }
     });
     if (prev) capa.appendChild(prev);
+    if (ultimoPunteroLienzo) {
+      actualizarProximidadLienzo(ultimoPunteroLienzo.x, ultimoPunteroLienzo.y, vista);
+    }
   }
 
   function asa(arista, extremo, punto) {
@@ -1240,6 +1290,109 @@
     g.appendChild(crearSVG('circle', { r: 10 }, 'reenganche-asa-hit'));
     g.appendChild(crearSVG('circle', { r: 4.5 }, 'reenganche-asa-disco'));
     return g;
+  }
+
+  /* Sitio de un control pegado a un extremo de línea: se corre a lo largo de
+     la normal (aleja de la tarjeta, siguiendo la línea) y luego de lado, para
+     no taparla ni pisar el asa de reenganche. */
+  function puntoControlLienzo(punto, avance, lado) {
+    var nx = punto.nx || 0;
+    var ny = punto.ny || 0;
+    if (!nx && !ny) return { x: punto.x + lado, y: punto.y - avance };
+    return {
+      x: punto.x + nx * avance - ny * lado,
+      y: punto.y + ny * avance + nx * lado
+    };
+  }
+
+  function botonQuitarEje(arista, punto, lado) {
+    var sitio = puntoControlLienzo(punto, 20, lado);
+    var g = crearSVG('g', {
+      transform: 'translate(' + sitio.x + ',' + sitio.y + ')',
+      'data-cx': sitio.x,
+      'data-cy': sitio.y,
+      'data-edit-quitar-eje': arista.id,
+      'data-edit-control': 'quitarEje'
+    }, 'control-lienzo edit-quitar-eje');
+    var visual = crearSVG('g', {}, 'control-lienzo-visual');
+    visual.appendChild(crearSVG('circle', { r: 9 }, 'quitar-eje-caja'));
+    visual.appendChild(crearSVG('path', {
+      d: 'M -3 -3 L 3 3 M 3 -3 L -3 3'
+    }, 'quitar-eje-icono'));
+    g.appendChild(visual);
+    return g;
+  }
+
+  /* Addendum de specs/convergencias.md: el gesto principal para converger sale
+     de la propia flecha que llega a la pregunta — «+» = suma otra postura de
+     origen hacia arriba. Lleva el mismo data-edit-converger que el control de
+     la tarjeta, así que reusa su despacho (el id del nodo pregunta). */
+  function botonSumarOrigen(arista, punto, lado) {
+    var sitio = puntoControlLienzo(punto, 20, lado);
+    var g = crearSVG('g', {
+      transform: 'translate(' + sitio.x + ',' + sitio.y + ')',
+      'data-cx': sitio.x,
+      'data-cy': sitio.y,
+      'data-edit-converger': arista.hasta,
+      'data-edit-converger-tipo': 'pregunta',
+      'data-edit-control': 'converger'
+    }, 'control-lienzo edit-liga-mas');
+    var visual = crearSVG('g', {}, 'control-lienzo-visual');
+    visual.appendChild(crearSVG('circle', { r: 9 }, 'liga-mas-caja'));
+    visual.appendChild(crearSVG('path', {
+      d: 'M -3.6 0 H 3.6 M 0 -3.6 V 3.6'
+    }, 'liga-mas-icono'));
+    g.appendChild(visual);
+    return g;
+  }
+
+  /* Los controles del lienzo (x y +) no viven dentro de una tarjeta, así que
+     no pueden aparecer con el hover de una tarjeta ni esperar a que el cursor
+     los pise: se revelan cuando el puntero se acerca. */
+  var RADIO_PROXIMIDAD_PX = 90;
+  var UMBRAL_ARRASTRE_CONVERGER = 6;
+  var ultimoPunteroLienzo = null;
+  var proximidadRAF = null;
+  var arrastreConverger = null;
+
+  function actualizarProximidadLienzo(clienteX, clienteY, vista) {
+    var capa = document.getElementById('capa-asas');
+    if (!capa || !vista || !vista.contexto || vista.contexto.divulgacion !== 'edicion') return;
+    var lista = capa.querySelectorAll('.control-lienzo');
+    if (!lista.length) return;
+    var mundo = vista.aMundo(clienteX, clienteY);
+    var k = (vista.camara && vista.camara.k) || 1;
+    var radio = RADIO_PROXIMIDAD_PX / k;
+    var radio2 = radio * radio;
+    var i;
+    for (i = 0; i < lista.length; i++) {
+      var el = lista[i];
+      var cx = parseFloat(el.getAttribute('data-cx'));
+      var cy = parseFloat(el.getAttribute('data-cy'));
+      if (isNaN(cx) || isNaN(cy)) continue;
+      var dx = cx - mundo.x;
+      var dy = cy - mundo.y;
+      el.classList.toggle('cerca', dx * dx + dy * dy <= radio2);
+    }
+  }
+
+  function seguirProximidad(evento, vista) {
+    if (!vista || !vista.contexto || vista.contexto.divulgacion !== 'edicion') return;
+    ultimoPunteroLienzo = { x: evento.clientX, y: evento.clientY };
+    if (proximidadRAF) return;
+    proximidadRAF = global.requestAnimationFrame(function () {
+      proximidadRAF = null;
+      if (!ultimoPunteroLienzo) return;
+      actualizarProximidadLienzo(ultimoPunteroLienzo.x, ultimoPunteroLienzo.y, vista);
+    });
+  }
+
+  function olvidarProximidad() {
+    ultimoPunteroLienzo = null;
+    var capa = document.getElementById('capa-asas');
+    if (!capa) return;
+    Array.prototype.forEach.call(capa.querySelectorAll('.control-lienzo.cerca'),
+      function (el) { el.classList.remove('cerca'); });
   }
 
   /* ----------------------------------------------------- detección UI -- */
@@ -1256,7 +1409,8 @@
         || el.classList.contains('edit-chip-quitar'))) return true;
     if (el.closest && (el.closest('.edit-fo') || el.closest('.edit-agregar')
         || el.closest('.edit-rama') || el.closest('.edit-rama-todo')
-        || el.closest('.edit-papelera')
+        || el.closest('.edit-papelera') || el.closest('.edit-converger')
+        || el.closest('.control-lienzo')
         || el.closest('.edit-resize') || el.closest('.reenganche-asa')
         || el.closest('.tipo-control-mas') || el.closest('.tipo-control-eje'))) {
       return true;
@@ -1552,8 +1706,17 @@
 
   /* ---------------------------------------------- tooltips de ayuda ---- */
 
-  function tooltipDeNodo(nodo) {
+  function tooltipDeNodo(nodo, datos) {
     if (!nodo) return null;
+    if (nodo.postura && datos && (nodo.postura.question_axes || []).some(function (qid) {
+      var q = datos.questions[qid];
+      return q && q.is_convergence;
+    })) {
+      return '<h4>' + escapar(tUI('posturaConvergente', 'Pregunta compartida')) + '</h4><p>'
+        + escapar(tUI('posturaConvergenteDesc',
+          'Uno de los ejes de esta postura lleva a una pregunta que también origina otra(s) postura(s).'))
+        + '</p>';
+    }
     if (nodo.tipo === 'control-mas') {
       return '<h4>+</h4><p>' + escapar(tUI('nuevoNodoDesc',
         'Crea una postura vacía como respuesta de esta pregunta. La etiqueta de la respuesta se edita en la línea.')) + '</p>';
@@ -1598,6 +1761,20 @@
       return '<h4>' + escapar(tUI('eliminarNodo', 'Eliminar nodo')) + '</h4><p>'
         + escapar(tUI('eliminarNodoDesc',
           'Borra esta tarjeta y la rama que cuelga de ella, si no se alcanza por otro camino.'))
+        + '</p>';
+    }
+    if (tipo === 'converger') {
+      var esPreguntaConv = control.getAttribute('data-edit-converger-tipo') === 'pregunta';
+      var tituloConv = esPreguntaConv ? tUI('sumarOrigen', 'Sumar postura de origen')
+        : tUI('convergerPregunta', 'Converger con pregunta existente');
+      var descConv = esPreguntaConv
+        ? tUI('sumarOrigenDesc', 'Une esta pregunta a otra postura de origen: se vuelve compartida.')
+        : tUI('convergerPreguntaDesc', 'Une esta postura, como origen adicional, a una pregunta que ya existe.');
+      return '<h4>' + escapar(tituloConv) + '</h4><p>' + escapar(descConv) + '</p>';
+    }
+    if (tipo === 'quitarEje') {
+      return '<h4>' + escapar(tUI('quitarUnion', 'Quitar unión')) + '</h4><p>'
+        + escapar(tUI('quitarUnionDesc', 'Quita esta postura como origen de la pregunta. Las demás uniones quedan intactas.'))
         + '</p>';
     }
     var campo = control.getAttribute && control.getAttribute('data-edit-campo');
@@ -1781,7 +1958,7 @@
     if (prev) prev.remove();
   }
 
-  function dibujarPreview(vista, desde, hasta, invalido) {
+  function dibujarPreview(vista, desde, hasta, invalido, copia) {
     var capa = asegurarCapaAsas(vista);
     var prev = capa.querySelector('.arista-reenganche-preview');
     if (!prev) {
@@ -1810,6 +1987,7 @@
       + ', ' + (x1 + nx1 * tiron) + ' ' + (y1 + ny1 * tiron)
       + ', ' + x1 + ' ' + y1);
     prev.classList.toggle('invalido', !!invalido);
+    prev.classList.toggle('copia', !!copia && !invalido);
     capa.appendChild(prev);
   }
 
@@ -1914,11 +2092,19 @@
     marcarDestinos(vista, info.nodo, valido);
     if (vista.dibujarAristas) vista.dibujarAristas();
     dibujarAsas(vista);
-    dibujarPreview(vista, origen, libre, info.nodo ? !valido : false);
+    /* R3 de specs/convergencias.md: con Ctrl (Win/Linux) o ⌥ Alt (Mac)
+       sostenido, arrastrar el asa de origen de un eje copia la unión en vez
+       de moverla. Acotado a eje+desde: es el único punto que identifica
+       "qué postura origina esta pregunta", el concepto que se está
+       copiando. El modificador puede alternarse en cualquier momento del
+       arrastre; lo que cuenta es su estado al soltar (ver soltarReenganche). */
+    reenganche.permiteCopia = reenganche.arista.tipo === 'eje' && reenganche.extremo === 'desde';
+    reenganche.copia = reenganche.permiteCopia && (evento.ctrlKey || evento.altKey);
+    dibujarPreview(vista, origen, libre, info.nodo ? !valido : false, reenganche.copia);
     return true;
   }
 
-  function soltarReenganche(evento, vista, alReenganchar) {
+  function soltarReenganche(evento, vista, alReenganchar, alCopiarEje) {
     if (!reenganche) return false;
     var info = clasificarArrastre(evento, vista);
     var arista = reenganche.arista;
@@ -1926,6 +2112,8 @@
     var modo = info.modo;
     var tOrig = reenganche.tOriginal;
     var tenia = reenganche.teniaOffset;
+    var permiteCopia = arista.tipo === 'eje' && extremo === 'desde';
+    var copia = permiteCopia && (evento.ctrlKey || evento.altKey);
     reenganche = null;
     vista.svg.classList.remove('reenganchando', 'deslizando-ancla');
     quitarPreview(vista);
@@ -1944,6 +2132,13 @@
     else if (anclasSesion[arista.id]) delete anclasSesion[arista.id][extremo];
     var nodo = info.nodo;
     if (!nodo) {
+      /* Copiar y soltar en el vacío no hace nada (R3): a diferencia de
+         mover, no hay original que desconectar. */
+      if (copia) {
+        if (vista.dibujarAristas) vista.dibujarAristas();
+        dibujarAsas(vista);
+        return true;
+      }
       olvidarAncla(arista.id);
       if (vista.opciones && vista.opciones.alDesconectar) {
         vista.opciones.alDesconectar(arista, extremo);
@@ -1953,6 +2148,12 @@
     if (!esObjetivoValido(arista, extremo, nodo, vista.contexto.datos)) {
       if (vista.dibujarAristas) vista.dibujarAristas();
       dibujarAsas(vista);
+      return true;
+    }
+    if (copia) {
+      if (vista.dibujarAristas) vista.dibujarAristas();
+      dibujarAsas(vista);
+      if (alCopiarEje) alCopiarEje(arista, nodo);
       return true;
     }
     olvidarAncla(arista.id);
@@ -2024,15 +2225,64 @@
     }
     if (enlacePadre.tipo === 'pregunta') {
       if (!nodo.posturaId || nodo.tipo === 'pregunta') return false;
+      var preguntaOrigen = datos.questions[enlacePadre.preguntaId];
+      if (preguntaOrigen && (preguntaOrigen.origin_posture_ids || []).indexOf(nodo.posturaId) !== -1) {
+        return false;
+      }
       return !Arbol.Edits.seriaCicloEje(datos, nodo.posturaId, enlacePadre.preguntaId);
+    }
+    /* R2: converger desde la postura — el destino debe ser una pregunta que
+       todavía no sea uno de sus ejes (si ya lo es, es la misma exclusión de
+       duplicados que la rama "pregunta", vista en sentido inverso). */
+    if (enlacePadre.tipo === 'ejePostura') {
+      if (nodo.tipo !== 'pregunta' || !nodo.preguntaId) return false;
+      var posturaOrigen = datos.postures[enlacePadre.posturaId];
+      if (posturaOrigen && (posturaOrigen.question_axes || []).indexOf(nodo.preguntaId) !== -1) {
+        return false;
+      }
+      return !Arbol.Edits.seriaCicloEje(datos, enlacePadre.posturaId, nodo.preguntaId);
     }
     return false;
   }
 
+  /* Arma el gesto desde el propio control «+», para que además de clic-clic
+     funcione como arrastre: mantener pulsado y soltar sobre una postura liga,
+     soltar en el vacío deja el gesto armado (como si solo se hubiera hecho
+     clic). Ver addendum de specs/convergencias.md. */
+  function iniciarArrastreConverger(evento, vista) {
+    if (enlacePadre) return false;
+    var el = evento.target && evento.target.closest
+      ? evento.target.closest('[data-edit-converger]') : null;
+    if (!el || !vista.opciones || !vista.opciones.alIniciarConvergencia) return false;
+    /* Primero armar, después marcar el arrastre: armar pasa por
+       cancelarEnlacePadre, que limpia la marca. Al revés, el pointerup de
+       este mismo clic dejaba de reconocerse como «el clic que armó» y el
+       gesto se cancelaba solo. */
+    vista.opciones.alIniciarConvergencia(el.getAttribute('data-edit-converger'));
+    if (!enlacePadre) return false;
+    arrastreConverger = { inicio: { x: evento.clientX, y: evento.clientY } };
+    return true;
+  }
+
   function clicEnlacePadre(evento, vista) {
     if (!enlacePadre) return false;
+    var arrastre = arrastreConverger;
+    arrastreConverger = null;
+    var movido = !!arrastre && (Math.abs(evento.clientX - arrastre.inicio.x)
+      + Math.abs(evento.clientY - arrastre.inicio.y)) >= UMBRAL_ARRASTRE_CONVERGER;
     var nodo = nodoBajo(evento, vista || enlacePadre.vista);
     if (!nodo || !esPadreValidoEnlace(nodo)) {
+      /* El pointerup que arma el gesto cae sobre el propio control: no es un
+         destino fallido, solo el final del clic que lo activó. */
+      if (arrastre && !movido) return true;
+      if (!nodo) {
+        /* Arrastrar y soltar en el vacío no cancela: queda armado, igual que
+           si se hubiera hecho clic. Un clic suelto en el vacío sí cancela. */
+        if (movido) return true;
+        if (enlacePadre.onInvalido) enlacePadre.onInvalido();
+        if (enlacePadre.cancelarEnVacio) cancelarEnlacePadre(true);
+        return true;
+      }
       if (enlacePadre.onInvalido) enlacePadre.onInvalido();
       return true;
     }
@@ -2052,6 +2302,7 @@
 
   function cancelarEnlacePadre(silencio) {
     var prev = enlacePadre;
+    arrastreConverger = null;
     if (!prev) return;
     if (prev._mover) document.removeEventListener('pointermove', prev._mover, true);
     if (prev._tecla) document.removeEventListener('keydown', prev._tecla, true);
@@ -2301,6 +2552,8 @@
     _perfGet: _perfGet, // TEMP-PERF
     quitarEtiquetaArista: quitarEtiquetaArista,
     dibujarAsas: dibujarAsas,
+    seguirProximidad: seguirProximidad,
+    olvidarProximidad: olvidarProximidad,
     esEventoDeEdicion: esEventoDeEdicion,
     aplicarLod: aplicarLod,
     marcarModo: marcarModo,
@@ -2324,6 +2577,7 @@
     cancelarGestos: cancelarGestos,
     hayEnlacePadre: hayEnlacePadre,
     iniciarEnlacePadre: iniciarEnlacePadre,
+    iniciarArrastreConverger: iniciarArrastreConverger,
     clicEnlacePadre: clicEnlacePadre,
     cancelarEnlacePadre: cancelarEnlacePadre,
     aplicarOffsetsAncla: aplicarOffsetsAncla,

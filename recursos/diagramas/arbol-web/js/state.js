@@ -167,6 +167,55 @@
     return descendientesDeNodoMapa(grafo).get(nodoId) || new Set();
   }
 
+  /* R8 de specs/convergencias.md: al seleccionar una pregunta compartida o
+     cualquiera de sus posturas de origen, el grupo completo (la pregunta,
+     todas sus posturas de origen y las aristas "eje" que las unen) se
+     resalta junto. Solo aplica a Modo de Edición (llamado desde app.js solo
+     cuando Estado.divulgacion === 'edicion'); null si no hay nada que unir. */
+  function grupoConvergenciaDeSeleccion(grafo, datos, seleccionadoId) {
+    if (!grafo || !datos || !seleccionadoId) return null;
+    var nodoSel = grafo.nodos.get(seleccionadoId);
+    if (!nodoSel) return null;
+
+    function grupoDesdePregunta(qid) {
+      var idPregunta = grafo.idDePregunta(qid);
+      var nodoPregunta = grafo.nodos.get(idPregunta);
+      if (!nodoPregunta) return null;
+      var nodos = new Set([idPregunta]);
+      var aristas = new Set();
+      nodoPregunta.entradas.forEach(function (arista) {
+        if (arista.tipo !== 'eje') return;
+        aristas.add(arista.id);
+        nodos.add(arista.desde);
+      });
+      return { nodos: nodos, aristas: aristas };
+    }
+
+    if (nodoSel.tipo === 'pregunta' && nodoSel.preguntaId) {
+      var pregunta = datos.questions[nodoSel.preguntaId];
+      if (!pregunta || !pregunta.is_convergence) return null;
+      return grupoDesdePregunta(nodoSel.preguntaId);
+    }
+    if (nodoSel.posturaId) {
+      var postura = datos.postures[nodoSel.posturaId];
+      var ejesConvergentes = ((postura && postura.question_axes) || []).filter(function (qid) {
+        var q = datos.questions[qid];
+        return q && q.is_convergence;
+      });
+      if (!ejesConvergentes.length) return null;
+      var nodosU = new Set([seleccionadoId]);
+      var aristasU = new Set();
+      ejesConvergentes.forEach(function (qid) {
+        var parcial = grupoDesdePregunta(qid);
+        if (!parcial) return;
+        parcial.nodos.forEach(function (id) { nodosU.add(id); });
+        parcial.aristas.forEach(function (id) { aristasU.add(id); });
+      });
+      return { nodos: nodosU, aristas: aristasU };
+    }
+    return null;
+  }
+
   /* Cuántos nodos distintos cuelgan de cada nodo, en el árbol entero y no solo
      en lo que está desplegado. Las ramas se comparten (convergencias), así que
      se unen conjuntos en vez de sumar: un nodo al que se llega por dos caminos
@@ -1044,6 +1093,7 @@
   Arbol.grafoConControles = grafoConControles;
   Arbol.descendientesPorNodo = descendientesPorNodo;
   Arbol.descendientesDeNodo = descendientesDeNodo;
+  Arbol.grupoConvergenciaDeSeleccion = grupoConvergenciaDeSeleccion;
   Arbol.pesoDeRespuestas = pesoDeRespuestas;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;

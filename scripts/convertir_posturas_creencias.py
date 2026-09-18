@@ -196,7 +196,19 @@ def alias_keys(label: str) -> set[str]:
 
 
 def normalize_name(value: str) -> str:
-    return re.sub(r"\s+", " ", display_text(value)).strip().casefold()
+    """Clave con la que se reconoce una postura ya introducida.
+
+    Tolerante a propósito, igual que `alias_keys`: quien vuelve a nombrar una
+    postura más abajo en el documento no tiene por qué repetir su ortografía
+    exacta. Además de mayúsculas y espacios, se ignoran los guiones internos,
+    para que «Pre-existencialismo» y «Preexistencialismo» sean la misma
+    postura; sin esto el documento quedaba partido en dos posturas distintas
+    y una rama entera se desconectaba de la raíz.
+    """
+
+    texto = re.sub(r"\s+", " ", display_text(value)).strip().casefold()
+    # Solo el guion entre letras: los que van sueltos separan, no unen.
+    return re.sub(r"(?<=\w)[-‐-―](?=\w)", "", texto)
 
 
 def split_origins(value: str) -> list[str]:
