@@ -33,3 +33,27 @@ El criterio general para esta suite: **derivar del dataset, no fijar constantes*
 Con los datos ya corregidos quedan **1 cruce** de flechas en «árbol completo» y **6** al expandir rama a rama. No es una prueba desactualizada: es el límite del algoritmo de reducción de cruces (`reducirCruces`, Sugiyama con barycentro e intercambios locales) con el árbol actual. Las dos comprobaciones se convirtieron en **techo de regresión** (`TECHO_CRUCES_COMPLETO`, `TECHO_CRUCES_EXPANDIR`): fallan si el número empeora, y dejan constancia de que bajarlo a cero es trabajo de layout pendiente.
 
 La razón de preferir el techo a dejarlas en rojo: una suite permanentemente roja es justo cómo estas 19 comprobaciones pasaron meses sin que nadie las mirara. El riesgo del techo es que alguien lo suba en vez de arreglar el layout, y por eso el número va en el nombre de la prueba, a la vista.
+
+## Preguntas con documento de análisis (2026-09-19)
+
+Tres bugs distintos que se manifestaban juntos en la línea del Modalismo, y que compartían una causa de fondo: el convertidor daba por hecho que una línea `->` terminaba donde él esperaba.
+
+### La versión coloquial se perdía si la línea llevaba `{ [[wikilink]] }`
+
+`split_colloquial_question` buscaba el paréntesis coloquial anclado al final de la línea (`(\?)\s+\(([^()]+)\)\s*$`). Pero el `{ [[documento.md]] }` va **después** del paréntesis, así que en esas líneas el patrón no casaba nunca: `colloquial_hint` quedaba en `null` y la pregunta coloquial se quedaba dentro del texto formal, visible como un paréntesis largo en el visor.
+
+Afectaba a las tres preguntas del árbol que tienen documento de análisis y versión coloquial: Monergismo, tipos de inspiración bíblica y Modalismo. Ahora el bloque `{…}` se aparta antes de buscar el paréntesis y se devuelve pegado a la pregunta formal (el JSON ya lo limpia con `strip_groups`). De paso se admiten **varios paréntesis coloquiales seguidos**, que es el caso de la pregunta de inspiración plenaria: `(¿Toda la Biblia ha sido inspirada?) (¿Cada parte de la Biblia fue inspirada?)`.
+
+Se conserva el guardarraíl de no separar si lo que queda delante no termina en `?`: así `Invocar el nombre de Dios (pedir ayuda)` sigue siendo parte de la redacción y no se confunde con una glosa.
+
+### `[[Modalismo.md]]` no resolvía a `Modalismo.md`
+
+`resolve_note_path` añadía `.md` al destino del wikilink sin mirar si ya lo traía, y terminaba buscando `Modalismo.md.md`. El enlace salía con `"href": null` y el visor caía al fallback de mostrar el texto crudo `[[Modalismo.md]]` en vez de la tarjeta del documento. Los wikilinks escritos sin extensión siempre funcionaron, de ahí que el fallo pareciera aleatorio.
+
+Obsidian resuelve igual `[[Modalismo]]` que `[[Modalismo.md]]`; el convertidor ahora también. Los 6 wikilinks del árbol resuelven (antes 3 rotos) y las notas embebidas en `notas.cache.js` pasan de 12 a 21, porque el caché ya alcanza esos documentos y los que ellos enlazan.
+
+### La exportación reescribía la ortografía del autor
+
+La propuesta Markdown del Modo de Edición emitía el origen de cada `->` con el **nombre canónico** de la postura, que es el de la arista que la introdujo. Como `normalize_name` ignora el guion interno a propósito (ver el bug de 2026-09-17, más arriba), `Encarnacionismo / Pre-existencialismo` de la línea 202 se exportaba como `Encarnacionismo / Preexistencialismo`: un diff falso contra el documento fuente, provocado por la misma tolerancia que mantiene la rama conectada.
+
+La tolerancia sirve para **reconocer** la postura, no para reescribir al autor. El JSON de cada pregunta lleva ahora `origin_labels` — los nombres de origen tal como los escribió esa línea, que el convertidor ya tenía en `posture_hints` — y `aMarkdown` prefiere el que coincida con la postura ignorando el guion. Si el nombre se cambió desde el editor ya no coincide ninguna etiqueta y gana el nombre nuevo, que es lo que se quiere.

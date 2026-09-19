@@ -184,9 +184,6 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                               - Sí: Preservación Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
                                                 - Postura de la inspiración bíblica -> ¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Cada parte de la Biblia fue inspirada?) { [[tipos-de-inspiracion-biblica.md]] }
                                                   - Sí: Inspiracionalismo Plenario
-                                                    - Inspiracionalismo Plenario & Inspiracionalismo Verbal & Inspiracionalismo Orgánico / Concursal / Confluente -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los topicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
-                                                      - Sí: ?
-                                                      - No: ?
                                                   - No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
                                                     - Inspiracionalismo Limitado -> ¿Cuál es, en este sentido, el límite o la extensión de la inspiración?
                                                       - Ciertos Hechos o Dichos de los apóstoles fueron inspirados: Inspiracionalismo Limitado Selectivo
@@ -198,6 +195,9 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                 - Postura de la inspiración bíblica -> ¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)
                                                   - Sí: Inspiracionalismo Mecánico / Dictado
                                                   - No: Inspiracionalismo Orgánico / Concursal / Confluente
+                                                    - Inspiracionalismo Plenario & Inspiracionalismo Verbal & Inspiracionalismo Orgánico / Concursal / Confluente -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los tópicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
+                                                      - Sí: ?
+                                                      - No: ?
                                           - Sí: Postura de la inspiración bíblica
                         - Encarnacionismo / Pre-existencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo

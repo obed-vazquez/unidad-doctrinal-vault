@@ -831,6 +831,29 @@
     return postura.is_unnamed ? '?' : (postura.label || '?');
   }
 
+  /* Misma clave que `normalize_name` del conversor: sin mayúsculas, sin
+     espacios de más y sin el guion que une dos palabras. */
+  function claveNombre(texto) {
+    return String(texto == null ? '' : texto)
+      .replace(/\s+/g, ' ').trim().toLowerCase()
+      .replace(/([^\s\-‐-―])[-‐-―]([^\s\-‐-―])/g, '$1$2');
+  }
+
+  /* El conversor guarda una sola ortografía por postura, pero el documento
+     puede citarla de otra forma tolerada (`Pre-existencialismo` donde la
+     arista que la introdujo dijo `Preexistencialismo`). La exportación no
+     reescribe al autor: si esta línea la nombró así, así se emite. Un cambio
+     de nombre hecho en el editor sí gana, porque ya no coincide la clave. */
+  function nombreOrigen(pregunta, pid, datos) {
+    var canonico = nombrePostura(datos.postures[pid]);
+    var etiquetas = (pregunta && pregunta.origin_labels) || [];
+    var clave = claveNombre(canonico);
+    for (var i = 0; i < etiquetas.length; i++) {
+      if (claveNombre(etiquetas[i]) === clave) return etiquetas[i];
+    }
+    return canonico;
+  }
+
   function gruposTradicion(postura) {
     return (postura.traditions || []).map(function (tradicion) {
       return tradicion.name + (tradicion.is_tentative ? '?' : '');
@@ -925,7 +948,7 @@
       var pregunta = datos.questions[qid];
       if (!pregunta) return;
       var origenes = (pregunta.origin_posture_ids || []).map(function (pid) {
-        return nombrePostura(datos.postures[pid]);
+        return nombreOrigen(pregunta, pid, datos);
       }).join(' & ');
       lineas.push(indent + '- ' + origenes + ' -> ' + textoPregunta(pregunta));
       var respuestas = (pregunta.answers || []).slice().sort(function (a, b) {

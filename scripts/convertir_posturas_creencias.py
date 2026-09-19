@@ -945,6 +945,13 @@ def build_web_model(
             "full_text": plain_text(strip_groups(question.text)),
             "source_line": question.source_line,
             "origin_posture_ids": ordered,
+            # Nombres de origen tal como los escribió esta línea `->`. Una
+            # misma postura puede citarse con otra ortografía tolerada
+            # (`Pre-existencialismo` por `Preexistencialismo`); al exportar la
+            # propuesta Markdown se respeta la del documento, no la canónica.
+            "origin_labels": [
+                plain_text(strip_groups(hint)) for hint in question.posture_hints
+            ],
             "is_convergence": len(ordered) > 1,
             "wikilinks": parse_wikilinks(
                 question.raw or question.text, repository_root, web_directory

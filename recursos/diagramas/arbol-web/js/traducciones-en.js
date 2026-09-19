@@ -534,18 +534,6 @@
       }
     },
     "Q47": {
-      "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
-      "colloquial": "Can man understand what the Bible says about at least one thing?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
-    "Q48": {
       "formal": "What, in this sense, is the limit or extent of inspiration?",
       "answers": {
         "A": {
@@ -560,7 +548,7 @@
         }
       }
     },
-    "Q49": {
+    "Q48": {
       "formal": "What God inspired were the words and not just themes or concepts to the writers?",
       "colloquial": "Did God inspire the words he commanded to be written?",
       "answers": {
@@ -572,9 +560,21 @@
         }
       }
     },
-    "Q50": {
+    "Q49": {
       "formal": "Did God directly dictate word for word to his writers, without them contributing their own words?",
       "colloquial": "Did God dictate every word of what had to be written?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q50": {
+      "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
+      "colloquial": "Can man understand what the Bible says about at least one thing?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -736,31 +736,29 @@
     "P86": "THE PERSEVERANCE OF THE SAINTS",
     "P87": "Conditional Preservation of Saints",
     "P88": "Plenary Inspirationalism",
-    "P89": "Verbal Inspirationalism",
-    "P90": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P93": "Limited Inspirationalism",
-    "P94": "Selective Limited Inspirationalism",
-    "P95": "Inspirationalism Limited Partial",
-    "P97": "Verbal Inspirationalism",
-    "P98": "Dynamic / Conceptual Inspirationalism",
-    "P99": "Mechanical Inspirationalism / Dictation",
-    "P100": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P101": "Biblical Inspiration Posture",
-    "P102": "Homoiousianism / Semi-Arrianism",
-    "P103": "Consubstantialism",
-    "P104": "Modalism / Oneness / Unitarianism",
-    "P105": "Trinitarianism/Trinitarianism",
-    "P106": "Docetism",
-    "P108": "Apollinarianism",
-    "P110": "Christ's Hypostatic Duality *",
-    "P111": "Monoprosopism",
-    "P112": "Monophysicism / Eutychianism",
-    "P113": "Diophysicism / Chalcedonianism / Myaphysicism",
-    "P114": "Monothelitism / Monothelitism",
-    "P115": "Diothelitism",
-    "P116": "Cosmological Atheism *",
-    "P117": "Cosmological materialism",
-    "P119": "Pantheism / Panentheism*",
+    "P89": "Limited Inspirationalism",
+    "P90": "Selective Limited Inspirationalism",
+    "P91": "Inspirationalism Limited Partial",
+    "P93": "Verbal Inspirationalism",
+    "P94": "Dynamic / Conceptual Inspirationalism",
+    "P95": "Mechanical Inspirationalism / Dictation",
+    "P96": "Organic / Bankruptcy / Confluent Inspirationalism",
+    "P99": "Biblical Inspiration Posture",
+    "P100": "Homoiousianism / Semi-Arrianism",
+    "P101": "Consubstantialism",
+    "P102": "Modalism / Oneness / Unitarianism",
+    "P103": "Trinitarianism/Trinitarianism",
+    "P104": "Docetism",
+    "P106": "Apollinarianism",
+    "P108": "Christ's Hypostatic Duality *",
+    "P109": "Monoprosopism",
+    "P110": "Monophysicism / Eutychianism",
+    "P111": "Diophysicism / Chalcedonianism / Myaphysicism",
+    "P112": "Monothelitism / Monothelitism",
+    "P113": "Diothelitism",
+    "P114": "Cosmological Atheism *",
+    "P115": "Cosmological materialism",
+    "P117": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {
