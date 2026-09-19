@@ -213,6 +213,50 @@
       transition: opacity 0.15s ease, transform 0.15s ease;
     }
 
+    /* Complementos: material de apoyo, un escalón por debajo de los recursos
+       principales. Sin relleno hasta el hover y con tipografía más contenida. */
+    .seccion-nota {
+      margin-top: -0.5rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.83rem;
+      font-weight: 300;
+      color: var(--ww-text-muted);
+    }
+
+    .recurso.secundario {
+      align-items: center;
+      gap: 0.75rem 1rem;
+      padding: 0.9rem 1.15rem;
+      background: transparent;
+      border-style: solid;
+    }
+
+    .recurso.secundario:hover {
+      background: var(--ww-surface);
+      transform: none;
+    }
+
+    .recurso.secundario .recurso-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      font-size: 1rem;
+    }
+
+    .recurso.secundario .recurso-titulo {
+      font-family: var(--ww-font-body);
+      font-size: 0.97rem;
+      font-weight: 500;
+      margin-bottom: 0.15rem;
+    }
+
+    .recurso.secundario .recurso-desc { font-size: 0.83rem; }
+
+    .recurso-icon.tabla {
+      background: rgba(59, 159, 212, 0.13);
+      color: var(--ww-accent);
+    }
+
     .recurso:hover .recurso-flecha {
       opacity: 1;
       transform: translateX(3px);
@@ -301,6 +345,26 @@
                 Visor interactivo del árbol de clasificación de posturas filosóficas,
                 teológicas y doctrinales. Responde secuencialmente para llegar a la
                 etiqueta histórica de una postura.
+              </div>
+            </div>
+            <span class="recurso-flecha" aria-hidden="true">→</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Complementos</h2>
+      <p class="seccion-nota">Material de apoyo que acompaña a los recursos anteriores.</p>
+      <ul class="recursos">
+        <li>
+          <a class="recurso secundario" href="recursos/diagramas/tabla-inspiracion/index.html">
+            <div class="recurso-icon tabla" aria-hidden="true">▤</div>
+            <div class="recurso-body">
+              <div class="recurso-titulo">Tabla comparativa del origen del texto bíblico</div>
+              <div class="recurso-desc">
+                Diez posturas sobre la inspiración contrastadas en veinte criterios,
+                con filtros por eje, columnas fijables y vista de solo diferencias.
               </div>
             </div>
             <span class="recurso-flecha" aria-hidden="true">→</span>

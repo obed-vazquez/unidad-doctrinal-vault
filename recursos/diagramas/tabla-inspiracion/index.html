@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Posturas sobre el origen del texto bíblico</title>
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<div id="app">
+
+  <header id="barra">
+    <div class="marca">
+      <span class="marca-glifo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path fill="currentColor" d="M4 4.8A1.8 1.8 0 0 1 5.8 3h5.4a2.4 2.4 0 0 1 1.8.8A2.4 2.4 0 0 1 14.8 3h3.4A1.8 1.8 0 0 1 20 4.8v12.4a1.8 1.8 0 0 1-1.8 1.8h-3.6a1.6 1.6 0 0 0-1.35.74l-.42.66a1 1 0 0 1-1.7 0l-.42-.66A1.6 1.6 0 0 0 9.4 19H5.8A1.8 1.8 0 0 1 4 17.2zm2 .2v12h3.4c.63 0 1.24.15 1.78.43V6.1a.6.6 0 0 0-.34-.54L10.6 5zm12 0h-3.4l-.24.06a.6.6 0 0 0-.36.55v11.37A3.97 3.97 0 0 1 15.78 17H18z"/>
+        </svg>
+      </span>
+      <div class="marca-textos">
+        <h1 id="titulo-pagina"></h1>
+        <p id="subtitulo-pagina"></p>
+      </div>
+    </div>
+    <div class="barra-acciones">
+      <button type="button" class="boton fantasma" id="btn-guia">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16m0 3.2a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6M11 11h2v6h-2z"/></svg>
+        <span class="rotulo" id="lbl-guia"></span>
+      </button>
+      <button type="button" class="boton" id="btn-compartir">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 4h5a1 1 0 0 1 1 1v5h-2V7.41l-7.3 7.3-1.4-1.42L16.58 6H14zM5 6h5v2H6v10h10v-4h2v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1"/></svg>
+        <span class="rotulo" id="lbl-compartir"></span>
+      </button>
+      <button type="button" class="boton fantasma compacto" id="btn-idioma"></button>
+      <button type="button" class="boton fantasma compacto icono-solo" id="btn-tema">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18zm0 2.2v13.6a6.8 6.8 0 0 1 0-13.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section id="controles">
+    <div class="control-bloque">
+      <div class="control-cabecera">
+        <span class="control-etiqueta" id="et-posturas"></span>
+        <span class="pastilla" id="contador-posturas"></span>
+        <span class="control-relleno"></span>
+        <button type="button" class="mini-boton" id="btn-posturas-todas"></button>
+        <button type="button" class="mini-boton" id="btn-posturas-ninguna"></button>
+      </div>
+      <div class="chips" id="chips-posturas"></div>
+    </div>
+
+    <div class="control-bloque">
+      <div class="control-cabecera">
+        <span class="control-etiqueta" id="et-ejes"></span>
+        <span class="control-nota" id="nota-ejes"></span>
+      </div>
+      <div class="ejes-rejilla" id="ejes-filtro"></div>
+    </div>
+
+    <div class="barra-vista">
+      <div class="envoltura-popover">
+        <button type="button" class="boton" id="btn-criterios" aria-haspopup="true" aria-expanded="false">
+          <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5h16v2H4zm0 6h10v2H4zm0 6h16v2H4zM17 10h2v5h-2z"/></svg>
+          <span class="rotulo" id="lbl-criterios"></span>
+          <span class="pastilla" id="contador-criterios"></span>
+          <svg class="icono flecha" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+        </button>
+        <div class="popover" id="popover-criterios" hidden>
+          <div class="popover-cabecera">
+            <strong id="pop-titulo"></strong>
+            <div class="popover-acciones">
+              <button type="button" class="mini-boton" id="btn-criterios-todos"></button>
+              <button type="button" class="mini-boton" id="btn-criterios-ninguno"></button>
+            </div>
+          </div>
+          <p class="control-nota" id="aviso-fijos" hidden></p>
+          <div class="popover-cuerpo" id="popover-grupos"></div>
+        </div>
+      </div>
+
+      <button type="button" class="boton alternable" id="btn-voltear" aria-pressed="false">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.5 3 21 7.5l-4.5 4.5-1.4-1.4 2.1-2.1H8v-2h9.2l-2.1-2.1zM7.5 12 12 16.5 7.5 21l-1.4-1.4 2.1-2.1H3v-2h9.2l-2.1-2.1z"/></svg>
+        <span class="rotulo" id="lbl-voltear"></span>
+      </button>
+
+      <div class="segmentado" id="seg-densidad" role="group">
+        <button type="button" data-densidad="compacta" id="seg-compacta"></button>
+        <button type="button" data-densidad="comoda" id="seg-comoda"></button>
+      </div>
+
+      <button type="button" class="boton alternable" id="btn-diferencias" aria-pressed="false">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/></svg>
+        <span class="rotulo" id="lbl-diferencias"></span>
+        <span class="pastilla" id="contador-coincidencias" hidden></span>
+      </button>
+
+      <span class="control-relleno"></span>
+
+      <div class="leyenda">
+        <span class="leyenda-item"><i class="punto punto-coincide" aria-hidden="true"></i><span id="lbl-coinciden"></span></span>
+        <span class="leyenda-item"><i class="punto punto-difiere" aria-hidden="true"></i><span id="lbl-difieren"></span></span>
+      </div>
+    </div>
+  </section>
+
+  <main id="zona-principal">
+    <div id="aviso-vacio" hidden>
+      <div class="aviso-vacio-caja">
+        <p id="texto-aviso-vacio"></p>
+        <button type="button" class="boton primario" id="btn-volver-todas"></button>
+      </div>
+    </div>
+
+    <div id="contenedor-tabla">
+      <table id="tabla"></table>
+    </div>
+
+    <div id="contenedor-fichas"></div>
+  </main>
+
+  <div id="modal-guia" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="guia-titulo">
+    <div class="modal-caja ancha">
+      <button type="button" class="boton fantasma icono-solo cerrar" id="guia-cerrar">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></svg>
+      </button>
+      <h2 id="guia-titulo"></h2>
+      <section class="guia-seccion">
+        <h3 id="tit-ejes"></h3>
+        <ul id="lista-ejes"></ul>
+        <p class="control-nota" id="nota-ejes-largo"></p>
+      </section>
+    </div>
+  </div>
+
+  <div id="modal-celda" class="modal oculto" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <div class="modal-caja ancha">
+      <button type="button" class="boton fantasma icono-solo cerrar" id="modal-cerrar">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></svg>
+      </button>
+      <p class="modal-supra" id="modal-supra"></p>
+      <h3 id="modal-titulo"></h3>
+      <div id="modal-ficha"></div>
+    </div>
+  </div>
+
+  <div id="aviso" role="status" aria-live="polite"></div>
+
+</div>
+
+<script src="datos/tabla-inspiracion.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

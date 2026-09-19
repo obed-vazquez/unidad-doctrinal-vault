@@ -72,6 +72,17 @@
       .replace(/"/g, '&quot;');
   }
 
+  /* Texto que viene del documento fuente (preguntas, respuestas, glosas): las
+     marcas `**`/`*` del autor se pintan como negrita y cursiva. Para atributos
+     (`title`, `aria-label`) y para el lienzo SVG va `plano`, no esto. */
+  function formatear(texto) {
+    return Arbol.Formato ? Arbol.Formato.aHtml(texto) : escapar(texto);
+  }
+
+  function plano(texto) {
+    return Arbol.Formato ? Arbol.Formato.plano(texto) : String(texto == null ? '' : texto);
+  }
+
   function t(clave, vars) {
     return I18n && I18n.t ? I18n.t(clave, vars) : clave;
   }
@@ -673,9 +684,9 @@
           : ''
       };
       if (textos.coloquial) {
-        partes.push('<p class="ficha-coloquial">' + escapar(textos.coloquial) + '</p>');
+        partes.push('<p class="ficha-coloquial">' + formatear(textos.coloquial) + '</p>');
       }
-      partes.push('<p class="ficha-formal">' + escapar(textos.formal) + '</p>');
+      partes.push('<p class="ficha-formal">' + formatear(textos.formal) + '</p>');
       var elegida = respuestas[nodo.pregunta.id];
       partes.push('<ul class="ficha-opciones">'
         + (nodo.pregunta.answers || []).map(function (respuesta) {
@@ -686,12 +697,12 @@
             : '';
           var peso = pesoDeRama(nodo.pregunta.id, respuesta.key);
           return '<li class="' + (elegida === respuesta.key ? 'elegida' : '') + '">'
-            + '<b>' + escapar(etiqueta) + '</b> → '
+            + '<b>' + formatear(etiqueta) + '</b> → '
             + escapar(Layout.rotuloPostura(destino))
             + (peso ? ' <span class="peso-rama' + (peso.densa ? ' densa' : '') + '">↓ '
               + peso.nodos + ' (' + escapar(t(peso.nodos === 1
                 ? 'ramaAbreUno' : 'ramaAbre', { n: peso.nodos })) + ')</span>' : '')
-            + (glosa ? '<span class="glosa">' + escapar(glosa) + '</span>' : '')
+            + (glosa ? '<span class="glosa">' + formatear(glosa) + '</span>' : '')
             + '</li>';
         }).join('') + '</ul>');
     }
@@ -741,13 +752,13 @@
         var preguntaOrigen = Estado.datos.questions[arista.preguntaId];
         var elegidaAqui = respuestas[arista.preguntaId] === arista.clave;
         return '<li class="' + (elegidaAqui ? 'elegida' : '') + '">'
-          + '<b>' + escapar(arista.etiqueta) + '</b> a «'
-          + escapar(preguntaOrigen ? (preguntaOrigen.colloquial_hint
+          + '<b>' + formatear(arista.etiqueta) + '</b> a «'
+          + formatear(preguntaOrigen ? (preguntaOrigen.colloquial_hint
             || preguntaOrigen.formal_text) : arista.preguntaId) + '»'
           + '<span class="glosa">desde '
           + escapar(origen && origen.postura ? Layout.rotuloPostura(origen.postura)
             : arista.desde)
-          + (arista.glosa ? ' · ' + escapar(arista.glosa) : '') + '</span></li>';
+          + (arista.glosa ? ' · ' + formatear(arista.glosa) : '') + '</span></li>';
       }).join('') + '</ul>');
     }
 
@@ -757,7 +768,7 @@
       partes.push('<ul class="ficha-opciones">' + ejes.map(function (qid) {
         var eje = datos.questions[qid];
         return '<li>'
-          + escapar(eje ? (eje.colloquial_hint || eje.formal_text) : 'Pregunta')
+          + formatear(eje ? (eje.colloquial_hint || eje.formal_text) : 'Pregunta')
           + (eje && eje.is_convergence
             ? '<span class="glosa">Compartida con otra postura (convergencia).</span>' : '')
           + '</li>';
@@ -772,7 +783,7 @@
 
     if (nodo.pregunta && nodo.pregunta.full_text !== nodo.pregunta.formal_text) {
       partes.push('<h3 class="panel-subtitulo">Texto original en el documento</h3>');
-      partes.push('<p class="panel-nota">' + escapar(nodo.pregunta.full_text) + '</p>');
+      partes.push('<p class="panel-nota">' + formatear(nodo.pregunta.full_text) + '</p>');
     }
 
     var enlaces = (postura && postura.wikilinks) || [];
@@ -822,7 +833,7 @@
       })[0];
       partes.push('<dt>Tu respuesta</dt><dd>'
         + (elegidaFicha
-          ? escapar(elegidaFicha.label) + (elegidaFicha.gloss ? ' — ' + escapar(elegidaFicha.gloss) : '')
+          ? formatear(elegidaFicha.label) + (elegidaFicha.gloss ? ' — ' + formatear(elegidaFicha.gloss) : '')
           : 'todavía sin responder')
         + '</dd>');
     }
@@ -912,9 +923,9 @@
         : '';
       var formal = dato('q.' + nodo.pregunta.id + '.formal', nodo.pregunta.formal_text);
       if (coloquial) {
-        partes.push('<p class="tooltip-coloquial">' + escapar(coloquial) + '</p>');
+        partes.push('<p class="tooltip-coloquial">' + formatear(coloquial) + '</p>');
       }
-      partes.push('<p class="tooltip-formal">' + escapar(formal) + '</p>');
+      partes.push('<p class="tooltip-formal">' + formatear(formal) + '</p>');
       var clave = respuestas[nodo.pregunta.id];
       if (clave) {
         var elegida = (nodo.pregunta.answers || []).filter(function (r) {
@@ -925,8 +936,8 @@
           var gl = elegida.gloss
             ? dato('q.' + nodo.pregunta.id + '.' + clave + '.gloss', elegida.gloss)
             : '';
-          partes.push('<p>Respuesta: <strong>' + escapar(et) + '</strong>'
-            + (gl ? ' — ' + escapar(gl) : '') + '</p>');
+          partes.push('<p>Respuesta: <strong>' + formatear(et) + '</strong>'
+            + (gl ? ' — ' + formatear(gl) : '') + '</p>');
         }
       }
     }
@@ -1119,7 +1130,7 @@
               + escapar(pid) + '">' + escapar(t('explorarPostura')) + '</button>'
             : '')
           + '</div>'
-          + '<span class="glosa">' + escapar(glosa.join(' · ')) + '</span></li>';
+          + '<span class="glosa">' + formatear(glosa.join(' · ')) + '</span></li>';
       }).join('') + '</ul>');
 
       if (notas.length) {
@@ -1305,9 +1316,10 @@
       titulo = 'Ambas ramas desembocan en la misma postura (punto de convergencia), '
         + 'así que el árbol no distingue entre ellas.' + (titulo ? ' — ' + titulo : '');
     }
-    return '<span class="' + clase + '" title="' + escapar(titulo) + '">'
+    // El `title` es un atributo: ahí las marcas no se pintan, se quitan.
+    return '<span class="' + clase + '" title="' + escapar(plano(titulo)) + '">'
       + (mostrarSujeto ? '<span class="sujeto">' + escapar(respuesta.sujeto.nombre) + '</span>' : '')
-      + escapar(respuesta.etiqueta) + '</span>';
+      + formatear(respuesta.etiqueta) + '</span>';
   }
 
   function listaAnidada(entradas) {
@@ -1329,10 +1341,10 @@
       cuerpo.push('</div>');
 
       if (entrada.coloquial) {
-        cuerpo.push('<p class="paso-coloquial">' + escapar(entrada.coloquial) + '</p>');
+        cuerpo.push('<p class="paso-coloquial">' + formatear(entrada.coloquial) + '</p>');
       }
       if (entrada.formal) {
-        cuerpo.push('<p class="paso-formal">' + escapar(entrada.formal) + '</p>');
+        cuerpo.push('<p class="paso-formal">' + formatear(entrada.formal) + '</p>');
         cuerpo.push('<div class="paso-respuestas">' + entrada.respuestas.map(function (respuesta) {
           return marcaRespuesta(entrada, respuesta, entrada.respuestas.length > 1);
         }).join('') + '</div>');
@@ -1365,7 +1377,7 @@
       + '</tr></thead><tbody>'
       + filas.map(function (entrada) {
         return '<tr class="' + escapar(entrada.acuerdo) + '">'
-          + '<td class="pregunta">' + escapar(entrada.coloquial || entrada.formal)
+          + '<td class="pregunta">' + formatear(entrada.coloquial || entrada.formal)
           + '<small>' + escapar(entrada.posturaEtiqueta) + ' · ' + escapar(entrada.preguntaId)
           + '</small></td>'
           + entrada.respuestas.map(function (respuesta) {
@@ -1400,7 +1412,7 @@
 
     confirmar({
       titulo: 'Deshacer esta respuesta',
-      texto: '«' + escapar(pregunta.colloquial_hint || pregunta.formal_text) + '»'
+      texto: '«' + formatear(pregunta.colloquial_hint || pregunta.formal_text) + '»'
         + ' volverá a quedar sin responder.' + detalle
         + ' La rama no reaparecerá al volver a responder.',
       aceptar: 'Podar la rama'

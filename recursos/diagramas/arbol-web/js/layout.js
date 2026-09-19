@@ -177,10 +177,10 @@
 
   function partesBotones(pregunta, anchoInterno, y, partes, contexto) {
     var botones = (pregunta.answers || []).map(function (respuestaPosible) {
-      var texto = dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.label',
-        respuestaPosible.label);
+      var texto = plano(dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.label',
+        respuestaPosible.label));
       var glosa = respuestaPosible.gloss
-        ? dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.gloss', respuestaPosible.gloss)
+        ? plano(dato('q.' + pregunta.id + '.' + respuestaPosible.key + '.gloss', respuestaPosible.gloss))
         : null;
       var peso = pesoRespuesta(pregunta.id, respuestaPosible.key, contexto);
       var conteo = peso ? '↓ ' + peso : '';
@@ -227,11 +227,19 @@
     return (Arbol.I18n && Arbol.I18n.dato) ? Arbol.I18n.dato(clave, original) : original;
   }
 
+  function plano(texto) {
+    return Arbol.Formato ? Arbol.Formato.plano(texto) : texto;
+  }
+
+  /* El lienzo es SVG puro y mide cada línea con canvas: no hay dónde poner una
+     negrita sin partir el texto en tramos. Se pinta sin las marcas —igual que
+     se veía cuando el conversor las borraba— y el formato se luce en las
+     superficies HTML (panel, cuestionario, tooltips). */
   function textosPregunta(pregunta) {
     return {
-      formal: dato('q.' + pregunta.id + '.formal', pregunta.formal_text),
+      formal: plano(dato('q.' + pregunta.id + '.formal', pregunta.formal_text)),
       coloquial: pregunta.colloquial_hint
-        ? dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint)
+        ? plano(dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint))
         : ''
     };
   }

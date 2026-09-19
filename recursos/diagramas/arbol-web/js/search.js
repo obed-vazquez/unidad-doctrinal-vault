@@ -11,8 +11,11 @@
 
   // Rango U+0300–U+036F: las marcas diacríticas que NFD deja sueltas, para que
   // «Judaismo» encuentre «Judaísmo». Los caracteres del literal no son visibles.
+  // Las marcas de énfasis del documento fuente se ignoran al indexar: quien
+  // busca «Antes del Discernimiento» no escribe los asteriscos.
   function normalizar(texto) {
-    return String(texto || '')
+    var crudo = Arbol.Formato ? Arbol.Formato.plano(texto) : texto;
+    return String(crudo || '')
       .normalize('NFD')
       .replace(/[̀-ͯ]/g, '')
       .toLowerCase()
@@ -417,8 +420,11 @@
 
   /* -------------------------------------------------------- exportación -- */
 
+  // El CSV va a una hoja de cálculo, no a un visor de Markdown: las marcas de
+  // énfasis del documento fuente se quitan en vez de viajar como asteriscos.
   function celdaCSV(valor) {
     var texto = valor == null ? '' : String(valor);
+    if (Arbol.Formato) texto = Arbol.Formato.plano(texto);
     return '"' + texto.replace(/"/g, '""') + '"';
   }
 

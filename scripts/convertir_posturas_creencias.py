@@ -58,6 +58,9 @@ WEB_NOTES_FILENAME = "notas.cache.js"
 GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
+# Partes finales de una línea `->`: el paréntesis coloquial y el {wikilink}.
+COLLOQUIAL_TAIL = re.compile(r"\s+\((?P<hint>[^()]+)\)\s*$")
+TRAILING_GROUPS = re.compile(r"(?:\s*\{[^{}]*\})+\s*$")
 ANSWER_HEAD = re.compile(r"^(s[íi]|no)\b[\s,;:.—–-]*(.*)$", re.IGNORECASE | re.DOTALL)
 # Estándar de aclaración: `<Respuesta> -- <Aclaración>`.
 ANSWER_GLOSS = re.compile(r"\s--\s")
@@ -157,15 +160,37 @@ def display_text(value: str) -> str:
 def split_colloquial_question(question: str) -> tuple[str, str | None]:
     """Separa el paréntesis coloquial final de la pregunta formal.
 
-    Tras el ``?`` que cierra la pregunta principal, un paréntesis final es la
-    versión coloquial (aunque no lleve signos de interrogación). Así se
+    Tras el ``?`` que cierra la pregunta principal, los paréntesis finales son
+    la versión coloquial (aunque no lleven signos de interrogación). Así se
     conservan aclaraciones formales internas como ``(estado de “pecador”)``.
+
+    El ``{wikilink}`` de la línea va después del paréntesis coloquial, así que
+    se aparta antes de buscarlo y se devuelve pegado a la pregunta formal; sin
+    esto, las preguntas con documento de análisis perdían su versión coloquial.
     """
 
-    match = re.search(r"(\?)\s+\(([^()]+)\)\s*$", question)
-    if not match:
+    body = question
+    tail = ""
+    groups = TRAILING_GROUPS.search(question)
+    if groups:
+        body = question[: groups.start()].rstrip()
+        tail = question[groups.start() :].strip()
+
+    hints: list[str] = []
+    while True:
+        match = COLLOQUIAL_TAIL.search(body)
+        if not match:
+            break
+        hints.insert(0, match.group("hint").strip())
+        body = body[: match.start()].rstrip()
+
+    # Sin el `?` de cierre no hay pregunta formal: el paréntesis era parte de
+    # la redacción (`Invocar el nombre de Dios (pedir ayuda)`), no una glosa.
+    if not hints or not body.endswith("?"):
         return question, None
-    return question[: match.start(1) + 1].rstrip(), match.group(2).strip()
+
+    formal = f"{body} {tail}" if tail else body
+    return formal, " ".join(hints)
 
 
 def output_posture_label(label: str) -> str:
@@ -327,12 +352,48 @@ def nearest_matching_posture(
     return candidates[-1] if candidates else None
 
 
+def resolve_pending_origins(
+    pending: list[tuple[SourceItem, str, str]],
+    items: list[SourceItem],
+    answer_targets: dict[int, str],
+    model: Model,
+) -> None:
+    """Resuelve los orígenes que nombraban una postura aún no introducida.
+
+    El documento se lee de arriba abajo, pero una convergencia
+    (`A & B & C -> ¿…?`) puede citar posturas que aparecen más abajo: es lo
+    normal cuando la línea sale de la propuesta que exporta el visor, que
+    coloca la pregunta compartida bajo el primero de sus orígenes. Resolverlo
+    en una segunda pasada evita duplicar esas posturas y dejar la convergencia
+    colgando de copias vacías.
+    """
+
+    for item, origin, question_id in pending:
+        posture_id = nearest_matching_posture(
+            item, origin, items, answer_targets, model
+        )
+        if posture_id is None:
+            posture_id = model.add_posture(origin)
+            model.warnings.append(
+                f"Línea {item.line_number}: se creó la postura {origin!r} sin una respuesta previa."
+            )
+        model.postures[posture_id].questions.append(question_id)
+
+    for question_id, question in model.questions.items():
+        if question_id in model.root_questions:
+            continue
+        if any(question_id in posture.questions for posture in model.postures.values()):
+            continue
+        model.root_questions.append(question_id)
+
+
 def build_model(markdown: str) -> Model:
     items = extract_tree_items(markdown)
     classify_items(items)
     model = Model()
     answer_targets: dict[int, str] = {}
     question_ids: dict[int, str] = {}
+    pending_origins: list[tuple[SourceItem, str, str]] = []
 
     for item in items:
         if item.kind == "answer":
@@ -376,6 +437,7 @@ def build_model(markdown: str) -> Model:
                 display_text(origin) for origin in split_origins(item.left)
             )
             resolved_origins: list[str] = []
+            deferred = False
             for origin in split_origins(item.left):
                 posture_id = nearest_matching_posture(
                     item, origin, items, answer_targets, model
@@ -385,20 +447,24 @@ def build_model(markdown: str) -> Model:
                     # una respuesta previa haya introducido su postura.
                     if item.parent is None:
                         continue
-                    posture_id = model.add_posture(origin)
-                    model.warnings.append(
-                        f"Línea {item.line_number}: se creó la postura {origin!r} sin una respuesta previa."
-                    )
+                    # Una convergencia puede nombrar una postura que el
+                    # documento introduce más abajo. No lo identifica como un error: se
+                    # reintenta con el documento entero leído.
+                    pending_origins.append((item, origin, question_id))
+                    deferred = True
+                    continue
                 model.postures[posture_id].questions.append(question_id)
                 resolved_origins.append(posture_id)
 
-            if not resolved_origins:
+            if not resolved_origins and not deferred:
                 model.root_questions.append(question_id)
 
         else:
             model.warnings.append(
                 f"Línea {item.line_number}: formato no reconocido: {item.text!r}."
             )
+
+    resolve_pending_origins(pending_origins, items, answer_targets, model)
 
     if not model.questions:
         raise ValueError("El árbol no contiene preguntas convertibles.")
@@ -664,9 +730,15 @@ def render_graphviz(model: Model, source_name: str) -> str:
 
 
 def plain_text(value: str) -> str:
-    """Texto listo para la interfaz: sin wikilinks, sin negritas, sin dobles espacios."""
+    """Texto listo para la interfaz: sin wikilinks y sin dobles espacios.
 
-    return display_text(EMPHASIS.sub(r"\1", value))
+    Las marcas de énfasis (`**negrita**`, `*cursiva*`) **se conservan**: son
+    del autor y el visor las exporta de vuelta al proponer cambios. Si aquí se
+    borraran, toda propuesta llegaría con el formato perdido. El visor las
+    interpreta al pintar (`js/formato.js`) y las ignora al medir y al buscar.
+    """
+
+    return display_text(value)
 
 
 def strip_groups(value: str) -> str:
@@ -803,6 +875,10 @@ def resolve_note_path(target: str, repository_root: Path) -> Path | None:
     """Localiza la nota de Obsidian a la que apunta un [[wikilink]]."""
 
     stem = target.split("#")[0].split("|")[0].strip()
+    # Obsidian resuelve igual `[[Modalismo]]` que `[[Modalismo.md]]`; sin
+    # quitar la extensión aquí se buscaba un inexistente `Modalismo.md.md`.
+    if stem.lower().endswith(".md"):
+        stem = stem[: -len(".md")].strip()
     if not stem:
         return None
     direct = repository_root / f"{stem}.md"
@@ -916,6 +992,13 @@ def build_web_model(
             "full_text": plain_text(strip_groups(question.text)),
             "source_line": question.source_line,
             "origin_posture_ids": ordered,
+            # Nombres de origen tal como los escribió esta línea `->`. Una
+            # misma postura puede citarse con otra ortografía tolerada
+            # (`Pre-existencialismo` por `Preexistencialismo`); al exportar la
+            # propuesta Markdown se respeta la del documento, no la canónica.
+            "origin_labels": [
+                plain_text(strip_groups(hint)) for hint in question.posture_hints
+            ],
             "is_convergence": len(ordered) > 1,
             "wikilinks": parse_wikilinks(
                 question.raw or question.text, repository_root, web_directory

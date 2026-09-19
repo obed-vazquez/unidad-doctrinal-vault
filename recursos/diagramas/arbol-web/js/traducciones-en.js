@@ -245,19 +245,20 @@
       }
     },
     "Q22": {
-      "formal": "Are the universal reception of the early church and its treatment of the rest of the New Testament writings, on an equal footing with those already recognized, sufficient evidence to extend to them that same recognition as authoritative divine revelation?",
-      "colloquial": "Is the New Testament divine revelation?",
+      "formal": "Did God intensify the spiritual perception of the authors of the New Testament without communicating to them the content of what they would write and what they receive from God does not differ in kind from what any believer receives, the result being a product itself of the writer being simply elevated?",
+      "colloquial": "Did God only help NT writers to perceive better when writing?",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No"
         }
       }
     },
     "Q23": {
-      "formal": "Does the Bible contain human biases?",
+      "formal": "Were the New Testament authors simply religious geniuses, in principle no different from other great thinkers, and was there no special action on God's part in writing the Bible?",
+      "colloquial": "Is the New Testament a human creation?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -268,13 +269,14 @@
       }
     },
     "Q24": {
-      "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?",
+      "formal": "Are the universal reception of the early church and its treatment of the rest of the New Testament writings, on an equal footing with those already recognized, sufficient evidence to extend to them that same recognition as authoritative divine revelation?",
+      "colloquial": "Is the New Testament divine revelation?",
       "answers": {
         "A": {
-          "label": "Yes"
+          "label": "No"
         },
         "B": {
-          "label": "No"
+          "label": "Yes"
         }
       }
     },
@@ -291,7 +293,8 @@
       }
     },
     "Q26": {
-      "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?",
+      "formal": "Could the human author, in writing, have introduced into what Scripture affirms as true and normative something that does not correspond to what God wanted to communicate?",
+      "colloquial": "Were the authors able to sneak in any errors or opinions of their own when writing the Bible?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -302,6 +305,28 @@
       }
     },
     "Q27": {
+      "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q28": {
+      "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q29": {
       "formal": "Did Adam's sin affect his offspring, is the human born dead and with a sinful nature (though not actively sinning)?",
       "colloquial": "Is the human born with a “sinful nature”?",
       "answers": {
@@ -314,7 +339,7 @@
         }
       }
     },
-    "Q28": {
+    "Q30": {
       "formal": "Before Discernment, does human innocence give you access to heaven and cannot sin?",
       "colloquial": "Do children go to heaven when they die?",
       "answers": {
@@ -326,7 +351,7 @@
         }
       }
     },
-    "Q29": {
+    "Q31": {
       "formal": "After Discernment can the human sin, the first sin condemns him to hell?",
       "answers": {
         "A": {
@@ -337,7 +362,7 @@
         }
       }
     },
-    "Q30": {
+    "Q32": {
       "formal": "After sinning, does the human retain the ability to do good later, even if he does not have God's forgiveness?",
       "answers": {
         "A": {
@@ -348,7 +373,7 @@
         }
       }
     },
-    "Q31": {
+    "Q33": {
       "formal": "After sinning, by asking God for forgiveness, the human is forgiven and gains the right to enter heaven by dying?",
       "answers": {
         "A": {
@@ -359,7 +384,7 @@
         }
       }
     },
-    "Q32": {
+    "Q34": {
       "formal": "Does sinning again remove the human's right to enter heaven?",
       "answers": {
         "A": {
@@ -370,7 +395,7 @@
         }
       }
     },
-    "Q33": {
+    "Q35": {
       "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
       "colloquial": "When a child dies, does he go to a different place in heaven?",
       "answers": {
@@ -383,7 +408,7 @@
         }
       }
     },
-    "Q34": {
+    "Q36": {
       "formal": "Is it possible to infuse him with saving “grace” (a divine Gift that is possible to lose) with sacraments such as regenerating baptism?",
       "colloquial": "Does the child have to be baptized to go to heaven, but is not assured entry?",
       "answers": {
@@ -392,7 +417,7 @@
         }
       }
     },
-    "Q35": {
+    "Q37": {
       "formal": "Does not having received baptism leave you condemned to Limbo?",
       "answers": {
         "A": {
@@ -403,7 +428,7 @@
         }
       }
     },
-    "Q36": {
+    "Q38": {
       "formal": "Does not having received baptism leave you condemned to Hell?",
       "answers": {
         "A": {
@@ -414,7 +439,7 @@
         }
       }
     },
-    "Q37": {
+    "Q39": {
       "formal": "After Discernment, is it possible for man to reach heaven through his good works?",
       "colloquial": "Can an adult go to heaven being good?",
       "answers": {
@@ -426,7 +451,7 @@
         }
       }
     },
-    "Q38": {
+    "Q40": {
       "formal": "After sinning, does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
       "colloquial": "Does it take a conversion to get into heaven?",
       "answers": {
@@ -438,8 +463,9 @@
         }
       }
     },
-    "Q39": {
-      "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion? (Can man resist the call to conversion?)",
+    "Q41": {
+      "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion?",
+      "colloquial": "Can man resist the call to conversion?",
       "answers": {
         "A": {
           "label": "No"
@@ -449,7 +475,7 @@
         }
       }
     },
-    "Q40": {
+    "Q42": {
       "formal": "Is the active and direct intervention of God on the will of the human necessary for the human to accept the call to that conversion?",
       "colloquial": "Does God have an unconditional choice of his saints?",
       "answers": {
@@ -461,7 +487,7 @@
         }
       }
     },
-    "Q41": {
+    "Q43": {
       "formal": "If the human is missing 1 of these elements, can he have that conversion? Listening to the gospel, Believing the gospel, Having faith in Christ Jesus, Giving your life completely to God (Repentance), Calling on God's name (Asking for help)",
       "answers": {
         "A": {
@@ -472,8 +498,8 @@
         }
       }
     },
-    "Q42": {
-      "formal": "Can the human not have that transformation until he is baptized and is it at the moment of baptism when that conversion occurs?",
+    "Q44": {
+      "formal": "Does the human have that transformation only to the point of baptism and is that moment when that conversion occurs?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -483,7 +509,7 @@
         }
       }
     },
-    "Q43": {
+    "Q45": {
       "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
       "answers": {
         "A": {
@@ -494,8 +520,9 @@
         }
       }
     },
-    "Q44": {
-      "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God? (Has the whole Bible been inspired?) (Was every part of the Bible inspired?)",
+    "Q46": {
+      "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God?",
+      "colloquial": "Was every part of the Bible inspired?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -506,11 +533,7 @@
         }
       }
     },
-    "Q45": {
-      "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
-      "colloquial": "Can man understand what the Bible says about at least one thing?"
-    },
-    "Q46": {
+    "Q47": {
       "formal": "What, in this sense, is the limit or extent of inspiration?",
       "answers": {
         "A": {
@@ -525,7 +548,7 @@
         }
       }
     },
-    "Q47": {
+    "Q48": {
       "formal": "What God inspired were the words and not just themes or concepts to the writers?",
       "colloquial": "Did God inspire the words he commanded to be written?",
       "answers": {
@@ -537,7 +560,7 @@
         }
       }
     },
-    "Q48": {
+    "Q49": {
       "formal": "Did God directly dictate word for word to his writers, without them contributing their own words?",
       "colloquial": "Did God dictate every word of what had to be written?",
       "answers": {
@@ -549,7 +572,19 @@
         }
       }
     },
-    "Q49": {
+    "Q50": {
+      "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
+      "colloquial": "Can man understand what the Bible says about at least one thing?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q51": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -561,8 +596,9 @@
         }
       }
     },
-    "Q50": {
-      "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles? (Did God transform Himself into Jesus Christ and when He speaks to the Father He does not speak to another person of the Trinity, but to Himself?)",
+    "Q52": {
+      "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles?",
+      "colloquial": "Did God transform Himself into Jesus Christ and when He speaks to the Father does He not speak to another person of the Trinity, but to Himself?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -573,7 +609,7 @@
         }
       }
     },
-    "Q51": {
+    "Q53": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -585,7 +621,7 @@
         }
       }
     },
-    "Q52": {
+    "Q54": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -596,8 +632,8 @@
         }
       }
     },
-    "Q53": {
-      "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
+    "Q55": {
+      "formal": "Are the activities attributed to the divine nature (eternally existing, performing miracles, forgiving sins) and those attributed to the human nature (resting, learning, suffering, dying) attributed to a single hypostasis (personal subject), Jesus Christ, without there being in him two distinct hypostases (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the same hypostasis (personal subject), Jesus Christ, is the one who forgives sins and the one who dies, although the first corresponds to his divine nature and the second to his human nature, and not to two distinct hypostases (personal subjects)?",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
         "A": {
@@ -608,7 +644,7 @@
         }
       }
     },
-    "Q54": {
+    "Q56": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -622,7 +658,7 @@
         }
       }
     },
-    "Q55": {
+    "Q57": {
       "formal": "In Gethsemane Christ asked the Father to pass the cup, he had the will to die while he did not want to do it, did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -636,7 +672,7 @@
         }
       }
     },
-    "Q56": {
+    "Q58": {
       "formal": "Is matter/physical reality eternal and was not created by a God?",
       "answers": {
         "A": {
@@ -647,7 +683,7 @@
         }
       }
     },
-    "Q57": {
+    "Q59": {
       "formal": "Is the universe itself, in its entirety, divine in nature?",
       "answers": {
         "A": {
@@ -685,43 +721,44 @@
     "P31": "Ahmadism",
     "P33": "Incarnationism / Preexistentialism",
     "P34": "Liberal Theology/Theological Rationalism?",
-    "P41": "Secondary Apostolic Authority *",
-    "P42": "Restricted New Testament Canon*",
-    "P43": "Full New Testament Canon*",
-    "P44": "Liberal Theology/Limited Inerrancy",
-    "P48": "Anti-inspirationalism",
-    "P49": "Inspirationalism / Theopneustia",
-    "P59": "Pelagianism",
-    "P63": "Total Depravity of Man",
-    "P74": "Conversionism",
-    "P75": "Irresistible Grace/ Monerguism",
-    "P78": "Resistible Grace/ Synergism",
-    "P81": "Baptismal Salvation",
-    "P83": "THE PERSEVERANCE OF THE SAINTS",
-    "P84": "Conditional Preservation of Saints",
-    "P85": "Plenary Inspirationalism",
-    "P86": "Limited Inspirationalism",
-    "P87": "Selective Limited Inspirationalism",
-    "P88": "Inspirationalism Limited Partial",
-    "P90": "Verbal Inspirationalism",
-    "P91": "Dynamic / Conceptual Inspirationalism",
-    "P92": "Mechanical Inspirationalism / Dictation",
-    "P93": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P94": "Homoiousianism / Semi-Arrianism",
-    "P95": "Consubstantialism",
-    "P96": "Modalism / Oneness / Unitarianism",
-    "P97": "Trinitarianism/Trinitarianism",
-    "P98": "Docetism",
-    "P100": "Apollinarianism",
-    "P102": "Christ's Hypostatic Duality *",
-    "P103": "Monoprosopism",
-    "P104": "Monophysicism / Eutychianism",
-    "P105": "Diophysicism / Chalcedonianism / Myaphysicism",
-    "P106": "Monothelitism / Monothelitism",
-    "P107": "Diothelitism",
-    "P108": "Cosmological Atheism *",
-    "P109": "Cosmological materialism",
-    "P111": "Pantheism / Panentheism*",
+    "P41": "Posture of Divine Enlightenment (enlightenment theory or mysticism)",
+    "P43": "Posture of Natural Intuition (or Natural Inspiration)",
+    "P45": "Secondary Apostolic Authority *",
+    "P46": "Restricted New Testament Canon*",
+    "P47": "Full New Testament Canon*",
+    "P50": "Biblical Inspiration Posture",
+    "P62": "Pelagianism",
+    "P66": "Total Depravity of Man",
+    "P77": "Conversionism",
+    "P78": "Irresistible Grace/ Monerguism",
+    "P81": "Resistible Grace/ Synergism",
+    "P84": "Baptismal Salvation",
+    "P86": "THE PERSEVERANCE OF THE SAINTS",
+    "P87": "Conditional Preservation of Saints",
+    "P88": "Plenary Inspirationalism",
+    "P89": "Limited Inspirationalism",
+    "P90": "Selective Limited Inspirationalism",
+    "P91": "Inspirationalism Limited Partial",
+    "P93": "Verbal Inspirationalism",
+    "P94": "Dynamic / Conceptual Inspirationalism",
+    "P95": "Mechanical Inspirationalism / Dictation",
+    "P96": "Organic / Bankruptcy / Confluent Inspirationalism",
+    "P99": "Biblical Inspiration Posture",
+    "P100": "Homoiousianism / Semi-Arrianism",
+    "P101": "Consubstantialism",
+    "P102": "Modalism / Oneness / Unitarianism",
+    "P103": "Trinitarianism/Trinitarianism",
+    "P104": "Docetism",
+    "P106": "Apollinarianism",
+    "P108": "Christ's Hypostatic Duality *",
+    "P109": "Monoprosopism",
+    "P110": "Monophysicism / Eutychianism",
+    "P111": "Diophysicism / Chalcedonianism / Myaphysicism",
+    "P112": "Monothelitism / Monothelitism",
+    "P113": "Diothelitism",
+    "P114": "Cosmological Atheism *",
+    "P115": "Cosmological materialism",
+    "P117": "Pantheism / Panentheism*",
     "PR1": "Existence"
   },
   "traditions": {
@@ -732,19 +769,15 @@
     "Calvinismo / Tradición Reformada": "Calvinism /Reformed Tradition",
     "Catolicismo Moderno": "Modern Catholicism",
     "Catolicismo Ortodoxo": "Orthodox Catholicism",
-    "Iglesia Episcopal": "Anglican Church",
     "Islam Ahmadí": "Ahmadiyya Islam",
     "Islam Suní/Chiita": "Sunni/Shia Islam",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",
     "Judaísmo rabínico/talmúdico": "Rabbinic/Talmudic Judaism",
-    "Luterana ELCA": "Lutheran ELCA",
     "Metodismo": "Methodism",
-    "Metodista Unida (UMC)": "United Methodist (UMC)",
     "Nestorianismo": "Nestorianism",
     "No se identifica quién que sostenga esta postura": "It is not identified who holds this position",
     "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
     "Pentecostalismo": "Pentecostalism",
-    "Presbiteriana USA (PCUSA)": "Presbyterian USA (PCUSA)",
     "SUD": "Sud"
   }
 };
