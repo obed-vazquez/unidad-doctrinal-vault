@@ -58,6 +58,9 @@ WEB_NOTES_FILENAME = "notas.cache.js"
 GROUP = re.compile(r"\{([^{}]*)\}")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
+# Partes finales de una línea `->`: el paréntesis coloquial y el {wikilink}.
+COLLOQUIAL_TAIL = re.compile(r"\s+\((?P<hint>[^()]+)\)\s*$")
+TRAILING_GROUPS = re.compile(r"(?:\s*\{[^{}]*\})+\s*$")
 ANSWER_HEAD = re.compile(r"^(s[íi]|no)\b[\s,;:.—–-]*(.*)$", re.IGNORECASE | re.DOTALL)
 # Estándar de aclaración: `<Respuesta> -- <Aclaración>`.
 ANSWER_GLOSS = re.compile(r"\s--\s")
@@ -157,15 +160,37 @@ def display_text(value: str) -> str:
 def split_colloquial_question(question: str) -> tuple[str, str | None]:
     """Separa el paréntesis coloquial final de la pregunta formal.
 
-    Tras el ``?`` que cierra la pregunta principal, un paréntesis final es la
-    versión coloquial (aunque no lleve signos de interrogación). Así se
+    Tras el ``?`` que cierra la pregunta principal, los paréntesis finales son
+    la versión coloquial (aunque no lleven signos de interrogación). Así se
     conservan aclaraciones formales internas como ``(estado de “pecador”)``.
+
+    El ``{wikilink}`` de la línea va después del paréntesis coloquial, así que
+    se aparta antes de buscarlo y se devuelve pegado a la pregunta formal; sin
+    esto, las preguntas con documento de análisis perdían su versión coloquial.
     """
 
-    match = re.search(r"(\?)\s+\(([^()]+)\)\s*$", question)
-    if not match:
+    body = question
+    tail = ""
+    groups = TRAILING_GROUPS.search(question)
+    if groups:
+        body = question[: groups.start()].rstrip()
+        tail = question[groups.start() :].strip()
+
+    hints: list[str] = []
+    while True:
+        match = COLLOQUIAL_TAIL.search(body)
+        if not match:
+            break
+        hints.insert(0, match.group("hint").strip())
+        body = body[: match.start()].rstrip()
+
+    # Sin el `?` de cierre no hay pregunta formal: el paréntesis era parte de
+    # la redacción (`Invocar el nombre de Dios (pedir ayuda)`), no una glosa.
+    if not hints or not body.endswith("?"):
         return question, None
-    return question[: match.start(1) + 1].rstrip(), match.group(2).strip()
+
+    formal = f"{body} {tail}" if tail else body
+    return formal, " ".join(hints)
 
 
 def output_posture_label(label: str) -> str:
@@ -803,6 +828,10 @@ def resolve_note_path(target: str, repository_root: Path) -> Path | None:
     """Localiza la nota de Obsidian a la que apunta un [[wikilink]]."""
 
     stem = target.split("#")[0].split("|")[0].strip()
+    # Obsidian resuelve igual `[[Modalismo]]` que `[[Modalismo.md]]`; sin
+    # quitar la extensión aquí se buscaba un inexistente `Modalismo.md.md`.
+    if stem.lower().endswith(".md"):
+        stem = stem[: -len(".md")].strip()
     if not stem:
         return None
     direct = repository_root / f"{stem}.md"

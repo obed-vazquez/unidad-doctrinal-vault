@@ -111,90 +111,98 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                     - ? -> ¿Solo las palabras de Jesús dentro del Nuevo Testamento son autoritativas?
                                       - Sí: ?
                                       - No: ?
+                                    - ? -> ¿Dios intensificó la percepción espiritual de los autores del Nuevo Testamento sin comunicarles el contenido de lo que escribirían y lo que reciben de Dios no difiere en especie de lo que recibe cualquier creyente, siendo el resultado un producto mismo del escritor siendo simplemente elevado? (¿Dios solo ayudó a los escritores del NT a percibir mejor al escribir?)
+                                      - Sí: Postura de la Iluminación Divina (teoría de la iluminación o mística)
+                                      - No: ?
+                                        - ? -> ¿Los autores neotestamentarios fueron simplemente genios religiosos, en principio no distintos de otros grandes pensadores y no hubo alguna acción especial de parte de Dios al escribir la Biblia? (¿El Nuevo Testamento es creación humana?)
+                                          - Sí: Postura de la Intuición Natural (o inspiración natural)
+                                          - No: ?
                                   - Sí: Autoridad apostólica derivada*
                                     - Autoridad apostólica derivada* -> ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa? (¿El Nuevo Testamento es revelación divina?)
                                       - No: Canon neotestamentario restringido*
                                       - Sí: Canon neotestamentario pleno*
-                                        - Canon neotestamentario pleno* -> ¿La Biblia contiene sesgos humanos?
-                                          - Sí: Teología Liberal / Inerrancia limitada {Iglesia Episcopal, Metodista Unida (UMC), Presbiteriana USA (PCUSA), Luterana ELCA}
-                                          - No: ?
-                                            - ? -> ¿La Biblia es clara y sin ambigüedades en su mensaje, y todo lo que dice es completamente verdadero?
-                                              - Sí: ?
-                                              - No: ?
                                         - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
-                                          - No: Anti-inspiracionalismo
-                                          - Sí: Inspiracionismo / Teopneustia
-                                            - Inspiracionismo / Teopneustia -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
+                                          - No: ?
+                                            - ? -> ¿El autor humano, al escribir, pudo haber introducido en lo que la Escritura afirma como verdadero y normativo algo que no corresponde a lo que Dios quiso comunicar? (¿Se les pudo colar a los autores algún error u opinión propia al escribir la Biblia?)
                                               - Sí: ?
-                                              - No: ?
-                                            - Inspiracionismo / Teopneustia -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
-                                              - No -- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
-                                                - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)
+                                              - No: Postura de la inspiración bíblica
+                                                - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje, y todo lo que dice es completamente verdadero?
                                                   - Sí: ?
                                                   - No: ?
-                                                - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
+                                                - Postura de la inspiración bíblica -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
                                                   - Sí: ?
-                                                    - ? -> ¿Después de pecar el humano conserva la capacidad de hacer el bien posteriormente, aun si no tiene el perdón de Dios?
-                                                      - No: ?
+                                                  - No: ?
+                                                - Postura de la inspiración bíblica -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
+                                                  - No -- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
+                                                    - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)
                                                       - Sí: ?
-                                                        - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
+                                                      - No: ?
+                                                    - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
+                                                      - Sí: ?
+                                                        - ? -> ¿Después de pecar el humano conserva la capacidad de hacer el bien posteriormente, aun si no tiene el perdón de Dios?
+                                                          - No: ?
                                                           - Sí: ?
-                                                            - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
-                                                              - Sí: Pelagianismo
-                                                              - No: ?
-                                                          - No: ?
-                                                  - No: ?
-                                              - Sí: Depravación Total del hombre
-                                                - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
-                                                  - Sí: ?
-                                                    - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
-                                                      - Sí: ?
-                                                        - ? -> ¿El no haber recibido el bautismo lo deja condenado al Limbo?
-                                                          - Sí: ? {Catolicismo Ortodoxo?}
-                                                          - No: ?
-                                                            - ? -> ¿El no haber recibido el bautismo lo deja condenado al Infierno?
-                                                              - Sí: ? {Catolicismo Moderno?}
-                                                              - No: ?
-                                                  - No -- la inocencia le da acceso al cielo y no puede pecar: ?
-                                                - Depravación Total del hombre -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
-                                                  - Sí: ?
-                                                  - No: ?
-                                                    - ? -> ¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)
-                                                      - No: ?
-                                                      - Sí: Conversionismo
-                                                        - Conversionismo -> ¿Es posible que el humano rechace el llamado de Dios a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado a la conversion?) { [[Monergismo.md]] }
-                                                          - No: Gracia Irresistible / Monerguismo {Calvinismo / Tradición Reformada}
-                                                            - Gracia Irresistible / Monerguismo -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
+                                                            - ? -> ¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?
                                                               - Sí: ?
-                                                              - No: ?
-                                                          - Sí: Gracia Resistible / Sinerguismo {Arminianismo / Metodismo}
-                                                            - Gracia Resistible / Sinerguismo -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
-                                                              - Sí: ?
-                                                              - No: ?
-                                                                - ? -> ¿El humano no puede tener esa transformación hasta no bautizarse y es en el momento del bautismo cuando ocurre esa conversion?
-                                                                  - Sí: Salvación Bautismal
+                                                                - ? -> ¿El volver a pecar remueve del humano el derecho a entrar al cielo?
+                                                                  - Sí: Pelagianismo
                                                                   - No: ?
-                                                        - Conversionismo -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? { [[La Perdida de la Salvación]] }
-                                                          - No: Perseverancia de los Santos {Calvinismo, Bautistas}
-                                                          - Sí: Preservación Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
-                                            - Inspiracionismo / Teopneustia -> ¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Toda la Biblia ha sido inspirada?) (¿Cada parte de la Biblia fue inspirada?) { [[tipos-de-inspiracion-biblica.md]] }
-                                              - Sí: Inspiracionalismo Plenario
-                                                - Inspiracionalismo Plenario -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los topicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
-                                              - No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
-                                                - Inspiracionalismo Limitado -> ¿Cuál es, en este sentido, el límite o la extensión de la inspiración?
-                                                  - Ciertos Hechos o Dichos de los apóstoles fueron inspirados: Inspiracionalismo Limitado Selectivo
-                                                  - Ciertas Secciónes (físicas) de la Biblia: Inspiracionalismo Limitado Parcial
-                                                  - Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado): ?
-                                            - Inspiracionismo / Teopneustia -> ¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)
-                                              - Sí: Inspiracionalismo Verbal
-                                              - No: Inspiracionalismo Dinámico / Conceptual
-                                            - Inspiracionismo / Teopneustia -> ¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)
-                                              - Sí: Inspiracionalismo Mecánico / Dictado
-                                              - No: Inspiracionalismo Orgánico / Concursal / Confluente
+                                                              - No: ?
+                                                      - No: ?
+                                                  - Sí: Depravación Total del hombre
+                                                    - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
+                                                      - Sí: ?
+                                                        - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
+                                                          - Sí: ?
+                                                            - ? -> ¿El no haber recibido el bautismo lo deja condenado al Limbo?
+                                                              - Sí: ? {Catolicismo Ortodoxo?}
+                                                              - No: ?
+                                                                - ? -> ¿El no haber recibido el bautismo lo deja condenado al Infierno?
+                                                                  - Sí: ? {Catolicismo Moderno?}
+                                                                  - No: ?
+                                                      - No -- la inocencia le da acceso al cielo y no puede pecar: ?
+                                                    - Depravación Total del hombre -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
+                                                      - Sí: ?
+                                                      - No: ?
+                                                        - ? -> ¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)
+                                                          - No: ?
+                                                          - Sí: Conversionismo
+                                                            - Conversionismo -> ¿Es posible que el humano rechace el llamado de Dios a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado a la conversion?) { [[Monergismo.md]] }
+                                                              - No: Gracia Irresistible / Monerguismo {Calvinismo / Tradición Reformada}
+                                                                - Gracia Irresistible / Monerguismo -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
+                                                                  - Sí: ?
+                                                                  - No: ?
+                                                              - Sí: Gracia Resistible / Sinerguismo {Arminianismo / Metodismo}
+                                                                - Gracia Resistible / Sinerguismo -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
+                                                                  - Sí: ?
+                                                                  - No: ?
+                                                                    - ? -> ¿El humano tiene esa transformación solo hasta el punto del bautismo y es en ese momento cuando ocurre esa conversión?
+                                                                      - Sí: Salvación Bautismal
+                                                                      - No: ?
+                                                            - Conversionismo -> ¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo? { [[La Perdida de la Salvación]] }
+                                                              - No: Perseverancia de los Santos {Calvinismo, Bautistas}
+                                                              - Sí: Preservación Condicional de los Santos {Arminianismo, Metodismo, Pentecostalismo}
+                                                - Postura de la inspiración bíblica -> ¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Cada parte de la Biblia fue inspirada?) { [[tipos-de-inspiracion-biblica.md]] }
+                                                  - Sí: Inspiracionalismo Plenario
+                                                    - Inspiracionalismo Plenario & Inspiracionalismo Verbal & Inspiracionalismo Orgánico / Concursal / Confluente -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los topicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
+                                                      - Sí: ?
+                                                      - No: ?
+                                                  - No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
+                                                    - Inspiracionalismo Limitado -> ¿Cuál es, en este sentido, el límite o la extensión de la inspiración?
+                                                      - Ciertos Hechos o Dichos de los apóstoles fueron inspirados: Inspiracionalismo Limitado Selectivo
+                                                      - Ciertas Secciónes (físicas) de la Biblia: Inspiracionalismo Limitado Parcial
+                                                      - Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado): ?
+                                                - Postura de la inspiración bíblica -> ¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)
+                                                  - Sí: Inspiracionalismo Verbal
+                                                  - No: Inspiracionalismo Dinámico / Conceptual
+                                                - Postura de la inspiración bíblica -> ¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)
+                                                  - Sí: Inspiracionalismo Mecánico / Dictado
+                                                  - No: Inspiracionalismo Orgánico / Concursal / Confluente
+                                          - Sí: Postura de la inspiración bíblica
                         - Encarnacionismo / Pre-existencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                           - No: Homoiousianismo / Semi-Arrianismo
                           - Sí: Consustancialismo
-                            - Consustancialismo -> ¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?) { [[Modalismo.md]] }
+                            - Consustancialismo -> ¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?) { [[Modalismo]] }
                               - Sí: Modalismo / Unicitarismo / Unicitarianismo
                               - No -- Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina: Trinitarianismo/Trinitarismo
                                 - Trinitarianismo/Trinitarismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?

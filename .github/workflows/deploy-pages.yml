@@ -7,6 +7,7 @@ on:
     paths:
       - 'index.html'
       - 'recursos/diagramas/arbol-web/**'
+      - 'recursos/diagramas/tabla-inspiracion/**'
       - 'recursos/definiciones/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -36,11 +37,17 @@ jobs:
       - name: Preparar artefacto
         run: |
           mkdir -p _site/recursos/diagramas/arbol-web
+          mkdir -p _site/recursos/diagramas/tabla-inspiracion
           mkdir -p _site/recursos/definiciones
           cp index.html _site/
           touch _site/.nojekyll
           cp -R recursos/diagramas/arbol-web/. _site/recursos/diagramas/arbol-web/
           cp -R recursos/definiciones/. _site/recursos/definiciones/
+          # Solo lo que la página necesita para correr: specs/ es documentación interna.
+          cp recursos/diagramas/tabla-inspiracion/index.html _site/recursos/diagramas/tabla-inspiracion/
+          cp -R recursos/diagramas/tabla-inspiracion/css _site/recursos/diagramas/tabla-inspiracion/
+          cp -R recursos/diagramas/tabla-inspiracion/js _site/recursos/diagramas/tabla-inspiracion/
+          cp -R recursos/diagramas/tabla-inspiracion/datos _site/recursos/diagramas/tabla-inspiracion/
 
       - name: Subir artefacto
         uses: actions/upload-pages-artifact@v3
