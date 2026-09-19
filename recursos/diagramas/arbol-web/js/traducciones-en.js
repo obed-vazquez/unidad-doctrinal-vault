@@ -633,7 +633,7 @@
       }
     },
     "Q55": {
-      "formal": "Are the activities attributed to the divine nature (to exist eternally, to perform miracles, to forgive sins) and those attributed to human nature (to rest, to learn, to suffer, to die) attributed to a single *hypostasis* (personal subject), Jesus Christ, without there being in him two distinct *hypostases* (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the",
+      "formal": "Are the activities attributed to the divine nature (eternally existing, performing miracles, forgiving sins) and those attributed to the human nature (resting, learning, suffering, dying) attributed to a single hypostasis (personal subject), Jesus Christ, without there being in him two distinct hypostases (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the same hypostasis (personal subject), Jesus Christ, is the one who forgives sins and the one who dies, although the first corresponds to his divine nature and the second to his human nature, and not to two distinct hypostases (personal subjects)?",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
         "A": {

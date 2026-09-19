@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-09-19T15:52:29Z",
+  "generated_at": "2026-09-19T16:47:09Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -964,8 +964,8 @@ window.__ARBOL_POSTURAS__ = {
         {
           "key": "A",
           "label": "No",
-          "full_label": "No -- El hombre nace sin pecado y con la capacidad de hacer el bien y alcanzar el cielo",
-          "gloss": "El hombre nace sin pecado y con la capacidad de hacer el bien y alcanzar el cielo",
+          "full_label": "No -- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**",
+          "gloss": "El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**",
           "target_posture_id": "P55",
           "source_line": 136
         },
@@ -981,9 +981,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q30": {
       "id": "Q30",
-      "formal_text": "¿Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar?",
+      "formal_text": "¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar?",
       "colloquial_hint": "¿Los niños van al cielo al morir?",
-      "full_text": "¿Antes del Discernimiento, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)",
+      "full_text": "¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)",
       "source_line": 137,
       "origin_posture_ids": [
         "P55"
@@ -1014,9 +1014,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q31": {
       "id": "Q31",
-      "formal_text": "¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno?",
+      "formal_text": "¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?",
       "colloquial_hint": null,
-      "full_text": "¿Después del Discernimiento el humano puede pecar, el primer pecado le condena al infierno?",
+      "full_text": "¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?",
       "source_line": 140,
       "origin_posture_ids": [
         "P55"
@@ -1146,9 +1146,9 @@ window.__ARBOL_POSTURAS__ = {
     },
     "Q35": {
       "id": "Q35",
-      "formal_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?",
+      "formal_text": "¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado?",
       "colloquial_hint": "¿Al morir un niño, va a un lugar diferente al cielo?",
-      "full_text": "¿Antes del Discernimiento el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)",
+      "full_text": "¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)",
       "source_line": 153,
       "origin_posture_ids": [
         "P66"

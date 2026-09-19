@@ -918,27 +918,36 @@
     return n > 0 ? n : 1e9;
   }
 
-  function origenCanónico(pregunta) {
-    return (pregunta.origin_posture_ids || [])[0] || null;
-  }
-
   function aMarkdown(datos) {
     /* Solo el árbol: el preámbulo de posturas-creencias.md se deja intacto
        al sustituir desde «## Árbol de Decisión:». */
     var lineas = ['## Árbol de Decisión:'];
     var emitidas = {};
+    var posturasEmitidas = {};
+
+    /* Una convergencia (`A & B -> ¿…?`) se escribe bajo el ÚLTIMO de sus
+       orígenes, no bajo el primero: quien lee el documento de arriba abajo
+       —el conversor incluido— necesita que las posturas citadas ya estén
+       introducidas. Antes se colgaba de la primera y el conversor tropezaba
+       con las demás, creando posturas fantasma. */
+    function todosLosOrigenesEmitidos(pregunta) {
+      return (pregunta.origin_posture_ids || []).every(function (pid) {
+        return posturasEmitidas[pid];
+      });
+    }
 
     function emitirPostura(pid, indent) {
       var postura = datos.postures[pid];
       if (!postura) return;
+      posturasEmitidas[pid] = true;
       var ejes = (postura.question_axes || []).slice().sort(function (a, b) {
         return lineaFuente(datos.questions[a]) - lineaFuente(datos.questions[b]);
       });
       ejes.forEach(function (qid) {
         var pregunta = datos.questions[qid];
         if (!pregunta) return;
-        if (origenCanónico(pregunta) && origenCanónico(pregunta) !== pid) return;
         if (emitidas[qid]) return;
+        if (!todosLosOrigenesEmitidos(pregunta)) return;
         emitidas[qid] = true;
         emitirPregunta(qid, indent);
       });
@@ -962,6 +971,22 @@
     }
 
     (datos.root_postures || []).forEach(function (pid) { emitirPostura(pid, ''); });
+
+    /* Red de seguridad: si algún origen no es alcanzable desde la raíz, su
+       convergencia nunca llegaría a cumplir la condición de arriba. Antes de
+       perderla, se emite bajo el primer origen que sí se escribió. La
+       propuesta nunca puede salir con menos preguntas de las que entraron. */
+    Object.keys(datos.questions || {}).forEach(function (qid) {
+      if (emitidas[qid]) return;
+      var pregunta = datos.questions[qid];
+      var origen = (pregunta.origin_posture_ids || []).filter(function (pid) {
+        return posturasEmitidas[pid];
+      })[0];
+      if (!origen) return;
+      emitidas[qid] = true;
+      emitirPregunta(qid, '    ');
+    });
+
     return lineas.join('\n') + '\n';
   }
 

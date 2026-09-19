@@ -53,7 +53,7 @@ const contexto = vm.createContext(Object.assign(ventana, {
   RegExp, Error, Infinity, Date
 }));
 
-['js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
+['js/formato.js', 'js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
   vm.runInContext(fs.readFileSync(path.join(__dirname, archivo), 'utf8'), contexto, {
     filename: archivo
   });
@@ -77,8 +77,13 @@ console.log('  nodos por tipo:', JSON.stringify(tipos), '· total', grafo.nodos.
 
 const convergentes = [];
 grafo.nodos.forEach((n) => { if (n.entradas.length > 1) convergentes.push(n.id); });
-comprobar('dos nodos con varias aristas entrantes', convergentes.length === 2,
-  convergentes.join(', '));
+// El número se deriva del dataset, no se fija: el documento gana convergencias
+// y una constante aquí caduca en cuanto se agrega la siguiente.
+const convergenciasEsperadas = Object.values(datos.questions)
+  .filter((q) => q.is_convergence).length;
+comprobar('cada convergencia del dataset es un nodo con varias aristas entrantes',
+  convergentes.length === convergenciasEsperadas,
+  convergentes.join(', ') + ' · esperadas ' + convergenciasEsperadas);
 convergentes.forEach((id) => {
   const nodo = grafo.nodos.get(id);
   console.log('    ' + id + ' ← ' + nodo.entradas.map((a) => a.desde).join(' , ')

@@ -74,6 +74,10 @@
     return (Arbol.I18n && Arbol.I18n.dato) ? Arbol.I18n.dato(clave, original) : original;
   }
 
+  function plano(texto) {
+    return Arbol.Formato ? Arbol.Formato.plano(texto) : texto;
+  }
+
   function crearSVG(nombre, atributos, clase) {
     var el = document.createElementNS(NS, nombre);
     if (clase) el.setAttribute('class', clase);
@@ -250,9 +254,10 @@
       placeholder: tUI('placeholderNombre', 'Nombre de la postura…'),
       posturaId: postura ? postura.id : null,
       esPostura: esPostura,
+      // Rótulo del lienzo SVG: sin marcas de énfasis (ver js/formato.js).
       lodTitulo: esPostura
         ? (titulo || tUI('unnamed', '(sin nombre)'))
-        : (pregunta && pregunta.colloquial_hint
+        : plano(pregunta && pregunta.colloquial_hint
           ? dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint)
           : (pregunta ? dato('q.' + pregunta.id + '.formal', pregunta.formal_text || '') : titulo))
     });

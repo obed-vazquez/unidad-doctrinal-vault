@@ -46,6 +46,12 @@
       .replace(/"/g, '&quot;');
   }
 
+  /* Preguntas, respuestas y glosas vienen del documento fuente con sus marcas
+     `**`/`*`; aquí se pintan como negrita y cursiva. Ver js/formato.js. */
+  function formatear(texto) {
+    return Arbol.Formato ? Arbol.Formato.aHtml(texto) : escapar(texto);
+  }
+
   function rotuloPostura(postura) {
     if (!postura) return '';
     if (Arbol.Layout && Arbol.Layout.rotuloPostura) {
@@ -160,6 +166,9 @@
       : '';
     var formal = dato('q.' + pregunta.id + '.formal', pregunta.formal_text);
     var texto = coloquial || formal || pregunta.id;
+    // Se recorta a 140, y un corte a media marca dejaría un `**` suelto en
+    // pantalla: en un rótulo tan breve el formato no se echa de menos.
+    if (Arbol.Formato) texto = Arbol.Formato.plano(texto);
     if (texto.length > 140) texto = texto.slice(0, 137) + '…';
     return texto;
   }
@@ -391,8 +400,8 @@
       html += '<button type="button" class="quiz-opcion" data-pregunta="'
         + escapar(pregunta.id) + '" data-clave="'
         + escapar(respuesta.key) + '">'
-        + '<span class="quiz-opcion-etiqueta">' + escapar(etiqueta) + '</span>'
-        + (glosa ? '<span class="quiz-opcion-glosa">' + escapar(glosa) + '</span>' : '')
+        + '<span class="quiz-opcion-etiqueta">' + formatear(etiqueta) + '</span>'
+        + (glosa ? '<span class="quiz-opcion-glosa">' + formatear(glosa) + '</span>' : '')
         + '<span class="quiz-opcion-destino">'
         + '<span class="quiz-campo-rotulo">' + escapar(t('quizPosturaDestino')) + ':</span> '
         + '<span class="quiz-spoiler" aria-hidden="' + (revelarAdelantos ? 'false' : 'true') + '">'
@@ -509,9 +518,9 @@
         })) + '</p>')
       + pintarOrigenes(nodo, estado.datos)
       + (coloquial
-        ? '<h2 class="quiz-coloquial">' + escapar(coloquial) + '</h2>'
-          + '<p class="quiz-formal">' + escapar(formal) + '</p>'
-        : '<h2 class="quiz-coloquial">' + escapar(formal) + '</h2>')
+        ? '<h2 class="quiz-coloquial">' + formatear(coloquial) + '</h2>'
+          + '<p class="quiz-formal">' + formatear(formal) + '</p>'
+        : '<h2 class="quiz-coloquial">' + formatear(formal) + '</h2>')
       + pintarRespuestas(nodo, estado)
       + '</main>'
       + '<aside class="quiz-lateral">'
@@ -717,7 +726,7 @@
     return '<div class="quiz-ficha-relacion">'
       + '<h4>' + escapar(t('quizRelacion')) + '</h4>'
       + partes.map(function (p) {
-        return '<p>' + escapar(p) + '</p>';
+        return '<p>' + formatear(p) + '</p>';
       }).join('')
       + '</div>';
   }
