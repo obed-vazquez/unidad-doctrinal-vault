@@ -68,6 +68,6 @@ Arguing about the Bible and what it is; excluding from this analysis the meaning
 
       2. ### **Ideas or Metaphors**
 
-         1) Check this on: https://www.youtube.com/watch?v=aUzlhMWYSTg  
+         1) Check this on: https\://www\.youtube.com/watch?v=aUzlhMWYSTg  
          2) 
 

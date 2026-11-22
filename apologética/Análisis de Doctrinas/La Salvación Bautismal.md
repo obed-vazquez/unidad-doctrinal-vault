@@ -1,5 +1,3 @@
-# La Salvación Bautismal
-
 ## Conversionalismo Bautismal Constitutivo \[[Base](#conversionalismo-bautismal-constitutivo-[base,-pub,-folder][ref1,-apologética,-catolicismo]), [Pub](https://docs.google.com/document/d/e/2PACX-1vTH3b7P_KsaUVbpBUBSF0S9Mwwwp8hrs5f568haicyXWYG5_1Rwl0pdx-DXxkfxfMyj1FFBt1-WaOfZ/pub), [Folder](https://drive.google.com/drive/folders/0B-9PnaxsQwDUcTdFbk9qUVBFXzg?resourcekey=0-1O3jBVdYhzbtQPNBThOXuQ)\]\[[ref1](https://docs.google.com/document/d/11x1n99o-B8dJ2NTim04DF_As4r9-WjgmaxNChWhWn24/edit#bookmark=id.1pzjrj9hdjrz), [Apologética](https://docs.google.com/document/d/1LxyofZ2BeOeSJShwQvTTopcj7No_c8sHXRQzJ4nqI7g/pub#h.oa6e70s0aa9c), [Catolicismo](https://docs.google.com/document/d/1qrzKdOXS0prTLuHVnkNaN_TW7mOyQUyAcCzuN0WcUpk/pub)\] {#conversionalismo-bautismal-constitutivo-[base,-pub,-folder][ref1,-apologética,-catolicismo]}
 
 1. # Marco Teórico
@@ -82,6 +80,13 @@
 
 7. # ![][image1]
 
+     
+     
+     
+     
+     
+   
+
 1. # Contexto
 
    1.   
@@ -102,9 +107,9 @@
      1) **R:** Lo mismo que [“la casa de Cornelio”](#r:-esto-sería-correcto-si-no-tubiese-grandes-inconsistencias-como-el-espiritu-santo-en-la-vida-de-los-varones-en-casa-de-cornelio-antes-de-su-bautismo.-el-interpretarlo-de-esa-manera-va-en-contra-de-la-regla-usada-para-su-exegesis.)  
         2) **R:** [Al dar una exégesis correcta, esta debería coincidir con el resto de la estructura](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit?tab=t.0#heading=h.73x0pt65vukl), por eso entendemos que no solo es necesario creer [Jn 3.16 (RV-SBT)](https://www.tbsonlinebible.com/#es_JHN_3_16,) “... todo aquel que en él cree ... tenga vida eterna.”  sino también es necesario arrepentirse  [Hch 3.19 (RVR60)](http://www.bible.com/bible/149/act.3.19)  “... arrepentíos y convertíos, para que sean borrados vuestros pecados;...”; estos versículos no se contradicen sino que se agregan de forma sistemática para formar una idea, es necesario creer, y *es necesario arrepentirse para ser convertidos y que sean borrados los pecados*. De la misma manera, es necesario arrepentirse y bautizarse para el perdón de pecados, concluyendo entonces que **es necesario creer, arrepentirse y bautizarse para el perdón de pecados** (además de otros elementos mencionados en otros versiculos).
 
-           1) # **R**: Esto sería correcto si no tubiese grandes inconsistencias como [el Espiritu Santo en la vida de los varones en casa de Cornelio antes de su bautismo](#bookmark=id.k2i238t18yi). El interpretarlo de esa manera va en contra de la regla usada para su exegesis. {#r:-esto-sería-correcto-si-no-tubiese-grandes-inconsistencias-como-el-espiritu-santo-en-la-vida-de-los-varones-en-casa-de-cornelio-antes-de-su-bautismo.-el-interpretarlo-de-esa-manera-va-en-contra-de-la-regla-usada-para-su-exegesis.}
+           1) # R: Esto sería correcto si no tubiese grandes inconsistencias como [el Espiritu Santo en la vida de los varones en casa de Cornelio antes de su bautismo](#bookmark=id.wc4moxmrokw9). El interpretarlo de esa manera va en contra de la regla usada para su exegesis. {#r:-esto-sería-correcto-si-no-tubiese-grandes-inconsistencias-como-el-espiritu-santo-en-la-vida-de-los-varones-en-casa-de-cornelio-antes-de-su-bautismo.-el-interpretarlo-de-esa-manera-va-en-contra-de-la-regla-usada-para-su-exegesis.}
 
-           2) **R:** [Explicación del mismo Pedro](#bookmark=id.kb39aogjqax3)   
+           2) **R:** [Explicación del mismo Pedro](#bookmark=id.8rk74d5f36b7)   
         2) [Mar 16:16](http://bible.com/149/mr.16.16)  **“El que creyere y fuere bautizado, será salvo; mas el que no creyere, será condenado.“**  
            1) **R**: La misma [argumentación de](#heading=h.ou3kucvpn1m5) [Hch 2.38](http://bible.com/149/act.2.38), pero esta vez con la palabra “creer”.  
            2) **R**: La palabra clave en el versículo es “creer”.  
@@ -122,11 +127,11 @@
            5) [Ef 5.26](http://bible.com/149/ef.5.26) **”... del agua por la palabra,”**;  
         5) [Lc 3.3](http://bible.com/149/luk.3.3) **“... bautismo del arrepentimiento para perdón de pecados,”** 
 
-           1) # **R:** Analizando el [sentido literal](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.1y5xmsi9ak7o) del versículo, este hace referencia al bautismo de Juan el Bautista, el cual predicaba el aceptar públicamente que había arrepentimiento del pecado y claramente que se tenía fe en que el Mesías estaba por llegar. [Hechos 19.4](http://bible.com/149/act.19.4) **“... Juan bautizó con bautismo de arrepentimiento, diciendo al pueblo que creyesen en aquel que vendría después de él ...”**; De hecho analizando el [sentido contextual físico paralelo](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.lfkmd9lfubsv) Juan rechazó a los fariseos porque no tenían muestras de arrepentimiento Mt 3.7-9 “”; [Es debido a esto (El arrepentimiento) y a la conversión que produce en nosotros que los pecados son perdonados](https://docs.google.com/document/d/1pZZ11u4IN1AVePn2bDYeDHAifrmlMFLkeBbvaAApJLc/pub#h.1t7hhrubxza1) y no algo que nosotros hagamos como el Bautismo.
+           1) # R: Analizando el [sentido literal](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.1y5xmsi9ak7o) del versículo, este hace referencia al bautismo de Juan el Bautista, el cual predicaba el aceptar públicamente que había arrepentimiento del pecado y claramente que se tenía fe en que el Mesías estaba por llegar. [Hechos 19.4](http://bible.com/149/act.19.4) “... Juan bautizó con bautismo de arrepentimiento, diciendo al pueblo que creyesen en aquel que vendría después de él ...”; De hecho analizando el [sentido contextual físico paralelo](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.lfkmd9lfubsv) Juan rechazó a los fariseos porque no tenían muestras de arrepentimiento Mt 3.7-9 “”; [Es debido a esto (El arrepentimiento) y a la conversión que produce en nosotros que los pecados son perdonados](https://docs.google.com/document/d/1pZZ11u4IN1AVePn2bDYeDHAifrmlMFLkeBbvaAApJLc/pub#h.1t7hhrubxza1) y no algo que nosotros hagamos como el Bautismo.
 
         6) [1 Pedro 3.20-21](http://bible.com/149/1pe.3.20-21) **“...fueron salvadas por agua. 21 El bautismo que corresponde a esto ahora nos salva…”**
 
-           1) # **R:** Para la respuesta a este versículo, explicación viene más [adelante](#bookmark=id.kb39aogjqax3)
+           1) # R: Para la respuesta a este versículo, explicación viene más [adelante](#bookmark=id.8rk74d5f36b7)
 
         7) [Tito 3.5 (RV-SBT)](https://www.tbsonlinebible.com/#es_TIT_3_5,) “nos salvó, ... por el lavamiento de la regeneración ... ”;  
         8) [2 Reyes 5.14](http://bible.com/149/2ki.5.14) “... descendió, y se zambulló siete veces ... y quedó limpio ...”; la lepra es una figura del pecado.  
@@ -215,104 +220,197 @@
 
    	
 
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-		  
-	
+   	
 
-# LLM
+   	
 
-# Conversionalismo Bautismal Constitutivo vs. Conversionalismo Asacramental
+   	
 
----
+   	
 
-## Contexto
+   	
 
-El debate sobre los requisitos de la conversión cristiana existe desde los primeros siglos del cristianismo. Las dos posturas que se analizan en este documento pertenecen a la familia del **conversionalismo** — es decir, sistemas teológicos que afirman que la salvación implica un evento de transformación en el individuo, ya sea sinergista (el individuo participa activamente) o monérgico (Dios inicia y completa la transformación). Ambas posturas se distinguen del **sacramentalismo puro**, en el que los sacramentos operan *ex opere operato*, independientemente del estado interior del sujeto.  
-La distinción central entre ambas posturas gira en torno al papel del bautismo: ¿es el bautismo parte constitutiva del proceso de conversión, o es un acto posterior que expresa una conversión ya consumada?
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   	
+
+   		
+
+   	
+
+   
+
+   
+
+   
+
+   
+
+   # Conversionalismo Bautismal Constitutivo vs. Conversionalismo Asacramental
+
+   ---
+
+      ## Contexto
+
+   El debate sobre los requisitos de la conversión cristiana existe desde los primeros siglos del cristianismo. Las dos posturas que se analizan en este documento pertenecen a la familia del **conversionalismo** — es decir, sistemas teológicos que afirman que la salvación implica un evento de transformación en el individuo, ya sea sinergista (el individuo participa activamente) o monérgico (Dios inicia y completa la transformación). Ambas posturas se distinguen del **sacramentalismo puro**, en el que los sacramentos operan *ex opere operato*, independientemente del estado interior del sujeto.
+
+   La distinción central entre ambas posturas gira en torno al papel del bautismo: ¿es el bautismo parte constitutiva del proceso de conversión, o es un acto posterior que expresa una conversión ya consumada?
 
 - La postura que aquí se denomina **Conversionalismo Bautismal Constitutivo** tiene sus antecedentes más tempranos en escritores del período patrístico (s. I–III) como **Tertuliano**, **Cipriano** y **Justino Mártir**, quienes describían el bautismo como el momento en que los pecados son perdonados y el Espíritu Santo es dado al creyente. Su formulación conversionalista moderna más sistemática emerge con el **Movimiento de Restauración (s. XIX, EE. UU.)**, encabezado por **Alexander Campbell**, **Barton Stone** y **Walter Scott**, quienes argumentaron que fe, arrepentimiento y bautismo son inseparables en el proceso de conversión.  
     
@@ -499,9 +597,7 @@ La distinción central entre ambas posturas gira en torno al papel del bautismo:
 
   
 
-# LLM2
-
-# El bautismo en el evento de conversión: ¿elemento constitutivo o no constitutivo?
+  # El bautismo en el evento de conversión: ¿elemento constitutivo o no constitutivo?
 
 - ## Contexto histórico
 

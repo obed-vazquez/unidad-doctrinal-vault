@@ -1,101 +1,194 @@
 ## Terminología \[[Folder](https://drive.google.com/drive/folders/0B-9PnaxsQwDUM2RQTm8zdVJVcXM), [Base](https://docs.google.com/document/d/10dsVYVD6P5Ew3C5PfFYRNA0KHXOucXU3gs7gLT-jt_E), [Pub (goo.gl/EVD1yx)](https://goo.gl/EVD1yx) \]
 
 1. [Filosofía](https://es.wikipedia.org/wiki/Filosof%C3%ADa). Es el estudio de una variedad de problemas fundamentales.  
-   1. [Lógica](http://dle.rae.es/?id=NZEWqRA).  [...Rama de la filosofía ... \[con\] una íntima relación con las matemáticas](https://es.wikipedia.org/wiki/L%C3%B3gica); **6\.** f. Ciencia que expone las leyes \[[los principios](https://es.wikipedia.org/wiki/L%C3%B3gica)\], ... de las proposiciones ([Pensamientos enunciativos](http://recursostic.educacion.es/bachillerato/proyectofilosofia/web/A3-1c.htm)) en relación con su \[[veracidad](http://recursostic.educacion.es/bachillerato/proyectofilosofia/web/conclu.php?tipo=2&seccion=1&ruta=3&etapa=1&conclusion=0)\].   
+   1. [Epistemología](https://es.wikipedia.org/wiki/Epistemolog%C3%ADa). Rama de la filosofía que estudia el conocimiento: su origen, sus límites y cómo se justifica.  
+      1. [**Axiomático**](http://dle.rae.es/?id=4bO6PH0). Incontrovertible, evidente.  
+         1. [**Axioma**](http://dle.rae.es/?id=4bL5Q4V). Proposición tan clara y evidente que se admite sin demostración. **\|\|** uno de los principios fundamentales e indemostrables sobre los que se construye una teoría. ej. A=A  
+      2. [**Corolario**](http://dle.rae.es?w=corolario)**.**  1\. m. Proposición que no necesita prueba particular y se deduce con facilidad de lo demostrado previamente.  
+      3. [Dogma](https://dle.rae.es/dogma). Proposición que se tiene por cierta y como principio innegable de una ciencia o doctrina.  
+      4. [Plausible](https://dle.rae.es/plausible). Atendible, admisible; que merece considerarse posiblemente verdadero.  
+      5. [Verosímil](https://dle.rae.es/veros%C3%ADmil) . Que tiene apariencia de verdadero; creíble.  
+   2. [Lógica](http://dle.rae.es/?id=NZEWqRA).  [...Rama de la filosofía ... \[con\] una íntima relación con las matemáticas](https://es.wikipedia.org/wiki/L%C3%B3gica); **6\.** f. Ciencia que expone las leyes \[[los principios](https://es.wikipedia.org/wiki/L%C3%B3gica)\], ... de las proposiciones ([Pensamientos enunciativos](http://recursostic.educacion.es/bachillerato/proyectofilosofia/web/A3-1c.htm)) en relación con su \[[veracidad](http://recursostic.educacion.es/bachillerato/proyectofilosofia/web/conclu.php?tipo=2&seccion=1&ruta=3&etapa=1&conclusion=0)\].   
       1. [Razonamiento o Lógica **Inductiva**](https://es.wikipedia.org/wiki/Razonamiento_inductivo). Un argumento inductivo es fuerte cuando es altamente improbable que su conclusión sea falsa si las premisas son verdaderas. En los razonamientos inductivos, la conclusión se obtiene por generalización (Patrones), a partir de varias premisas particulares. *Por ejemplo, a partir de una serie de observaciones (el cobre es un metal y es buen conductor de la electricidad; el hierro es un metal y es buen conductor de la electricidad, etc.) se concluye, por inducción, que todos los metales son buenos conductores de la electricidad.*  
       2. [Argumentar](https://dle.rae.es/argumentar). Dar argumentos. [*How to argue*](https://www.youtube.com/watch?v=NKEhdsnKKHs&list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR&index=3)  
-      3. [Razonamiento o Lógica **Deductiva**](https://es.wikipedia.org/wiki/Razonamiento_deductivo). Es un argumento donde la conclusión se infiere **necesariamente** de las premisas.
+      3. [Razonamiento o Lógica **Deductiva**](https://es.wikipedia.org/wiki/Razonamiento_deductivo). Es un argumento donde la conclusión se infiere **necesariamente** de las premisas.  
+      4. Razonamiento Inductivo.  
+      5. [Razonamiento o Lógica Abductiva](https://es.wikipedia.org/wiki/Razonamiento_abductivo). Inferencia a la mejor explicación: a partir de un hecho observado se infiere la hipótesis que mejor lo explicaría. Su conclusión es plausible, no necesaria. Ej. “El suelo está mojado; lo más probable es que haya llovido”. (Al parecer ambas tienen una relación estrecha con la probabilidad tocante a sus resultados)  
+         1. Razonamiento abductivo  
+      6. [Argumento](https://es.wikipedia.org/wiki/Argumento). En lógica, un argumento se define como un conjunto de ~~premisas seguidas de una~~ proposiciones que incluyen una conclusión. Para que un argumento sea deductivamente válido, no es necesario que las premisas o la conclusión sean verdaderas; sólo se requiere que la conclusión sea una consecuencia lógica de las premisas. Si un argumento, además de ser válido, tiene premisas verdaderas, entonces se dice que es sólido o [válido](https://es.wikipedia.org/wiki/Premisa). Puede no contar con premisas  
+         ![][image1]  
+         1. [Silogismo](http://dle.rae.es/?id=XtsfEVn). Argumento formado por 2 premisas ([mayor y menor](https://es.wikipedia.org/wiki/Premisa)) y su conclusión, que se sigue de ellas (sus proposiciones no necesitan ser verdaderas para que sea silogismo). *Lo más común*  
+            1. [Entimema](http://www.batanga.com/curiosidades/3931/que-es-un-silogismo). Silogismo sin una de las proposiciones.  
+               2. [Tautología](https://prezi.com/5gd30tt7z8jr/tautologia-contradiccion-y-falacia/).  Proposición verdadera bajo cualquier interpretación de sus símbolos lógicos.  
+                  3. [Proposición](http://es.slideshare.net/evasquezg/tema-2-logica-proposicional). Oración declarativa con valor de verdad (que puede ser correcta o falsa, pero no ambas).  
+                     1. [Premisa](https://es.wikipedia.org/wiki/Premisa). Cada una de las proposiciones anteriores a la conclusión del argumento. [Para introducir las premisas suelen usarse las frases: "puesto que", "porque", "pues", "en tanto que", "en razón de que", etc.](http://www.monografias.com/trabajos63/premisas-conclusiones/premisas-conclusiones.shtml)  
+                     2. [Conclusión](https://es.wikipedia.org/wiki/Conclusi%C3%B3n). No es necesario que las premisas impliquen la conclusión para que esta sea conclusión. Usualmente se usan las frases: [" por lo tanto", "por ende", "luego", "por consiguiente", etc.](http://www.monografias.com/trabajos63/premisas-conclusiones/premisas-conclusiones.shtml)  
+                     3. inferencia.  
+      7. Inferir.   
+      8. Deducir.  
+      9. Inducir. .[*Induction & Abduction*](https://www.youtube.com/watch?v=-wrCpLJ1XAw&list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR&index=4)  
+      10. Implicar.   
+      11. [**Falacia**](http://dle.rae.es/?id=HVXQdUl) **o [Sofisma](http://lema.rae.es/drae/?val=sofisma)**. **1\.** m. ... [argumento](http://www.monografias.com/trabajos72/elementos-tipos-razonamiento/elementos-tipos-razonamiento2.shtml) falso con apariencia de verdad. **1\.** f. Engaño, fraude o mentira… pueden ser muy sutiles y persuasivas. [*ej*](https://prezi.com/5gd30tt7z8jr/tautologia-contradiccion-y-falacia/) *Si puedo cargar las piezas de mi automóvil , también puedo cargar mi automóvil.*  
+          1. [**Tipos de Falacias**](https://es.wikipedia.org/wiki/Falacia#Clasificaciones).  
+             1. [**Falacia de inversión de Carga de Prueba**](http://perso.wanadoo.es/usoderazonweb/html/conten/arca/listado/ignoran.htm). “Demuestra lo contrario de otra manera estoy en lo cierto”.  
+             2. [Falacia de Argumento ad hominem](https://es.wikipedia.org/wiki/Argumento_ad_hominem#Falacia_ad_hominem). Se ataca al agumentador yno al argumento“El argumento no puede ser verdad porque el que lo argumenta tiene *problemas personales*”.
+
+             3. # [**Falacia de Petición de principio**](https://es.wikipedia.org/wiki/Falacia#Petici%C3%B3n_de_principio). La premisa a ser probada se incluye en el argumento.
+
+             4. # [**Falacia del Espantapájaros**](https://es.wikipedia.org/wiki/Falacia_del_hombre_de_paja). Cambiar las palabras del ponente (y crear un espantapajaros metaforico) y refutar el cambio (atacar a ese espantapajaros) en lugar del argumento original.
+
+   3. [Pensamiento crítico](https://es.wikipedia.org/wiki/Pensamiento_cr%C3%ADtico). Capacidad de evaluar afirmaciones, evidencias y argumentos antes de aceptarlos. Combina disposiciones (actitudes) y habilidades. *Las preguntas bajo cada término sirven como autoevaluación*.  
+      1. Disposiciones. Actitudes que inclinan a una persona a pensar con cuidado y honestidad.  
+         1. [Curiosidad intelectual](https://en.wikipedia.org/wiki/Intellectual_curiosity)  
+            1. ¿Te esfuerzas de forma intencional y constante por comprender mejor el mundo que te rodea?  
+         2. [Apertura a otras perspectivas](https://en.wikipedia.org/wiki/Open-mindedness).   
+            1. ¿Las personas que te rodean te considerarían una persona de mente abierta?  
+            2. ¿Consultas fuentes diversas y contrastantes para obtener nuevas ideas?  
+            3. ¿Tienes una perspectiva matizada de la realidad, en lugar de ver los temas importantes en términos de blanco o negro?  
+         3. [Humildad intelectual](https://en.wikipedia.org/wiki/Intellectual_humility)  
+            1. ¿Estás dispuesto a cambiar de opinión cuando encuentras evidencia suficiente?  
+            2. ¿Reconoces cuando desconoces algo y procuras aprenderlo?  
+            3. ¿Te importa más llegar a la verdad que tener la razón?  
+         4. [Comprensión de quien piensa diferente](https://es.wikipedia.org/wiki/Principio_de_caridad). Entender la postura ajena tal como la sostiene el otro antes de evaluarla o refutarla.  
+            1. ¿Escuchas con atención a quienes piensan de forma diferente para comprenderlos antes de intentar persuadirlos?  
+               1. ¿Presentas las posturas con las que no estás de acuerdo de la forma más justa posible antes de criticarlas?  
+      2. Habilidades. Capacidades prácticas para examinar afirmaciones y conclusiones.  
+         1. [Evaluación de evidencia y fuentes](https://es.wikipedia.org/wiki/Evidencia_\(filosof%C3%ADa\)). Pedir y valorar la evidencia, y la confiabilidad de su origen, antes de dar crédito a una afirmación.  
+            1. ¿Sueles pedir evidencia antes de aceptar una afirmación importante?  
+            2. ¿Verificas la confiabilidad de una fuente antes de darle crédito?  
+         2. [Análisis y autocrítica](https://dle.rae.es/autocr%C3%ADtica). Separar hechos, opiniones e interpretaciones, y buscar sesgos también en las propias conclusiones.  
+            1. ¿Intentas distinguir entre hechos, opiniones e interpretaciones?  
+            2. ¿Te esfuerzas por identificar posibles sesgos, incluso en tus propias conclusiones?  
+      3. [Sesgos cognitivos](https://es.wikipedia.org/wiki/Sesgo_cognitivo). Errores sistemáticos de quien razona (no del argumento) que distorsionan cómo percibe, recuerda o evalúa la información. Aquí se agregarán los sesgos comunes.  
+   4. [Racionalidad](https://es.wikipedia.org/wiki/Racionalidad). Disposición a formar creencias y tomar decisiones de acuerdo con la evidencia y con los propios objetivos.  
+      1. [Deliberación](https://dle.rae.es/deliberaci%C3%B3n). Considerar con atención los pros y contras de una decisión antes de actuar.  
+         1. ¿Sueles reflexionar detenidamente sobre lo que vas a hacer antes de actuar?  
+      2. Mejora continua. Revisar y corregir con regularidad los propios hábitos y decisiones.  
+         1. ¿Procuras mejorar continuamente como persona?  
+         2. ¿Buscas retroalimentación de forma habitual para identificar áreas de mejora?  
+         3. ¿Evalúas periódicamente si tus hábitos y decisiones te acercan a tus objetivos?
 
 ![][image1]
 
-1. [Argumento](https://es.wikipedia.org/wiki/Argumento). En lógica, un argumento se define como un conjunto de ~~premisas seguidas por una~~ proposiciones que incluyen una conclusión. Para que un argumento sea deductivamente válido, no es necesario que las premisas o la conclusión sean verdaderas; sólo se requiere que la conclusión sea una consecuencia lógica de las premisas. Si un argumento, además de ser válido, tiene premisas verdaderas, entonces se dice que es sólido o [válido](https://es.wikipedia.org/wiki/Premisa). Puede no contar con premisas  
+4. [Argumento](https://es.wikipedia.org/wiki/Argumento). En lógica, un argumento se define como un conjunto de ~~premisas seguidas de una~~ proposiciones que incluyen una conclusión. Para que un argumento sea deductivamente válido, no es necesario que las premisas o la conclusión sean verdaderas; sólo se requiere que la conclusión sea una consecuencia lógica de las premisas. Si un argumento, además de ser válido, tiene premisas verdaderas, entonces se dice que es sólido o [válido](https://es.wikipedia.org/wiki/Premisa). Puede no contar con premisas  
    1. Dogma.  
-      2. [Silogismo](http://dle.rae.es/?id=XtsfEVn). Argumento formado por 2 premisas ([mayor y menor](https://es.wikipedia.org/wiki/Premisa)) y su conclusión donde todas sus proposiciones son verdaderas. *Lo más común*  
+      2. [Silogismo](http://dle.rae.es/?id=XtsfEVn). Argumento formado por 2 premisas ([mayor y menor](https://es.wikipedia.org/wiki/Premisa)) y su conclusión, donde todas sus proposiciones son verdaderas. *Lo más común*  
          1. [Entimema](http://www.batanga.com/curiosidades/3931/que-es-un-silogismo). Silogismo sin una de las proposiciones.  
             3. [Tautología](https://prezi.com/5gd30tt7z8jr/tautologia-contradiccion-y-falacia/).  Argumento cierto bajo cualquier interpretación de sus símbolos lógicos.  
-            4. [Proposición](http://es.slideshare.net/evasquezg/tema-2-logica-proposicional). Oración declarativa con valor de verdad (que puede ser correcta o falsa pero no ambas).  
-               1. [Premisa](https://es.wikipedia.org/wiki/Premisa). Cada una de las proposiciones anteriores a la conclusión de argumento. [Para introducir las premisas suelen usarse las frases: "puesto que", "porque", "pues", "en tanto que", "en razón de que", etc.](http://www.monografias.com/trabajos63/premisas-conclusiones/premisas-conclusiones.shtml)  
+            4. [Proposición](http://es.slideshare.net/evasquezg/tema-2-logica-proposicional). Oración declarativa con valor de verdad (que puede ser correcta o falsa, pero no ambas).  
+               1. [Premisa](https://es.wikipedia.org/wiki/Premisa). Cada una de las proposiciones anteriores a la conclusión del argumento. [Para introducir las premisas suelen usarse las frases: "puesto que", "porque", "pues", "en tanto que", "en razón de que", etc.](http://www.monografias.com/trabajos63/premisas-conclusiones/premisas-conclusiones.shtml)  
                2. [Conclusión](https://es.wikipedia.org/wiki/Conclusi%C3%B3n). No es necesario que las premisas impliquen la conclusión para que esta sea conclusión. Usualmente se usan las frases: [" por lo tanto", "por ende", "luego", "por consiguiente", etc.](http://www.monografias.com/trabajos63/premisas-conclusiones/premisas-conclusiones.shtml)  
                3. inferencia.  
 2. Inferir.   
 3. Deducir.  
 4. Inducir. .[*Induction & Abduction*](https://www.youtube.com/watch?v=-wrCpLJ1XAw&list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR&index=4)  
 5. Implicar.   
-6. [**Refutar**](http://dle.rae.es?w=refutar). Contradecir o impugnar con argumentos o razones lo que otros dicen.  
-7. [**Falacia**](http://dle.rae.es/?id=HVXQdUl) **o [Sofisma](http://lema.rae.es/drae/?val=sofisma)**. **1\.** m. ... [argumento](http://www.monografias.com/trabajos72/elementos-tipos-razonamiento/elementos-tipos-razonamiento2.shtml) falso con apariencia de verdad. **1\.** f. Engaño, fraude o mentira ... pueden ser muy sutiles y persuasivas. [*ej*](https://prezi.com/5gd30tt7z8jr/tautologia-contradiccion-y-falacia/) *Si puedo cargar las piezas de mi automóvil , también puedo cargar mi automóvil.*  
+6. [Argumentación y debate](https://es.wikipedia.org/wiki/Argumentaci%C3%B3n). Términos sobre cómo se presentan, defienden o atacan los argumentos.  
+   1. [**Refutar**](http://dle.rae.es?w=refutar). Contradecir o impugnar con argumentos o razones lo que otros dicen.  
+7. [**Falacia**](http://dle.rae.es/?id=HVXQdUl) **o [Sofisma](http://lema.rae.es/drae/?val=sofisma)**. **1\.** m. ... [argumento](http://www.monografias.com/trabajos72/elementos-tipos-razonamiento/elementos-tipos-razonamiento2.shtml) falso con apariencia de verdad. **1\.** f. Engaño, fraude o mentira… pueden ser muy sutiles y persuasivas. [*ej*](https://prezi.com/5gd30tt7z8jr/tautologia-contradiccion-y-falacia/) *Si puedo cargar las piezas de mi automóvil , también puedo cargar mi automóvil.*  
    1. [**Tipos de Falacias**](https://es.wikipedia.org/wiki/Falacia).  
       1. [**Falacia de inversión de Carga de Prueba**](http://perso.wanadoo.es/usoderazonweb/html/conten/arca/listado/ignoran.htm). “Demuestra lo contrario de otra manera estoy en lo cierto”.  
       2. Falacia de Argumento ad hominem. “El argumento no puede ser verdad por que el que lo argumenta no está capacitado”.
 
-      3. # [**Falacia de Petición de principio**](https://es.wikipedia.org/wiki/Falacia#Petici%C3%B3n_de_principio). la premisa a ser probada se incluye en el argumento.
+      3. # [**Falacia de Petición de principio**](https://es.wikipedia.org/wiki/Falacia#Petici%C3%B3n_de_principio). La premisa a ser probada se incluye en el argumento.
 
       4. [**Falacia del Espantapájaros**](https://es.wikipedia.org/wiki/Falacia_del_hombre_de_paja). Cambiar las palabras del ponente y refutar el cambio en lugar el argumento original.  
-8. [**Argucia**](http://lema.rae.es/drae/?val=argucia). mentira expuesta tan hábilmente que parece verdad. *"se valió de la argucia para convencer a su padre de que era imprescindible que le comprara una guitarra"*  
-9. [**Analogía**](http://dle.rae.es/?id=2Vt6TRt). Relación de semejanza entre cosas distintas.  
-   1. [**Metonimia o trasnominación**](http://es.wikipedia.org/wiki/Metonimia).   cambio semántico por el cual se designa una cosa o idea con el nombre de otra. *Se le cambia el nombre*. Dueño o Poseedor por Objeto; Causa por efecto: *Carecer de pan (carecer de trabajo)*.  
-      1. [**Antonomasia**](http://es.wikipedia.org/wiki/Antonomasia). consiste en poner el nombre apelativo por el propio, o el propio por el apelativo.  *«la Ciudad Eterna» por Roma, «el Filósofo» para referirse a Aristóteles, «Ciudad Luz» para referirse a París.*  
-      2. [**Sinécdoque**](https://es.wikipedia.org/wiki/Sin%C3%A9cdoque). El todo por la parte o viceversa. *"Argentina ha jugado bien" por "el equipo de hockey cadete masculino de Argentina que ha alineado hoy el entrenador ha jugado bien"*   
-   2. [**Tropo (retórica)**](https://es.wikipedia.org/wiki/Tropo_\(ret%C3%B3rica\)). En sentido figurado.  
-      1. [**Metáfora**](http://lema.rae.es/drae/?val=met%C3%A1fora).  Es una comparación donde una cosa representa otra.  Aplicación de una palabra o de una expresión a un objeto o a un concepto, al cual no denota literalmente, con el fin de sugerir una comparación (con otro objeto o concepto) y facilitar su comprensión. Ej.  [Jn. 15](http://bible.com/149/jhn..15); 10:9.  [Mt. 5:13](http://bible.com/149/mat..5.13).  Stg. 3:6  
-         1. [**Símil**](http://lema.rae.es/drae/?val=s%C3%ADmil).  Es una metáfora comparativa en la que se usa el adverbio “como”.También se utilizan las expresiones "tal como" o "cual".  Ej. 1 Pd. 1:24  
-            1. [Diferencia](http://literatura.about.com/od/terminosliterarios/fl/La-diferencia-entre-la-metafora-y-el-simil.htm).    
-               1.  Podemos decir que el símil es una aproximación, mientras que la metáfora es una ecuación en sí. Así que la principal diferencia es que el símil; al ser una aproximación no puede extender, sustituir o invertir. Pero metáfora, al ser una ecuación puede ser revertida, extendida y sustituida por otras metáforas.   
-               2. El símil compara dos cosas para crear el sentido, mientras que en la metáfora se sustituye un elemento por otro atendiendo a las semejanzas que hay entre ellos.  
-               3. La palabra “como” suele usarse especialmente en el símil para establecer una comparación, mientras que en la metáfora se asume que dos cosas son iguales (se hace una sustitución).  
-            2. Ejemplos  
-               1. Metáfora: “*Las perlas de tu boca*” Haciendo referencia a los dientes. las perlas sustituyen a los dientes en la metáfora.   
-               2. Símil: “*Los dientes de tu boca son como perlas* ” pueden ser intercambiables por ejemplo: “*Las perlas son como los dientes de tu boca*”  
-      2. [**Oxímoron o absurdo**](https://es.wikipedia.org/wiki/Ox%C3%ADmoron). Figura lógica que consiste en usar dos conceptos de significado opuesto en una sola expresión, que genera un tercer concepto. *«un instante eterno»*.  
-   3. [Discut](http://dle.rae.es?w=discutir)ir.  1 Examinar | Contraponer opiniones, puntos de vista, etc. 2 **Contender** y **alegar**.  
+   2. [**Argucia**](http://lema.rae.es/drae/?val=argucia). Mentira expuesta tan hábilmente que parece verdad. *"Se valió de la argucia para convencer a su padre de que era imprescindible que le comprara una guitarra"*  
+   3. [Discut](http://dle.rae.es?w=discutir)ir.  1 Examinar \| Contraponer opiniones, puntos de vista, etc. 2 **Contender** y **alegar**.  
    4. [Disputar](http://dle.rae.es?w=disputar). 1 Luchar. 2 **Discutir** con pasión. 3 **Contender**
 
-   5. # [Alegar](http://dle.rae.es?w=alegar) | [Aduc](http://dle.rae.es?w=aducir)ir.  1 Citar pruebas en defensa. 2 Exponer méritos para fundar pretensión. 3 **Disputar**. \[[Evang(IIIB2)](https://docs.google.com/document/d/1Rupf_Yzb4nm-Kb32crcCz-lD1SOVEJTHYt7SINKEspM/pub#h.n8coj9qcw7zy), \]
+   5. # [Alegar](http://dle.rae.es?w=alegar) \| [Aduc](http://dle.rae.es?w=aducir)ir.  1 Citar pruebas en defensa. 2 Exponer méritos para fundar pretensión. 3 **Disputar**. \[[Evang(IIIB2)](https://docs.google.com/document/d/1Rupf_Yzb4nm-Kb32crcCz-lD1SOVEJTHYt7SINKEspM/pub#h.n8coj9qcw7zy), \]
 
-   6. [Argumentar](http://dle.rae.es?w=argumentar). 1 Dar argumentos. 2 **Disputar**. 
+   6. [Argumentar](http://dle.rae.es?w=argumentar). 1 Dar argumentos. 2 **Disputar**.  [*How to argue*](https://www.youtube.com/watch?v=NKEhdsnKKHs&list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR&index=3)
 
-   7. # [Debat](http://dle.rae.es?w=debatir)ir.  1 **Discutir**. | 2 Luchar o combatir
+   7. # [Debat](http://dle.rae.es?w=debatir)ir.  1 **Discutir**. \| 2 Luchar o combatir
 
-   8. [Contender](http://dle.rae.es?w=contender). 1\. intr. lidiar (‖ batallar, pelear). 2\. **Debatir**. | 3 **Discutir**.
+   8. [Contender](http://dle.rae.es?w=contender). 1\. intr. lidiar (‖ batallar, pelear). 2\. **Debatir**. \| 3 **Discutir**.  
+   9. [**Diatriba**](http://lema.rae.es/drae/?val=diatriba).  f. Discurso o escrito acre y violento contra alguien o algo.  \| Método argumentativo de auto preguntas y respuestas (Ej. Jesús en el Sermón del Monte y Pablo en Romanos)  
+   10. [**Coercitivo, va**.](http://dle.rae.es/?id=9eGGHXS) 1\. adj. Que sirve para forzar la voluntad o la conducta de alguien. \|\| adj. Represivo, inhibitorio.   
+8. [Retórica y lenguaje figurado](https://es.wikipedia.org/wiki/Ret%C3%B3rica). Figuras y recursos con los que el lenguaje expresa algo distinto o más de lo literal.  
+   1. [**Analogía**](http://dle.rae.es/?id=2Vt6TRt). Relación de semejanza entre cosas distintas.  
+      1. [**Metonimia o trasnominación**](http://es.wikipedia.org/wiki/Metonimia). Cambio semántico por el cual se designa una cosa o idea con el nombre de otra. *Se le cambia el nombre*. Dueño o Poseedor por Objeto; Causa por efecto: *Carecer de pan (carecer de trabajo)*.  
+         1. [**Antonomasia**](http://es.wikipedia.org/wiki/Antonomasia). Consiste en poner el nombre apelativo por el propio, o el propio por el apelativo.  *«La Ciudad Eterna» por Roma, «el Filósofo» para referirse a Aristóteles, «Ciudad Luz» para referirse a París.*  
+         2. [**Sinécdoque**](https://es.wikipedia.org/wiki/Sin%C3%A9cdoque). El todo por la parte o viceversa. *"Argentina ha jugado bien" por "el equipo de hockey cadete masculino de Argentina que ha alineado hoy el entrenador ha jugado bien"*   
+      2. [**Tropo (retórica)**](https://es.wikipedia.org/wiki/Tropo_\(ret%C3%B3rica\)). En sentido figurado.  
+         1. [**Metáfora**](http://lema.rae.es/drae/?val=met%C3%A1fora).  Es una comparación donde una cosa representa otra.  Aplicación de una palabra o de una expresión a un objeto o a un concepto, al cual no denota literalmente, con el fin de sugerir una comparación (con otro objeto o concepto) y facilitar su comprensión. Ej.  [Jn. 15](http://bible.com/149/jhn..15); 10:9.  [Mt. 5:13](http://bible.com/149/mat..5.13).  Stg. 3:6  
+            1. [**Símil**](http://lema.rae.es/drae/?val=s%C3%ADmil).  Es una metáfora comparativa en la que se usa el adverbio “como”.También se utilizan las expresiones "tal como" o "cual".  Ej. 1 Pd. 1:24  
+               1. [Diferencia](http://literatura.about.com/od/terminosliterarios/fl/La-diferencia-entre-la-metafora-y-el-simil.htm).    
+                  1.  Podemos decir que el símil es una aproximación, mientras que la metáfora es una ecuación en sí. Así que la principal diferencia es que el símil; al ser una aproximación no puede extender, sustituir o invertir. Pero metáfora, al ser una ecuación puede ser revertida, extendida y sustituida por otras metáforas.   
+                  2. El símil compara dos cosas para crear el sentido, mientras que en la metáfora se sustituye un elemento por otro atendiendo a las semejanzas que hay entre ellos.  
+                  3. La palabra “como” suele usarse especialmente en el símil para establecer una comparación, mientras que en la metáfora se asume que dos cosas son iguales (se hace una sustitución).  
+               2. Ejemplos  
+                  1. Metáfora: “*Las perlas de tu boca*” Haciendo referencia a los dientes. las perlas sustituyen a los dientes en la metáfora.   
+                  2. Símil: “*Los dientes de tu boca son como perlas* ” pueden ser intercambiables por ejemplo: “*Las perlas son como los dientes de tu boca*”  
+         2. [**Oxímoron o absurdo**](https://es.wikipedia.org/wiki/Ox%C3%ADmoron). Figura retóricaFigura lógica que consiste en usar dos conceptos de significado opuesto en una sola expresión, que genera un tercer concepto. *«un instante eterno»*.  
+      3. [Discut](http://dle.rae.es?w=discutir)ir.  1 Examinar \| Contraponer opiniones, puntos de vista, etc. 2 **Contender** y **alegar**.  
+      4. [Disputar](http://dle.rae.es?w=disputar). 1 Luchar. 2 **Discutir** con pasión. 3 **Contender**
 
-   9. # Simbolismo, Figura, figurativo, Forma, Cuadro o Ilustraciones, Representación o Retrato, Parábola \[[Hermenéutica(IC7d)](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.htzmiifswjir), \]
+      5. # [Alegar](http://dle.rae.es?w=alegar) \| [Aduc](http://dle.rae.es?w=aducir)ir.  1 Citar pruebas en defensa. 2 Exponer méritos para fundar pretensión. 3 **Disputar**. \[[Evang(IIIB2)](https://docs.google.com/document/d/1Rupf_Yzb4nm-Kb32crcCz-lD1SOVEJTHYt7SINKEspM/pub#h.n8coj9qcw7zy), \]
 
-   10. [**Tipo**](https://es.wikipedia.org/wiki/Teor%C3%ADa_de_tipos). “Una Ilustración profética divinamente determinada con una Verdad Espiritual”. Bajo ciertas circunstancias llamado antitipo. Etimológicamente la marca de un martillo o La marca de un golpeo Impresión hecha por un dado. Con una referencia a lo que la escritura señala: [Jn 20.25](http://bible.com/149/jhn.20.25) (La señal de los clavos) Al Estudio de los Tipos se le denomina Tipología. *“No podemos establecer con seguridad que cualquier cosa sea un tipo a menos que tengamos una garantía para hacerlo. Si no podemos referenciar a ningún pasaje del Nuevo Testamento como nuestra autoridad, o si no hay expresión o analogía que indique el antitipo, es más seguro y más correcto llamarlo una Ilustración.”; Haberson, A. R. The Study Of Types. Grand Rapids, Michigan Kregel, 1967: pag. 12*  
+      6. [Argumentar](http://dle.rae.es?w=argumentar). 1 Dar argumentos. 2 **Disputar**.  [*How to argue*](https://www.youtube.com/watch?v=NKEhdsnKKHs&list=PL8dPuuaLjXtNgK6MZucdYldNkMybYIHKR&index=3)
+
+      7. # [Debat](http://dle.rae.es?w=debatir)ir.  1 **Discutir**. \| 2 Luchar o combatir
+
+      8. [Contender](http://dle.rae.es?w=contender). 1\. intr. lidiar (‖ batallar, pelear). 2\. **Debatir**. \| 3 **Discutir**.
+
+      9. # Simbolismo, Figura, figurativo, Forma, Cuadro o Ilustraciones, Representación o Retrato, Parábola \[[Hermenéutica(IC7d)](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.htzmiifswjir), \]
+
+      10. [**Tipo**](https://es.wikipedia.org/wiki/Teor%C3%ADa_de_tipos). “Una Ilustración profética divinamente determinada con una Verdad Espiritual”. Bajo ciertas circunstancias llamado antitipo. Etimológicamente la marca de un martillo o La marca de un golpeo Impresión hecha por un dado. Con una referencia a lo que la escritura señala: [Jn 20.25](http://bible.com/149/jhn.20.25) (La señal de los clavos) Al Estudio de los Tipos se le denomina Tipología. *“No podemos establecer con seguridad que cualquier cosa sea un tipo a menos que tengamos una garantía para hacerlo. Si no podemos referenciar a ningún pasaje del Nuevo Testamento como nuestra autoridad, o si no hay expresión o analogía que indique el antitipo, es más seguro y más correcto llamarlo una Ilustración.”; Haberson, A. R. The Study Of Types. Grand Rapids, Michigan Kregel, 1967: pag. 12*  
+          1. Personas Tipificadas  
+          2. Eventos Tipificados  
+          3. Objetos Tipificados  
+          4. Sacrificios Tipificados  
+          5. Fiestas tipificadas  
+          6. Sacerdocio Tipificado  
+   2. [**Personificación o Prosopopeya**](http://lema.rae.es/drae/?val=prosopopeya).  Dar características humanas a \[ideas, objetos o animales\].  Ej. [Is 55:12](http://bible.com/149/isa.55.12); [1Co 15:55](http://bible.com/149/1co.15.55); 1 Pd 4:8;  Slm 85:10-11  
+      1. [**Antropomorfismo**](http://lema.rae.es/drae/?val=antropomorfismo).  Atribuir a Dios características humanas.  Es. 8:31  
+   3. [**Eufemismo**](http://lema.rae.es/drae/?val=eufemismo).  Es la sustitución de una palabra o expresión que pudiera ser culturalmente ofensiva, por otra que no lo es.  Ej.  [1 Sam. 24:3](http://bible.com/149/1sa..24.3) (cubrir sus pies, Hb \= desahogarse, satisfacer una necesidad natural o fisiológica)  [Mt. 18:17](http://bible.com/149/mat..18.17) (gentil y publicano, perro y traidor)  
+   4. [**Alegoría**](https://es.wikipedia.org/wiki/Alegor%C3%ADa). pretende representar una idea valiéndose de formas humanas, animales o de objetos cotidianos.  
+   5. [**Hipérbole**](http://lema.rae.es/drae/?val=hip%C3%A9rbole).  Es el uso de la exageración para enfatizar una enseñanza.  Ej.  [Jn. 21:25](http://bible.com/149/jhn..21.25); [1 Co. 13:1-3](http://bible.com/149/1co..13.1-3).[Lc. 6:41-42](http://bible.com/149/luk..6.41-42)  El Sermón del Monte  [Núm. 13:34](http://bible.com/149/num..13.34).  [Dt. 1:28](http://bible.com/149/deu..1.28).  
+   6. [**Ironía**](http://lema.rae.es/drae/?val=iron%C3%ADa).  consiste en dar a entender lo contrario de lo que se dice, para resaltar el sentido verdadero.  E.. 1 Ry. 18:27; [2 Co. 11:5](http://bible.com/149/2co..11.5); 12:11; 11:13.  Job. 12:2  
+   7. [**Merismo**](https://es.wikipedia.org/wiki/Merismo).  Listar para luego explicar (fig. retórica) \| Expresión que incluye dos ideas en contraste, cuyo objetivo es expresar un todo.  Ej. Slm. 139:2  
+   8. [**Expresión Idiomática**](http://www.definicionabc.com/comunicacion/idiomatico.php).  parecido a un slang (forma de hablar o una “expresión”).   
+   9. Epizeuxis o palilogia.  
+   10. Paronomasia, paranomasia,1 agnominación,2 adnominación,3 annominación,4 o prosonomasia,5.  
+9. [**Diatriba**](http://lema.rae.es/drae/?val=diatriba).  Discurso violento y usualmente injuria o censura alguien o algo \| Método argumentativo de auto preguntas y respuestas (Ej. Jesús en el Sermón del Monte y Pablo en Romanos)  
+10. [**Coercitivo, va**.](http://dle.rae.es/?id=9eGGHXS) 1\. adj. Que sirve para forzar la voluntad o la conducta de alguien. \|\| adj. Represivo, inhibitorio.   
+11. [Hermenéutica e interpretación](https://es.wikipedia.org/wiki/Hermen%C3%A9utica). Términos para interpretar, traducir y explicar un texto, especialmente el bíblico.  
+    1. [**Exégesis**](http://lema.rae.es/drae/?val=ex%C3%A9gesis). Explicación o interpretación de algo especialmente un texto Bíblico.   
+    2. Exegeta. El que interpreta.
+
+    3. # Simbolismo, Figura, figurativo, Forma, Cuadro o Ilustraciones, Representación o Retrato, Parábola \[[Hermenéutica(IC7d)](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/pub#h.htzmiifswjir), \]
+
+    4. [**Tipo**](https://es.wikipedia.org/wiki/Teor%C3%ADa_de_tipos). “Una Ilustración profética divinamente determinada con una Verdad Espiritual”. Bajo ciertas circunstancias llamado antitipo. Etimológicamente la marca de un martillo o La marca de un golpeo Impresión hecha por un dado. Con una referencia a lo que la escritura señala: [Jn 20.25](http://bible.com/149/jhn.20.25) (La señal de los clavos) Al Estudio de los Tipos se le denomina Tipología. *“No podemos establecer con seguridad que cualquier cosa sea un tipo a menos que tengamos una garantía para hacerlo. Si no podemos referenciar a ningún pasaje del Nuevo Testamento como nuestra autoridad, o si no hay expresión o analogía que indique el antitipo, es más seguro y más correcto llamarlo una Ilustración.”; Haberson, A. R. The Study Of Types. Grand Rapids, Michigan Kregel, 1967: pag. 12*  
        1. Personas Tipificadas  
        2. Eventos Tipificados  
        3. Objetos Tipificados  
        4. Sacrificios Tipificados  
        5. Fiestas tipificadas  
        6. Sacerdocio Tipificado  
-   11. [**Personificación o Prosopopeya**](http://lema.rae.es/drae/?val=prosopopeya).  Dar características humanas a \[ideas, objetos o animales\].  Ej. [Is 55:12](http://bible.com/149/isa.55.12); [1Co 15:55](http://bible.com/149/1co.15.55); 1 Pd 4:8;  Slm 85:10-11  
-       1. [**Antropomorfismo**](http://lema.rae.es/drae/?val=antropomorfismo).  Atribuir a Dios características humanas.  Es. 8:31  
-   12. [**Eufemismo**](http://lema.rae.es/drae/?val=eufemismo).  Es la sustitución de una palabra o expresión que pudiera ser culturalmente ofensiva, por otra que no lo es.  Ej.  [1 Sam. 24:3](http://bible.com/149/1sa..24.3) (cubrir sus pies, Hb \= desahogarse, satisfacer una necesidad natural o fisiológica)  [Mt. 18:17](http://bible.com/149/mat..18.17) (gentil y publicano, perro y traidor)  
-   13. [**Alegoría**](https://es.wikipedia.org/wiki/Alegor%C3%ADa). pretende representar una idea valiéndose de formas humanas, animales o de objetos cotidianos.  
-   14. [**Hipérbole**](http://lema.rae.es/drae/?val=hip%C3%A9rbole).  Es el uso de la exageración para enfatizar una enseñanza.  Ej.  [Jn. 21:25](http://bible.com/149/jhn..21.25); [1 Co. 13:1-3](http://bible.com/149/1co..13.1-3).[Lc. 6:41-42](http://bible.com/149/luk..6.41-42)  El Sermón del Monte  [Núm. 13:34](http://bible.com/149/num..13.34).  [Dt. 1:28](http://bible.com/149/deu..1.28).  
-   15. [**Ironía**](http://lema.rae.es/drae/?val=iron%C3%ADa).  consiste en dar a entender lo contrario de lo que se dice, para resaltar el sentido verdadero.  E.. 1 Ry. 18:27; [2 Co. 11:5](http://bible.com/149/2co..11.5); 12:11; 11:13.  Job. 12:2  
-   16. [**Merismo**](https://es.wikipedia.org/wiki/Merismo).  Listar para luego explicar (fig. retórica) | Expresión que incluye dos ideas en contraste, cuyo objetivo es expresar un todo.  Ej. Slm. 139:2  
-10. [**Expresión Idiomática**](http://www.definicionabc.com/comunicacion/idiomatico.php).  parecido a un slang (forma de hablar o una “expresión”).   
-11. Epizeuxis o palilogia.  
-12. Paronomasia, paranomasia,1 agnominación,2 adnominación,3 annominación,4 o prosonomasia,5.  
-13. [**Diatriba**](http://lema.rae.es/drae/?val=diatriba).  Discurso violento y usualmente injuria o censura alguien o algo | Método argumentativo de auto preguntas y respuestas (Ej. Jesús en el Sermón del Monte y Pablo en Romanos)  
-14. [**Coercitivo, va**.](http://dle.rae.es/?id=9eGGHXS) 1\. adj. Que sirve para forzar la voluntad o la conducta de alguien. || adj. Represivo, inhibitorio.   
-15. [**Exégesis**](http://lema.rae.es/drae/?val=ex%C3%A9gesis). Explicación o interpretación de algo especialmente un texto Bíblico.   
-16. Exegeta. El que interpreta.  
-17. Doctrina. **1\.** f. Enseñanza que se da para instrucción de alguien.  
-18. [**Herejía**](http://dle.rae.es/?w=herej%C3%ADa). 1\. f. En relación con una doctrina religiosa, error sostenido con pertinacia.  
-19. [**Axiomático**](http://dle.rae.es/?id=4bO6PH0). Incontrovertible, evidente.  
-    1. [**Axioma**](http://dle.rae.es/?id=4bL5Q4V). Proposición tan clara y evidente que se admite sin demostración. **||** uno de los principios fundamentales e indemostrables sobre los que se construye una teoría.   
-20. [**Corolario**](http://dle.rae.es?w=corolario)**.**  1\. m. Proposición que no necesita prueba particular y se deduce con facilidad de lo demostrado previamente.  
-21. Traducción  
-22. [Transliteración](https://es.wikipedia.org/wiki/Wikipedia:Transliteraci%C3%B3n_y_transcripci%C3%B3n). Representar los signos de un sistema de escritura mediante los signos de otro.  
-    1. [Transliteración](http://dle.rae.es?w=transliterar), una representación exacta mediante alfabeto latino de los **signos usados en la otra lengua** para escribir dicha palabra (incluyendo convenciones arbitrarias y caprichosas que esa lengua use para su ortografía). Ej. *Amen, Apostol, Angel, Blasfemia, Satan, Bautismo*.  
-    2. **Transcripción**.  Una representación aproximada mediante el alfabeto latino y la **interpretación fonética** usual de las letras de la pronunciación del nombre en su lengua original. Jeohva   
-    3. correspondencias. Ej. *Jeohvá,*   
-23. **Teologúmenon** (del griego \[*theologeîn*\], hablar de Dios o de las cosas divinas \[*theologoumenon*\] es el part. pas. de dicho verbo) significa literalmente lo dicho de Dios o de las cosas divinas. Como término técnico, teologumenon se emplea para expresar aquellos conceptos funcionales que son fruto de la reflexión teológica y que sirven en teología para sistematizar las aproximaciones teóricas a los acontecimientos salvíficos o a la [praxis](https://es.wikipedia.org/wiki/Praxis) cristiana
+12. Doctrina. **1\.** f. Enseñanza que se da para instrucción de alguien.  
+13. [**Herejía**](http://dle.rae.es/?w=herej%C3%ADa). 1\. f. En relación con una doctrina religiosa, error sostenido con pertinacia.  
+14. [**Axiomático**](http://dle.rae.es/?id=4bO6PH0). Incontrovertible, evidente.  
+    1. [**Axioma**](http://dle.rae.es/?id=4bL5Q4V). Proposición tan clara y evidente que se admite sin demostración. **\|\|** uno de los principios fundamentales e indemostrables sobre los que se construye una teoría.   
+15. [**Corolario**](http://dle.rae.es?w=corolario)**.**  1\. m. Proposición que no necesita prueba particular y se deduce con facilidad de lo demostrado previamente.  
+    1. Traducción  
+    2. [Transliteración](https://es.wikipedia.org/wiki/Wikipedia:Transliteraci%C3%B3n_y_transcripci%C3%B3n). Representar los signos de un sistema de escritura mediante los signos de otro.  
+       1. [Transliteración](http://dle.rae.es?w=transliterar), una representación exacta mediante alfabeto latino de los **signos usados en la otra lengua** para escribir dicha palabra (incluyendo convenciones arbitrarias y caprichosas que esa lengua use para su ortografía). Ej. *Amen, Apostol, Angel, Blasfemia, Satan, Bautismo*.  
+       2. **Transcripción**.  Una representación aproximada mediante el alfabeto latino y la **interpretación fonética** usual de las letras de la pronunciación del nombre en su lengua original. Jeohva   
+       3. correspondencias. Ej. *Jeohvá,* 
 
-24. # **Terminus technicus**. es una expresión proveniente del latín (terminus \= mojón, límite, término y technicus \= artístico, técnico) que originariamente significa palabra o expresión artística A partir de la filosofía medieval terminus significa tanto como concepto, pero esta mas vinculado a la palabra que lo expresa Por terminus technicus se entiende hoy todo tecnicismo, toda palabra o expresión fija usada por los especialistas de una área determinada de la ciencia o del saber humano.
+    3. # **Terminus technicus**. es una expresión proveniente del latín (terminus \= mojón, límite, término y technicus \= artístico, técnico) que originariamente significa palabra o expresión artística A partir de la filosofía medieval terminus significa tanto como concepto, pero esta mas vinculado a la palabra que lo expresa Por terminus technicus se entiende hoy todo tecnicismo, toda palabra o expresión fija usada por los especialistas de una área determinada de la ciencia o del saber humano.
 
-25. Plausible  
-26. Verosímil 
+16. [**Teología**](https://es.wikipedia.org/wiki/Teolog%C3%ADa)**. Términos propios del estudio de Dios y de la doctrina cristiana.**  
+    1. Doctrina. **1\.** f. Enseñanza que se da para instrucción de alguien.  
+    2. [**Herejía**](http://dle.rae.es/?w=herej%C3%ADa). 1\. f. En relación con una doctrina religiosa, error sostenido con pertinacia.  
+    3. **Teologúmenon** (del griego \[*theologeîn*\], hablar de Dios o de las cosas divinas \[*theologoumenon*\] es el part. pas. de dicho verbo) significa literalmente lo dicho de Dios o de las cosas divinas. Como término técnico, teologumenon se emplea para expresar aquellos conceptos funcionales que son fruto de la reflexión teológica y que sirven en teología para sistematizar las aproximaciones teóricas a los acontecimientos salvíficos o a la [praxis](https://es.wikipedia.org/wiki/Praxis) cristiana
+
+17. # **Terminus technicus**. es una expresión proveniente del latín (terminus \= mojón, límite, término y technicus \= artístico, técnico) que originariamente significa palabra o expresión artística A partir de la filosofía medieval terminus significa tanto como concepto, pero esta mas vinculado a la palabra que lo expresa Por terminus technicus se entiende hoy todo tecnicismo, toda palabra o expresión fija usada por los especialistas de una área determinada de la ciencia o del saber humano.
+
+18. Plausible  
+19. Verosímil 
 
 	  
 	  

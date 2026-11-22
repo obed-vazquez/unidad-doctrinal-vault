@@ -1,5 +1,3 @@
-# Tab 1
-
 ## La Naturaleza de Dios — Posiciones sobre la Trinidad
 
 1. **Hay más de un Dios: Padre, Hijo y Espíritu Santo son seres divinos distintos e independientes.**  
@@ -115,8 +113,6 @@
          5) Lógica en contra: "el Trinitarismo es lógicamente contradictorio: 1+1+1=3, no 1" — el Trinitarismo nunca suma personas como si fueran unidades equivalentes de un mismo nivel de análisis. La unidad es de *esencia* (*ousía*); la pluralidad es de *subsistencias personales* (*hypostaseis*). Es una distinción de categoría, no una contradicción: el mismo ser puede ser uno en un sentido y tres en otro sentido diferente. La paradoja es aparente, no real.
 
    
-
-# Tab 2
 
 ## La Naturaleza de Dios — Posiciones sobre la Trinidad
 

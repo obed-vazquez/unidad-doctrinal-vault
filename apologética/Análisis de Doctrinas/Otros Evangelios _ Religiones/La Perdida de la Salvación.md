@@ -79,12 +79,12 @@
   * **R:** No se refiere a tenerla y descuidarla. Está hablando más bien a los judíos, aclarando que la salvación ya no es más una promesa, sino una realidad y muchos judíos cumplían con sus obligaciones religiosas solo por compromiso. Declarando que es necesario que busquen esa salvación.  
 * [He 3:6](http://bible.com/149/heb.3.6) **“ ...si retenemos firme hasta el fin la confianza...”**. Solo si retenemos la confianza, Cristo será nuestro señor.  
   * **R:** El versículo menciona la casa del hijo [haciendo referencia](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit#heading=h.vfyqtg79sgyu) a la iglesia como pueblo de Dios. Un cuadro popularmente identificado de la iglesia es el pueblo de Israel haciendo siempre el símil con la iglesia de Cristo, en este caso, [posterior a este versículo](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit#heading=h.dsl4fojxivju) se hace referencia a este símil confirmando lo argumentado.  
-* Gálatas 5:1 RVR1960 \[1\] Estad, pues, firmes en la libertad con que Cristo nos hizo libres, y no estéis otra vez sujetos al yugo de esclavitud.  https://bible.com/bible/149/gal.5.1.RVR1960  
+* Gálatas 5:1 RVR1960 \[1\] Estad, pues, firmes en la libertad con que Cristo nos hizo libres, y no estéis otra vez sujetos al yugo de esclavitud.  https\://bible.com/bible/149/gal.5.1.RVR1960  
 * [He 3.14](http://bible.com/149/heb.3.14) **“...con tal que retengamos firme hasta el fin nuestra confianza del principio,”**   
   * **R:** Estos versículos están hablando en sentido autoritativo de la iglesia, con una aplicación directa de [la pérdida de esta autoridad](https://docs.google.com/document/d/1s0MpHWO5iozY9LF4OCmELEqtovC0x2TbI2QEZwj51MM/pub#h.7gh0bycofs0), como en los capítulos anteriores. En el versículo 7-14 da una referencia ilustrativa de cómo también antes Dios excluye a un grupo de personas de “su casa” (≡ su pueblo) donde, para este tema, sienta un precedente.  
     * Traducción detallada
 
-      * ###### **porque a \[causa de alguien somos hechos (posiblemente con profundidad)\] \[asociados o con parte en\] el Mesías, solo si \[literal o figurativamente sostenemos abajo o sujetamos\] \[literal o figurativamente Estable\] hasta \[la META, objetivo, resultado, propósito o IMPUESTO($)\] EL \[figurativamente, y subjetiva u objetivamente Soporte o Certeza\] DE \[ Lo que fue encargado inicialmente por una autoridad o alto rango\]**
+      * ###### **porque a \[causa de alguien somos hechos (posiblemente con profundidad)\] \[asociados o con parte en\] el Mesías, solo si \[literal o figurativamente sostenemos abajo o sujetamos\] \[literal o figurativamente Estable\] hasta \[la META, objetivo, resultado, propósito o IMPUESTO(\$)\] EL \[figurativamente, y subjetiva u objetivamente Soporte o Certeza\] DE \[ Lo que fue encargado inicialmente por una autoridad o alto rango\]**
 
     * Posible traducción resumida:
 
@@ -159,12 +159,12 @@
 
   * [Ro 4.4-5](http://bible.com/149/rom.4.4-5) **“Pero al que obra, no se le cuenta el salario como gracia ... mas al que no obra, sino cree ... su fe le es contada por justicia”**;   
   * [2Tim 1.9](http://bible.com/149/2ti.1.9) **“quien nos salvó... no conforme a nuestras obras”**;  
-  * [Ef 2.8](http://bible.com/149/ef.2.8) **“Porque por gracia sois salvos ... y esto no de vosotros, pues es don de Dios;”** La salvación es un [regalo inmerecido](http://lema.rae.es/drae/?val=gracia). Cuando un banco “regala” una casa pero aclara que se cobrará determinada cantidad ($) por mes y si no se paga ese monto, la casa será revocada, esa casa en cuestión deja de ser un regalo.  
+  * [Ef 2.8](http://bible.com/149/ef.2.8) **“Porque por gracia sois salvos ... y esto no de vosotros, pues es don de Dios;”** La salvación es un [regalo inmerecido](http://lema.rae.es/drae/?val=gracia). Cuando un banco “regala” una casa pero aclara que se cobrará determinada cantidad (\$) por mes y si no se paga ese monto, la casa será revocada, esa casa en cuestión deja de ser un regalo.  
   * Si la obra de alguno se quemare, él sufrirá pérdida, si bien él mismo será salvo, aunque así como por fuego.  
     1 Corintios 3:15 RVR1960  
-    https://bible.com/bible/149/1co.3.15.RVR1960
+    https\://bible.com/bible/149/1co.3.15.RVR1960
 
-* #### Una vez siendo hijo|salvo no es posible regresar al estado anterior
+* #### Una vez siendo hijo\|salvo no es posible regresar al estado anterior
 
   * [Heb 9.26](http://bible.com/149/heb.9.26) **“De otra manera le hubiera sido necesario padecer muchas veces desde el principio del mundo; pero ... se presentó una vez ... para quitar ... el pecado.”**;  
   * [La eternidad](https://docs.google.com/document/d/1uq74d8cFP-33rNOwWLPsxfOCS8QXZ3KbbawpqoT2O5c/pub#h.d2fn6ftxvz1s) del regalo implica claramente que es imposible regresar.  

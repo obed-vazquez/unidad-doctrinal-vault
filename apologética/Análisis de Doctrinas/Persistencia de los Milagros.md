@@ -37,4 +37,4 @@ milagro:
       2. ### **Ideas y metáforas**
 
 Pendiente de analizar  
-	[http://willie75.files.wordpress.com/2011/01/un-breve-estudio-sobre-los-milagros-por-willie-alvarenga.pdf](http://willie75.files.wordpress.com/2011/01/un-breve-estudio-sobre-los-milagros-por-willie-alvarenga.pdf)
+	[http\://willie75.files.wordpress.com/2011/01/un-breve-estudio-sobre-los-milagros-por-willie-alvarenga.pdf](http://willie75.files.wordpress.com/2011/01/un-breve-estudio-sobre-los-milagros-por-willie-alvarenga.pdf)

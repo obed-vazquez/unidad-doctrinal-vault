@@ -30,7 +30,8 @@ El formato base ([plantilla](https://docs.google.com/document/d/1zUgZG1SGVwml32s
 
 2. # Definición
 
-   1. **\<Nombre Idea1\>** . Descripción corta y subjetiva de la idea/doctrina vista desde la misma postura, en caso de tener alguna especificación o definición etimológica, puede incluirse aquí mismo si es corta o generar un apartado previo en caso de querer extenderse. Se elabora y expande en la idea o doctrina en caso de que sea necesario, que se pueden realizar contrastes y comparativas con su contraparte en caso de que se vea conveniente.   
+   1. **\<Nombre Idea1\>** . Descripción acotada y usualmente  subjetiva de la idea/doctrina vista desde la misma postura, en caso de tener alguna especificación o definición etimológica, puede incluirse aquí mismo si es corta o generar un apartado previo en caso de querer extenderse. Se elabora y expande en la idea o doctrina solo en caso de que sea necesario, se pueden realizar contrastes y comparativas con su contraparte solo en caso de que se vea conveniente. Es muy recomendable que a la hora de dar exegesis en esta sección se haga no solo referencia sino se indique la liga directa a las [reglas de interpretación de la hermenéutica](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit?tab=t.0#heading=h.9oialyrlvrgv) que se están usando (idealmente del documento especificado para esto [Hermenéutica - Análisis y Estudio de la Biblia](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit?tab=t.0#heading=h.9oialyrlvrgv)).  
+      1. R: Esta sería la sección de replicas y se argumentaría en base al punto que se está contrargumentando. Con el mismo tipo de principios.  
    2. **\<Nombre Idea2\>** . Descripción corta y subjetiva de la idea/doctrina vista desde la misma postura, en caso de tener alguna especificación o definición etimológica, puede incluirse aquí mismo si es corta o generar un apartado previo en caso de querer extenderse. Se elabora y expande en la idea o doctrina en caso de que sea necesario, que se pueden realizar contrastes y comparativas con su contraparte en caso de que se vea conveniente.  
 3. [Conclusiones del Análisis](https://docs.google.com/document/d/1zUgZG1SGVwml32sjcJDtgy_pWHs6cUtdV40hdh1aank/edit#) (*en caso de que ya se tengan*)
 
@@ -40,7 +41,7 @@ El formato base ([plantilla](https://docs.google.com/document/d/1zUgZG1SGVwml32s
 
       1. ### Versiculos
 
-         1) # [Mt 25:10-12](https://bible.com/es/149/mat.25.10-12.rvr1960) *“...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”*; \<Argumentación\>
+         1) # [Mt 25:10-12](https://bible.com/es/149/mat.25.10-12.rvr1960) *“...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”*; \<Argumentación con el uso de [una regla especifica de hermenéutica](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit?tab=t.0#heading=h.9oialyrlvrgv)\>
 
             1) # **R:** \<Réplica\> [¿De qué está hablando?](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit#heading=h.dsl4fojxivju) 
 

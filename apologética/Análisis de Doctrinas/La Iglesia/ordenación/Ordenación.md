@@ -1,5 +1,3 @@
-# Argumentacion
-
 ## Ordenación \[Folder, Base, Pub\] \[Example(IVA)\]
 
 Pendiente: *agregar este documento al [Indice Apologética ](https://docs.google.com/document/d/1LxyofZ2BeOeSJShwQvTTopcj7No_c8sHXRQzJ4nqI7g/edit?tab=t.0#heading=h.h0nhe5t3glz1)*
@@ -29,9 +27,9 @@ Pendiente: *agregar este documento al [Indice Apologética ](https://docs.google
 
          4) .
 
-         5) # [Mt 25:10-12](https://bible.com/es/149/mat.25.10-12.rvr1960) **“...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”**; \<Argumentación\>
+         5) # [Mt 25:10-12](https://bible.com/es/149/mat.25.10-12.rvr1960) “...vinieron también las otras vírgenes, diciendo: ¡Señor, señor, ábrenos\! Mas él, respondiendo, dijo: De cierto os digo, que no os conozco.”; \<Argumentación\>
 
-            1) # **R:** \<Réplica\> [¿De qué está hablando?](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit#heading=h.dsl4fojxivju) 
+            1) # R: \<Réplica\> [¿De qué está hablando?](https://docs.google.com/document/d/1FXKIY3CK6KZdfb9sqWI6Srx2iSa8t3nyUeP-VvUmQZo/edit#heading=h.dsl4fojxivju) 
 
                1) **R:** \<Contraréplica\> 
 
@@ -63,115 +61,114 @@ Pendiente: *agregar este documento al [Indice Apologética ](https://docs.google
 
 6. # Pendiente: Agregar código QR al documento
 
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	
+     
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	  
+   	
 
-# Claudia
+   # ¿Debe la ordenación ser realizada necesariamente por una pluralidad de líderes con puesto oficial y activo?
 
-# ¿Debe la ordenación ser realizada necesariamente por una pluralidad de líderes con puesto oficial y activo?
+   ## Contexto histórico
 
-## Contexto histórico
-
-### La pluralidad de oficiales activos es necesaria
+   ### La pluralidad de oficiales activos es necesaria
 
 - Ignacio de Antioquía, a principios del siglo II, insiste repetidamente en que nada se haga en la iglesia sin el obispo, el presbiterio (el cuerpo de ancianos) y los diáconos actuando conjuntamente como una unidad reconocible — una de las primeras evidencias postapostólicas de que la pluralidad ministerial constituida se entendía como el marco normal del gobierno eclesiástico.  
 - El Canon 4 del Concilio de Nicea (325 d.C.) estableció formalmente que la ordenación de un obispo debía ser realizada "por todos los obispos de la provincia" o, si esto era impracticable, por no menos de tres, con el consentimiento escrito de los ausentes — institucionalizando el requisito de pluralidad para ese oficio específico.  

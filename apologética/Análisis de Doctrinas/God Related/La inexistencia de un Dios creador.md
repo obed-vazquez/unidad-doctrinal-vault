@@ -1,4 +1,4 @@
-## La inexistencia de un Dios creador \[[Carpeta de Drive](https://drive.google.com/drive/folders/0B-9PnaxsQwDUflFhbllybmlsNXFOdEVEcWZTdGdldmczdUItZThIaWlPRlItOEpuODJrNjQ?resourcekey=0-M3dgCmePUPiZJ9kSabiE3A), [Aportar/Editar](https://docs.google.com/document/d/1339QVOcet4Ibz2QdSUyH_oF2Fjj_-N7NnZWPVnPJD1w/edit), [Página Web](https://docs.google.com/document/d/e/2PACX-1vTa1bij1w5K_JNxKymWIkUb8SA67MJJapYnsEnxCS9YQSfXWsjyuP4AYBTD7ZdEltb1P6DjweCjMCQF/pub)\] 
+## La inexistencia de un Fundamento Último \[[Carpeta de Drive](https://drive.google.com/drive/folders/0B-9PnaxsQwDUflFhbllybmlsNXFOdEVEcWZTdGdldmczdUItZThIaWlPRlItOEpuODJrNjQ?resourcekey=0-M3dgCmePUPiZJ9kSabiE3A), [Aportar/Editar](https://docs.google.com/document/d/1339QVOcet4Ibz2QdSUyH_oF2Fjj_-N7NnZWPVnPJD1w/edit), [Página Web](https://docs.google.com/document/d/e/2PACX-1vTa1bij1w5K_JNxKymWIkUb8SA67MJJapYnsEnxCS9YQSfXWsjyuP4AYBTD7ZdEltb1P6DjweCjMCQF/pub)\] 
 
 1. # Contexto
 
@@ -44,7 +44,6 @@
 
   * R: Otras explicaciones como una regresión infinita y ... \- podrían ser posibles.  
   * R: Puede haber otras explicaciones que no requieren una causa en el sentido en que se plantea.   
-    * Regresión infinita. Una secuencia infinita de causas o estados pasados, una cadena de causas que nunca termina; cada estado del universo depende de uno anterior, sin un primer origen.  
     * La objeción inductivista al principio de causalidad. El principio de causalidad no es una verdad a priori, sino una generalización inductiva obtenida de la experiencia. Como toda experiencia posible presupone la existencia del tiempo, la validez del principio queda epistemológicamente restringida a ese dominio. En consecuencia, su aplicación al origen del tiempo carece de una justificación empírica independiente.  
     * Que cada parte del universo tenga una causa no implica que el universo como un todo tenga una causa.  
     * R: El **Escepticismo Radical** presenta varios problemas ya concluidos:  
@@ -53,6 +52,7 @@
       * Regreso al infinito: si toda creencia necesita justificación y toda justificación necesita otra, nunca se llega a fundamento alguno (problema que ya señalaba el trilema de Agripa).   
       * Coherentismo/fundacionalismo como respuestas: hay creencias básicas (autoevidentes o perceptuales) que no requieren prueba externa.  
       * Inconsistencia práctica: nadie vive realmente como escéptico radical (Hume lo reconoció: la vida cotidiana obliga a actuar con base en creencias).  
+    * Regresión infinita. Una secuencia infinita de causas o estados pasados, una cadena de causas que nunca termina; cada estado del universo depende de uno anterior, sin un primer origen.  
     * R: EL proceso por el cual el humano toma decisiones no es influenciado por este tipo de argumentos; en otras palabras, cuando alguien “cree”, “está convencido” o “tiene certeza” de algo, no requiere nunca la **certeza absoluta** que el argumento describe. La posibilidad lógica de estar equivocado no implica que no podamos tener conocimiento  
 * Cosmológico Kalam (incluye el argumento contra el infinito temporal). El pasado no puede ser una sucesión infinita de eventos reales, porque un número infinito no puede completarse paso a paso. Como el universo tuvo un inicio real en el pasado, necesita una causa que no esté limitada por el tiempo.  
   * **R**: Hume nos menciona que (1988) “*Todos nuestros razonamientos acerca de los hechos son de la misma naturaleza. Y en ellos se supone constantemente que hay una conexión entre el hecho presente y el que se infiere de él*”. Básicamente habla sobre el razonamiento de hecho comparado con un razonamiento de idea. P49  
@@ -172,7 +172,7 @@
 
      2. ### Ideas o metáforas
 
-        1) https://www.tiktok.com/t/ZTkWK3YbC/
+        1) https\://www\.tiktok.com/t/ZTkWK3YbC/
 
 	  
 	  

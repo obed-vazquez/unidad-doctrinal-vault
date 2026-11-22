@@ -21,7 +21,7 @@ Aquí las conclusiones de este análisis.
             * **R:** Judas aunque no fuese salvo es un recordatorio de que en la Iglesia hay personas que aunque esten bautizados no son hijos de Dios. El bautismo y membresía en una iglesia aunque están relacionadas con la salvación no tiene influencia directa (se puede ser miembro de una iglesia sin ser salvo o ser salvo sin ser miembro de una iglesia). el punto a destacar es la naturaleza del Bautismo, [pues el Bautismo es el primer acto de obediencia en el Servicio al Señor](https://docs.google.com/document/d/1mf6jvOZTSrflieoQznCpgqYfQxqyOnMJ1XV8yyNVgec/edit#heading=h.8xxbk9v947tg). Judas aunque no era hijo tenía membresía en la Iglesia de Cristo y seguramente había hecho una profesión de fe (de boca), es decir era uno de los que Cristo había llamado y enseñaba. Con esto se intenta reafirmar que el bautismo es requisito para tomar la Santa Cena.  
               1. Pendiente: Pero hay algunos de vosotros que no creen. Porque Jesús sabía desde el principio quiénes eran los que no creían, y quién le había de entregar.  
                  S.Juan 6:64 RVR1960  
-                 http://bible.com/149/jhn.6.64.RVR1960  
+                 http\://bible.com/149/jhn.6.64.RVR1960  
          2. Si  [Ef 4.4-6](https://bible.com/149/eph.4.4-6.rvr1960) "hay un solo cuerpo y un solo Espíritu ... una esperanza ... un solo Señor, una sola fe, un solo bautismo, un solo Dios y Padre de todos", ¿cómo podemos prohibir a los hermanos y hermanas con quienes compartimos todo esto de participar de la Cena del Señor?  
             * **R:** XD
 
@@ -84,7 +84,7 @@ Aquí las conclusiones de este análisis.
          3. Debemos observar el ejemplo de nuestro Salvador en la institución de la Cena. Él invitó solo a sus discípulos escogidos, a estos encargo la ordenanza como símbolos de su amor y sacrificio para ser recordado por los mismos.  
          4. Éxodo 12:46 RVR1960  
             \[46\] Se comerá en una casa, y no llevarás de aquella carne fuera de ella, ni quebraréis hueso suyo.   
-            https://bible.com/bible/149/exo.12.46.RVR1960
+            https\://bible.com/bible/149/exo.12.46.RVR1960
 
       2. #### **Ideas o Metáforas**
 

@@ -1,4 +1,2 @@
-# Desarrollo
-
 Postura SUD
 

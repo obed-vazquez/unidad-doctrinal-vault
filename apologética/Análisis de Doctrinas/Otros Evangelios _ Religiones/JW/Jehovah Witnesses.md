@@ -28,12 +28,12 @@
        3. **1 Corintios 15:32-33** Si como hombre batallé en Éfeso contra fieras, ¿qué me aprovecha? Si los muertos no resucitan, comamos y bebamos, porque mañana moriremos. 33No erréis; las malas conversaciones corrompen las buenas costumbres.   
     2. No existe el alma?   
        1. **1 Co 15:45** Así también está escrito: Fue hecho el primer hombre Adán alma viviente; el postrer Adán, espíritu vivificante.  
-       2. [https://bible.com/149/gen.25.7-8.rvr1960](https://bible.com/149/gen.25.7-8.rvr1960)  
+       2. [https\://bible.com/149/gen.25.7-8.rvr1960](https://bible.com/149/gen.25.7-8.rvr1960)  
 14. Dios no es ilimitado en ciencia ni presencia.  
 15. No se debe comer sangre.  
 16. La Biblia no se puede interpretar independientemente del atalaya.  
 17. La Biblia no puede interpretarse independientemente de la organización   
-    1. [http://www.4jehovah.org/es/perspectiva-de-los-testigos-de-jehova-estudios-biblicos/](http://www.4jehovah.org/es/perspectiva-de-los-testigos-de-jehova-estudios-biblicos/)  
+    1. [http\://www\.4jehovah.org/es/perspectiva-de-los-testigos-de-jehova-estudios-biblicos/](http://www.4jehovah.org/es/perspectiva-de-los-testigos-de-jehova-estudios-biblicos/)  
     2. Se puede estudiar la Biblia pero solo a través de la organización puede interpretarse.   
 18. La organización de la atalaya (Watchtower) es el embajador de Cristo hoy en día.  
 19. Qué es el armagedon?  
@@ -45,5 +45,5 @@
     3. Antes no podían tener transfusiones de órganos, pues era canibalismo.
 
 Hay que destacar solo lo importante y agregar este elemento:  
-[http://www.monografias.com/trabajos93/como-presentar-evangelio-testigos-jehova/como-presentar-evangelio-testigos-jehova.shtml](http://www.monografias.com/trabajos93/como-presentar-evangelio-testigos-jehova/como-presentar-evangelio-testigos-jehova.shtml)
+[http\://www\.monografias.com/trabajos93/como-presentar-evangelio-testigos-jehova/como-presentar-evangelio-testigos-jehova.shtml](http://www.monografias.com/trabajos93/como-presentar-evangelio-testigos-jehova/como-presentar-evangelio-testigos-jehova.shtml)
 
