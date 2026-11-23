@@ -6,21 +6,21 @@ Dos tipos de línea, ambas en lista anidada de Markdown:
 
 | Nombre de la línea    | Formato                                                                                                                                                                  | Uso                                   |
 | --------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------- |
-| Arista                | `<Respuesta> -- <Aclaración>`: `<Nombre de Postura>` {`<Tradiciónes o sistemas de creencias que sostienen la postura separados por comas>`}                              | Respuesta que produce una postura     |
-| Nodo                  | `<Nombre de Posturas separadas por &>` -> `<Pregunta>` (`<Opcionalmente la misma pregunta en formato coloquial>`)  {`<wikilink a documento de análisis de la pregunta>`} | Pegunta planteada desde esa postura   | 
+| Arista                | `<Respuesta> -- <Aclaración>`: `<Nombre de Postura>` {`<Tradiciones o sistemas de creencias que sostienen la postura separados por comas>`}                              | Respuesta que produce una postura     |
+| Nodo                  | `<Nombre de Posturas separadas por &>` -> `<Pregunta>` (`<Opcionalmente la misma pregunta en formato coloquial>`)  {`<wikilink a documento de análisis de la pregunta>`} | Pregunta planteada desde esa postura   | 
 
 La indentación expresa anidamiento. El nombre de postura repetido al inicio de la línea `->` no es redundancia: identifica desde qué nodo se hace la pregunta, y es lo que permite que una postura tenga más de una pregunta colgando.
 
 ## Notación
 - `*`   término sugerido por falta de nombre oficial (p. ej. `Historicidad de Jesús*`)
-- `?`   postura aun sin nombrar; hueco pendiente de trabajo o ausencia de uno.
+- `?`   postura aún sin nombre, o cuyo nombre se desconoce o es dudoso; no implica que esté incompleta: puede no existir un término para ella.
 - `{}`  grupo o tradición que sostiene la postura (ejemplo empírico, no definición):
   `Arrianismo de los JW (Testigos de Jehová)`, `{Islam Suní/Chiita}`
 - `[[]]` enlace wikilink a documentos de descripción/desarrollo de postura o pregunta
 - `&`   pregunta compartida por varias posturas: `Teísmo & Deísmo -> ¿Jesucristo realmente existió?`. Es un punto de convergencia: ramas distintas vuelven a unirse en un mismo nodo.
 
 ## Particularidad estructural: no es un árbol binario estricto
-Una misma postura puede tener **varias líneas `->`**, cada una abriendo un eje de decisión independiente sobre un tópico distinto. En la estructura Un nodo puede sostener dos preguntas (Aristas) paralelas que exploren dimensiones separadas y generan subárboles que no se solapan.
+Una misma postura puede tener **varias líneas `->`**, cada una abriendo un eje de decisión independiente sobre un tópico distinto. En la estructura, un nodo puede sostener dos preguntas paralelas que exploren dimensiones separadas y generan subárboles que no se solapan.
 
 Consecuencias para quien lea o edite el archivo:
 1. La ramificación en un punto (una rama origen) puede ser mayor que 2 aunque actualmente no se cuente con escenarios representativos. El grado del nodo es (número de respuestas) x (número de ejes abiertos).
@@ -34,10 +34,10 @@ Consecuencias para quien lea o edite el archivo:
 - Terminología formal, genérica y neutral: debe abarcar muchas posturas y definir solo el punto central en disputa.
 
 ## Cómo leer el árbol:
-    Arista= <Respuesta de la Pregunta y descripción implicita de la misma>: <Nombre de Postura> {<sistemas de creencias que adoptan esta postura>}
+    Arista= <Respuesta de la Pregunta y descripción implícita de la misma>: <Nombre de Postura> {<sistemas de creencias que adoptan esta postura>}
     Nodo= <Nombre de Postura> -> <Pregunta hacia la Postura>
-    Un * en el nombre de la postura significa que es un termino sugerido debido a falta de un término oficial.
-    Un ? en el nombre de la postura significa que no se cuenta actualmente con un nombre de la misma o se tiene duda; no significa que este incompleto, es posible que no exista un termino para el mismo.
+    Un * en el nombre de la postura significa que es un término sugerido debido a falta de un término oficial.
+    Un ? en el nombre de la postura significa que no se cuenta actualmente con un nombre de la misma o se tiene duda; no significa que esté incompleto, es posible que no exista un término para el mismo.
 
 ## Regenerar el visor
 
@@ -55,13 +55,34 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
     - Creacionismo cosmológico* / Teísmo filosófico -> ¿Jesucristo realmente existió?
       - No: Miticismo
       - Sí: Historicidad de Jesús*
-        - Historicidad de Jesús* -> ¿Jesús de algúna manera, en algún momento afirmó ser igual a ese *Fundamento Último*? (¿Jesús afirmó ser Dios?)
+        - Historicidad de Jesús* -> ¿Jesús de alguna manera, en algún momento afirmó ser igual a ese *Fundamento Último*? (¿Jesús afirmó ser Dios?)
           - No: ?
+            - ? -> ¿La evidencia de los milagros de Jesús es suficiente para concluir que realmente ocurrieron?
+              - No: ? {Judaísmo moderno/liberal (académico)}
+              - Sí: ?
+                - ? -> ¿Jesucristo existió antes de su concepción humana? (¿Jesús ya existía antes de nacer?)
+                  - Sí: Arrianismo
+                    - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
+                      - Sí: Arrianismo de los JW (Testigos de Jehová)
+                      - No: Arrianismo Clásico
+                  - No: ?
+                    - ? -> ¿Dios adoptó a Jesucristo como hijo posteriormente (p. ej., en su bautismo)?
+                      - Sí: ? {Ebionismo}
+                      - No: ?
+                        - ? -> ¿Jesucristo murió en la crucifixión?
+                          - Sí: ?
+                            - ? -> ¿Jesucristo resucitó?
+                              - Sí: ? {Cristadelfianos, Unitarismo bíblico}
+                              - No: ?
+                          - No: ?
+                            - ? -> ¿Jesucristo fue crucificado?
+                              - Sí -- sobrevivió a la crucifixión: ? {Islam Ahmadí}
+                              - No: ? {Islam Suní/Chiita}
           - Sí: ?
-            - ? -> ¿La evidencia de los milagros de Jesús son suficientes para concluír que realmente ocurrieron?
+            - ? -> ¿La evidencia de los milagros de Jesús es suficiente para concluir que realmente ocurrieron?
               - No: Naturalismo cristológico*
                 - Naturalismo cristológico* -> ¿Jesús fue un profeta?
-                  - Sí: Socinianismo* {Judaísmo moderno/liberal (académico)}
+                  - Sí: Socinianismo*
                   - No: Reduccionismo histórico*
                     - Reduccionismo histórico* -> ¿Jesús fue un engañador?
                       - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
@@ -79,28 +100,25 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                       - No: Subordinacionismo
                       - Sí: Cristo-creaturismo*
                         - Cristo-creaturismo* -> ¿Fue Jesucristo en algún punto inferior y subordinado al *Fundamento Último*? (¿Fue Jesús inferior a Dios?)
-                          - No: Sin-nombre {No se identifica quién que sostenga esta postura}
+                          - No: ? {No se identifica quién sostenga esta postura}
                           - Sí: ?
                             - ? -> ¿Era Jesucristo inicialmente un ser divino?
-                              - Sí: Arrianismo
-                                - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
-                                  - Sí: Arrianismo de los JW (Testigos de Jehová)
-                                  - No: Arrianismo Clasico
+                              - Sí: ?
                               - No: Unitarismo
                                 - Unitarismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente?
                                   - Sí: Adopcionismo
-                                  - No: Unitarismo Clasico
-                                    - Unitarismo Clasico -> ¿Jesucristo llegó a morir?
-                                      - Sí: Ebionismo
-                                        - Ebionismo -> ¿Jesucristo Resucitó?
-                                          - Sí: Ebionismo Clasico
-                                          - No: Ahmadismo {Islam Ahmadí}
-                                      - No: ? {Islam Suní/Chiita}
+                                  - No: Unitarismo Clásico
+                                    - Unitarismo Clásico -> ¿Jesucristo llegó a morir?
+                                      - Sí: ?
+                                        - ? -> ¿Jesucristo resucitó?
+                                          - Sí: ?
+                                          - No: ?
+                                      - No: ?
                   - Sí: Encarnacionismo / Preexistencialismo
                     - Encarnacionismo / Preexistencialismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)
                       - No: Teología Liberal / Racionalismo Teológico?
                       - Sí: ?
-                        - ? -> ¿El reconocimiento de relevación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento es revelación divina?)
+                        - ? -> ¿El reconocimiento de revelación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento es revelación divina?)
                           - No: ?
                           - Sí: ?
                             - ? -> ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa? (¿Las cartas apostólicas son revelación divina?)
@@ -118,9 +136,12 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                 - Autoridad apostólica derivada* -> ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa? (¿El Nuevo Testamento es revelación divina?)
                                   - No: Canon neotestamentario restringido*
                                   - Sí: Canon neotestamentario pleno*
-                                    - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluír que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
+                                    - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluir que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                       - Sí: Postura de la inspiración bíblica
-                                        - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje, y todo lo que dice es completamente verdadero?
+                                        - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje?
+                                          - Sí: ?
+                                          - No: ?
+                                        - Postura de la inspiración bíblica -> ¿Todo lo que la Biblia afirma es completamente verdadero?
                                           - Sí: ?
                                           - No: ?
                                         - Postura de la inspiración bíblica -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
@@ -143,8 +164,8 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                           - No: ?
                                                       - No: ?
                                               - No: ?
-                                          - Sí: Depravación Total del hombre
-                                            - Depravación Total del hombre -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
+                                          - Sí: Pecado original
+                                            - Pecado original -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
                                               - Sí: ?
                                                 - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
                                                   - Sí: ?
@@ -155,19 +176,19 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                           - Sí: ? {Catolicismo Moderno?}
                                                           - No: ?
                                               - No -- la inocencia le da acceso al cielo y no puede pecar: ?
-                                            - Depravación Total del hombre -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
+                                            - Pecado original -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
                                               - Sí: ?
                                               - No: ?
                                                 - ? -> ¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)
                                                   - No: ?
                                                   - Sí: Conversionismo
-                                                    - Conversionismo -> ¿Es posible que el humano rechace el llamado de Dios a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado a la conversion?) { [[Monergismo.md]] }
-                                                      - No: Gracia Irresistible / Monerguismo {Calvinismo / Tradición Reformada}
-                                                        - Gracia Irresistible / Monerguismo -> ¿Es necesaria la intervención activa y directa de Dios sobre la voluntad del humano para que el humano acepte el llamado a esa conversión? (¿Dios tiene una elección incondicional de sus santos?)
-                                                          - Sí: ?
-                                                          - No: ?
-                                                      - Sí: Gracia Resistible / Sinerguismo {Arminianismo / Metodismo}
-                                                        - Gracia Resistible / Sinerguismo -> Si al humano le falta 1 de estos elementos puede tener esa conversión? Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)
+                                                    - Conversionismo -> ¿Es posible que el humano rechace el llamado de Dios a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado a la conversión?) { [[Monergismo.md]] }
+                                                      - No: Gracia Irresistible / Monergismo {Calvinismo / Tradición Reformada}
+                                                        - Gracia Irresistible / Monergismo -> ¿La elección de quiénes reciben ese llamado se basa únicamente en la voluntad de Dios, y no en algo previsto en el humano (fe, obras o mérito)? (¿Dios tiene una elección incondicional de sus santos?)
+                                                          - Sí: Elección incondicional
+                                                          - No: Elección condicional
+                                                      - Sí: Gracia Resistible / Sinergismo {Arminianismo / Metodismo}
+                                                        - Gracia Resistible / Sinergismo -> ¿Si al humano le falta 1 de estos elementos, puede tener esa conversión?: Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)?
                                                           - Sí: ?
                                                           - No: ?
                                                             - ? -> ¿El humano tiene esa transformación solo hasta el punto del bautismo y es en ese momento cuando ocurre esa conversión?
@@ -181,12 +202,12 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                           - No -- la Biblia fue inspirada parcialmente: Inspiracionalismo Limitado
                                             - Inspiracionalismo Limitado -> ¿Cuál es, en este sentido, el límite o la extensión de la inspiración?
                                               - Ciertos Hechos o Dichos de los apóstoles fueron inspirados: Inspiracionalismo Limitado Selectivo
-                                              - Ciertas Secciónes (físicas) de la Biblia: Inspiracionalismo Limitado Parcial
+                                              - Ciertas Secciones (físicas) de la Biblia: Inspiracionalismo Limitado Parcial
                                               - Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado): ?
                                         - Postura de la inspiración bíblica -> ¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)
                                           - Sí: Inspiracionalismo Verbal
                                           - No: Inspiracionalismo Dinámico / Conceptual
-                                        - Postura de la inspiración bíblica -> ¿Dios dictó directamente palabra por palabra a escribir a sus escritores, sin que estos aportaran sus propias palabras? (¿Dios dictó cada palabra de lo que se tenía que escribir?)
+                                        - Postura de la inspiración bíblica -> ¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)? (¿El escritor fue solo un instrumento, como quien escribe un dictado?)
                                           - Sí: Inspiracionalismo Mecánico / Dictado
                                           - No: Inspiracionalismo Orgánico / Concursal / Confluente
                                             - Inspiracionalismo Plenario & Inspiracionalismo Verbal & Inspiracionalismo Orgánico / Concursal / Confluente -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los tópicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
@@ -196,27 +217,30 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                         - ? -> ¿El autor humano, al escribir, pudo haber introducido en lo que la Escritura afirma como verdadero y normativo algo que no corresponde a lo que Dios quiso comunicar? (¿Se les pudo colar a los autores algún error u opinión propia al escribir la Biblia?)
                                           - Sí: ?
                                           - No: Postura de la inspiración bíblica
-                    - Encarnacionismo / Pre-existencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
+                    - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                       - No: Homoiousianismo / Semi-Arrianismo
                       - Sí: Consustancialismo
-                        - Consustancialismo -> ¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?) { [[Modalismo]] }
-                          - Sí: Modalismo / Unicitarismo / Unicitarianismo
-                          - No -- Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina: Trinitarianismo/Trinitarismo
-                            - Trinitarianismo/Trinitarismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?
-                              - No (solo apariencia): Docetismo
-                              - Sí: ?
-                                - ? -> ¿Jesús tuvo una mente/alma humana racional completa?
-                                  - No: Apolinarismo
+                        - Consustancialismo -> ¿Esa igualdad en sustancia con Dios es eterna —sin principio— y no adquirida a partir de algún momento (como su concepción, bautismo, resurrección o exaltación)? (¿Jesús siempre fue Dios?)
+                          - Sí: Consustancialismo eterno*
+                            - Consustancialismo eterno* -> ¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?) { [[Modalismo]] }
+                              - Sí: Modalismo / Unicitarismo / Unicitarianismo
+                              - No -- Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina: Trinitarianismo/Trinitarismo
+                                - Trinitarianismo/Trinitarismo -> ¿Jesús tuvo un cuerpo y naturaleza humana real?
+                                  - No (solo apariencia): Docetismo
                                   - Sí: ?
-                                    - ? -> ¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)
-                                      - No: Dualidad hipostática de Cristo* {Nestorianismo}
-                                      - Sí: Monoprosopismo
-                                        - Monoprosopismo -> ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)
-                                          - Sí -- subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino: Monofisismo / Eutiquianismo
-                                          - No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo / Miafisismo
-                                            - Diofisismo / Calcedonianismo / Miafisismo -> En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
-                                              - No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
-                                              - Sí -- el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {Ortodoxia calcedonense}
+                                    - ? -> ¿Jesús tuvo una mente/alma humana racional completa?
+                                      - No: Apolinarismo
+                                      - Sí: ?
+                                        - ? -> ¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)
+                                          - No: Dualidad hipostática de Cristo* {Nestorianismo}
+                                          - Sí: Monoprosopismo
+                                            - Monoprosopismo -> ¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)
+                                              - Sí -- subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino: Monofisismo / Eutiquianismo
+                                              - No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre: Diofisismo / Calcedonianismo / Miafisismo
+                                                - Diofisismo / Calcedonianismo / Miafisismo -> En el Getsemaní Cristo pedía al Padre pasará la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
+                                                  - No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
+                                                  - Sí -- el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {Ortodoxia calcedonense}
+                          - No -- la adquirió en algún momento: ?
   - No: Cosmología no creacionista*
     - Cosmología no creacionista* -> ¿Los elementos que conforman el cosmos que conocemos siempre han existido, sin haber sido causados por nada más? (¿El cosmos es eterno y nada lo causó?)
       - Sí: Eternidad incausada del cosmos*
@@ -225,7 +249,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
             - ? -> ¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)
               - Sí: Panenteísmo / Demiurgo platónico / creatio ex materia
                 - Panenteísmo / Demiurgo platónico / creatio ex materia -> ¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?
-                  - No, Existen otras fuentes confiables que lo afirman: ?
+                  - No -- Existen otras fuentes confiables que lo afirman: ?
                   - Sí: ?
               - No: Panteísmo
             - ? -> ¿El *Fundamento Último* está compuesto de dos partes, una que piensa (mente) y otra que no piensa (materia o cuerpo)? (¿El Fundamento Último tiene una parte con mente y otra que no?)
