@@ -61,10 +61,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
               - No: ? {Judaísmo moderno/liberal (académico)}
               - Sí: ?
                 - ? -> ¿Jesucristo existió antes de su concepción humana? (¿Jesús ya existía antes de nacer?)
-                  - Sí: Arrianismo
-                    - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
-                      - Sí: Arrianismo de los JW (Testigos de Jehová)
-                      - No: Arrianismo Clásico
+                  - Sí: Preexistencialismo*
+                    - Preexistencialismo* -> ¿Fue Jesucristo la primera y más alta de las criaturas, de rango superior a toda otra, y por medio de la cual se hizo todo lo demás? (¿Jesús fue la primera criatura?)
+                      - Sí: Arrianismo
+                        - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
+                          - Sí: Arrianismo de los JW (Testigos de Jehová)
+                          - No: Arrianismo Clásico
+                      - No: ?
                   - No: Psilantropismo
                     - Psilantropismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente (p. ej., en su bautismo)?
                       - Sí: Adopcionismo {Ebionismo}
@@ -72,7 +75,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                         - ? -> ¿Jesucristo murió en la crucifixión?
                           - Sí: ?
                             - ? -> ¿Jesucristo resucitó?
-                              - Sí: ? {Cristadelfianos, Unitarismo bíblico}
+                              - Sí: Socinianismo {Cristadelfianos, Unitarismo bíblico}
                               - No: ?
                           - No: ?
                             - ? -> ¿Jesucristo fue crucificado?
@@ -82,13 +85,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
             - ? -> ¿La evidencia de los milagros de Jesús es suficiente para concluir que realmente ocurrieron?
               - No: Naturalismo cristológico*
                 - Naturalismo cristológico* -> ¿Jesús fue un profeta?
-                  - Sí: Socinianismo*
+                  - Sí: Profetismo naturalista*
                   - No: Reduccionismo histórico*
                     - Reduccionismo histórico* -> ¿Jesús fue un engañador?
                       - Sí: Postura del Impostor {Judaísmo rabínico/talmúdico}
                       - No: ?
                         - ? -> ¿Jesús fue solo un sabio?
-                          - Sí: ?
+                          - Sí: Postura del Maestro moral*
                           - No: ?
                             - ? -> ¿Jesús fue solamente una persona confundida?
                               - Sí: Postura del Lunático
@@ -114,17 +117,17 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                           - Sí: ?
                                           - No: ?
                                       - No: ?
-                  - Sí: Encarnacionismo / Preexistencialismo
-                    - Encarnacionismo / Preexistencialismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)
+                  - Sí: Encarnacionismo
+                    - Encarnacionismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)
                       - No: Teología Liberal / Racionalismo Teológico?
                       - Sí: ?
                         - ? -> ¿El reconocimiento de revelación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento es revelación divina?)
-                          - No: ?
-                          - Sí: ?
-                            - ? -> ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa? (¿Las cartas apostólicas son revelación divina?)
+                          - No: Canon veterotestamentario restringido*
+                          - Sí: Canon veterotestamentario pleno*
+                            - Canon veterotestamentario pleno* -> ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa? (¿Las cartas apostólicas son revelación divina?)
                               - No: ?
                                 - ? -> ¿Solo las palabras de Jesús dentro del Nuevo Testamento son autoritativas?
-                                  - Sí: ?
+                                  - Sí: Cristianismo de letras rojas*
                                   - No: ?
                                 - ? -> ¿Dios intensificó la percepción espiritual de los autores del Nuevo Testamento sin comunicarles el contenido de lo que escribirían y lo que reciben de Dios no difiere en especie de lo que recibe cualquier creyente, siendo el resultado un producto mismo del escritor siendo simplemente elevado? (¿Dios solo ayudó a los escritores del NT a percibir mejor al escribir?)
                                   - Sí: Postura de la Iluminación Divina (teoría de la iluminación o mística)
@@ -140,10 +143,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                       - Sí: Postura de la inspiración bíblica
                                         - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje?
                                           - Sí: Perspicuidad de las Escrituras
+                                            - Perspicuidad de las Escrituras -> ¿Esa claridad se extiende a todo lo que la Biblia enseña, y no solo a lo necesario para la salvación? (¿Toda la Biblia es clara, o solo el mensaje de salvación?)
+                                              - Sí: Perspicuidad plena*
+                                              - No -- la claridad abarca al menos lo necesario para la salvación, no todos los pasajes: Perspicuidad salvífica*
                                           - No: ?
                                         - Postura de la inspiración bíblica -> ¿Todo lo que la Biblia afirma es completamente verdadero?
                                           - Sí: Inerrancia bíblica
-                                          - No: ?
+                                          - No: Errancia bíblica*
                                         - Postura de la inspiración bíblica -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
                                           - Sí: Infalibilidad de la Iglesia
                                           - No: Sola Scriptura
@@ -173,8 +179,8 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                       - Sí: Limbo de los niños {Catolicismo Ortodoxo?}
                                                       - No: ?
                                                         - ? -> ¿El no haber recibido el bautismo lo deja condenado al Infierno?
-                                                          - Sí: ? {Catolicismo Moderno?}
-                                                          - No: ?
+                                                          - Sí: Condenación de los infantes no bautizados* {Catolicismo Moderno?}
+                                                          - No: Esperanza de salvación de los infantes no bautizados*
                                               - No -- la inocencia le da acceso al cielo y no puede pecar: Edad de responsabilidad
                                             - Pecado original -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
                                               - Sí: ?
@@ -217,7 +223,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                         - ? -> ¿El autor humano, al escribir, pudo haber introducido en lo que la Escritura afirma como verdadero y normativo algo que no corresponde a lo que Dios quiso comunicar? (¿Se les pudo colar a los autores algún error u opinión propia al escribir la Biblia?)
                                           - Sí: ?
                                           - No: Postura de la inspiración bíblica
-                    - Encarnacionismo / Preexistencialismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
+                    - Encarnacionismo -> ¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)
                       - No: Homoiousianismo / Semi-Arrianismo
                       - Sí: Consustancialismo
                         - Consustancialismo -> ¿Esa igualdad en sustancia con Dios es eterna —sin principio— y no adquirida a partir de algún momento (como su concepción, bautismo, resurrección o exaltación)? (¿Jesús siempre fue Dios?)
@@ -240,7 +246,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                                 - Diofisismo / Calcedonianismo / Miafisismo -> En el Getsemaní Cristo pedía al Padre pasará la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
                                                   - No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
                                                   - Sí -- el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {Ortodoxia calcedonense}
-                          - No -- la adquirió en algún momento: ?
+                          - No -- la adquirió en algún momento: Consustancialismo adquirido*
   - No: Cosmología no creacionista*
     - Cosmología no creacionista* -> ¿Los elementos que conforman el cosmos que conocemos siempre han existido, sin haber sido causados por nada más? (¿El cosmos es eterno y nada lo causó?)
       - Sí: Eternidad incausada del cosmos*
