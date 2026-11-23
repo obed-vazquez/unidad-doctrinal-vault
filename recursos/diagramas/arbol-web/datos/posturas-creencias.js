@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-11-23T20:38:40Z",
+  "generated_at": "2026-11-23T20:42:52Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -46,7 +46,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P127",
+          "target_posture_id": "P125",
           "source_line": 244
         }
       ]
@@ -226,7 +226,7 @@ window.__ARBOL_POSTURAS__ = {
         "P10"
       ],
       "origin_labels": [
-        "?"
+        "Psilantropismo"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -541,7 +541,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P43",
+          "target_posture_id": "P42",
           "source_line": 117
         }
       ]
@@ -665,7 +665,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P37",
+          "target_posture_id": "P11",
           "source_line": 109
         },
         {
@@ -673,7 +673,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P38",
+          "target_posture_id": "P37",
           "source_line": 110
         }
       ]
@@ -685,7 +685,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Jesucristo llegó a morir?",
       "source_line": 111,
       "origin_posture_ids": [
-        "P38"
+        "P37"
       ],
       "origin_labels": [
         "Unitarismo Clásico"
@@ -698,7 +698,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P39",
+          "target_posture_id": "P38",
           "source_line": 112
         },
         {
@@ -706,7 +706,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P42",
+          "target_posture_id": "P41",
           "source_line": 116
         }
       ]
@@ -718,7 +718,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Jesucristo resucitó?",
       "source_line": 113,
       "origin_posture_ids": [
-        "P39"
+        "P38"
       ],
       "origin_labels": [
         "?"
@@ -731,7 +731,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P40",
+          "target_posture_id": "P39",
           "source_line": 114
         },
         {
@@ -739,7 +739,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P41",
+          "target_posture_id": "P40",
           "source_line": 115
         }
       ]
@@ -751,7 +751,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)",
       "source_line": 118,
       "origin_posture_ids": [
-        "P43",
+        "P42",
         "P31"
       ],
       "origin_labels": [
@@ -766,7 +766,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P44",
+          "target_posture_id": "P43",
           "source_line": 119
         },
         {
@@ -774,7 +774,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P45",
+          "target_posture_id": "P44",
           "source_line": 120
         }
       ]
@@ -786,7 +786,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El reconocimiento de revelación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento es revelación divina?)",
       "source_line": 121,
       "origin_posture_ids": [
-        "P45"
+        "P44"
       ],
       "origin_labels": [
         "?"
@@ -799,7 +799,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P46",
+          "target_posture_id": "P45",
           "source_line": 122
         },
         {
@@ -807,7 +807,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P47",
+          "target_posture_id": "P46",
           "source_line": 123
         }
       ]
@@ -819,7 +819,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa? (¿Las cartas apostólicas son revelación divina?)",
       "source_line": 124,
       "origin_posture_ids": [
-        "P47"
+        "P46"
       ],
       "origin_labels": [
         "?"
@@ -832,7 +832,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P48",
+          "target_posture_id": "P47",
           "source_line": 125
         },
         {
@@ -840,7 +840,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P55",
+          "target_posture_id": "P54",
           "source_line": 135
         }
       ]
@@ -852,7 +852,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Solo las palabras de Jesús dentro del Nuevo Testamento son autoritativas?",
       "source_line": 126,
       "origin_posture_ids": [
-        "P48"
+        "P47"
       ],
       "origin_labels": [
         "?"
@@ -865,7 +865,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P49",
+          "target_posture_id": "P48",
           "source_line": 127
         },
         {
@@ -873,7 +873,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P50",
+          "target_posture_id": "P49",
           "source_line": 128
         }
       ]
@@ -885,7 +885,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Dios intensificó la percepción espiritual de los autores del Nuevo Testamento sin comunicarles el contenido de lo que escribirían y lo que reciben de Dios no difiere en especie de lo que recibe cualquier creyente, siendo el resultado un producto mismo del escritor siendo simplemente elevado? (¿Dios solo ayudó a los escritores del NT a percibir mejor al escribir?)",
       "source_line": 129,
       "origin_posture_ids": [
-        "P48"
+        "P47"
       ],
       "origin_labels": [
         "?"
@@ -898,7 +898,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P51",
+          "target_posture_id": "P50",
           "source_line": 130
         },
         {
@@ -906,7 +906,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P52",
+          "target_posture_id": "P51",
           "source_line": 131
         }
       ]
@@ -918,7 +918,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Los autores neotestamentarios fueron simplemente genios religiosos, en principio no distintos de otros grandes pensadores y no hubo alguna acción especial de parte de Dios al escribir la Biblia? (¿El Nuevo Testamento es creación humana?)",
       "source_line": 132,
       "origin_posture_ids": [
-        "P52"
+        "P51"
       ],
       "origin_labels": [
         "?"
@@ -931,7 +931,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P53",
+          "target_posture_id": "P52",
           "source_line": 133
         },
         {
@@ -939,7 +939,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P54",
+          "target_posture_id": "P53",
           "source_line": 134
         }
       ]
@@ -951,7 +951,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa? (¿El Nuevo Testamento es revelación divina?)",
       "source_line": 136,
       "origin_posture_ids": [
-        "P55"
+        "P54"
       ],
       "origin_labels": [
         "Autoridad apostólica derivada*"
@@ -964,7 +964,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P56",
+          "target_posture_id": "P55",
           "source_line": 137
         },
         {
@@ -972,7 +972,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P57",
+          "target_posture_id": "P56",
           "source_line": 138
         }
       ]
@@ -984,7 +984,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluir que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)",
       "source_line": 139,
       "origin_posture_ids": [
-        "P57"
+        "P56"
       ],
       "origin_labels": [
         "Canon neotestamentario pleno*"
@@ -997,7 +997,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P58",
+          "target_posture_id": "P57",
           "source_line": 140
         },
         {
@@ -1005,7 +1005,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P109",
+          "target_posture_id": "P107",
           "source_line": 216
         }
       ]
@@ -1017,7 +1017,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La Biblia es clara y sin ambigüedades en su mensaje?",
       "source_line": 141,
       "origin_posture_ids": [
-        "P58"
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1030,7 +1030,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P59",
+          "target_posture_id": "P58",
           "source_line": 142
         },
         {
@@ -1038,7 +1038,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P60",
+          "target_posture_id": "P59",
           "source_line": 143
         }
       ]
@@ -1050,7 +1050,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Todo lo que la Biblia afirma es completamente verdadero?",
       "source_line": 144,
       "origin_posture_ids": [
-        "P58"
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1063,7 +1063,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P61",
+          "target_posture_id": "P60",
           "source_line": 145
         },
         {
@@ -1071,7 +1071,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P62",
+          "target_posture_id": "P61",
           "source_line": 146
         }
       ]
@@ -1083,7 +1083,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?",
       "source_line": 147,
       "origin_posture_ids": [
-        "P58"
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1096,7 +1096,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P63",
+          "target_posture_id": "P62",
           "source_line": 148
         },
         {
@@ -1104,7 +1104,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P64",
+          "target_posture_id": "P63",
           "source_line": 149
         }
       ]
@@ -1116,7 +1116,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una \"Naturaleza pecaminosa\"?)",
       "source_line": 150,
       "origin_posture_ids": [
-        "P58"
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1129,7 +1129,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**",
           "gloss": "El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**",
-          "target_posture_id": "P65",
+          "target_posture_id": "P64",
           "source_line": 151
         },
         {
@@ -1137,7 +1137,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P76",
+          "target_posture_id": "P75",
           "source_line": 167
         }
       ]
@@ -1149,7 +1149,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)",
       "source_line": 152,
       "origin_posture_ids": [
-        "P65"
+        "P64"
       ],
       "origin_labels": [
         "?"
@@ -1162,7 +1162,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P66",
+          "target_posture_id": "P65",
           "source_line": 153
         },
         {
@@ -1170,7 +1170,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P67",
+          "target_posture_id": "P66",
           "source_line": 154
         }
       ]
@@ -1182,7 +1182,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?",
       "source_line": 155,
       "origin_posture_ids": [
-        "P65"
+        "P64"
       ],
       "origin_labels": [
         "?"
@@ -1195,7 +1195,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P68",
+          "target_posture_id": "P67",
           "source_line": 156
         },
         {
@@ -1203,7 +1203,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P75",
+          "target_posture_id": "P74",
           "source_line": 166
         }
       ]
@@ -1215,7 +1215,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Después de pecar el humano conserva la capacidad de hacer el bien posteriormente, aun si no tiene el perdón de Dios?",
       "source_line": 157,
       "origin_posture_ids": [
-        "P68"
+        "P67"
       ],
       "origin_labels": [
         "?"
@@ -1228,7 +1228,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P69",
+          "target_posture_id": "P68",
           "source_line": 158
         },
         {
@@ -1236,7 +1236,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P70",
+          "target_posture_id": "P69",
           "source_line": 159
         }
       ]
@@ -1247,6 +1247,39 @@ window.__ARBOL_POSTURAS__ = {
       "colloquial_hint": null,
       "full_text": "¿Después de pecar, al pedir perdón a Dios, el humano es perdonado y gana derecho a entrar al cielo al morir?",
       "source_line": 160,
+      "origin_posture_ids": [
+        "P69"
+      ],
+      "origin_labels": [
+        "?"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P70",
+          "source_line": 161
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P73",
+          "source_line": 165
+        }
+      ]
+    },
+    "Q39": {
+      "id": "Q39",
+      "formal_text": "¿El volver a pecar remueve del humano el derecho a entrar al cielo?",
+      "colloquial_hint": null,
+      "full_text": "¿El volver a pecar remueve del humano el derecho a entrar al cielo?",
+      "source_line": 162,
       "origin_posture_ids": [
         "P70"
       ],
@@ -1262,39 +1295,6 @@ window.__ARBOL_POSTURAS__ = {
           "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P71",
-          "source_line": 161
-        },
-        {
-          "key": "B",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P74",
-          "source_line": 165
-        }
-      ]
-    },
-    "Q39": {
-      "id": "Q39",
-      "formal_text": "¿El volver a pecar remueve del humano el derecho a entrar al cielo?",
-      "colloquial_hint": null,
-      "full_text": "¿El volver a pecar remueve del humano el derecho a entrar al cielo?",
-      "source_line": 162,
-      "origin_posture_ids": [
-        "P71"
-      ],
-      "origin_labels": [
-        "?"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P72",
           "source_line": 163
         },
         {
@@ -1302,7 +1302,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P73",
+          "target_posture_id": "P72",
           "source_line": 164
         }
       ]
@@ -1314,7 +1314,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)",
       "source_line": 168,
       "origin_posture_ids": [
-        "P76"
+        "P75"
       ],
       "origin_labels": [
         "Pecado original"
@@ -1327,7 +1327,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P77",
+          "target_posture_id": "P76",
           "source_line": 169
         },
         {
@@ -1335,7 +1335,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- la inocencia le da acceso al cielo y no puede pecar",
           "gloss": "la inocencia le da acceso al cielo y no puede pecar",
-          "target_posture_id": "P83",
+          "target_posture_id": "P65",
           "source_line": 178
         }
       ]
@@ -1347,10 +1347,10 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)",
       "source_line": 170,
       "origin_posture_ids": [
-        "P77"
+        "P76"
       ],
       "origin_labels": [
-        "?"
+        "Culpa original"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1360,7 +1360,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P78",
+          "target_posture_id": "P77",
           "source_line": 171
         }
       ]
@@ -1372,10 +1372,10 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El no haber recibido el bautismo lo deja condenado al Limbo?",
       "source_line": 172,
       "origin_posture_ids": [
-        "P78"
+        "P77"
       ],
       "origin_labels": [
-        "?"
+        "Regeneración bautismal"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1385,7 +1385,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P79",
+          "target_posture_id": "P78",
           "source_line": 173
         },
         {
@@ -1393,7 +1393,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P80",
+          "target_posture_id": "P79",
           "source_line": 174
         }
       ]
@@ -1405,7 +1405,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El no haber recibido el bautismo lo deja condenado al Infierno?",
       "source_line": 175,
       "origin_posture_ids": [
-        "P80"
+        "P79"
       ],
       "origin_labels": [
         "?"
@@ -1418,7 +1418,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P81",
+          "target_posture_id": "P80",
           "source_line": 176
         },
         {
@@ -1426,7 +1426,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P82",
+          "target_posture_id": "P81",
           "source_line": 177
         }
       ]
@@ -1438,7 +1438,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)",
       "source_line": 179,
       "origin_posture_ids": [
-        "P76"
+        "P75"
       ],
       "origin_labels": [
         "Pecado original"
@@ -1451,7 +1451,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P84",
+          "target_posture_id": "P82",
           "source_line": 180
         },
         {
@@ -1459,7 +1459,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P85",
+          "target_posture_id": "P83",
           "source_line": 181
         }
       ]
@@ -1471,7 +1471,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Después de pecar el ser humano necesita una transformación/conversión/regeneración espiritual para entrar al cielo? (¿Se necesita una conversión para entrar al cielo?)",
       "source_line": 182,
       "origin_posture_ids": [
-        "P85"
+        "P83"
       ],
       "origin_labels": [
         "?"
@@ -1484,7 +1484,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P86",
+          "target_posture_id": "P84",
           "source_line": 183
         },
         {
@@ -1492,7 +1492,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P87",
+          "target_posture_id": "P85",
           "source_line": 184
         }
       ]
@@ -1504,7 +1504,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Es posible que el humano rechace el llamado de Dios a recibir la gracia que le lleva a esa conversión? (¿Puede el hombre resistir el llamado a la conversión?)",
       "source_line": 185,
       "origin_posture_ids": [
-        "P87"
+        "P85"
       ],
       "origin_labels": [
         "Conversionismo"
@@ -1524,7 +1524,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P88",
+          "target_posture_id": "P86",
           "source_line": 186
         },
         {
@@ -1532,7 +1532,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P91",
+          "target_posture_id": "P89",
           "source_line": 190
         }
       ]
@@ -1544,7 +1544,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La elección de quiénes reciben ese llamado se basa únicamente en la voluntad de Dios, y no en algo previsto en el humano (fe, obras o mérito)? (¿Dios tiene una elección incondicional de sus santos?)",
       "source_line": 187,
       "origin_posture_ids": [
-        "P88"
+        "P86"
       ],
       "origin_labels": [
         "Gracia Irresistible / Monergismo"
@@ -1557,7 +1557,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P89",
+          "target_posture_id": "P87",
           "source_line": 188
         },
         {
@@ -1565,7 +1565,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P90",
+          "target_posture_id": "P88",
           "source_line": 189
         }
       ]
@@ -1577,7 +1577,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Si al humano le falta 1 de estos elementos, puede tener esa conversión?: Escuchar el evangelio, Creer en el evangelio, tener Fe en Cristo Jesús, Entregarle su vida a Dios por completo (Arrepentimiento), Invocar el nombre de Dios (pedir ayuda)?",
       "source_line": 191,
       "origin_posture_ids": [
-        "P91"
+        "P89"
       ],
       "origin_labels": [
         "Gracia Resistible / Sinergismo"
@@ -1590,7 +1590,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P92",
+          "target_posture_id": "P90",
           "source_line": 192
         },
         {
@@ -1598,7 +1598,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P93",
+          "target_posture_id": "P91",
           "source_line": 193
         }
       ]
@@ -1610,7 +1610,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El humano tiene esa transformación solo hasta el punto del bautismo y es en ese momento cuando ocurre esa conversión?",
       "source_line": 194,
       "origin_posture_ids": [
-        "P93"
+        "P91"
       ],
       "origin_labels": [
         "?"
@@ -1623,7 +1623,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P94",
+          "target_posture_id": "P92",
           "source_line": 195
         },
         {
@@ -1631,7 +1631,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P95",
+          "target_posture_id": "P93",
           "source_line": 196
         }
       ]
@@ -1643,7 +1643,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El volver a pecar después de esa conversión remueve del humano el derecho a entrar al cielo?",
       "source_line": 197,
       "origin_posture_ids": [
-        "P87"
+        "P85"
       ],
       "origin_labels": [
         "Conversionismo"
@@ -1663,7 +1663,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P96",
+          "target_posture_id": "P94",
           "source_line": 198
         },
         {
@@ -1671,7 +1671,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P97",
+          "target_posture_id": "P95",
           "source_line": 199
         }
       ]
@@ -1683,7 +1683,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Debe entenderse que la inspiración divina de la Biblia fue plena y se extendió a la totalidad de las Escrituras, de modo que cada una de sus partes y todo lo que los autores bíblicos escribieron quedó comprendido bajo la acción inspiradora de Dios? (¿Cada parte de la Biblia fue inspirada?)",
       "source_line": 200,
       "origin_posture_ids": [
-        "P58"
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1703,7 +1703,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P98",
+          "target_posture_id": "P96",
           "source_line": 201
         },
         {
@@ -1711,7 +1711,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- la Biblia fue inspirada parcialmente",
           "gloss": "la Biblia fue inspirada parcialmente",
-          "target_posture_id": "P99",
+          "target_posture_id": "P97",
           "source_line": 202
         }
       ]
@@ -1723,7 +1723,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Cuál es, en este sentido, el límite o la extensión de la inspiración?",
       "source_line": 203,
       "origin_posture_ids": [
-        "P99"
+        "P97"
       ],
       "origin_labels": [
         "Inspiracionalismo Limitado"
@@ -1736,7 +1736,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Ciertos Hechos o Dichos de los apóstoles fueron inspirados",
           "full_label": "Ciertos Hechos o Dichos de los apóstoles fueron inspirados",
           "gloss": null,
-          "target_posture_id": "P100",
+          "target_posture_id": "P98",
           "source_line": 204
         },
         {
@@ -1744,7 +1744,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Ciertas Secciones (físicas) de la Biblia",
           "full_label": "Ciertas Secciones (físicas) de la Biblia",
           "gloss": null,
-          "target_posture_id": "P101",
+          "target_posture_id": "P99",
           "source_line": 205
         },
         {
@@ -1752,7 +1752,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Cierto Contenido o Temas fueron inspirados",
           "full_label": "Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado)",
           "gloss": "(por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado)",
-          "target_posture_id": "P102",
+          "target_posture_id": "P100",
           "source_line": 206
         }
       ]
@@ -1764,7 +1764,40 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?)",
       "source_line": 207,
       "origin_posture_ids": [
-        "P58"
+        "P57"
+      ],
+      "origin_labels": [
+        "Postura de la inspiración bíblica"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P101",
+          "source_line": 208
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P102",
+          "source_line": 209
+        }
+      ]
+    },
+    "Q54": {
+      "id": "Q54",
+      "formal_text": "¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)?",
+      "colloquial_hint": "¿El escritor fue solo un instrumento, como quien escribe un dictado?",
+      "full_text": "¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)? (¿El escritor fue solo un instrumento, como quien escribe un dictado?)",
+      "source_line": 210,
+      "origin_posture_ids": [
+        "P57"
       ],
       "origin_labels": [
         "Postura de la inspiración bíblica"
@@ -1778,39 +1811,6 @@ window.__ARBOL_POSTURAS__ = {
           "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P103",
-          "source_line": 208
-        },
-        {
-          "key": "B",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P104",
-          "source_line": 209
-        }
-      ]
-    },
-    "Q54": {
-      "id": "Q54",
-      "formal_text": "¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)?",
-      "colloquial_hint": "¿El escritor fue solo un instrumento, como quien escribe un dictado?",
-      "full_text": "¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)? (¿El escritor fue solo un instrumento, como quien escribe un dictado?)",
-      "source_line": 210,
-      "origin_posture_ids": [
-        "P58"
-      ],
-      "origin_labels": [
-        "Postura de la inspiración bíblica"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P105",
           "source_line": 211
         },
         {
@@ -1818,7 +1818,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P106",
+          "target_posture_id": "P104",
           "source_line": 212
         }
       ]
@@ -1830,9 +1830,9 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los tópicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)",
       "source_line": 213,
       "origin_posture_ids": [
-        "P98",
-        "P103",
-        "P106"
+        "P96",
+        "P101",
+        "P104"
       ],
       "origin_labels": [
         "Inspiracionalismo Plenario",
@@ -1847,7 +1847,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P107",
+          "target_posture_id": "P105",
           "source_line": 214
         },
         {
@@ -1855,7 +1855,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P108",
+          "target_posture_id": "P106",
           "source_line": 215
         }
       ]
@@ -1867,7 +1867,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El autor humano, al escribir, pudo haber introducido en lo que la Escritura afirma como verdadero y normativo algo que no corresponde a lo que Dios quiso comunicar? (¿Se les pudo colar a los autores algún error u opinión propia al escribir la Biblia?)",
       "source_line": 217,
       "origin_posture_ids": [
-        "P109"
+        "P107"
       ],
       "origin_labels": [
         "?"
@@ -1880,7 +1880,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P110",
+          "target_posture_id": "P108",
           "source_line": 218
         },
         {
@@ -1888,7 +1888,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P58",
+          "target_posture_id": "P57",
           "source_line": 219
         }
       ]
@@ -1900,7 +1900,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Fue Jesús, en algún momento, en sustancia, igual a Dios y, por tanto, poseyó una naturaleza divina? (¿Dios es la misma sustancia que Jesús?)",
       "source_line": 220,
       "origin_posture_ids": [
-        "P43"
+        "P42"
       ],
       "origin_labels": [
         "Encarnacionismo / Preexistencialismo"
@@ -1913,7 +1913,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P111",
+          "target_posture_id": "P109",
           "source_line": 221
         },
         {
@@ -1921,7 +1921,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P112",
+          "target_posture_id": "P110",
           "source_line": 222
         }
       ]
@@ -1933,7 +1933,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Esa igualdad en sustancia con Dios es eterna —sin principio— y no adquirida a partir de algún momento (como su concepción, bautismo, resurrección o exaltación)? (¿Jesús siempre fue Dios?)",
       "source_line": 223,
       "origin_posture_ids": [
-        "P112"
+        "P110"
       ],
       "origin_labels": [
         "Consustancialismo"
@@ -1946,7 +1946,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P113",
+          "target_posture_id": "P111",
           "source_line": 224
         },
         {
@@ -1954,7 +1954,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- la adquirió en algún momento",
           "gloss": "la adquirió en algún momento",
-          "target_posture_id": "P126",
+          "target_posture_id": "P124",
           "source_line": 243
         }
       ]
@@ -1966,7 +1966,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El Padre y el Hijo no son sujetos personalmente distintos, ni coexisten simultánea y eternamente, ni pueden relacionarse entre sí como un yo y un tú, pues son un único sujeto que se manifiesta sucesivamente bajo distintos modos o papeles? (¿Dios se transformó en Jesucristo y cuando habla con el Padre no habla con otra persona de la Trinidad, sino consigo mismo?)",
       "source_line": 225,
       "origin_posture_ids": [
-        "P113"
+        "P111"
       ],
       "origin_labels": [
         "Consustancialismo eterno*"
@@ -1986,7 +1986,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P114",
+          "target_posture_id": "P112",
           "source_line": 226
         },
         {
@@ -1994,7 +1994,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
           "gloss": "Aunque sean 2 personas distintas, ambos comparten una misma e idéntica sustancia divina",
-          "target_posture_id": "P115",
+          "target_posture_id": "P113",
           "source_line": 227
         }
       ]
@@ -2006,7 +2006,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Jesús tuvo un cuerpo y naturaleza humana real?",
       "source_line": 228,
       "origin_posture_ids": [
-        "P115"
+        "P113"
       ],
       "origin_labels": [
         "Trinitarianismo/Trinitarismo"
@@ -2019,7 +2019,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No (solo apariencia)",
           "gloss": "solo apariencia",
-          "target_posture_id": "P116",
+          "target_posture_id": "P114",
           "source_line": 229
         },
         {
@@ -2027,7 +2027,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P117",
+          "target_posture_id": "P115",
           "source_line": 230
         }
       ]
@@ -2038,6 +2038,39 @@ window.__ARBOL_POSTURAS__ = {
       "colloquial_hint": null,
       "full_text": "¿Jesús tuvo una mente/alma humana racional completa?",
       "source_line": 231,
+      "origin_posture_ids": [
+        "P115"
+      ],
+      "origin_labels": [
+        "?"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P116",
+          "source_line": 232
+        },
+        {
+          "key": "B",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P117",
+          "source_line": 233
+        }
+      ]
+    },
+    "Q62": {
+      "id": "Q62",
+      "formal_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas?",
+      "colloquial_hint": "¿Es la misma persona quien perdonó pecados y quien murió en la cruz?",
+      "full_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)",
+      "source_line": 234,
       "origin_posture_ids": [
         "P117"
       ],
@@ -2053,39 +2086,6 @@ window.__ARBOL_POSTURAS__ = {
           "full_label": "No",
           "gloss": null,
           "target_posture_id": "P118",
-          "source_line": 232
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P119",
-          "source_line": 233
-        }
-      ]
-    },
-    "Q62": {
-      "id": "Q62",
-      "formal_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas?",
-      "colloquial_hint": "¿Es la misma persona quien perdonó pecados y quien murió en la cruz?",
-      "full_text": "¿Las actividades atribuidas a la naturaleza divina (existir eternamente, hacer milagros, perdonar pecados) y aquellas atribuidas a la naturaleza humana (descansar, aprender, sufrir, morir) son atribuidas a una sola *hipóstasis* (sujeto personal), Jesucristo, sin que existan en él dos *hipóstasis* (sujetos personales) distintas que impliquen que lo que hace o padece la naturaleza humana no pueda atribuirse propiamente al sujeto divino, es decir, la misma *hipóstasis* (sujeto personal), Jesucristo, es quien perdona pecados y quien muere, aunque lo primero corresponda a su naturaleza divina y lo segundo a su naturaleza humana, y no a dos *hipóstasis* (sujetos personales) distintas? (¿Es la misma persona quien perdonó pecados y quien murió en la cruz?)",
-      "source_line": 234,
-      "origin_posture_ids": [
-        "P119"
-      ],
-      "origin_labels": [
-        "?"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P120",
           "source_line": 235
         },
         {
@@ -2093,7 +2093,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P121",
+          "target_posture_id": "P119",
           "source_line": 236
         }
       ]
@@ -2105,7 +2105,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿La naturaleza humana, al unirse con la divina, dejó de subsistir con sus propias propiedades —no por haber faltado, sino por haber sido transformada, absorbida o mezclada en el acto mismo de la unión—, de modo que el Cristo encarnado subsiste en una sola naturaleza, aun cuando provenga de dos? (¿la divinidad de Cristo anuló su humanidad?)",
       "source_line": 237,
       "origin_posture_ids": [
-        "P121"
+        "P119"
       ],
       "origin_labels": [
         "Monoprosopismo"
@@ -2118,7 +2118,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí -- subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
           "gloss": "subsiste en una sola naturaleza, en la que lo humano queda absorbido por lo divino",
-          "target_posture_id": "P122",
+          "target_posture_id": "P120",
           "source_line": 238
         },
         {
@@ -2126,7 +2126,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
           "gloss": "Cristo conserva su naturaleza humana, Cristo es plenamente Dios y plenamente hombre",
-          "target_posture_id": "P123",
+          "target_posture_id": "P121",
           "source_line": 239
         }
       ]
@@ -2138,7 +2138,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "En el Getsemaní Cristo pedía al Padre pasará la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)",
       "source_line": 240,
       "origin_posture_ids": [
-        "P123"
+        "P121"
       ],
       "origin_labels": [
         "Diofisismo / Calcedonianismo / Miafisismo"
@@ -2151,7 +2151,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
           "gloss": "el \"querer\" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro",
-          "target_posture_id": "P124",
+          "target_posture_id": "P122",
           "source_line": 241
         },
         {
@@ -2159,7 +2159,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí -- el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
           "gloss": "el \"querer\" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino",
-          "target_posture_id": "P125",
+          "target_posture_id": "P123",
           "source_line": 242
         }
       ]
@@ -2171,7 +2171,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Los elementos que conforman el cosmos que conocemos siempre han existido, sin haber sido causados por nada más? (¿El cosmos es eterno y nada lo causó?)",
       "source_line": 245,
       "origin_posture_ids": [
-        "P127"
+        "P125"
       ],
       "origin_labels": [
         "Cosmología no creacionista*"
@@ -2184,7 +2184,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P128",
+          "target_posture_id": "P126",
           "source_line": 246
         },
         {
@@ -2192,7 +2192,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P139",
+          "target_posture_id": "P137",
           "source_line": 262
         }
       ]
@@ -2204,7 +2204,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Lo que existe eternamente y sin causa (el *Fundamento Último*) posee mente, en su totalidad o en alguna de sus partes, de modo que piensa y conoce? (¿El Fundamento Último tiene mente y piensa?)",
       "source_line": 247,
       "origin_posture_ids": [
-        "P128"
+        "P126"
       ],
       "origin_labels": [
         "Eternidad incausada del cosmos*"
@@ -2217,7 +2217,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P129",
+          "target_posture_id": "P127",
           "source_line": 248
         },
         {
@@ -2225,7 +2225,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P136",
+          "target_posture_id": "P134",
           "source_line": 258
         }
       ]
@@ -2237,7 +2237,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)",
       "source_line": 249,
       "origin_posture_ids": [
-        "P129"
+        "P127"
       ],
       "origin_labels": [
         "?"
@@ -2250,7 +2250,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P130",
+          "target_posture_id": "P128",
           "source_line": 250
         },
         {
@@ -2258,7 +2258,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P133",
+          "target_posture_id": "P131",
           "source_line": 254
         }
       ]
@@ -2270,7 +2270,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?",
       "source_line": 251,
       "origin_posture_ids": [
-        "P130"
+        "P128"
       ],
       "origin_labels": [
         "Panenteísmo / Demiurgo platónico / creatio ex materia"
@@ -2283,7 +2283,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- Existen otras fuentes confiables que lo afirman",
           "gloss": "Existen otras fuentes confiables que lo afirman",
-          "target_posture_id": "P131",
+          "target_posture_id": "P129",
           "source_line": 252
         },
         {
@@ -2291,7 +2291,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P132",
+          "target_posture_id": "P130",
           "source_line": 253
         }
       ]
@@ -2303,7 +2303,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El *Fundamento Último* está compuesto de dos partes, una que piensa (mente) y otra que no piensa (materia o cuerpo)? (¿El Fundamento Último tiene una parte con mente y otra que no?)",
       "source_line": 255,
       "origin_posture_ids": [
-        "P129"
+        "P127"
       ],
       "origin_labels": [
         "?"
@@ -2316,7 +2316,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P134",
+          "target_posture_id": "P132",
           "source_line": 256
         },
         {
@@ -2324,7 +2324,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No -- piensa en su totalidad",
           "gloss": "piensa en su totalidad",
-          "target_posture_id": "P135",
+          "target_posture_id": "P133",
           "source_line": 257
         }
       ]
@@ -2336,7 +2336,7 @@ window.__ARBOL_POSTURAS__ = {
       "full_text": "¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado? (¿El universo siempre ha estado cambiando, sin un primer momento?)",
       "source_line": 259,
       "origin_posture_ids": [
-        "P128"
+        "P126"
       ],
       "origin_labels": [
         "Eternidad incausada del cosmos*"
@@ -2349,7 +2349,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P137",
+          "target_posture_id": "P135",
           "source_line": 260
         },
         {
@@ -2357,7 +2357,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P138",
+          "target_posture_id": "P136",
           "source_line": 261
         }
       ]
@@ -2368,6 +2368,39 @@ window.__ARBOL_POSTURAS__ = {
       "colloquial_hint": "¿El universo salió del Fundamento Último mismo?",
       "full_text": "¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él? (¿El universo salió del Fundamento Último mismo?)",
       "source_line": 263,
+      "origin_posture_ids": [
+        "P137"
+      ],
+      "origin_labels": [
+        "?"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P138",
+          "source_line": 264
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P139",
+          "source_line": 265
+        }
+      ]
+    },
+    "Q72": {
+      "id": "Q72",
+      "formal_text": "¿El cosmos surgió sin causa alguna?",
+      "colloquial_hint": "¿El universo apareció de la nada, sin que nada lo causara?",
+      "full_text": "¿El cosmos surgió sin causa alguna? (¿El universo apareció de la nada, sin que nada lo causara?)",
+      "source_line": 266,
       "origin_posture_ids": [
         "P139"
       ],
@@ -2383,39 +2416,6 @@ window.__ARBOL_POSTURAS__ = {
           "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P140",
-          "source_line": 264
-        },
-        {
-          "key": "B",
-          "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P141",
-          "source_line": 265
-        }
-      ]
-    },
-    "Q72": {
-      "id": "Q72",
-      "formal_text": "¿El cosmos surgió sin causa alguna?",
-      "colloquial_hint": "¿El universo apareció de la nada, sin que nada lo causara?",
-      "full_text": "¿El cosmos surgió sin causa alguna? (¿El universo apareció de la nada, sin que nada lo causara?)",
-      "source_line": 266,
-      "origin_posture_ids": [
-        "P141"
-      ],
-      "origin_labels": [
-        "?"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P142",
           "source_line": 267
         },
         {
@@ -2423,7 +2423,7 @@ window.__ARBOL_POSTURAS__ = {
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P143",
+          "target_posture_id": "P141",
           "source_line": 268
         }
       ]
@@ -2551,8 +2551,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P10": {
       "id": "P10",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Psilantropismo",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -2564,8 +2564,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P11": {
       "id": "P11",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Adopcionismo",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [
@@ -2656,8 +2656,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P17": {
       "id": "P17",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Teoría del desmayo",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [
@@ -2674,8 +2674,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P18": {
       "id": "P18",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Teoría de la sustitución",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [
@@ -2932,17 +2932,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P37": {
       "id": "P37",
-      "label": "Adopcionismo",
-      "is_unnamed": false,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P38": {
-      "id": "P38",
       "label": "Unitarismo Clásico",
       "is_unnamed": false,
       "is_suggested": false,
@@ -2954,8 +2943,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q21"
       ]
     },
-    "P39": {
-      "id": "P39",
+    "P38": {
+      "id": "P38",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -2966,6 +2955,17 @@ window.__ARBOL_POSTURAS__ = {
       "question_axes": [
         "Q22"
       ]
+    },
+    "P39": {
+      "id": "P39",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
     },
     "P40": {
       "id": "P40",
@@ -2991,17 +2991,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P42": {
       "id": "P42",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P43": {
-      "id": "P43",
       "label": "Encarnacionismo / Preexistencialismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3014,8 +3003,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q57"
       ]
     },
-    "P44": {
-      "id": "P44",
+    "P43": {
+      "id": "P43",
       "label": "Teología Liberal / Racionalismo Teológico?",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3025,8 +3014,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P45": {
-      "id": "P45",
+    "P44": {
+      "id": "P44",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3038,8 +3027,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q24"
       ]
     },
-    "P46": {
-      "id": "P46",
+    "P45": {
+      "id": "P45",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3049,8 +3038,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P47": {
-      "id": "P47",
+    "P46": {
+      "id": "P46",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3062,8 +3051,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q25"
       ]
     },
-    "P48": {
-      "id": "P48",
+    "P47": {
+      "id": "P47",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3075,6 +3064,17 @@ window.__ARBOL_POSTURAS__ = {
         "Q26",
         "Q27"
       ]
+    },
+    "P48": {
+      "id": "P48",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
     },
     "P49": {
       "id": "P49",
@@ -3089,17 +3089,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P50": {
       "id": "P50",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P51": {
-      "id": "P51",
       "label": "Postura de la Iluminación Divina (teoría de la iluminación o mística)",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3109,8 +3098,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P52": {
-      "id": "P52",
+    "P51": {
+      "id": "P51",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3122,8 +3111,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q28"
       ]
     },
-    "P53": {
-      "id": "P53",
+    "P52": {
+      "id": "P52",
       "label": "Postura de la Intuición Natural (o inspiración natural)",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3133,8 +3122,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P54": {
-      "id": "P54",
+    "P53": {
+      "id": "P53",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3144,8 +3133,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P55": {
-      "id": "P55",
+    "P54": {
+      "id": "P54",
       "label": "Autoridad apostólica derivada*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -3157,8 +3146,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q29"
       ]
     },
-    "P56": {
-      "id": "P56",
+    "P55": {
+      "id": "P55",
       "label": "Canon neotestamentario restringido*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -3168,8 +3157,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P57": {
-      "id": "P57",
+    "P56": {
+      "id": "P56",
       "label": "Canon neotestamentario pleno*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -3181,8 +3170,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q30"
       ]
     },
-    "P58": {
-      "id": "P58",
+    "P57": {
+      "id": "P57",
       "label": "Postura de la inspiración bíblica",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3200,6 +3189,17 @@ window.__ARBOL_POSTURAS__ = {
         "Q54"
       ]
     },
+    "P58": {
+      "id": "P58",
+      "label": "Perspicuidad de las Escrituras",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
     "P59": {
       "id": "P59",
       "label": "?",
@@ -3213,8 +3213,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P60": {
       "id": "P60",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Inerrancia bíblica",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3235,8 +3235,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P62": {
       "id": "P62",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Infalibilidad de la Iglesia",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3246,8 +3246,8 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P63": {
       "id": "P63",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Sola Scriptura",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3264,21 +3264,21 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": []
+      "question_axes": [
+        "Q35",
+        "Q36"
+      ]
     },
     "P65": {
       "id": "P65",
-      "label": "?",
-      "is_unnamed": true,
+      "label": "Edad de responsabilidad",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q35",
-        "Q36"
-      ]
+      "question_axes": []
     },
     "P66": {
       "id": "P66",
@@ -3300,7 +3300,9 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": []
+      "question_axes": [
+        "Q37"
+      ]
     },
     "P68": {
       "id": "P68",
@@ -3311,23 +3313,10 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q37"
-      ]
+      "question_axes": []
     },
     "P69": {
       "id": "P69",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P70": {
-      "id": "P70",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3339,8 +3328,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q38"
       ]
     },
-    "P71": {
-      "id": "P71",
+    "P70": {
+      "id": "P70",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3352,10 +3341,21 @@ window.__ARBOL_POSTURAS__ = {
         "Q39"
       ]
     },
-    "P72": {
-      "id": "P72",
+    "P71": {
+      "id": "P71",
       "label": "Pelagianismo",
       "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P72": {
+      "id": "P72",
+      "label": "?",
+      "is_unnamed": true,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3387,17 +3387,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P75": {
       "id": "P75",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P76": {
-      "id": "P76",
       "label": "Pecado original",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3410,10 +3399,10 @@ window.__ARBOL_POSTURAS__ = {
         "Q44"
       ]
     },
-    "P77": {
-      "id": "P77",
-      "label": "?",
-      "is_unnamed": true,
+    "P76": {
+      "id": "P76",
+      "label": "Culpa original",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3423,10 +3412,10 @@ window.__ARBOL_POSTURAS__ = {
         "Q41"
       ]
     },
-    "P78": {
-      "id": "P78",
-      "label": "?",
-      "is_unnamed": true,
+    "P77": {
+      "id": "P77",
+      "label": "Regeneración bautismal",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3436,10 +3425,10 @@ window.__ARBOL_POSTURAS__ = {
         "Q42"
       ]
     },
-    "P79": {
-      "id": "P79",
-      "label": "?",
-      "is_unnamed": true,
+    "P78": {
+      "id": "P78",
+      "label": "Limbo de los niños",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [
@@ -3454,8 +3443,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P80": {
-      "id": "P80",
+    "P79": {
+      "id": "P79",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3467,8 +3456,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q43"
       ]
     },
-    "P81": {
-      "id": "P81",
+    "P80": {
+      "id": "P80",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3481,6 +3470,17 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": []
         }
       ],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P81": {
+      "id": "P81",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
       "notes": [],
       "wikilinks": [],
       "question_axes": []
@@ -3505,7 +3505,9 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": []
+      "question_axes": [
+        "Q45"
+      ]
     },
     "P84": {
       "id": "P84",
@@ -3520,30 +3522,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P85": {
       "id": "P85",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": [
-        "Q45"
-      ]
-    },
-    "P86": {
-      "id": "P86",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P87": {
-      "id": "P87",
       "label": "Conversionismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3556,8 +3534,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q50"
       ]
     },
-    "P88": {
-      "id": "P88",
+    "P86": {
+      "id": "P86",
       "label": "Gracia Irresistible / Monergismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3579,8 +3557,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q47"
       ]
     },
-    "P89": {
-      "id": "P89",
+    "P87": {
+      "id": "P87",
       "label": "Elección incondicional",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3590,8 +3568,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P90": {
-      "id": "P90",
+    "P88": {
+      "id": "P88",
       "label": "Elección condicional",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3601,8 +3579,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P91": {
-      "id": "P91",
+    "P89": {
+      "id": "P89",
       "label": "Gracia Resistible / Sinergismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3624,10 +3602,34 @@ window.__ARBOL_POSTURAS__ = {
         "Q48"
       ]
     },
-    "P92": {
-      "id": "P92",
+    "P90": {
+      "id": "P90",
       "label": "?",
       "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P91": {
+      "id": "P91",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q49"
+      ]
+    },
+    "P92": {
+      "id": "P92",
+      "label": "Salvación Bautismal",
+      "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
@@ -3644,34 +3646,10 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q49"
-      ]
+      "question_axes": []
     },
     "P94": {
       "id": "P94",
-      "label": "Salvación Bautismal",
-      "is_unnamed": false,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P95": {
-      "id": "P95",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P96": {
-      "id": "P96",
       "label": "Perseverancia de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3694,8 +3672,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P97": {
-      "id": "P97",
+    "P95": {
+      "id": "P95",
       "label": "Preservación Condicional de los Santos",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3724,8 +3702,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P98": {
-      "id": "P98",
+    "P96": {
+      "id": "P96",
       "label": "Inspiracionalismo Plenario",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3737,8 +3715,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q55"
       ]
     },
-    "P99": {
-      "id": "P99",
+    "P97": {
+      "id": "P97",
       "label": "Inspiracionalismo Limitado",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3750,8 +3728,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q52"
       ]
     },
-    "P100": {
-      "id": "P100",
+    "P98": {
+      "id": "P98",
       "label": "Inspiracionalismo Limitado Selectivo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3761,8 +3739,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P101": {
-      "id": "P101",
+    "P99": {
+      "id": "P99",
       "label": "Inspiracionalismo Limitado Parcial",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3772,8 +3750,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P102": {
-      "id": "P102",
+    "P100": {
+      "id": "P100",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3783,8 +3761,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P103": {
-      "id": "P103",
+    "P101": {
+      "id": "P101",
       "label": "Inspiracionalismo Verbal",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3796,8 +3774,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q55"
       ]
     },
-    "P104": {
-      "id": "P104",
+    "P102": {
+      "id": "P102",
       "label": "Inspiracionalismo Dinámico / Conceptual",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3807,8 +3785,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P105": {
-      "id": "P105",
+    "P103": {
+      "id": "P103",
       "label": "Inspiracionalismo Mecánico / Dictado",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3818,8 +3796,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P106": {
-      "id": "P106",
+    "P104": {
+      "id": "P104",
       "label": "Inspiracionalismo Orgánico / Concursal / Confluente",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3831,6 +3809,28 @@ window.__ARBOL_POSTURAS__ = {
         "Q55"
       ]
     },
+    "P105": {
+      "id": "P105",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P106": {
+      "id": "P106",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
     "P107": {
       "id": "P107",
       "label": "?",
@@ -3840,7 +3840,9 @@ window.__ARBOL_POSTURAS__ = {
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": []
+      "question_axes": [
+        "Q56"
+      ]
     },
     "P108": {
       "id": "P108",
@@ -3855,30 +3857,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P109": {
       "id": "P109",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": [
-        "Q56"
-      ]
-    },
-    "P110": {
-      "id": "P110",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P111": {
-      "id": "P111",
       "label": "Homoiousianismo / Semi-Arrianismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3888,8 +3866,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P112": {
-      "id": "P112",
+    "P110": {
+      "id": "P110",
       "label": "Consustancialismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3901,8 +3879,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q58"
       ]
     },
-    "P113": {
-      "id": "P113",
+    "P111": {
+      "id": "P111",
       "label": "Consustancialismo eterno*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -3914,8 +3892,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q59"
       ]
     },
-    "P114": {
-      "id": "P114",
+    "P112": {
+      "id": "P112",
       "label": "Modalismo / Unicitarismo / Unicitarianismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3925,8 +3903,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P115": {
-      "id": "P115",
+    "P113": {
+      "id": "P113",
       "label": "Trinitarianismo/Trinitarismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3938,9 +3916,33 @@ window.__ARBOL_POSTURAS__ = {
         "Q60"
       ]
     },
+    "P114": {
+      "id": "P114",
+      "label": "Docetismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P115": {
+      "id": "P115",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q61"
+      ]
+    },
     "P116": {
       "id": "P116",
-      "label": "Docetismo",
+      "label": "Apolinarismo",
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
@@ -3959,35 +3961,11 @@ window.__ARBOL_POSTURAS__ = {
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q61"
+        "Q62"
       ]
     },
     "P118": {
       "id": "P118",
-      "label": "Apolinarismo",
-      "is_unnamed": false,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P119": {
-      "id": "P119",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": [
-        "Q62"
-      ]
-    },
-    "P120": {
-      "id": "P120",
       "label": "Dualidad hipostática de Cristo*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -4004,8 +3982,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P121": {
-      "id": "P121",
+    "P119": {
+      "id": "P119",
       "label": "Monoprosopismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4017,8 +3995,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q63"
       ]
     },
-    "P122": {
-      "id": "P122",
+    "P120": {
+      "id": "P120",
       "label": "Monofisismo / Eutiquianismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4028,8 +4006,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P123": {
-      "id": "P123",
+    "P121": {
+      "id": "P121",
       "label": "Diofisismo / Calcedonianismo / Miafisismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4041,8 +4019,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q64"
       ]
     },
-    "P124": {
-      "id": "P124",
+    "P122": {
+      "id": "P122",
       "label": "Monotelitismo / monotelismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4052,8 +4030,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P125": {
-      "id": "P125",
+    "P123": {
+      "id": "P123",
       "label": "Diotelitismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4077,8 +4055,8 @@ window.__ARBOL_POSTURAS__ = {
       ],
       "question_axes": []
     },
-    "P126": {
-      "id": "P126",
+    "P124": {
+      "id": "P124",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4088,8 +4066,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P127": {
-      "id": "P127",
+    "P125": {
+      "id": "P125",
       "label": "Cosmología no creacionista*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -4101,8 +4079,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q65"
       ]
     },
-    "P128": {
-      "id": "P128",
+    "P126": {
+      "id": "P126",
       "label": "Eternidad incausada del cosmos*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -4115,8 +4093,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q70"
       ]
     },
-    "P129": {
-      "id": "P129",
+    "P127": {
+      "id": "P127",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4129,8 +4107,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q69"
       ]
     },
-    "P130": {
-      "id": "P130",
+    "P128": {
+      "id": "P128",
       "label": "Panenteísmo / Demiurgo platónico / creatio ex materia",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4142,30 +4120,30 @@ window.__ARBOL_POSTURAS__ = {
         "Q68"
       ]
     },
+    "P129": {
+      "id": "P129",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P130": {
+      "id": "P130",
+      "label": "?",
+      "is_unnamed": true,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
     "P131": {
       "id": "P131",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P132": {
-      "id": "P132",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P133": {
-      "id": "P133",
       "label": "Panteísmo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4175,8 +4153,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P134": {
-      "id": "P134",
+    "P132": {
+      "id": "P132",
       "label": "Fundamento Último compuesto*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -4186,9 +4164,31 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
+    "P133": {
+      "id": "P133",
+      "label": "Fundamento Último unitario*",
+      "is_unnamed": false,
+      "is_suggested": true,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P134": {
+      "id": "P134",
+      "label": "Materialismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
     "P135": {
       "id": "P135",
-      "label": "Fundamento Último unitario*",
+      "label": "Regresión infinita*",
       "is_unnamed": false,
       "is_suggested": true,
       "is_uncertain": false,
@@ -4199,28 +4199,6 @@ window.__ARBOL_POSTURAS__ = {
     },
     "P136": {
       "id": "P136",
-      "label": "Materialismo",
-      "is_unnamed": false,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P137": {
-      "id": "P137",
-      "label": "Regresión infinita*",
-      "is_unnamed": false,
-      "is_suggested": true,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
-    },
-    "P138": {
-      "id": "P138",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4230,8 +4208,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P139": {
-      "id": "P139",
+    "P137": {
+      "id": "P137",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4243,8 +4221,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q71"
       ]
     },
-    "P140": {
-      "id": "P140",
+    "P138": {
+      "id": "P138",
       "label": "Emanacionismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -4261,8 +4239,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P141": {
-      "id": "P141",
+    "P139": {
+      "id": "P139",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4274,8 +4252,8 @@ window.__ARBOL_POSTURAS__ = {
         "Q72"
       ]
     },
-    "P142": {
-      "id": "P142",
+    "P140": {
+      "id": "P140",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4285,8 +4263,8 @@ window.__ARBOL_POSTURAS__ = {
       "wikilinks": [],
       "question_axes": []
     },
-    "P143": {
-      "id": "P143",
+    "P141": {
+      "id": "P141",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -4316,7 +4294,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Arminianismo",
       "aliases": [],
       "posture_ids": [
-        "P97"
+        "P95"
       ],
       "tentative": false
     },
@@ -4327,7 +4305,7 @@ window.__ARBOL_POSTURAS__ = {
         "Metodismo"
       ],
       "posture_ids": [
-        "P91"
+        "P89"
       ],
       "tentative": false
     },
@@ -4335,7 +4313,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Bautistas",
       "aliases": [],
       "posture_ids": [
-        "P96"
+        "P94"
       ],
       "tentative": false
     },
@@ -4343,7 +4321,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Calvinismo",
       "aliases": [],
       "posture_ids": [
-        "P96"
+        "P94"
       ],
       "tentative": false
     },
@@ -4354,7 +4332,7 @@ window.__ARBOL_POSTURAS__ = {
         "Tradición Reformada"
       ],
       "posture_ids": [
-        "P88"
+        "P86"
       ],
       "tentative": false
     },
@@ -4362,7 +4340,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Catolicismo Moderno",
       "aliases": [],
       "posture_ids": [
-        "P81"
+        "P80"
       ],
       "tentative": true
     },
@@ -4370,7 +4348,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Catolicismo Ortodoxo",
       "aliases": [],
       "posture_ids": [
-        "P79"
+        "P78"
       ],
       "tentative": true
     },
@@ -4435,7 +4413,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Metodismo",
       "aliases": [],
       "posture_ids": [
-        "P97"
+        "P95"
       ],
       "tentative": false
     },
@@ -4443,7 +4421,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Neoplatonismo",
       "aliases": [],
       "posture_ids": [
-        "P140"
+        "P138"
       ],
       "tentative": false
     },
@@ -4451,7 +4429,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Nestorianismo",
       "aliases": [],
       "posture_ids": [
-        "P120"
+        "P118"
       ],
       "tentative": false
     },
@@ -4467,7 +4445,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Ortodoxia calcedonense",
       "aliases": [],
       "posture_ids": [
-        "P125"
+        "P123"
       ],
       "tentative": false
     },
@@ -4475,7 +4453,7 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Pentecostalismo",
       "aliases": [],
       "posture_ids": [
-        "P97"
+        "P95"
       ],
       "tentative": false
     },
@@ -4490,9 +4468,9 @@ window.__ARBOL_POSTURAS__ = {
   },
   "stats": {
     "questions": 72,
-    "postures": 144,
+    "postures": 142,
     "traditions": 20,
-    "unnamed_postures": 78,
+    "unnamed_postures": 65,
     "convergences": 2,
     "source_lines": 268
   }

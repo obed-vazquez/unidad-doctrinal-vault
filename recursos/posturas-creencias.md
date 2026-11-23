@@ -65,9 +65,9 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                     - Arrianismo -> ¿Es Jesús identificado como el Arcángel Miguel?
                       - Sí: Arrianismo de los JW (Testigos de Jehová)
                       - No: Arrianismo Clásico
-                  - No: ?
-                    - ? -> ¿Dios adoptó a Jesucristo como hijo posteriormente (p. ej., en su bautismo)?
-                      - Sí: ? {Ebionismo}
+                  - No: Psilantropismo
+                    - Psilantropismo -> ¿Dios adoptó a Jesucristo como hijo posteriormente (p. ej., en su bautismo)?
+                      - Sí: Adopcionismo {Ebionismo}
                       - No: ?
                         - ? -> ¿Jesucristo murió en la crucifixión?
                           - Sí: ?
@@ -76,8 +76,8 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                               - No: ?
                           - No: ?
                             - ? -> ¿Jesucristo fue crucificado?
-                              - Sí -- sobrevivió a la crucifixión: ? {Islam Ahmadí}
-                              - No: ? {Islam Suní/Chiita}
+                              - Sí -- sobrevivió a la crucifixión: Teoría del desmayo {Islam Ahmadí}
+                              - No: Teoría de la sustitución {Islam Suní/Chiita}
           - Sí: ?
             - ? -> ¿La evidencia de los milagros de Jesús es suficiente para concluir que realmente ocurrieron?
               - No: Naturalismo cristológico*
@@ -139,18 +139,18 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                     - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluir que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?)
                                       - Sí: Postura de la inspiración bíblica
                                         - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje?
-                                          - Sí: ?
+                                          - Sí: Perspicuidad de las Escrituras
                                           - No: ?
                                         - Postura de la inspiración bíblica -> ¿Todo lo que la Biblia afirma es completamente verdadero?
-                                          - Sí: ?
+                                          - Sí: Inerrancia bíblica
                                           - No: ?
                                         - Postura de la inspiración bíblica -> ¿La interpretación de la Biblia requiere de un magisterio eclesiástico con autoridad infalible?
-                                          - Sí: ?
-                                          - No: ?
+                                          - Sí: Infalibilidad de la Iglesia
+                                          - No: Sola Scriptura
                                         - Postura de la inspiración bíblica -> ¿El pecado de Adán afectó a su descendencia, el humano nace muerto y con una naturaleza pecaminosa (aunque no activamente pecando)? (¿El humano nace con una "Naturaleza pecaminosa"?)
                                           - No -- El hombre nace sin pecado y con la capacidad de **hacer el bien y alcanzar el cielo**: ?
                                             - ? -> ¿**Antes del Discernimiento**, la inocencia humana le da acceso al cielo y no puede pecar? (¿Los niños van al cielo al morir?)
-                                              - Sí: ?
+                                              - Sí: Edad de responsabilidad
                                               - No: ?
                                             - ? -> ¿**Después del Discernimiento** el humano puede pecar, el primer pecado le condena al infierno?
                                               - Sí: ?
@@ -166,16 +166,16 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                               - No: ?
                                           - Sí: Pecado original
                                             - Pecado original -> ¿**Antes del Discernimiento** el humano sigue estando condenado debido a su estado de muerte (estado de “pecador”) aun sin haber cometido pecado? (¿Al morir un niño, va a un lugar diferente al cielo?)
-                                              - Sí: ?
-                                                - ? -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
-                                                  - Sí: ?
-                                                    - ? -> ¿El no haber recibido el bautismo lo deja condenado al Limbo?
-                                                      - Sí: ? {Catolicismo Ortodoxo?}
+                                              - Sí: Culpa original
+                                                - Culpa original -> ¿Es posible infundirle “gracia” (un Don divino que es posible perder) salvadora con sacramentos como el bautismo regenerador? (¿El niño debe ser bautizado para ir al cielo, pero no le asegura la entrada?)
+                                                  - Sí: Regeneración bautismal
+                                                    - Regeneración bautismal -> ¿El no haber recibido el bautismo lo deja condenado al Limbo?
+                                                      - Sí: Limbo de los niños {Catolicismo Ortodoxo?}
                                                       - No: ?
                                                         - ? -> ¿El no haber recibido el bautismo lo deja condenado al Infierno?
                                                           - Sí: ? {Catolicismo Moderno?}
                                                           - No: ?
-                                              - No -- la inocencia le da acceso al cielo y no puede pecar: ?
+                                              - No -- la inocencia le da acceso al cielo y no puede pecar: Edad de responsabilidad
                                             - Pecado original -> ¿Después del Discernimiento es posible para el humano alcanzar el cielo mediante sus buenas obras? (¿Puede un adulto ir al cielo siendo bueno?)
                                               - Sí: ?
                                               - No: ?
