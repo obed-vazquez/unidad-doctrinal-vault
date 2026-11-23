@@ -33,7 +33,8 @@
       }
     },
     "Q3": {
-      "formal": "Did Jesus claim to be God?",
+      "formal": "Did Jesus, in any way, at any time, claim to be equal to that Ultimate Foundation?",
+      "colloquial": "Did Jesus claim to be God?",
       "answers": {
         "A": {
           "label": "No"
@@ -99,7 +100,7 @@
       }
     },
     "Q9": {
-      "formal": "Do miracles (especially his resurrection) and other evidences function as signs attesting to Jesus' declared divine identity?",
+      "formal": "Do miracles (especially His resurrection) and other evidence function as confirming signs of Jesus' declared divine identity?",
       "colloquial": "Is Jesus God?",
       "answers": {
         "A": {
@@ -122,7 +123,8 @@
       }
     },
     "Q11": {
-      "formal": "Was Jesus Christ inferior and subordinate to God?",
+      "formal": "Was Jesus Christ at some point inferior and subordinate to the Ultimate Foundation?",
+      "colloquial": "Was Jesus inferior to God?",
       "answers": {
         "A": {
           "label": "No"
@@ -675,6 +677,18 @@
       }
     },
     "Q58": {
+      "formal": "Does that which exists eternally and without cause (the Ultimate Ground) possess a mind, in its entirety or in any of its parts, so that it thinks and knows?",
+      "colloquial": "Does the Ultimate Foundation have a mind and think?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q59": {
       "formal": "Was the cosmos we know formed (not created) by an “entity” with eternity?",
       "colloquial": "Was the universe formed by someone eternal?",
       "answers": {
@@ -686,7 +700,7 @@
         }
       }
     },
-    "Q59": {
+    "Q60": {
       "formal": "Is this conclusion based purely on the use of logic and philosophy?",
       "answers": {
         "A": {
@@ -698,7 +712,20 @@
         }
       }
     },
-    "Q60": {
+    "Q61": {
+      "formal": "Is the Ultimate Foundation composed of two parts, one that thinks (mind) and one that does not think (matter or body)?",
+      "colloquial": "Does the Ultimate Foundation have one part with a mind and another without?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No",
+          "gloss": "Think holistically"
+        }
+      }
+    },
+    "Q62": {
       "formal": "Does the eternal cosmos consist of a succession of states, each caused by a previous one, with no first state?",
       "colloquial": "Has the universe always been changing, without a first moment?",
       "answers": {
@@ -710,9 +737,9 @@
         }
       }
     },
-    "Q61": {
+    "Q63": {
       "formal": "Did the elements that make up the cosmos arise from the very substance of the Ultimate Foundation, and not from nothingness or from matter external to it?",
-      "colloquial": "Did the universe come from God Himself?",
+      "colloquial": "Did the universe come from the Ultimate Foundation itself?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -722,7 +749,7 @@
         }
       }
     },
-    "Q62": {
+    "Q64": {
       "formal": "Did the cosmos come into being without any cause?",
       "colloquial": "Did the universe appear out of nothing, with nothing causing it?",
       "answers": {
@@ -793,10 +820,15 @@
     "P108": "Diophysicism / Chalcedonianism / Myaphysicism",
     "P109": "Monothelitism / Monothelitism",
     "P110": "Diothelitism",
-    "P112": "Pantheism",
-    "P113": "Panentheism / Platonic Demiurge / Creatio ex materia",
-    "P117": "Infinite regression*",
-    "P120": "Emanationism",
+    "P111": "Non-creationist cosmology*",
+    "P112": "Uncaused eternity of the cosmos*",
+    "P114": "Panentheism / Platonic Demiurge / Creatio ex materia",
+    "P117": "Pantheism",
+    "P118": "Ultimate Foundation Compound*",
+    "P119": "Ultimate Unit Basis*",
+    "P120": "Materialism",
+    "P121": "Infinite regression*",
+    "P124": "Emanationism",
     "PR1": "Existence"
   },
   "traditions": {
@@ -816,8 +848,7 @@
     "Nestorianismo": "Nestorianism",
     "No se identifica quién que sostenga esta postura": "It is not identified who holds this position",
     "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
-    "Pentecostalismo": "Pentecostalism",
-    "SUD": "Sud"
+    "Pentecostalismo": "Pentecostalism"
   }
 };
 })(window);

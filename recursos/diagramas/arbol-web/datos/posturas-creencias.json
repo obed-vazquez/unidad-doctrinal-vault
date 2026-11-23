@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated_at": "2026-11-23T04:37:22Z",
+  "generated_at": "2026-11-23T10:20:06Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -84,9 +84,9 @@
     },
     "Q3": {
       "id": "Q3",
-      "formal_text": "¿Jesús declaró ser Dios?",
-      "colloquial_hint": null,
-      "full_text": "¿Jesús declaró ser Dios?",
+      "formal_text": "¿Jesús de algúna manera, en algún momento afirmó ser igual a ese *Fundamento Último*?",
+      "colloquial_hint": "¿Jesús afirmó ser Dios?",
+      "full_text": "¿Jesús de algúna manera, en algún momento afirmó ser igual a ese *Fundamento Último*? (¿Jesús afirmó ser Dios?)",
       "source_line": 58,
       "origin_posture_ids": [
         "P3"
@@ -282,9 +282,9 @@
     },
     "Q9": {
       "id": "Q9",
-      "formal_text": "¿Los milagros (especialmente su resurección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús?",
+      "formal_text": "¿Los milagros (especialmente su resurrección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús?",
       "colloquial_hint": "¿Jesús es Dios?",
-      "full_text": "¿Los milagros (especialmente su resurección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús? (¿Jesús es Dios?)",
+      "full_text": "¿Los milagros (especialmente su resurrección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús? (¿Jesús es Dios?)",
       "source_line": 76,
       "origin_posture_ids": [
         "P15"
@@ -348,9 +348,9 @@
     },
     "Q11": {
       "id": "Q11",
-      "formal_text": "¿Era Jesucristo inferior y subordinado a Dios?",
-      "colloquial_hint": null,
-      "full_text": "¿Era Jesucristo inferior y subordinado a Dios?",
+      "formal_text": "¿Fue Jesucristo en algún punto inferior y subordinado al *Fundamento Último*?",
+      "colloquial_hint": "¿Fue Jesús inferior a Dios?",
+      "full_text": "¿Fue Jesucristo en algún punto inferior y subordinado al *Fundamento Último*? (¿Fue Jesús inferior a Dios?)",
       "source_line": 81,
       "origin_posture_ids": [
         "P18"
@@ -1908,7 +1908,7 @@
         "P111"
       ],
       "origin_labels": [
-        "?"
+        "Cosmología no creacionista*"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1916,7 +1916,7 @@
         {
           "key": "A",
           "label": "Sí",
-          "full_label": "Si",
+          "full_label": "Sí",
           "gloss": null,
           "target_posture_id": "P112",
           "source_line": 222
@@ -1926,22 +1926,22 @@
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P119",
-          "source_line": 232
+          "target_posture_id": "P123",
+          "source_line": 238
         }
       ]
     },
     "Q58": {
       "id": "Q58",
-      "formal_text": "¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad?",
-      "colloquial_hint": "¿El universo fue formado por alguien eterno?",
-      "full_text": "¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)",
+      "formal_text": "¿Lo que existe eternamente y sin causa (el *Fundamento Último*) posee mente, en su totalidad o en alguna de sus partes, de modo que piensa y conoce?",
+      "colloquial_hint": "¿El Fundamento Último tiene mente y piensa?",
+      "full_text": "¿Lo que existe eternamente y sin causa (el *Fundamento Último*) posee mente, en su totalidad o en alguna de sus partes, de modo que piensa y conoce? (¿El Fundamento Último tiene mente y piensa?)",
       "source_line": 223,
       "origin_posture_ids": [
         "P112"
       ],
       "origin_labels": [
-        "Panteísmo"
+        "Eternidad incausada del cosmos*"
       ],
       "is_convergence": false,
       "wikilinks": [],
@@ -1959,19 +1959,52 @@
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P116",
-          "source_line": 228
+          "target_posture_id": "P120",
+          "source_line": 234
         }
       ]
     },
     "Q59": {
       "id": "Q59",
-      "formal_text": "¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?",
-      "colloquial_hint": null,
-      "full_text": "¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?",
+      "formal_text": "¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad?",
+      "colloquial_hint": "¿El universo fue formado por alguien eterno?",
+      "full_text": "¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)",
       "source_line": 225,
       "origin_posture_ids": [
         "P113"
+      ],
+      "origin_labels": [
+        "?"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P114",
+          "source_line": 226
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P117",
+          "source_line": 230
+        }
+      ]
+    },
+    "Q60": {
+      "id": "Q60",
+      "formal_text": "¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?",
+      "colloquial_hint": null,
+      "full_text": "¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?",
+      "source_line": 227,
+      "origin_posture_ids": [
+        "P114"
       ],
       "origin_labels": [
         "Panenteísmo / Demiurgo platónico / creatio ex materia"
@@ -1984,60 +2017,27 @@
           "label": "No",
           "full_label": "No, Existen otras fuentes confiables que lo afirman",
           "gloss": "Existen otras fuentes confiables que lo afirman",
-          "target_posture_id": "P114",
-          "source_line": 226
-        },
-        {
-          "key": "B",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
           "target_posture_id": "P115",
-          "source_line": 227
-        }
-      ]
-    },
-    "Q60": {
-      "id": "Q60",
-      "formal_text": "¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado?",
-      "colloquial_hint": "¿El universo siempre ha estado cambiando, sin un primer momento?",
-      "full_text": "¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado? (¿El universo siempre ha estado cambiando, sin un primer momento?)",
-      "source_line": 229,
-      "origin_posture_ids": [
-        "P116"
-      ],
-      "origin_labels": [
-        "?"
-      ],
-      "is_convergence": false,
-      "wikilinks": [],
-      "answers": [
-        {
-          "key": "A",
-          "label": "Sí",
-          "full_label": "Sí",
-          "gloss": null,
-          "target_posture_id": "P117",
-          "source_line": 230
+          "source_line": 228
         },
         {
           "key": "B",
-          "label": "No",
-          "full_label": "No",
+          "label": "Sí",
+          "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P118",
-          "source_line": 231
+          "target_posture_id": "P116",
+          "source_line": 229
         }
       ]
     },
     "Q61": {
       "id": "Q61",
-      "formal_text": "¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él?",
-      "colloquial_hint": "¿El universo salió de Dios mismo?",
-      "full_text": "¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él? (¿El universo salió de Dios mismo?)",
-      "source_line": 233,
+      "formal_text": "¿El *Fundamento Último* está compuesto de dos partes, una que piensa (mente) y otra que no piensa (materia o cuerpo)?",
+      "colloquial_hint": "¿El Fundamento Último tiene una parte con mente y otra que no?",
+      "full_text": "¿El *Fundamento Último* está compuesto de dos partes, una que piensa (mente) y otra que no piensa (materia o cuerpo)? (¿El Fundamento Último tiene una parte con mente y otra que no?)",
+      "source_line": 231,
       "origin_posture_ids": [
-        "P119"
+        "P113"
       ],
       "origin_labels": [
         "?"
@@ -2050,27 +2050,60 @@
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P120",
-          "source_line": 234
+          "target_posture_id": "P118",
+          "source_line": 232
         },
         {
           "key": "B",
           "label": "No",
-          "full_label": "No",
-          "gloss": null,
-          "target_posture_id": "P121",
-          "source_line": 235
+          "full_label": "No -- piensa en su totalidad",
+          "gloss": "piensa en su totalidad",
+          "target_posture_id": "P119",
+          "source_line": 233
         }
       ]
     },
     "Q62": {
       "id": "Q62",
-      "formal_text": "¿El cosmos surgió sin causa alguna?",
-      "colloquial_hint": "¿El universo apareció de la nada, sin que nada lo causara?",
-      "full_text": "¿El cosmos surgió sin causa alguna? (¿El universo apareció de la nada, sin que nada lo causara?)",
-      "source_line": 236,
+      "formal_text": "¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado?",
+      "colloquial_hint": "¿El universo siempre ha estado cambiando, sin un primer momento?",
+      "full_text": "¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado? (¿El universo siempre ha estado cambiando, sin un primer momento?)",
+      "source_line": 235,
       "origin_posture_ids": [
-        "P121"
+        "P112"
+      ],
+      "origin_labels": [
+        "Eternidad incausada del cosmos*"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P121",
+          "source_line": 236
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P122",
+          "source_line": 237
+        }
+      ]
+    },
+    "Q63": {
+      "id": "Q63",
+      "formal_text": "¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él?",
+      "colloquial_hint": "¿El universo salió del Fundamento Último mismo?",
+      "full_text": "¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él? (¿El universo salió del Fundamento Último mismo?)",
+      "source_line": 239,
+      "origin_posture_ids": [
+        "P123"
       ],
       "origin_labels": [
         "?"
@@ -2083,16 +2116,49 @@
           "label": "Sí",
           "full_label": "Sí",
           "gloss": null,
-          "target_posture_id": "P122",
-          "source_line": 237
+          "target_posture_id": "P124",
+          "source_line": 240
         },
         {
           "key": "B",
           "label": "No",
           "full_label": "No",
           "gloss": null,
-          "target_posture_id": "P123",
-          "source_line": 238
+          "target_posture_id": "P125",
+          "source_line": 241
+        }
+      ]
+    },
+    "Q64": {
+      "id": "Q64",
+      "formal_text": "¿El cosmos surgió sin causa alguna?",
+      "colloquial_hint": "¿El universo apareció de la nada, sin que nada lo causara?",
+      "full_text": "¿El cosmos surgió sin causa alguna? (¿El universo apareció de la nada, sin que nada lo causara?)",
+      "source_line": 242,
+      "origin_posture_ids": [
+        "P125"
+      ],
+      "origin_labels": [
+        "?"
+      ],
+      "is_convergence": false,
+      "wikilinks": [],
+      "answers": [
+        {
+          "key": "A",
+          "label": "Sí",
+          "full_label": "Sí",
+          "gloss": null,
+          "target_posture_id": "P126",
+          "source_line": 243
+        },
+        {
+          "key": "B",
+          "label": "No",
+          "full_label": "No",
+          "gloss": null,
+          "target_posture_id": "P127",
+          "source_line": 244
         }
       ]
     }
@@ -2318,14 +2384,7 @@
       "is_unnamed": false,
       "is_suggested": false,
       "is_uncertain": false,
-      "traditions": [
-        {
-          "name": "SUD",
-          "is_tentative": true,
-          "is_note": false,
-          "aliases": []
-        }
-      ],
+      "traditions": [],
       "notes": [],
       "wikilinks": [],
       "question_axes": [
@@ -3554,9 +3613,9 @@
     },
     "P111": {
       "id": "P111",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
+      "label": "Cosmología no creacionista*",
+      "is_unnamed": false,
+      "is_suggested": true,
       "is_uncertain": false,
       "traditions": [],
       "notes": [],
@@ -3567,19 +3626,34 @@
     },
     "P112": {
       "id": "P112",
-      "label": "Panteísmo",
+      "label": "Eternidad incausada del cosmos*",
       "is_unnamed": false,
+      "is_suggested": true,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": [
+        "Q58",
+        "Q62"
+      ]
+    },
+    "P113": {
+      "id": "P113",
+      "label": "?",
+      "is_unnamed": true,
       "is_suggested": false,
       "is_uncertain": false,
       "traditions": [],
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q58"
+        "Q59",
+        "Q61"
       ]
     },
-    "P113": {
-      "id": "P113",
+    "P114": {
+      "id": "P114",
       "label": "Panenteísmo / Demiurgo platónico / creatio ex materia",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3588,19 +3662,8 @@
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q59"
+        "Q60"
       ]
-    },
-    "P114": {
-      "id": "P114",
-      "label": "?",
-      "is_unnamed": true,
-      "is_suggested": false,
-      "is_uncertain": false,
-      "traditions": [],
-      "notes": [],
-      "wikilinks": [],
-      "question_axes": []
     },
     "P115": {
       "id": "P115",
@@ -3622,12 +3685,54 @@
       "traditions": [],
       "notes": [],
       "wikilinks": [],
-      "question_axes": [
-        "Q60"
-      ]
+      "question_axes": []
     },
     "P117": {
       "id": "P117",
+      "label": "Panteísmo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P118": {
+      "id": "P118",
+      "label": "Fundamento Último compuesto*",
+      "is_unnamed": false,
+      "is_suggested": true,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P119": {
+      "id": "P119",
+      "label": "Fundamento Último unitario*",
+      "is_unnamed": false,
+      "is_suggested": true,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P120": {
+      "id": "P120",
+      "label": "Materialismo",
+      "is_unnamed": false,
+      "is_suggested": false,
+      "is_uncertain": false,
+      "traditions": [],
+      "notes": [],
+      "wikilinks": [],
+      "question_axes": []
+    },
+    "P121": {
+      "id": "P121",
       "label": "Regresión infinita*",
       "is_unnamed": false,
       "is_suggested": true,
@@ -3637,8 +3742,8 @@
       "wikilinks": [],
       "question_axes": []
     },
-    "P118": {
-      "id": "P118",
+    "P122": {
+      "id": "P122",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3648,8 +3753,8 @@
       "wikilinks": [],
       "question_axes": []
     },
-    "P119": {
-      "id": "P119",
+    "P123": {
+      "id": "P123",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3658,11 +3763,11 @@
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q61"
+        "Q63"
       ]
     },
-    "P120": {
-      "id": "P120",
+    "P124": {
+      "id": "P124",
       "label": "Emanacionismo",
       "is_unnamed": false,
       "is_suggested": false,
@@ -3679,8 +3784,8 @@
       "wikilinks": [],
       "question_axes": []
     },
-    "P121": {
-      "id": "P121",
+    "P125": {
+      "id": "P125",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3689,11 +3794,11 @@
       "notes": [],
       "wikilinks": [],
       "question_axes": [
-        "Q62"
+        "Q64"
       ]
     },
-    "P122": {
-      "id": "P122",
+    "P126": {
+      "id": "P126",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3703,8 +3808,8 @@
       "wikilinks": [],
       "question_axes": []
     },
-    "P123": {
-      "id": "P123",
+    "P127": {
+      "id": "P127",
       "label": "?",
       "is_unnamed": true,
       "is_suggested": false,
@@ -3845,7 +3950,7 @@
       "canonical_name": "Neoplatonismo",
       "aliases": [],
       "posture_ids": [
-        "P120"
+        "P124"
       ],
       "tentative": false
     },
@@ -3880,22 +3985,14 @@
         "P83"
       ],
       "tentative": false
-    },
-    "SUD": {
-      "canonical_name": "SUD",
-      "aliases": [],
-      "posture_ids": [
-        "P17"
-      ],
-      "tentative": true
     }
   },
   "stats": {
-    "questions": 62,
-    "postures": 124,
-    "traditions": 18,
-    "unnamed_postures": 62,
+    "questions": 64,
+    "postures": 128,
+    "traditions": 17,
+    "unnamed_postures": 61,
     "convergences": 2,
-    "source_lines": 238
+    "source_lines": 244
   }
 }

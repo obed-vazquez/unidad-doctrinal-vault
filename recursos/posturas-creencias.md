@@ -55,7 +55,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
     - Creacionismo cosmológico* / Teísmo filosófico -> ¿Jesucristo realmente existió?
       - No: Miticismo
       - Sí: Historicidad de Jesús*
-        - Historicidad de Jesús* -> ¿Jesús declaró ser Dios?
+        - Historicidad de Jesús* -> ¿Jesús de algúna manera, en algún momento afirmó ser igual a ese *Fundamento Último*? (¿Jesús afirmó ser Dios?)
           - No: ?
           - Sí: ?
             - ? -> ¿La evidencia de los milagros de Jesús son suficientes para concluír que realmente ocurrieron?
@@ -73,12 +73,12 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                               - Sí: Postura del Lunático
                               - No: Postura de la Leyenda
               - Sí: ?
-                - ? -> ¿Los milagros (especialmente su resurección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús? (¿Jesús es Dios?)
+                - ? -> ¿Los milagros (especialmente su resurrección) y demás evidencias funcionan como signos acreditativos de la identidad divina declarada de Jesús? (¿Jesús es Dios?)
                   - No: ?
                     - ? -> ¿Es Jesucristo un ser creado?
-                      - No: Subordinacionismo {SUD?}
+                      - No: Subordinacionismo
                       - Sí: Cristo-creaturismo*
-                        - Cristo-creaturismo* -> ¿Era Jesucristo inferior y subordinado a Dios?
+                        - Cristo-creaturismo* -> ¿Fue Jesucristo en algún punto inferior y subordinado al *Fundamento Último*? (¿Fue Jesús inferior a Dios?)
                           - No: Sin-nombre {No se identifica quién que sostenga esta postura}
                           - Sí: ?
                             - ? -> ¿Era Jesucristo inicialmente un ser divino?
@@ -217,20 +217,26 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                             - Diofisismo / Calcedonianismo / Miafisismo -> En el Getsemaní Cristo pedía al Padre pasára la copa, tenía la voluntad de morir mientras no quería hacerlo, ¿Tenía Jesucristo dos voluntades? (¿Jesús podía querer como hombre algo distinto de lo que quería como Dios, y aun así obedecer?)
                                               - No -- el "querer" es acto de la persona— siendo Cristo una sola persona, quiere con un solo querer, y su humanidad no añade otro: Monotelitismo / monotelismo
                                               - Sí -- el "querer" es facultad de la naturaleza— una humanidad íntegra incluye su propio querer, que libremente se conforma al divino: [[diotelitismo#3-c-mo-operan-las-dos-voluntades-sin-entrar-en-conflicto|Diotelitismo]] {Ortodoxia calcedonense}
-  - No: ?
-    - ? -> ¿Los elementos que conforman el cosmos que conocemos siempre han existido, sin haber sido causados por nada más? (¿El cosmos es eterno y nada lo causó?)
-      - Si: Panteísmo
-        - Panteísmo -> ¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)
-          - Sí: Panenteísmo / Demiurgo platónico / creatio ex materia
-            - Panenteísmo / Demiurgo platónico / creatio ex materia -> ¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?
-              - No, Existen otras fuentes confiables que lo afirman: ?
-              - Sí: ?
+  - No: Cosmología no creacionista*
+    - Cosmología no creacionista* -> ¿Los elementos que conforman el cosmos que conocemos siempre han existido, sin haber sido causados por nada más? (¿El cosmos es eterno y nada lo causó?)
+      - Sí: Eternidad incausada del cosmos*
+        - Eternidad incausada del cosmos* -> ¿Lo que existe eternamente y sin causa (el *Fundamento Último*) posee mente, en su totalidad o en alguna de sus partes, de modo que piensa y conoce? (¿El Fundamento Último tiene mente y piensa?)
+          - Sí: ?
+            - ? -> ¿El cosmos que conocemos sí fue formado (no creado) por un `ente` con eternidad? (¿El universo fue formado por alguien eterno?)
+              - Sí: Panenteísmo / Demiurgo platónico / creatio ex materia
+                - Panenteísmo / Demiurgo platónico / creatio ex materia -> ¿Esta conclusión se fundamenta puramente en el uso de lógica y filosofía?
+                  - No, Existen otras fuentes confiables que lo afirman: ?
+                  - Sí: ?
+              - No: Panteísmo
+            - ? -> ¿El *Fundamento Último* está compuesto de dos partes, una que piensa (mente) y otra que no piensa (materia o cuerpo)? (¿El Fundamento Último tiene una parte con mente y otra que no?)
+              - Sí: Fundamento Último compuesto*
+              - No -- piensa en su totalidad: Fundamento Último unitario*
+          - No: Materialismo
+        - Eternidad incausada del cosmos* -> ¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado? (¿El universo siempre ha estado cambiando, sin un primer momento?)
+          - Sí: Regresión infinita*
           - No: ?
-            - ? -> ¿El cosmos eterno consiste en una sucesión de estados, cada uno causado por otro anterior, sin un primer estado? (¿El universo siempre ha estado cambiando, sin un primer momento?)
-              - Sí: Regresión infinita*
-              - No: ?
       - No: ?
-        - ? -> ¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él? (¿El universo salió de Dios mismo?)
+        - ? -> ¿Los elementos que conforman el cosmos surgieron de la sustancia misma del *Fundamento Último*, y no de la nada ni de una materia ajena a él? (¿El universo salió del Fundamento Último mismo?)
           - Sí: Emanacionismo {Neoplatonismo}
           - No: ?
             - ? -> ¿El cosmos surgió sin causa alguna? (¿El universo apareció de la nada, sin que nada lo causara?)
