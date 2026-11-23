@@ -275,26 +275,14 @@
       "colloquial": "Is the Bible inspired by God?",
       "answers": {
         "A": {
-          "label": "No"
+          "label": "Yes"
         },
         "B": {
-          "label": "Yes"
+          "label": "No"
         }
       }
     },
     "Q25": {
-      "formal": "Could the human author, in writing, have introduced into what Scripture affirms as true and normative something that does not correspond to what God wanted to communicate?",
-      "colloquial": "Were the authors able to sneak in any errors or opinions of their own when writing the Bible?",
-      "answers": {
-        "A": {
-          "label": "Yes"
-        },
-        "B": {
-          "label": "No"
-        }
-      }
-    },
-    "Q26": {
       "formal": "Is the Bible clear and unambiguous in its message, and is everything it says completely true?",
       "answers": {
         "A": {
@@ -305,7 +293,7 @@
         }
       }
     },
-    "Q27": {
+    "Q26": {
       "formal": "Does the interpretation of the Bible require an ecclesiastical magisterium with infallible authority?",
       "answers": {
         "A": {
@@ -316,7 +304,7 @@
         }
       }
     },
-    "Q28": {
+    "Q27": {
       "formal": "Did Adam's sin affect his offspring, is the human born dead and with a sinful nature (though not actively sinning)?",
       "colloquial": "Is the human born with a “sinful nature”?",
       "answers": {
@@ -329,7 +317,7 @@
         }
       }
     },
-    "Q29": {
+    "Q28": {
       "formal": "Before Discernment, does human innocence give you access to heaven and cannot sin?",
       "colloquial": "Do children go to heaven when they die?",
       "answers": {
@@ -341,7 +329,7 @@
         }
       }
     },
-    "Q30": {
+    "Q29": {
       "formal": "After Discernment can the human sin, the first sin condemns him to hell?",
       "answers": {
         "A": {
@@ -352,7 +340,7 @@
         }
       }
     },
-    "Q31": {
+    "Q30": {
       "formal": "After sinning, does the human retain the ability to do good later, even if he does not have God's forgiveness?",
       "answers": {
         "A": {
@@ -363,7 +351,7 @@
         }
       }
     },
-    "Q32": {
+    "Q31": {
       "formal": "After sinning, by asking God for forgiveness, the human is forgiven and gains the right to enter heaven by dying?",
       "answers": {
         "A": {
@@ -374,7 +362,7 @@
         }
       }
     },
-    "Q33": {
+    "Q32": {
       "formal": "Does sinning again remove the human's right to enter heaven?",
       "answers": {
         "A": {
@@ -385,7 +373,7 @@
         }
       }
     },
-    "Q34": {
+    "Q33": {
       "formal": "Before Discernment, is the human still condemned because of his state of death (state of \"sinner\") even without having committed sin?",
       "colloquial": "When a child dies, does he go to a different place in heaven?",
       "answers": {
@@ -398,7 +386,7 @@
         }
       }
     },
-    "Q35": {
+    "Q34": {
       "formal": "Is it possible to infuse him with saving “grace” (a divine Gift that is possible to lose) with sacraments such as regenerating baptism?",
       "colloquial": "Does the child have to be baptized to go to heaven, but is not assured entry?",
       "answers": {
@@ -407,7 +395,7 @@
         }
       }
     },
-    "Q36": {
+    "Q35": {
       "formal": "Does not having received baptism leave you condemned to Limbo?",
       "answers": {
         "A": {
@@ -418,7 +406,7 @@
         }
       }
     },
-    "Q37": {
+    "Q36": {
       "formal": "Does not having received baptism leave you condemned to Hell?",
       "answers": {
         "A": {
@@ -429,7 +417,7 @@
         }
       }
     },
-    "Q38": {
+    "Q37": {
       "formal": "After Discernment, is it possible for man to reach heaven through his good works?",
       "colloquial": "Can an adult go to heaven being good?",
       "answers": {
@@ -441,7 +429,7 @@
         }
       }
     },
-    "Q39": {
+    "Q38": {
       "formal": "After sinning, does the human being need a spiritual transformation/conversion/regeneration to enter heaven?",
       "colloquial": "Does it take a conversion to get into heaven?",
       "answers": {
@@ -453,7 +441,7 @@
         }
       }
     },
-    "Q40": {
+    "Q39": {
       "formal": "Is it possible for humans to reject God's call to receive the grace that leads to that conversion?",
       "colloquial": "Can man resist the call to conversion?",
       "answers": {
@@ -465,7 +453,7 @@
         }
       }
     },
-    "Q41": {
+    "Q40": {
       "formal": "Is the active and direct intervention of God on the will of the human necessary for the human to accept the call to that conversion?",
       "colloquial": "Does God have an unconditional choice of his saints?",
       "answers": {
@@ -477,7 +465,7 @@
         }
       }
     },
-    "Q42": {
+    "Q41": {
       "formal": "If the human is missing 1 of these elements, can he have that conversion? Listening to the gospel, Believing the gospel, Having faith in Christ Jesus, Giving your life completely to God (Repentance), Calling on God's name (Asking for help)",
       "answers": {
         "A": {
@@ -488,7 +476,7 @@
         }
       }
     },
-    "Q43": {
+    "Q42": {
       "formal": "Does the human have that transformation only to the point of baptism and is that moment when that conversion occurs?",
       "answers": {
         "A": {
@@ -499,7 +487,7 @@
         }
       }
     },
-    "Q44": {
+    "Q43": {
       "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
       "answers": {
         "A": {
@@ -510,7 +498,7 @@
         }
       }
     },
-    "Q45": {
+    "Q44": {
       "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God?",
       "colloquial": "Was every part of the Bible inspired?",
       "answers": {
@@ -523,7 +511,7 @@
         }
       }
     },
-    "Q46": {
+    "Q45": {
       "formal": "What, in this sense, is the limit or extent of inspiration?",
       "answers": {
         "A": {
@@ -538,7 +526,7 @@
         }
       }
     },
-    "Q47": {
+    "Q46": {
       "formal": "What God inspired were the words and not just themes or concepts to the writers?",
       "colloquial": "Did God inspire the words he commanded to be written?",
       "answers": {
@@ -550,7 +538,7 @@
         }
       }
     },
-    "Q48": {
+    "Q47": {
       "formal": "Did God directly dictate word for word to his writers, without them contributing their own words?",
       "colloquial": "Did God dictate every word of what had to be written?",
       "answers": {
@@ -562,9 +550,21 @@
         }
       }
     },
-    "Q49": {
+    "Q48": {
       "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
       "colloquial": "Can man understand what the Bible says about at least one thing?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No"
+        }
+      }
+    },
+    "Q49": {
+      "formal": "Could the human author, in writing, have introduced into what Scripture affirms as true and normative something that does not correspond to what God wanted to communicate?",
+      "colloquial": "Were the authors able to sneak in any errors or opinions of their own when writing the Bible?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -764,23 +764,23 @@
     "P43": "Secondary Apostolic Authority *",
     "P44": "Restricted New Testament Canon*",
     "P45": "Full New Testament Canon*",
-    "P48": "Biblical Inspiration Posture",
-    "P60": "Pelagianism",
-    "P64": "Total Depravity of Man",
-    "P75": "Conversionism",
-    "P76": "Irresistible Grace/ Monerguism",
-    "P79": "Resistible Grace/ Synergism",
-    "P82": "Baptismal Salvation",
-    "P84": "THE PERSEVERANCE OF THE SAINTS",
-    "P85": "Conditional Preservation of Saints",
-    "P86": "Plenary Inspirationalism",
-    "P87": "Limited Inspirationalism",
-    "P88": "Selective Limited Inspirationalism",
-    "P89": "Inspirationalism Limited Partial",
-    "P91": "Verbal Inspirationalism",
-    "P92": "Dynamic / Conceptual Inspirationalism",
-    "P93": "Mechanical Inspirationalism / Dictation",
-    "P94": "Organic / Bankruptcy / Confluent Inspirationalism",
+    "P46": "Biblical Inspiration Posture",
+    "P58": "Pelagianism",
+    "P62": "Total Depravity of Man",
+    "P73": "Conversionism",
+    "P74": "Irresistible Grace/ Monerguism",
+    "P77": "Resistible Grace/ Synergism",
+    "P80": "Baptismal Salvation",
+    "P82": "THE PERSEVERANCE OF THE SAINTS",
+    "P83": "Conditional Preservation of Saints",
+    "P84": "Plenary Inspirationalism",
+    "P85": "Limited Inspirationalism",
+    "P86": "Selective Limited Inspirationalism",
+    "P87": "Inspirationalism Limited Partial",
+    "P89": "Verbal Inspirationalism",
+    "P90": "Dynamic / Conceptual Inspirationalism",
+    "P91": "Mechanical Inspirationalism / Dictation",
+    "P92": "Organic / Bankruptcy / Confluent Inspirationalism",
     "P97": "Homoiousianism / Semi-Arrianism",
     "P98": "Consubstantialism",
     "P99": "Modalism / Oneness / Unitarianism",
