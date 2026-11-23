@@ -53,3 +53,21 @@ Al ligar una **postura** huérfana a una pregunta se **reutiliza la etiqueta de 
 - No entra: «Agregar campo» vacío (solo UI) ni cámara (pan/zoom).
 - Con un campo de texto enfocado, Ctrl+Z es el del input. Al salir, un undo deshace **toda esa sesión de texto**.
 - Rehacer: Ctrl+Y y Ctrl+Shift+Z.
+
+## «Explorar» en edición cerraba la rama hasta la raíz (2026-11-22)
+
+### Petición
+
+> Al seleccionar el modo edicion y luego seleccionar la postura de Inspiracionalismo Plenario y luego dar click en Explorar; El sistema no deja abierta la linea de nodos hasta ese, cierra todo y lo deja en la raiz.
+
+### Causa
+
+- La búsqueda guardaba los caminos hacia cada postura en una caché indexada solo por el id del nodo destino (`js/search.js`, `caminosCache`), y nunca la limpiaba al reconstruir el grafo.
+- El Modo de Edición reconstruye el grafo con `separarSiempre`: cada postura y cada pregunta son nodos aparte. El destino conserva su id (`B:P88`), pero los nodos intermedios cambian (`T:…` pasan a `B:…` + `P:…`).
+- Si la postura ya se había resuelto en otro modo (al abrir su ficha, en el panel de creencias, etc.), «Explorar» en edición recibía el camino viejo. Esos nodos no existen en el grafo de edición, así que la cadena de expandidos se cortaba y solo quedaba la raíz.
+
+### Decisiones tomadas al implementar
+
+- La caché pasa a ser por grafo (`WeakMap` grafo → destino → caminos). Un grafo nuevo arranca sin caché y el anterior se libera solo. `limpiarCache()` se conserva.
+- Afecta a todo lo que resuelve rutas (Explorar, comparar tradiciones, exportar), no solo a edición: cualquier resolución quedaba expuesta a caminos de otro grafo.
+- Prueba de regresión en `prueba-modelo.js` («Caché de caminos entre grafos»): resuelve cada postura en el grafo normal y después en el de edición, y exige que la ruta use solo nodos del grafo de edición. Falla sin el arreglo.

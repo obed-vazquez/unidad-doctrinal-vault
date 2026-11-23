@@ -79,15 +79,24 @@ const convergentes = [];
 grafo.nodos.forEach((n) => { if (n.entradas.length > 1) convergentes.push(n.id); });
 // El número se deriva del dataset, no se fija: el documento gana convergencias
 // y una constante aquí caduca en cuanto se agrega la siguiente.
+// También converge una postura a la que llegan varias respuestas (el documento
+// repite su nombre en dos aristas): es un solo nodo con varias entradas.
+const respuestasPorPostura = {};
+Object.values(datos.questions).forEach((q) => (q.answers || []).forEach((r) => {
+  respuestasPorPostura[r.target_posture_id] = (respuestasPorPostura[r.target_posture_id] || 0) + 1;
+}));
+const posturasConvergentes = Object.values(respuestasPorPostura).filter((n) => n > 1).length;
 const convergenciasEsperadas = Object.values(datos.questions)
-  .filter((q) => q.is_convergence).length;
+  .filter((q) => q.is_convergence).length + posturasConvergentes;
 comprobar('cada convergencia del dataset es un nodo con varias aristas entrantes',
   convergentes.length === convergenciasEsperadas,
   convergentes.join(', ') + ' · esperadas ' + convergenciasEsperadas);
 convergentes.forEach((id) => {
   const nodo = grafo.nodos.get(id);
+  const texto = nodo.pregunta ? nodo.pregunta.formal_text
+    : (datos.postures[nodo.posturaId] || {}).label || '';
   console.log('    ' + id + ' ← ' + nodo.entradas.map((a) => a.desde).join(' , ')
-    + '  «' + nodo.pregunta.formal_text.slice(0, 48) + '…»');
+    + '  «' + texto.slice(0, 48) + '…»');
 });
 
 comprobar('ninguna postura se duplicó en dos nodos',
@@ -1077,6 +1086,25 @@ comprobar('grupoConvergenciaDeSeleccion agrupa la pregunta y sus posturas de ori
   })());
 comprobar('grupoConvergenciaDeSeleccion devuelve null para una pregunta no convergente',
   Arbol.grupoConvergenciaDeSeleccion(grafoTrasLigar, trasLigar, 'P:Q1') === null);
+
+console.log('\n== Caché de caminos entre grafos ==');
+// Regresión: «Explorar» en Modo de Edición reusaba caminos calculados sobre el
+// grafo de otro modo. Se resuelve cada postura primero en el grafo normal y
+// luego en el de edición; ningún nodo de la ruta puede faltar en este último.
+{
+  Arbol.Busqueda.limpiarCache();
+  const grafoNormal = Arbol.construirGrafo(datos);
+  const grafoEdicion = Arbol.construirGrafo(datos, { separarSiempre: true });
+  const rotas = Object.keys(datos.postures).filter((pid) => {
+    const sujeto = { tipo: 'postura', posturaIds: [pid], nombre: '' };
+    Arbol.Busqueda.resolver(grafoNormal, datos, sujeto);
+    const r = Arbol.Busqueda.resolver(grafoEdicion, datos, sujeto);
+    return Array.from(r.nodos).some((id) => !grafoEdicion.nodos.has(id));
+  });
+  comprobar('la ruta resuelta en el grafo de edición solo usa nodos de ese grafo',
+    rotas.length === 0, rotas.slice(0, 5).join(','));
+  Arbol.Busqueda.limpiarCache();
+}
 
 console.log('\n' + (fallos.length
   ? fallos.length + ' comprobación(es) fallidas: ' + fallos.join(' | ')

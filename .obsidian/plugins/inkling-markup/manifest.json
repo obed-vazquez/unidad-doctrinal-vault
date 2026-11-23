@@ -1,0 +1,10 @@
+{
+	"id": "inkling-markup",
+	"name": "Inkling Markup",
+	"version": "0.12.4",
+	"minAppVersion": "1.8.7",
+	"description": "Suggest edits, add comments, and annotate your notes using CriticMarkup syntax.",
+	"author": "Andrew Brož",
+	"authorUrl": "https://github.com/AndrewBroz",
+	"isDesktopOnly": false
+}

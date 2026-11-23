@@ -142,16 +142,23 @@
     return resultados;
   }
 
-  var cacheCaminos = new Map();
+  /* La caché es por grafo: el Modo de Edición reconstruye el grafo con otros
+     nodos (`separarSiempre`) y el mismo id de destino (p. ej. `B:P88`) tiene
+     ahí caminos distintos. Con una caché indexada solo por destino, «Explorar»
+     en edición reusaba caminos del grafo anterior, cuyos nodos no existen en
+     el nuevo, y la rama se cerraba hasta la raíz. */
+  var cacheCaminos = new WeakMap();
 
   function caminosCache(grafo, destinoId) {
-    if (cacheCaminos.has(destinoId)) return cacheCaminos.get(destinoId);
+    var porDestino = cacheCaminos.get(grafo);
+    if (!porDestino) { porDestino = new Map(); cacheCaminos.set(grafo, porDestino); }
+    if (porDestino.has(destinoId)) return porDestino.get(destinoId);
     var caminos = caminosHacia(grafo, destinoId);
-    cacheCaminos.set(destinoId, caminos);
+    porDestino.set(destinoId, caminos);
     return caminos;
   }
 
-  function limpiarCache() { cacheCaminos.clear(); }
+  function limpiarCache() { cacheCaminos = new WeakMap(); }
 
   /* Resuelve un sujeto de comparación (tradición, postura suelta o el propio
      recorrido del usuario) a su conjunto de nodos, aristas y respuestas. */

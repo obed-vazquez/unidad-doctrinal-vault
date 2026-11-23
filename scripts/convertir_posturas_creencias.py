@@ -387,6 +387,46 @@ def resolve_pending_origins(
         model.root_questions.append(question_id)
 
 
+def posture_identity(label: str) -> set[str]:
+    """Claves con las que una respuesta reconoce una postura ya introducida.
+
+    Son las mismas de `alias_keys`: el nombre completo sin `{grupos}` ni
+    wikilinks y cada sinónimo separado por `/`, normalizados igual que los
+    orígenes de `->`. El `/` es sinonimia: `Gracia Irresistible / Monerguismo`
+    y `Monerguismo` a secas son la misma postura (escribir solo uno de los
+    nombres es un descuido del autor, no otra postura).
+
+    Devuelve un conjunto vacío para los huecos sin nombre (`?`, `? {Grupo}`):
+    cada uno es una postura pendiente distinta aunque se escriban igual.
+    """
+
+    without_group = re.sub(r"\s*\{.*?\}\s*$", "", display_text(label)).strip()
+    if without_group == "?" or without_group.startswith("? "):
+        return set()
+    return {key for key in alias_keys(without_group) if key != "?"}
+
+
+def posture_reaches_question(model: Model, posture_id: str, question_id: str) -> bool:
+    """Indica si desde la postura se llega a la pregunta siguiendo el grafo."""
+
+    pending = [posture_id]
+    seen_postures: set[str] = set()
+    seen_questions: set[str] = set()
+    while pending:
+        current = pending.pop()
+        if current in seen_postures:
+            continue
+        seen_postures.add(current)
+        for next_question in model.postures[current].questions:
+            if next_question == question_id:
+                return True
+            if next_question in seen_questions:
+                continue
+            seen_questions.add(next_question)
+            pending.extend(answer.target_posture for answer in model.questions[next_question].answers)
+    return False
+
+
 def build_model(markdown: str) -> Model:
     items = extract_tree_items(markdown)
     classify_items(items)
@@ -394,6 +434,9 @@ def build_model(markdown: str) -> Model:
     answer_targets: dict[int, str] = {}
     question_ids: dict[int, str] = {}
     pending_origins: list[tuple[SourceItem, str, str]] = []
+    # Postura introducida por una respuesta, por nombre: una respuesta que
+    # repite un nombre ya introducido apunta al mismo nodo, no a uno nuevo.
+    introduced: dict[str, str] = {}
 
     for item in items:
         if item.kind == "answer":
@@ -401,7 +444,28 @@ def build_model(markdown: str) -> Model:
                 parent_question_index(item, items) is None
                 and item.right.lstrip().startswith("¿")
             )
-            posture_id = model.add_posture(item.left if target_is_root_question else item.right)
+            target_label = item.left if target_is_root_question else item.right
+            source_item_index = None if target_is_root_question else parent_question_index(item, items)
+            source_question_id = question_ids.get(source_item_index) if source_item_index is not None else None
+
+            identity = posture_identity(target_label)
+            posture_id = next((introduced[key] for key in identity if key in introduced), None)
+            if posture_id is not None and source_question_id is not None and posture_reaches_question(
+                model, posture_id, source_question_id
+            ):
+                # Volver a la postura desde su propio subárbol cerraría un
+                # ciclo: el recorrido nunca terminaría. Se deja como nodo aparte.
+                model.warnings.append(
+                    f"Línea {item.line_number}: la postura {display_text(target_label)!r} reaparece "
+                    "dentro de su propio subárbol; se creó como nodo aparte para no cerrar un ciclo."
+                )
+                posture_id = None
+            if posture_id is None:
+                posture_id = model.add_posture(target_label)
+            # También se registran los sinónimos que traiga una respuesta que
+            # reutiliza la postura, para reconocerlos más abajo.
+            for key in identity:
+                introduced.setdefault(key, posture_id)
             answer_targets[item.index] = posture_id
 
             if target_is_root_question:
@@ -414,13 +478,11 @@ def build_model(markdown: str) -> Model:
                 )
                 continue
 
-            source_item_index = parent_question_index(item, items)
             if source_item_index is None:
                 model.warnings.append(
                     f"Línea {item.line_number}: respuesta sin pregunta origen: {item.text!r}."
                 )
                 continue
-            source_question_id = question_ids.get(source_item_index)
             if source_question_id is None:
                 model.warnings.append(
                     f"Línea {item.line_number}: no se pudo resolver la pregunta para {item.text!r}."
