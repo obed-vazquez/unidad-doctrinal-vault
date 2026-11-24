@@ -11,10 +11,10 @@ Se analiza si Dios fué limitado en alguno de sus atributos al hacerse carne y v
       1. Luc 2.52 “Y Jesús crecía en sabiduría y en estatura, ...”. Dios no crece en sabiduría ni en estatura, es ilimitado en conocimiento y espacio.  
       2. Pero él miraba alrededor para ver quién había hecho esto.  
          S. Marcos 5:32 RVR1960  
-         [http://bible.com/149/mrk.5.32.RVR1960](http://bible.com/149/mrk.5.32.RVR1960) aunque es argumentable parece que Jesús no sabia quien le toco  
+         [http\://bible.com/149/mrk.5.32.RVR1960](http://bible.com/149/mrk.5.32.RVR1960) aunque es argumentable parece que Jesús no sabia quien le toco  
    2. Ideas o metáforas  
       1. Es difícil concebir un bebé Jesús con conocimiento ilimitado.  
       2. Pendiente:  
-         	[http://endefensadelafecristiana.blogspot.com/2009/11/es-omnisciente\_09.html](http://endefensadelafecristiana.blogspot.com/2009/11/es-omnisciente_09.html)  
+         	[http\://endefensadelafecristiana.blogspot.com/2009/11/es-omnisciente\_09.html](http://endefensadelafecristiana.blogspot.com/2009/11/es-omnisciente_09.html)  
       3. 
 

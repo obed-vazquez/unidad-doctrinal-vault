@@ -1,5 +1,5 @@
 Global Church (not local church)   
-[https://youtube.com/clip/Ugkx9kczYH9NHiguecykNzTHPmi-xmT3BjGu?si=sTV6DY6ucNvkVO7N](https://youtube.com/clip/Ugkx9kczYH9NHiguecykNzTHPmi-xmT3BjGu?si=sTV6DY6ucNvkVO7N)
+[https\://youtube.com/clip/Ugkx9kczYH9NHiguecykNzTHPmi-xmT3BjGu?si=sTV6DY6ucNvkVO7N](https://youtube.com/clip/Ugkx9kczYH9NHiguecykNzTHPmi-xmT3BjGu?si=sTV6DY6ucNvkVO7N)
 
 1. In favor  
    1. 2Co 2.11 only 1 Bride  

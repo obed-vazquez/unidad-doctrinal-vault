@@ -55,9 +55,9 @@ Si es la primera vez que lees este documento y te sientes inseguro sobre cuál e
 
             1) [Ro 4.4-5](http://bible.com/149/ro.4.4-5) **“Pero al que obra, no se le cuenta el salario como gracia ... mas al que no obra, sino cree ... su fe le es contada por justicia”**;   
             2) [2Tim 1.9](http://bible.com/149/2ti.1.9.RVR1960) **“quien nos salvó... no conforme a nuestras obras”**;  
-            3) [Ef 2.8](https://bible.com/149/eph.2.8.rvr1960) **“Porque por gracia sois salvos ... y esto no de vosotros, pues es don de Dios;”**; La salvación es un [regalo inmerecido](http://lema.rae.es/drae/?val=gracia). Cuando un Banco “regala” una casa pero aclara que se cobrará determinada cantidad ($) por mes y si no se paga ese monto la casa será revocada, esa casa en cuestión deja de ser un regalo.
+            3) [Ef 2.8](https://bible.com/149/eph.2.8.rvr1960) **“Porque por gracia sois salvos ... y esto no de vosotros, pues es don de Dios;”**; La salvación es un [regalo inmerecido](http://lema.rae.es/drae/?val=gracia). Cuando un Banco “regala” una casa pero aclara que se cobrará determinada cantidad (\$) por mes y si no se paga ese monto la casa será revocada, esa casa en cuestión deja de ser un regalo.
 
-         5) #### **Una Vez siendo hijo|salvo no es posible regresar al estado anterior**
+         5) #### **Una Vez siendo hijo\|salvo no es posible regresar al estado anterior**
 
             1) [Heb 9.26](http://bible.com/149/heb.9.26) **“De otra manera le hubiera sido necesario padecer muchas veces desde el principio del mundo; pero ... se presentó una vez ... para quitar ... el pecado.”**;  
             2) [1Jn 2.25](https://bible.com/es/149/1jn.2.25) **"Y ésta es la promesa ..."**; y [He 7.25](https://www.bible.com/es/bible/149/heb.7.25) **"...Perpetuamente..."**. La promesa fue vida eterna que significa ilimitada en tiempo, no una temporal o intermitente .  

@@ -14,6 +14,36 @@
   var UMBRAL_SELECTOR = 4;
   var UMBRAL_PROMPT_SIMPLIFICADA = 2;
   var CLAVE_PROMPT_SIMPLIFICADO = 'arbol-cuestionario-prompt-simplificado';
+  /* Certeza: cada respuesta lleva una barra continua (0–100) que por dentro
+     se cuantiza a NIVELES_CERTEZA niveles; el máximo es «Completamente
+     segur@». En la coincidencia con tradiciones, una respuesta cuenta
+     nivel / NIVELES_CERTEZA (certeza completa = 1). */
+  var NIVELES_CERTEZA = 7;
+
+  function nivelDeBarra(valor) {
+    var v = Math.max(0, Math.min(100, Number(valor)));
+    if (isNaN(v)) v = 100;
+    return 1 + Math.round((v / 100) * (NIVELES_CERTEZA - 1));
+  }
+
+  function pesoCerteza(nivel) {
+    return (nivel || NIVELES_CERTEZA) / NIVELES_CERTEZA;
+  }
+
+  /* Google Form que recibe los avisos de «Problema con esta pregunta» (las
+     respuestas caen en una hoja de cálculo). `campos` son los entry.N de los
+     campos que se prerrellenan. Ver specs/cuestionario-inclinacion-y-avisos.md. */
+  var FORMULARIO_AVISOS = {
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSe16uoymlTdh0GW77ahix8AwLCLb3atpPiTU_qV8E8P_ojVKg/viewform',
+    campos: {
+      nombre: 'entry.2018982662',
+      tipoProblema: 'entry.2013098283',
+      preguntaId: 'entry.1128235921',
+      pregunta: 'entry.495415517',
+      camino: 'entry.437028706',
+      idioma: 'entry.1143151662'
+    }
+  };
 
   function leerPromptSimplificadoRespondido() {
     try {
@@ -31,6 +61,229 @@
   }
 
   var promptSimplificadoRespondido = leerPromptSimplificadoRespondido();
+
+  /* ------------------------------------------- nombre y resultados --- */
+  /* Al abrir el cuestionario por primera vez se pide un nombre o apodo (no
+     el nombre real). Al terminar el reporte se envía, sin abrir nada, a un
+     Google Form cuyas respuestas caen en una hoja: un id aleatorio del
+     resultado, el nombre, las posturas alcanzadas y el idioma. «Borrar mi
+     resultado» envía otra fila con el mismo id y acción «borrar»; la hoja no
+     se limpia sola. `url` es el endpoint .../formResponse del Form. */
+  var FORMULARIO_RESULTADOS = {
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSc3ViPKy9VMUhFK0wTpc034VE3qwWLywVJkRAHlb3olaoLgaw/formResponse',
+    campos: {
+      id: 'entry.78965822',
+      nombre: 'entry.1163113821',
+      posturas: 'entry.586056628',
+      nombresPosturas: 'entry.782916677',
+      idioma: 'entry.247120969',
+      accion: 'entry.964861660'
+    }
+  };
+  var CLAVE_NOMBRE = 'arbol-cuestionario-nombre';
+  var CLAVE_RESULTADO = 'arbol-cuestionario-resultado';
+
+  function leerLocal(clave) {
+    try { return global.localStorage.getItem(clave); } catch (error) { return null; }
+  }
+
+  function escribirLocal(clave, valor) {
+    try { global.localStorage.setItem(clave, valor); } catch (error) { /* nada */ }
+  }
+
+  function nombreGuardado() {
+    var crudo = leerLocal(CLAVE_NOMBRE);
+    if (!crudo) return null;
+    try { return JSON.parse(crudo); } catch (error) { return null; }
+  }
+
+  function resultadoGuardado() {
+    var crudo = leerLocal(CLAVE_RESULTADO);
+    if (!crudo) return null;
+    try { return JSON.parse(crudo); } catch (error) { return null; }
+  }
+
+  function idAleatorio() {
+    var bytes = new Uint8Array(8);
+    if (global.crypto && global.crypto.getRandomValues) {
+      global.crypto.getRandomValues(bytes);
+    } else {
+      for (var i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+    }
+    return Array.prototype.map.call(bytes, function (b) {
+      return ('0' + b.toString(16)).slice(-2);
+    }).join('');
+  }
+
+  function enviarAFormulario(valores) {
+    if (!FORMULARIO_RESULTADOS.url || !global.fetch) return false;
+    var cuerpo = new URLSearchParams();
+    Object.keys(valores).forEach(function (campo) {
+      var entrada = FORMULARIO_RESULTADOS.campos[campo];
+      if (entrada) cuerpo.append(entrada, valores[campo] == null ? '' : String(valores[campo]));
+    });
+    /* no-cors: Google Forms no devuelve cabeceras CORS; la respuesta es
+       opaca y no se puede confirmar, pero la fila sí llega. */
+    global.fetch(FORMULARIO_RESULTADOS.url, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: cuerpo
+    }).catch(function () { /* sin red: se pierde este envío */ });
+    return true;
+  }
+
+  /* Se llama al pintar el reporte. Solo envía si el resultado cambió desde
+     el último envío (repintar el mismo reporte no duplica filas). */
+  function registrarResultado(estado, especificas) {
+    /* Solo un recorrido contestado por la persona; no la vista de posturas
+       marcadas en el panel ni la de «Explorar». */
+    if (estado.panelAbierto || !especificas.length) return;
+    if (estado.posturasExploradasCuestionario
+      && estado.posturasExploradasCuestionario.length) return;
+    var ids = especificas.map(function (item) { return item.postura.id; }).sort();
+    var firma = ids.join(',');
+    var previo = resultadoGuardado();
+    if (previo && previo.firma === firma && !previo.borrado) return;
+    var nombre = nombreGuardado();
+    var id = idAleatorio();
+    var enviado = enviarAFormulario({
+      id: id,
+      nombre: (nombre && nombre.valor) || '',
+      posturas: firma,
+      nombresPosturas: especificas.map(function (item) {
+        return rotuloPostura(item.postura);
+      }).join(' · '),
+      idioma: Arbol.I18n ? Arbol.I18n.idioma : '',
+      accion: 'guardar'
+    });
+    if (!enviado) return;
+    escribirLocal(CLAVE_RESULTADO, JSON.stringify({ id: id, firma: firma, borrado: false }));
+  }
+
+  function borrarResultado() {
+    var previo = resultadoGuardado();
+    if (!previo || previo.borrado) return;
+    enviarAFormulario({ id: previo.id, accion: 'borrar' });
+    previo.borrado = true;
+    escribirLocal(CLAVE_RESULTADO, JSON.stringify(previo));
+  }
+
+  function pintarBorrarResultado() {
+    var previo = resultadoGuardado();
+    if (!previo) return '';
+    if (previo.borrado) {
+      return '<p class="quiz-resultado-borrado">' + escapar(t('quizResultadoBorrado')) + '</p>';
+    }
+    return '<button type="button" class="quiz-resultado-borrar" data-accion="borrar-resultado">'
+      + escapar(t('quizResultadoBorrar')) + '</button>';
+  }
+
+  /* Capa del nombre: solo el campo, flotando sobre el cuestionario. Va
+     fuera de `raiz` porque el cuestionario se repinta entero en cada
+     respuesta. Un clic lejos del campo la cierra (no hay botón de omitir);
+     el margen amplio alrededor devuelve el foco al campo, para que un clic
+     cercano no la cierre por accidente. Aparece la primera vez y, ya
+     rellena, cada vez que el cuestionario empieza de cero (una vez por
+     carga o por «Repetir cuestionario»); el chip de la cabecera la abre en
+     cualquier momento. */
+  var capaNombre = null;
+  var nombrePreguntadoEnCarga = false;
+
+  var ICONO_PERSONA = '<svg class="quiz-nombre-icono" viewBox="0 0 24 24" aria-hidden="true">'
+    + '<circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/>'
+    + '<path d="M4 20c1.6-3.6 4.6-5.4 8-5.4s6.4 1.8 8 5.4" fill="none" stroke="currentColor"'
+    + ' stroke-width="1.8" stroke-linecap="round"/></svg>';
+  var ICONO_FLECHA = '<svg viewBox="0 0 24 24" aria-hidden="true">'
+    + '<path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"'
+    + ' stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function quizAlInicio(estado) {
+    return !Object.keys(estado.respuestas || {}).length
+      && !Object.keys(estado.ramasSinRespuesta || {}).length
+      && !(estado.posturasExploradasCuestionario || []).length;
+  }
+
+  function debePedirNombre(estado) {
+    if (capaNombre || estado.panelAbierto) return false;
+    if (!nombreGuardado()) return true;
+    return !nombrePreguntadoEnCarga && quizAlInicio(estado);
+  }
+
+  function retirarCapaNombre(animar) {
+    var capa = capaNombre;
+    capaNombre = null;
+    if (!capa || !capa.parentNode) return;
+    if (!animar) {
+      capa.parentNode.removeChild(capa);
+      return;
+    }
+    capa.classList.add('saliendo');
+    global.setTimeout(function () {
+      if (capa.parentNode) capa.parentNode.removeChild(capa);
+    }, 200);
+  }
+
+  function cerrarCapaNombre(valor) {
+    escribirLocal(CLAVE_NOMBRE, JSON.stringify({ valor: String(valor || '').trim() }));
+    retirarCapaNombre(true);
+    var chip = raiz && raiz.querySelector('.quiz-chip-nombre-texto');
+    if (chip) chip.textContent = textoChipNombre();
+  }
+
+  function textoChipNombre() {
+    var guardado = nombreGuardado();
+    var valor = guardado && guardado.valor ? guardado.valor : '';
+    if (!valor) return t('quizNombreChipVacio');
+    return valor.length > 24 ? valor.slice(0, 23) + '…' : valor;
+  }
+
+  function mostrarCapaNombre() {
+    if (capaNombre) return;
+    nombrePreguntadoEnCarga = true;
+    var guardado = nombreGuardado();
+    capaNombre = document.createElement('div');
+    capaNombre.className = 'quiz-nombre-capa';
+    capaNombre.innerHTML = '<div class="quiz-nombre-zona">'
+      + '<form class="quiz-nombre-form" role="dialog" aria-label="' + escapar(t('quizNombreTitulo')) + '">'
+      + '<div class="quiz-nombre-pildora">'
+      + ICONO_PERSONA
+      + '<input type="text" class="quiz-nombre-campo" maxlength="80" autocomplete="nickname"'
+      + ' spellcheck="false" placeholder="' + escapar(t('quizNombreTitulo')) + '"'
+      + ' aria-label="' + escapar(t('quizNombreTitulo')) + '">'
+      + '<button type="submit" class="quiz-nombre-ir" aria-label="' + escapar(t('quizNombreEmpezar')) + '"'
+      + ' title="' + escapar(t('quizNombreEmpezar')) + '">' + ICONO_FLECHA + '</button>'
+      + '</div>'
+      + '<p class="quiz-nombre-nota">' + escapar(t('quizNombreAviso')) + '</p>'
+      + '</form></div>';
+    document.body.appendChild(capaNombre);
+    var campo = capaNombre.querySelector('.quiz-nombre-campo');
+    if (guardado && guardado.valor) campo.value = guardado.valor;
+    capaNombre.querySelector('form').addEventListener('submit', function (evento) {
+      evento.preventDefault();
+      cerrarCapaNombre(campo.value);
+    });
+    capaNombre.addEventListener('mousedown', function (evento) {
+      if (evento.target === capaNombre) {
+        cerrarCapaNombre(campo.value);
+        return;
+      }
+      if (!evento.target.closest('input, button')) {
+        evento.preventDefault();
+        campo.focus();
+      }
+    });
+    capaNombre.addEventListener('keydown', function (evento) {
+      if (evento.key === 'Escape') cerrarCapaNombre(campo.value);
+    });
+    global.setTimeout(function () {
+      campo.focus();
+      campo.select();
+    }, 40);
+  }
+
+  function ocultarCapaNombre() {
+    retirarCapaNombre(false);
+  }
 
   function t(clave, vars) {
     return Arbol.I18n ? Arbol.I18n.t(clave, vars) : clave;
@@ -305,7 +558,9 @@
     var total = 0;
     Object.keys(resolucion.respuestas || {}).forEach(function (qid) {
       total++;
-      if (propias[qid] && propias[qid] === resolucion.respuestas[qid]) comunes++;
+      if (propias[qid] && propias[qid] === resolucion.respuestas[qid]) {
+        comunes += pesoCerteza(estado.certezaDe(qid));
+      }
     });
     return {
       comunes: comunes,
@@ -380,6 +635,159 @@
     return html;
   }
 
+  /* Debajo de las respuestas: aviso de un problema con la pregunta. Primero
+     recuerda el Modo de Edición (para proponer un cambio concreto) y después
+     ofrece el formulario. */
+  function urlFormularioAvisos(estado, pregunta) {
+    if (!FORMULARIO_AVISOS.url) return '';
+    var campos = FORMULARIO_AVISOS.campos;
+    var params = [];
+    function agregar(entrada, valor) {
+      if (!entrada) return;
+      params.push(encodeURIComponent(entrada) + '=' + encodeURIComponent(valor || ''));
+    }
+    var nombre = nombreGuardado();
+    agregar(campos.nombre, nombre && nombre.valor ? nombre.valor : '');
+    /* Casilla marcada de inicio en «Tipo de problema». Debe coincidir
+       letra por letra con la opción del Form, o Google la ignora. */
+    agregar(campos.tipoProblema, 'Fraseo ambiguo o confuso');
+    agregar(campos.preguntaId, pregunta.id);
+    agregar(campos.pregunta, Arbol.Formato
+      ? Arbol.Formato.plano(pregunta.formal_text || '') : pregunta.formal_text);
+    agregar(campos.camino, textoCamino(estado));
+    agregar(campos.idioma, Arbol.I18n ? Arbol.I18n.idioma : '');
+    return FORMULARIO_AVISOS.url + '?usp=pp_url' + (params.length ? '&' + params.join('&') : '');
+  }
+
+  /* Las respuestas dadas hasta ahora, en orden, para que quien revisa el
+     aviso sepa desde qué recorrido llegó la persona a la pregunta. */
+  function textoCamino(estado) {
+    var respuestas = estado.respuestas;
+    return Object.keys(respuestas).sort(function (a, b) {
+      return Number(String(a).slice(1)) - Number(String(b).slice(1));
+    }).map(function (qid) {
+      var pregunta = estado.datos.questions[qid];
+      var respuesta = pregunta && (pregunta.answers || []).filter(function (r) {
+        return r.key === respuestas[qid];
+      })[0];
+      return qid + '=' + (respuesta ? respuesta.label : respuestas[qid])
+        + (estado.conDudas(qid)
+          ? ' (certeza ' + estado.certezaDe(qid) + '/' + NIVELES_CERTEZA + ')' : '');
+    }).join('; ');
+  }
+
+  /* «Tengo un problema con esta pregunta»: enlace dentro de la tarjeta de
+     «No responder». Pasar el ratón por él (o hacer clic, o enfocarlo con el
+     teclado) abre un globo flotante; ninguna de las dos cosas responde la
+     pregunta. El globo recuerda primero el Modo de Edición y luego ofrece el
+     formulario. El enlace del formulario se recalcula al pulsarlo, para que
+     lleve el nombre y el recorrido vigentes. */
+  function pintarAvisoProblema(estado, pregunta) {
+    var urlForm = urlFormularioAvisos(estado, pregunta);
+    return '<div class="quiz-problema">'
+      + '<a href="#" class="quiz-problema-abrir" role="button" aria-haspopup="dialog" aria-expanded="false">'
+      + escapar(t('quizProblema')) + '</a>'
+      + '<div class="quiz-problema-panel" role="dialog" aria-label="' + escapar(t('quizProblema')) + '" hidden>'
+      + '<p>' + escapar(t('quizProblemaNota')) + '</p>'
+      + '<div class="quiz-problema-acciones">'
+      + '<button type="button" class="quiz-btn" data-accion="problema-edicion" data-pregunta="'
+      + escapar(pregunta.id) + '">' + escapar(t('quizProblemaEdicion')) + '</button>'
+      + (urlForm
+        ? '<a class="quiz-btn primario quiz-problema-form" href="' + escapar(urlForm)
+          + '" target="_blank" rel="noopener noreferrer" data-pregunta="' + escapar(pregunta.id) + '">'
+          + escapar(t('quizProblemaFormulario')) + ' ↗</a>'
+        : '<span class="quiz-vacio">' + escapar(t('quizProblemaSinFormulario')) + '</span>')
+      + '</div></div></div>';
+  }
+
+  /* Globo del aviso: se abre al pasar el ratón (con un pequeño retardo) y se
+     cierra al salir de enlace y globo; abierto con clic queda fijo hasta un
+     clic fuera o Escape. */
+  var RETARDO_ABRIR_PROBLEMA = 140;
+  var RETARDO_CERRAR_PROBLEMA = 260;
+
+  function zonaProblemaAbierta(zona) {
+    var panel = zona && zona.querySelector('.quiz-problema-panel');
+    return !!(panel && !panel.hidden);
+  }
+
+  function abrirZonaProblema(zona, fijar) {
+    if (!zona) return;
+    clearTimeout(zona._tCerrar);
+    clearTimeout(zona._tAbrir);
+    cerrarZonasProblema(zona);
+    var panel = zona.querySelector('.quiz-problema-panel');
+    var enlace = zona.querySelector('.quiz-problema-abrir');
+    if (!panel) return;
+    panel.hidden = false;
+    zona.classList.add('abierta');
+    if (fijar) zona.dataset.fijada = '1';
+    if (enlace) enlace.setAttribute('aria-expanded', 'true');
+  }
+
+  function cerrarZonaProblema(zona) {
+    if (!zona) return;
+    clearTimeout(zona._tCerrar);
+    clearTimeout(zona._tAbrir);
+    var panel = zona.querySelector('.quiz-problema-panel');
+    var enlace = zona.querySelector('.quiz-problema-abrir');
+    if (panel) panel.hidden = true;
+    zona.classList.remove('abierta');
+    delete zona.dataset.fijada;
+    if (enlace) enlace.setAttribute('aria-expanded', 'false');
+  }
+
+  function cerrarZonasProblema(excepto) {
+    if (!raiz) return;
+    Array.prototype.forEach.call(raiz.querySelectorAll('.quiz-problema.abierta'), function (zona) {
+      if (zona !== excepto) cerrarZonaProblema(zona);
+    });
+  }
+
+  function alPasarPorProblema(evento) {
+    var zona = evento.target.closest ? evento.target.closest('.quiz-problema') : null;
+    if (!zona) return;
+    clearTimeout(zona._tCerrar);
+    if (!evento.target.closest('.quiz-problema-abrir') || zonaProblemaAbierta(zona)) return;
+    clearTimeout(zona._tAbrir);
+    zona._tAbrir = setTimeout(function () { abrirZonaProblema(zona, false); },
+      RETARDO_ABRIR_PROBLEMA);
+  }
+
+  function alSalirDeProblema(evento) {
+    var zona = evento.target.closest ? evento.target.closest('.quiz-problema') : null;
+    if (!zona) return;
+    if (evento.relatedTarget && zona.contains(evento.relatedTarget)) return;
+    clearTimeout(zona._tAbrir);
+    if (zona.dataset.fijada) return;
+    zona._tCerrar = setTimeout(function () { cerrarZonaProblema(zona); },
+      RETARDO_CERRAR_PROBLEMA);
+  }
+
+  /* Barra continua, sin marcas de pasos; empieza en «Completamente segur@».
+     `--pct` (0–100) pinta el relleno y el color del tirador. */
+  function pintarBarraCerteza(etiqueta) {
+    var plano = Arbol.Formato ? Arbol.Formato.plano(etiqueta) : String(etiqueta);
+    return '<div class="quiz-certeza" style="--pct:100">'
+      + '<input type="range" class="quiz-certeza-barra" min="0" max="100" step="any" value="100"'
+      + ' aria-label="' + escapar(t('quizCertezaAria', { respuesta: plano })) + '">'
+      + '<div class="quiz-certeza-rotulos" aria-hidden="true">'
+      + '<span class="quiz-certeza-min">' + escapar(t('quizCertezaMin')) + '</span>'
+      + '<span class="quiz-certeza-max">' + escapar(t('quizCertezaMax')) + '</span>'
+      + '</div></div>';
+  }
+
+  function actualizarBarraCerteza(barra) {
+    var contenedor = barra.closest('.quiz-certeza');
+    var tarjeta = barra.closest('.quiz-opcion');
+    var valor = Number(barra.value);
+    if (contenedor) contenedor.style.setProperty('--pct', String(valor));
+    if (tarjeta) {
+      tarjeta.classList.toggle('con-dudas', nivelDeBarra(valor) < NIVELES_CERTEZA);
+      tarjeta.classList.toggle('certeza-baja', valor < 50);
+    }
+  }
+
   function pintarRespuestas(nodo, estado) {
     var pregunta = nodo.pregunta;
     var pesos = Arbol.pesoDeRespuestas(estado.grafo);
@@ -397,9 +805,13 @@
         ? tradiciones.join(' · ')
         : t('quizSinTradicion');
       var textoPeso = peso ? t('quizPesoRama', { n: String(peso) }) : '';
-      html += '<button type="button" class="quiz-opcion" data-pregunta="'
+      /* La tarjeta es un contenedor: el botón de arriba responde; la barra
+         de certeza de abajo solo se ajusta (no responde). Al responder se
+         usa la certeza de la barra de esta misma tarjeta. */
+      html += '<div class="quiz-opcion" data-pregunta="'
         + escapar(pregunta.id) + '" data-clave="'
         + escapar(respuesta.key) + '">'
+        + '<button type="button" class="quiz-opcion-cuerpo">'
         + '<span class="quiz-opcion-etiqueta">' + formatear(etiqueta) + '</span>'
         + (glosa ? '<span class="quiz-opcion-glosa">' + formatear(glosa) + '</span>' : '')
         + '<span class="quiz-opcion-destino">'
@@ -421,14 +833,22 @@
             + escapar(textoPeso)
             + '</span></span>'
           : '')
-        + '</span></button>';
+        + '</span></button>'
+        + pintarBarraCerteza(etiqueta)
+        + '</div>';
     });
+    /* «No responder» es también una tarjeta contenedor: su botón cierra la
+       rama como siempre y, al pie, el enlace «Tengo un problema con esta
+       pregunta» abre el globo del aviso sin responder. */
     if (!estado.panelAbierto) {
-      html += '<button type="button" class="quiz-opcion quiz-opcion-sin-respuesta" data-accion="sin-respuesta" data-pregunta="'
+      html += '<div class="quiz-opcion quiz-opcion-sin-respuesta" data-accion="sin-respuesta" data-pregunta="'
         + escapar(pregunta.id) + '">'
+        + '<button type="button" class="quiz-opcion-cuerpo">'
         + '<span class="quiz-opcion-etiqueta">' + escapar(t('quizSinRespuesta')) + '</span>'
         + '<span class="quiz-opcion-glosa">' + escapar(t('quizSinRespuestaNota')) + '</span>'
-        + '</button>';
+        + '</button>'
+        + pintarAvisoProblema(estado, pregunta)
+        + '</div>';
     }
     html += '</div></section>';
     return html;
@@ -473,6 +893,9 @@
         + '</p>';
     }
     html += '</div><div class="quiz-acciones-top">'
+      + '<button type="button" class="quiz-chip-nombre" data-accion="cambiar-nombre" title="'
+      + escapar(t('quizNombreCambiar')) + '">' + ICONO_PERSONA
+      + '<span class="quiz-chip-nombre-texto">' + escapar(textoChipNombre()) + '</span></button>'
       + '<label class="quiz-revelar" title="' + escapar(t('quizRevelarTitle')) + '">'
       + '<input type="checkbox" data-accion="revelar"'
       + (revelarAdelantos ? ' checked' : '') + '>'
@@ -714,7 +1137,8 @@
           'q.' + llegada.pregunta.id + '.' + llegada.respuesta.key + '.label',
           llegada.respuesta.label
         );
-        partes.push(t('quizRelacionRespuesta', {
+        partes.push(t(estado.conDudas(llegada.pregunta.id)
+          ? 'quizRelacionDudas' : 'quizRelacionRespuesta', {
           respuesta: et,
           pregunta: preguntaTxt
         }));
@@ -731,16 +1155,148 @@
       + '</div>';
   }
 
+  /* Preguntas respondidas en el recorrido desde la raíz hasta `nodo`. */
+  function preguntasHasta(estado, nodo) {
+    var camino = estado.caminoElegido();
+    var qids = [];
+    var actual = padreEnCamino(estado, nodo, camino);
+    var vistos = new Set();
+    while (actual && !vistos.has(actual.id)) {
+      vistos.add(actual.id);
+      if (actual.preguntaId && estado.respuestas[actual.preguntaId] != null
+        && qids.indexOf(actual.preguntaId) === -1) {
+        qids.push(actual.preguntaId);
+      }
+      actual = padreEnCamino(estado, actual, camino);
+    }
+    return qids.reverse();
+  }
+
+  function textoPregunta(pregunta) {
+    var coloquial = pregunta.colloquial_hint
+      ? dato('q.' + pregunta.id + '.coloquial', pregunta.colloquial_hint)
+      : '';
+    return coloquial || dato('q.' + pregunta.id + '.formal', pregunta.formal_text);
+  }
+
+  function etiquetaRespuesta(pregunta, clave) {
+    var respuesta = (pregunta.answers || []).filter(function (r) {
+      return r.key === clave;
+    })[0];
+    if (!respuesta) return clave;
+    return dato('q.' + pregunta.id + '.' + respuesta.key + '.label', respuesta.label);
+  }
+
+  /* Certeza del recorrido hasta la postura: la barra es la certeza media;
+     el texto, cuántas respuestas fueron con certeza completa. */
+  function pintarFirmeza(estado, item) {
+    var qids = preguntasHasta(estado, item.nodo);
+    if (!qids.length) return '';
+    var inclinadas = qids.filter(function (qid) { return estado.conDudas(qid); });
+    var firmes = qids.length - inclinadas.length;
+    var suma = qids.reduce(function (acc, qid) {
+      return acc + pesoCerteza(estado.certezaDe(qid));
+    }, 0);
+    var porcentaje = Math.round((suma / qids.length) * 100);
+    var html = '<div class="quiz-firmeza' + (inclinadas.length ? ' con-dudas' : '') + '">'
+      + '<h4>' + escapar(t('quizFirmeza')) + '</h4>'
+      + '<p>' + escapar(t('quizFirmezaResumen', {
+        firmes: String(firmes),
+        total: String(qids.length)
+      })) + '</p>'
+      + '<div class="quiz-barra quiz-barra-firmeza"><span style="width:'
+      + porcentaje + '%"></span></div>';
+    if (inclinadas.length) {
+      html += '<p class="quiz-firmeza-nota">' + escapar(t('quizFirmezaNota', {
+        n: String(inclinadas.length)
+      })) + '</p>';
+    }
+    return html + '</div>';
+  }
+
+  /* «Tus puntos de duda»: una tarjeta por respuesta sin certeza completa,
+     de menor a mayor certeza. Muestra a qué postura llevaría otra respuesta
+     (la alternativa más cercana a la postura alcanzada) y qué leer para
+     decidir. */
+  function pintarPuntosDeDuda(estado) {
+    var camino = estado.caminoElegido();
+    var qids = Object.keys(estado.respuestas).filter(function (qid) {
+      if (!estado.conDudas(qid)) return false;
+      var anfitrion = estado.grafo.anfitrionDePregunta(qid);
+      return !anfitrion || camino.has(anfitrion);
+    }).sort(function (a, b) {
+      return (estado.certezaDe(a) - estado.certezaDe(b))
+        || (Number(String(a).slice(1)) - Number(String(b).slice(1)));
+    });
+    if (!qids.length) return '';
+    var html = '<section class="quiz-tarjeta quiz-dudas"><h3>'
+      + escapar(t('quizDudas')) + '</h3>'
+      + '<p class="quiz-dudas-intro">' + escapar(t('quizDudasIntro')) + '</p>';
+    qids.forEach(function (qid) {
+      var pregunta = estado.datos.questions[qid];
+      if (!pregunta) return;
+      var elegida = estado.respuestas[qid];
+      html += '<article class="quiz-duda">'
+        + '<p class="quiz-duda-pregunta">' + formatear(textoPregunta(pregunta)) + '</p>'
+        + '<div class="quiz-duda-certeza" title="' + escapar(t('quizDudaCertezaTitle')) + '">'
+        + '<span style="width:' + Math.round(pesoCerteza(estado.certezaDe(qid)) * 100) + '%"></span>'
+        + '</div>'
+        + '<p class="quiz-duda-eleccion">' + formatear(t('quizDudaEleccion', {
+          respuesta: etiquetaRespuesta(pregunta, elegida)
+        })) + '</p>';
+      var alternativas = (pregunta.answers || []).filter(function (r) {
+        return r.key !== elegida;
+      });
+      if (alternativas.length) {
+        html += '<ul class="quiz-duda-alternativas">';
+        alternativas.forEach(function (r) {
+          var destino = estado.datos.postures[r.target_posture_id];
+          var nombrada = posturaTieneNombre(destino);
+          html += '<li><span>' + formatear(t('quizDudaAlternativa', {
+            respuesta: etiquetaRespuesta(pregunta, r.key)
+          })) + ' <strong>'
+            + escapar(nombrada ? rotuloPostura(destino) : t('quizDudaSinNombre'))
+            + '</strong></span>'
+            + (nombrada
+              ? '<button type="button" class="quiz-btn-mini" data-accion="explorar-postura" data-postura="'
+                + escapar(destino.id) + '">' + escapar(t('quizExplorarTradicion')) + '</button>'
+              : '')
+            + '</li>';
+        });
+        html += '</ul>';
+      }
+      var lecturas = (pregunta.wikilinks || []).map(function (enlace) {
+        var destino = urlNota(enlace);
+        if (!destino) return '';
+        return '<a class="enlace-md-externo" href="' + escapar(destino)
+          + '" target="_blank" rel="noopener noreferrer">'
+          + '<span class="enlace-md-icono" aria-hidden="true">↗</span>'
+          + '<span>' + escapar(enlace.label || enlace.target || '') + '</span></a>';
+      }).filter(Boolean);
+      if (lecturas.length) {
+        html += '<div class="quiz-duda-lecturas"><span class="quiz-campo-rotulo">'
+          + escapar(t('quizDudaLeer')) + ':</span> ' + lecturas.join(' ') + '</div>';
+      }
+      html += '<div class="quiz-duda-acciones">'
+        + '<button type="button" class="quiz-btn-mini" data-accion="reconsiderar" data-pregunta="'
+        + escapar(qid) + '">' + escapar(t('quizDudaReconsiderar')) + '</button>'
+        + '</div></article>';
+    });
+    return html + '</section>';
+  }
+
   function pintarFichaPostura(estado, item, clase) {
     var postura = item.postura;
     var trads = tradicionesDePostura(postura, estado.datos);
     var insignias = insigniasDePostura(postura);
     var notas = (postura.notes || []).filter(Boolean);
+    var esPrincipal = !clase || clase === 'quiz-hero-postura';
     var html = '<article class="' + (clase || 'quiz-hero-postura') + '">'
       + '<h2>' + escapar(rotuloPostura(postura)) + '</h2>';
     if (insignias.length) {
       html += '<p class="quiz-ficha-insignias">' + escapar(insignias.join(' · ')) + '</p>';
     }
+    if (esPrincipal) html += pintarFirmeza(estado, item);
     if (trads.length) {
       html += '<p class="quiz-hero-trads">'
         + '<span class="quiz-campo-rotulo">' + escapar(t('sostenidaPor')) + ':</span> '
@@ -773,6 +1329,7 @@
 
   function pintarReporte(estado) {
     var especificas = posturasEspecificas(estado);
+    registrarResultado(estado, especificas);
     var idsEspecificas = {};
     especificas.forEach(function (item) {
       if (item && item.postura) idsEspecificas[item.postura.id] = true;
@@ -820,6 +1377,8 @@
     }
     html += '</section>';
 
+    html += pintarPuntosDeDuda(estado);
+
     html += '<section class="quiz-tarjeta"><h3>'
       + escapar(t('quizReligionesEncaje')) + '</h3>';
     if (tradicionesExactas.length) {
@@ -842,7 +1401,8 @@
       cercanas.forEach(function (item) {
         html += '<li><div><strong>' + escapar(item.nombre) + '</strong>'
           + '<span>' + escapar(t('quizCoincidencias')) + ': '
-          + item.score.comunes + '/' + item.score.total
+          + String(item.score.comunes).replace('.', Arbol.I18n && Arbol.I18n.idioma === 'en' ? '.' : ',')
+          + '/' + item.score.total
           + ' (' + item.score.porcentaje + '%)</span></div>'
           + '<div class="quiz-barra"><span style="width:'
           + item.score.porcentaje + '%"></span></div>'
@@ -860,6 +1420,7 @@
       + '<button type="button" class="quiz-btn" data-accion="reiniciar-quiz">'
       + escapar(t('quizOtraVez')) + '</button>'
       + '</div>'
+      + '<div class="quiz-resultado-pie">' + pintarBorrarResultado() + '</div>'
       + '</div>'; // principal
 
     html += '<aside class="quiz-reporte-lateral">'
@@ -926,6 +1487,37 @@
         ? evento.target.closest('.quiz-opcion') : null;
       if (opcionBloqueada) return;
     }
+    /* La barra de certeza se ajusta, no responde. */
+    if (evento.target.closest && evento.target.closest('.quiz-certeza')) return;
+    /* El aviso de problema vive dentro de «No responder», pero nada de lo
+       que se pulse en él cierra la rama. */
+    var zonaProblema = evento.target.closest ? evento.target.closest('.quiz-problema') : null;
+    if (zonaProblema) {
+      var enlaceProblema = evento.target.closest('.quiz-problema-abrir');
+      if (enlaceProblema) {
+        evento.preventDefault();
+        if (zonaProblemaAbierta(zonaProblema) && zonaProblema.dataset.fijada) {
+          cerrarZonaProblema(zonaProblema);
+        } else {
+          abrirZonaProblema(zonaProblema, true);
+        }
+        return;
+      }
+      var edicion = evento.target.closest('[data-accion="problema-edicion"]');
+      if (edicion) {
+        var qidEd = edicion.getAttribute('data-pregunta');
+        cerrarZonaProblema(zonaProblema);
+        if (qidEd && deps.abrirPreguntaEnEdicion) deps.abrirPreguntaEnEdicion(qidEd);
+        return;
+      }
+      var formulario = evento.target.closest('.quiz-problema-form');
+      if (formulario) {
+        var preguntaForm = estado.datos.questions[formulario.getAttribute('data-pregunta')];
+        var urlVigente = preguntaForm && urlFormularioAvisos(estado, preguntaForm);
+        if (urlVigente) formulario.href = urlVigente;
+      }
+      return;
+    }
     var sinRespuesta = evento.target.closest
       ? evento.target.closest('[data-accion="sin-respuesta"]') : null;
     if (sinRespuesta) {
@@ -948,14 +1540,37 @@
       var clave = opcion.getAttribute('data-clave');
       var qid = opcion.getAttribute('data-pregunta') || raiz.dataset.pregunta;
       if (!qid || !clave) return;
+      var barra = opcion.querySelector('.quiz-certeza-barra');
       historialPreguntas.push(qid);
       preguntaElegida = null;
-      estado.responder(qid, clave);
+      estado.responder(qid, clave, barra ? nivelDeBarra(barra.value) : NIVELES_CERTEZA);
       return;
     }
     var boton = evento.target.closest ? evento.target.closest('[data-accion]') : null;
     if (!boton) return;
     var accion = boton.getAttribute('data-accion');
+    if (accion === 'cambiar-nombre') {
+      mostrarCapaNombre();
+      return;
+    }
+    if (accion === 'borrar-resultado') {
+      borrarResultado();
+      var pie = boton.parentNode;
+      if (pie) pie.innerHTML = pintarBorrarResultado();
+      return;
+    }
+    if (accion === 'reconsiderar') {
+      var qidRe = boton.getAttribute('data-pregunta');
+      if (!qidRe) return;
+      preguntaElegida = null;
+      mostrandoReporte = false;
+      estado.borrarRespuesta(qidRe);
+      historialPreguntas = historialPreguntas.filter(function (q) {
+        return estado.respuestas[q] != null
+          || (estado.ramasSinRespuesta && estado.ramasSinRespuesta[q]);
+      });
+      return;
+    }
     if (accion === 'cambiar-rama') {
       preguntaElegida = null;
       pintarEscena(estado);
@@ -1009,6 +1624,8 @@
         delete estado.respuestas[qid];
       });
       estado.ramasSinRespuesta = {};
+      estado.certezas = {};
+      nombrePreguntadoEnCarga = false;
       estado.superpuestas = {};
       estado.rutasExploradas = {};
       estado.posturasExploradasCuestionario = [];
@@ -1039,6 +1656,45 @@
       }
       raiz.addEventListener('click', alClick);
       raiz.addEventListener('change', alCambiar);
+      raiz.addEventListener('mouseover', alPasarPorProblema);
+      raiz.addEventListener('mouseout', alSalirDeProblema);
+      /* Teclado: enfocar el enlace abre el globo; Escape lo cierra. Un clic
+         fuera cierra el que esté abierto. */
+      raiz.addEventListener('focusin', function (evento) {
+        if (evento.target.classList && evento.target.classList.contains('quiz-problema-abrir')) {
+          var zonaFoco = evento.target.closest('.quiz-problema');
+          if (zonaFoco && !zonaFoco._sinAbrirAlEnfocar) abrirZonaProblema(zonaFoco, false);
+        }
+      });
+      raiz.addEventListener('focusout', function (evento) {
+        var zona = evento.target.closest ? evento.target.closest('.quiz-problema') : null;
+        if (!zona || zona.dataset.fijada) return;
+        if (evento.relatedTarget && zona.contains(evento.relatedTarget)) return;
+        cerrarZonaProblema(zona);
+      });
+      document.addEventListener('keydown', function (evento) {
+        if (evento.key !== 'Escape' || !raiz) return;
+        var abierta = raiz.querySelector('.quiz-problema.abierta');
+        if (!abierta) return;
+        cerrarZonaProblema(abierta);
+        var enlace = abierta.querySelector('.quiz-problema-abrir');
+        if (!enlace) return;
+        abierta._sinAbrirAlEnfocar = true;
+        enlace.focus({ preventScroll: true });
+        abierta._sinAbrirAlEnfocar = false;
+      });
+      document.addEventListener('click', function (evento) {
+        if (!raiz) return;
+        Array.prototype.forEach.call(raiz.querySelectorAll('.quiz-problema.abierta'), function (zona) {
+          if (!zona.contains(evento.target)) cerrarZonaProblema(zona);
+        });
+      });
+      raiz.addEventListener('input', function (evento) {
+        if (evento.target && evento.target.classList
+          && evento.target.classList.contains('quiz-certeza-barra')) {
+          actualizarBarraCerteza(evento.target);
+        }
+      });
     },
 
     sincronizar: function (estado) {
@@ -1048,7 +1704,11 @@
       document.body.classList.toggle('quiz-panel-creencias', activo && estado.panelAbierto);
       raiz.hidden = !activo;
       raiz.setAttribute('aria-hidden', activo ? 'false' : 'true');
-      if (!activo) return;
+      if (!activo) {
+        ocultarCapaNombre();
+        return;
+      }
+      if (debePedirNombre(estado)) mostrarCapaNombre();
       var marcaPanel = estado.panelAbierto
         ? estado.posturasSueltas.slice().sort().join(',')
         : (estado.posturasExploradasCuestionario || []).slice().sort().join('|');

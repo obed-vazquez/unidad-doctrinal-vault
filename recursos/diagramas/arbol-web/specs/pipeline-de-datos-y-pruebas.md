@@ -103,3 +103,28 @@ Si una pieza falla, no se cachea nada y se deja el español: media frase traduci
 Se purgaron las entradas ya envenenadas de `traducciones-en.cache.json` para que se retradujeran enteras. La de las hipóstasis pasa de 444 a 687 caracteres, la costura no se nota (`…that is, the same hypostasis (personal subject), Jesus Christ, is the one who forgives sins…`) y termina donde debe.
 
 > **Cómo se detecta esto:** una traducción mucho más corta que su original. Un barrido de la caché buscando `len(en) < len(es) * 0.6` en textos de más de 120 caracteres no devuelve ninguna otra.
+
+## Una respuesta que repite el nombre de una postura creaba otro nodo (2026-11-22)
+
+### Petición
+
+`Postura de la inspiración bíblica` aparece como destino de dos respuestas: `No: …` (línea 128, bajo la pregunta del error u opinión propia del autor) y `Sí: …` (línea 201, bajo «¿La Biblia es inspirada por Dios?»). El visor dibujaba **dos nodos con el mismo nombre**: el de la línea 128 con sus seis ejes de pregunta y el de la 201 vacío. Quien pidió el arreglo lo consideró un bug: un mismo nombre debe ser un mismo nodo, salvo que haya un caso que justifique lo contrario.
+
+### Causa
+
+`build_model` llamaba a `model.add_posture` en **cada** línea de respuesta, sin mirar si el nombre ya existía. Las líneas `->` sí reconocían posturas ya introducidas (`nearest_matching_posture`), las respuestas nunca. El visor ya admitía varias respuestas hacia una misma postura (el Modo de Edición puede ligar una respuesta a una postura existente, y `aMarkdown` emite el subárbol solo la primera vez); el convertidor era el único que no.
+
+### Decisiones tomadas al implementar
+
+- **Una respuesta cuyo nombre ya fue introducido por otra respuesta apunta a esa postura.** Las claves salen de `posture_identity`, que usa las mismas de `alias_keys`: el nombre completo sin `{grupos}` ni wikilinks, normalizado como el resto (mayúsculas, espacios, guion interno).
+- **El `/` es sinonimia, también en las respuestas.** `Gracia Irresistible / Monerguismo` y `Monerguismo` a secas son la misma postura: se puede usar cualquiera de los nombres. Si una respuesta trae solo uno de los sinónimos, es un descuido de quien escribió el documento, no otra postura, así que apunta al mismo nodo, igual que la tolerancia al guion interno. (La primera versión de este arreglo exigía el nombre completo para no fundir posturas distintas; quien lo pidió lo corrigió porque el `/` siempre separa sinónimos.)
+- **Excepciones en las que se mantiene un nodo aparte:**
+  1. Los huecos sin nombre (`?`, `? {Grupo}`): cada uno es una postura pendiente distinta, como ya decía el criterio para los orígenes.
+  2. Una postura que reaparece **dentro de su propio subárbol**: fundirla cerraría un ciclo y el recorrido no terminaría. Se crea aparte y se avisa con una advertencia, para que el autor decida si es otra postura (y la renombra) o un error de ubicación.
+- Si las dos respuestas traen `{grupos}` distintos, manda la primera (la que introdujo la postura); hoy no ocurre en el documento.
+
+Regenerado el JSON: 120 → 119 posturas; `P50` recibe las respuestas de las líneas 128 y 201 y conserva sus seis ejes. En el documento actual es el único nombre repetido en respuestas.
+
+### Prueba ajustada
+
+`cada convergencia del dataset es un nodo con varias aristas entrantes` contaba solo las preguntas convergentes y daba por hecho que todo nodo con varias entradas era una pregunta (fallaba al leer `nodo.pregunta.formal_text`). Ahora el esperado se deriva del dataset sumando las posturas que reciben más de una respuesta. Los dos fallos que ya tenía la suite antes de este cambio (`expandir todo revela el árbol completo desde la raíz`, `el export conserva el wikilink de la pregunta raíz`) siguen igual: no son de este arreglo.

@@ -1714,13 +1714,22 @@
     if (abriendo && nombre === 'creencias') enfocarBuscadorCreencias();
   }
 
-  function enfocarBuscadorCreencias() {
+  function enfocarBuscadorCreencias(seleccionar) {
     var campo = dom.buscador;
     if (!campo) return;
     global.requestAnimationFrame(function () {
       try { campo.focus({ preventScroll: true }); }
       catch (error) { campo.focus(); }
+      if (seleccionar) campo.select();
     });
+  }
+
+  /* Ctrl+F no alterna como `C`: siempre deja abiertas las creencias con el
+     buscador enfocado, que es lo que se espera de «buscar». */
+  function buscarEnCreencias() {
+    if (!Estado.panelAbierto) sincronizarCreenciasAlAbrir();
+    if (!Estado.panelAbierto || Estado.pestana !== 'creencias') abrirPestana('creencias');
+    enfocarBuscadorCreencias(true);
   }
 
   /* Sin instantáneas que deshacer: el panel nunca escribió en la expansión
@@ -1922,6 +1931,42 @@
       if (nodoId) Vista.encuadrarNodoYDescendientes(nodoId, true);
       else Vista.encuadrar(null, true);
     }, 120);
+  }
+
+  /* «Problema con esta pregunta» en el cuestionario: abre el Modo de Edición
+     con la pregunta seleccionada y encuadrada, para proponer el cambio ahí. */
+  /* En edición un nodo solo se ve si toda su cadena de ancestros está
+     expandida, y el recorrido de edición conserva lo que tenía abierto de
+     antes: hay que abrir la cadena completa desde la raíz, prefiriendo los
+     padres del camino que el usuario respondió (la pregunta puede colgar de
+     una convergencia con varios padres). El grafo de edición se reconstruye
+     al entrar, así que el anfitrión se busca después de cambiar de recorrido. */
+  function abrirPreguntaEnEdicion(preguntaId) {
+    fijarRecorrido('edicion');
+    var grafo = Estado.grafo;
+    var nodoId = grafo && grafo.anfitrionDePregunta(preguntaId);
+    if (!nodoId || !grafo.nodos.has(nodoId)) return;
+    var camino = Estado.caminoElegido();
+    var actual = grafo.nodos.get(nodoId);
+    var vistos = new Set();
+    while (actual && !vistos.has(actual.id)) {
+      vistos.add(actual.id);
+      Estado.expandidos.add(actual.id);
+      var entradas = (actual.entradas || []).filter(function (arista) {
+        return arista.tipo !== 'control';
+      });
+      if (!entradas.length) break;
+      var padre = null;
+      entradas.some(function (arista) {
+        if (camino.has(arista.desde)) { padre = arista.desde; return true; }
+        return false;
+      });
+      actual = grafo.nodos.get(padre || entradas[0].desde);
+    }
+    Estado.sincronizarExpandidosGuardados();
+    Estado.seleccionado = nodoId;
+    Estado.emitir('expandir');
+    global.setTimeout(function () { Vista.encuadrarNodoYDescendientes(nodoId, true); }, 160);
   }
 
   function fijarRecorrido(valor, opciones) {
@@ -3114,7 +3159,14 @@
     global.addEventListener('keydown', function (evento) {
       var enCampo = evento.target && /^(INPUT|TEXTAREA|SELECT)$/.test(evento.target.tagName);
       var esc = evento.key === 'Escape' || evento.key === 'Esc' || evento.code === 'Escape';
+      var ctrlF = (evento.ctrlKey || evento.metaKey) && !evento.altKey && !evento.shiftKey
+        && (evento.key === 'f' || evento.key === 'F');
       if (enCampo) {
+        if (ctrlF && evento.target === dom.buscador) {
+          evento.preventDefault();
+          dom.buscador.select();
+          return;
+        }
         if (esc && Estado.panelAbierto && evento.target === dom.buscador) {
           evento.preventDefault();
           if (hayMenuAbierto()) cerrarMenus();
@@ -3126,6 +3178,7 @@
         if (!esc) evento.preventDefault();
         return;
       }
+      if (ctrlF) { evento.preventDefault(); buscarEnCreencias(); return; }
       if (Estado.divulgacion === 'edicion' && (evento.ctrlKey || evento.metaKey) && !evento.altKey) {
         var z = evento.key === 'z' || evento.key === 'Z';
         var y = evento.key === 'y' || evento.key === 'Y';
@@ -3266,6 +3319,7 @@
         estado: Estado,
         fijarRecorrido: fijarRecorrido,
         explorarEnArbol: explorarSujetoEnArbol,
+        abrirPreguntaEnEdicion: abrirPreguntaEnEdicion,
         urlMDRender: urlMDRender,
         pintarDefiniciones: pintarDefinicionesEn
       });

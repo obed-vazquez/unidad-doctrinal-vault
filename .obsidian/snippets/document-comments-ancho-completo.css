@@ -1,0 +1,6 @@
+/* Document Comments: deja el texto a todo el ancho del panel y la columna de
+   comentarios pegada al borde derecho, en lugar de limitarlo a ~800 px. */
+.cm-editor.dc-has,
+.markdown-reading-view.dc-has {
+	--file-line-width: 100000px;
+}

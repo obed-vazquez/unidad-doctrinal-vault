@@ -11,7 +11,7 @@
       5. TANAKH?  
       6. Divine Revelation.   
       7. Divine Scripture. “The Bible”. Any communication represented by symbols in any printable surface “originated” from God.  
-      8. The Bible. The collection of \[books?|scripture?\] “We” believe are God’s Revelation to Man.
+      8. The Bible. The collection of \[books?\|scripture?\] “We” believe are God’s Revelation to Man.
 
       9. # **Canon:** {#canon:}
 
@@ -26,7 +26,7 @@
          * What were the criteria used to recognize or define this Biblical canon?  
            1) What were the criteria used to define the Masoretic Text?  
       3. Aren’t we elevating texts (The Bible, especially the letters) that can be very close to perfection to an absolute perfection state (revealed/inspired)?  
-      4. How do we know that ALL of the Books of the Bible are perfect|inspired? and not just 1 or some?  
+      4. How do we know that ALL of the Books of the Bible are perfect\|inspired? and not just 1 or some?  
          * How do we know that some of them were not left out of the canon?  
       5. By whom, when, and where was the [canon](#canon:) created?
 
@@ -242,7 +242,7 @@
 
    1. The Bible claims to be that revelation  
       1. [IPe 1.21](http://bible.com/1/1pe.1.21) **“... spake as they were moved by the Holy Ghost.”**;  
-      2. Although the verse says they spake (spoke), implying maybe a difference with the “written word” | Bible  
+      2. Although the verse says they spake (spoke), implying maybe a difference with the “written word” \| Bible  
       3. [IISam 23.2](http://bible.com/1/2sa.23.2) “The Spirit of the Lord spake by me, and his word was in my tongue.”;  
       4. Same as the first  
       5. [Mar 12.36](http://bible.com/1/mr.12.36) “For David himself said by the Holy Ghost, The Lord said to my Lord, Sit thou on my right hand, till I make thine enemies thy footstool.”;  
@@ -263,7 +263,7 @@
          * Comments: It addresses archeology and proves that what is written in the Bible really happened instead of proving its divinity.  
       2. Which Bible?-Many... Edited by David Otis Fuller, D.D.  
       3. True or False? \-Many... Edited by David Otis Fuller, D.D.  
-   2. https://youtu.be/26l5OI58SQw?si=x8qj\_b2\_XwEhhG\_u
+   2. https\://youtu.be/26l5OI58SQw?si=x8qj\_b2\_XwEhhG\_u
 
 	  
 	  

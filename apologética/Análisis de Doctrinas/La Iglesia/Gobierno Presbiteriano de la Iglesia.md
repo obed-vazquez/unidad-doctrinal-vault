@@ -35,11 +35,7 @@
 
    3. ## Otras definiciones.       Para efectos de este análisis, se considerará que los siguientes términos para designar a quienes ejercen liderazgo espiritual se refieren a la misma función y serán empleados de manera intercambiable a lo largo del documento. Esta unificación terminológica busca evitar confusiones y mantener la claridad en la exposición.
 
-      1. presbítero  
-      2. pastor  
-      3. ministro  
-      4. anciano  
-      5. obispo
+      1. Presbítero, pastor, ministro, anciano, obispo
 
 2. # Presbítero
 
@@ -49,40 +45,44 @@
 
          1. [Hch 4:35](http://bible.com/bible/149/act.4.35) “... y lo ponían a los pies de los apóstoles ...” El texto evidencia una concentración de autoridad en un grupo específico —los apóstoles—, quienes recibían y administraban los recursos de la comunidad. La congregación participa entregando los bienes, pero la gestión y distribución quedan en manos exclusivas de ese liderazgo central. Esto refleja un modelo en el que las decisiones sobre administración y ayuda son tomadas por una autoridad reconocida, no por deliberación colectiva.  
             1. R: Si tomásemos este versículo aislado como base doctrinal, siguiendo la misma lógica, tendríamos que vender nuestras posesiones para darlas a los líderes bajo este mismo patrón de razonamiento y no parece que se esté incluyendo en el argumento.  
-         2. Hch 14.23  
+         2. Dios dice, escribe al angel de las. Iglesias, no a las Iglesias, en este contexto angel significa al líder.   
+         3. Hch 14.23  
             1. **R:** La palabra en el original **χειροτονέω jeirotonéo**: de un compuesto de **G5495** y **τείνω teíno**  (estirar); ser uno que alcanza con la mano, o votante (por levantar la mano),   
             2. **R:** [El enviado tiene la autoridad y voto de confianza de la iglesia](https://docs.google.com/document/d/1s0MpHWO5iozY9LF4OCmELEqtovC0x2TbI2QEZwj51MM/edit?tab=t.0#heading=h.62rjpw3ocgal).
 
          
 
-         3. [2Tes 1.1](https://www.bible.com/bible/149/2TH.1.1.RVR1960) & [3.6](https://bible.com/bible/149/2th.3.6.RVR1960% 9) “*Pablo, Silvano y Timoteo ... os ordenamos, hermanos...* ”.  Los líderes tienen la capacidad de ordenar a las iglesias.  
+         4. [2Tes 1.1](https://www.bible.com/bible/149/2TH.1.1.RVR1960) & [3.6](https://bible.com/bible/149/2th.3.6.RVR1960% 9) “*Pablo, Silvano y Timoteo ... os ordenamos, hermanos...* ”.  Los líderes tienen la capacidad de ordenar a las iglesias.  
             1. **R:** Si esto fuese así, no sería el caso de análisis ya que sería una [orden interdependiente](https://docs.google.com/document/d/1a_5YeeXnllrwN_OGhnDD_Be8DikwyInN7b-yv7n314I/edit). De cualquier manera, Pablo y el resto de los hermanos están ordenando algo que para ojos de todos está ordenado por Dios; este tipo de casos sale también del patrón del análisis.  
-         4. Heb 13.17 (RV-SBT) *“Obedeced a los que os dirigen y sujetaos a ellos…”*;
+         5. Heb 13.17 (RV-SBT) *“Obedeced a los que os dirigen y sujetaos a ellos…”*;
 
       2. ### Ideas y Metáforas
 
          1. Jesucristo ejerció una autoridad centralizada en su ministerio terrenal, tomando decisiones de manera directa. Este modelo busca emular dicha estructura.  
             1. R:   
-         2. La Biblia nunca menciona que el gobierno presbítero sea incorrecto.
+         2. La Biblia nunca menciona que el gobierno presbítero sea incorrecto.  
+         3. La Trinidad pinta un cuadro de esto donde el Padre tiene la función de dar la visión, El Hijo, y el ES. Qué se presenta en el gobierno donde Cristo da la visión.  
+         4. Carreon: dijo sométase a sus pastores pero no sometas a su iglesia.   
+         5. Jesucristo puso el ejemplo
 
    2. ## En Contra
 
       1. ### Versiculos
 
-         1. La iglesia votó para realizar el bautismo de Saulo aún después de que Pedro tuviese en bien el bautizarlo, [Hch 10:47](http://bible.com/bible/149/act.10.47)  “...¿Puede acaso alguno impedir el agua...”  
+         1. La iglesia votó para realizar el bautismo de Saulo aun después de que Pedro tuviese en bien el bautizarlo, [Hch 10:47](http://bible.com/bible/149/act.10.47)  “...¿Puede acaso alguno impedir el agua...”  
          2. La iglesia envió misioneros, [Hch 13:3](http://bible.com/bible/149/act.13.3) “les impusieron las manos y los despidieron.”  
-         3. Las iglesias fueron mandadas a excluir miembros indignos e inmorales.  [1Co 5:4-5](http://bible.com/bible/149/1co.5.4-5)*”Reunidos vosotros”*; [Ro 16.17](http://bible.com/bible/149/rom.16.17) “Os ruego a ustedes”  
+         3. Las iglesias fueron mandadas a excluir miembros indignos e inmorales.  [1Co 5:4-5](http://bible.com/bible/149/1co.5.4-5) *“Reunidos vosotros”*; [Ro 16.17](http://bible.com/bible/149/rom.16.17) “Os ruego a ustedes”  
          4. [Mr 10.42-44](http://bible.com/bible/149/mrk.10.42-44) "El que quiera ser mayor entre ustedes tiene que ser el menor"
 
       2. ### Ideas y Metáforas
 
-         1. Se dificulta y en muchos casos no se acepta exponer otras creencias y formas de hacer las cosas y debatirlas.  
-         2. Se abre la puerta a la exaltación a los hombres.  
+         1. Se dificulta y, en muchos casos, no se acepta exponer otras creencias y formas de hacer las cosas y debatirlas.  
+         2. Se abre la puerta a la exaltación a los hombres, más explícitamente, al líder.  
          3. ¿Con este sistema se dificulta refutar o cuestionar la creencia o interpretación de una “jerarquía superior”?  
          4. Dios me habla por necesidades y en otro sistema siento que por medio del profeta  
          5. Todas las denominaciones han empezado con 1 persona   
          6. El Espíritu vino a todos no a un solo hombre  
-         7. Se vuelve difícil el mover a la raíz de la Jerarquía y se tiende a que una sola persona retenga el poder dentro de la iglesia.  
+         7. Se vuelve difícil mover a la raíz de la jerarquía y se tiende a que una sola persona retenga el poder dentro de la iglesia.  
          8. Cuando Jesucristo vino, él no tocó la bolsa (el dinero).  
          9. La congregación se desentiende más al no ser necesaria su involucración en decisiones que les afectan directamente.  
          10. Desaprovecha la oportunidad de enseñar a neófitos al revelar su desconocimiento en temas bíblicos involucrados en las decisiones.  
@@ -147,8 +147,7 @@
          1. # Los más espirituales y por lo tanto con la guía del ES son generalmente minoría
 
             1. **R:** El congregacionalismo es una oportunidad para ayudar a esa mayoría a acercarse a Dios y a crecer, de otra manera la congregación se hace pastor-centrica y depende completamente del pastor, cuando este falte, todo se tambalea.  
-         2. Se da lugar a mafias que dirigen en lo privado
+         2. Se da lugar a mafias que dirigen en lo privado  
+4. ![][image1]
 
-	  
-	  
-	
+[image1]: <data:image/png;base64,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>

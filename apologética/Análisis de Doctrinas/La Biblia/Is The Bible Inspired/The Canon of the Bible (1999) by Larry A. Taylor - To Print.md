@@ -4,7 +4,7 @@
 
 ---
 
-> [Criteria for Canonicity](https://infidels.org/library/modern/larry_taylor/canon.html#criteria) | [Old Testament](https://infidels.org/library/modern/larry_taylor/canon.html#ot) | [OT Aprocrypha](https://infidels.org/library/modern/larry_taylor/canon.html#ot-apocrypha) | [Consistence for the NT](https://infidels.org/library/modern/larry_taylor/canon.html#consistency) | [NT Canon](https://infidels.org/library/modern/larry_taylor/canon.html#nt) | [NT Apocrypha](https://infidels.org/library/modern/larry_taylor/canon.html#nt-aprocrypha) | [Conclusion](https://infidels.org/library/modern/larry_taylor/canon.html#conclusion) | [Anachronisms in Daniel](https://infidels.org/library/modern/larry_taylor/canon.html#daniel) | [Bibliography](https://infidels.org/library/modern/larry_taylor/canon.html#biblio) | [Related Resources](https://infidels.org/library/modern/larry_taylor/canon.html#related)
+> [Criteria for Canonicity](https://infidels.org/library/modern/larry_taylor/canon.html#criteria) \| [Old Testament](https://infidels.org/library/modern/larry_taylor/canon.html#ot) \| [OT Aprocrypha](https://infidels.org/library/modern/larry_taylor/canon.html#ot-apocrypha) \| [Consistence for the NT](https://infidels.org/library/modern/larry_taylor/canon.html#consistency) \| [NT Canon](https://infidels.org/library/modern/larry_taylor/canon.html#nt) \| [NT Apocrypha](https://infidels.org/library/modern/larry_taylor/canon.html#nt-aprocrypha) \| [Conclusion](https://infidels.org/library/modern/larry_taylor/canon.html#conclusion) \| [Anachronisms in Daniel](https://infidels.org/library/modern/larry_taylor/canon.html#daniel) \| [Bibliography](https://infidels.org/library/modern/larry_taylor/canon.html#biblio) \| [Related Resources](https://infidels.org/library/modern/larry_taylor/canon.html#related)
 
 ---
 
@@ -721,7 +721,7 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > Anderson, G.W. "The Old Testament: Canonical and Non-Canonical." Ch. 6\. in *The Cambridge History of the Bible.* Vol. 1: *From the Beginnings to Jerome.* Ackroyd, P.R., and C. F. Evans, eds. Cambridge: University Press, 1970\. Pp. 113-159.
 
-> The Augustine Club. "Development of the Biblical Canon." \<http://www.columbia.edu/cu/augustine/a/canon.html\>.
+> The Augustine Club. "Development of the Biblical Canon." \<http\://www\.columbia.edu/cu/augustine/a/canon.html\>.
 
 > Bainton, Roland H. "The Bible in the Reformation." Ch. 1\. in The *Cambridge History of the Bible* . Vol. 3: *The West From the Reformation to the Present Day.* Greenslade, S.L.,ed. Cambridge: University Press, 1963; pp. 1-37.
 
@@ -739,17 +739,17 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > \-----. *The Old Testament Pseudepigrapha.* Vol. 2, *Expansions of the "Old Testament" and Legends, Wisdom and Philosophical Literature, Prayers, Psalms, and Odes, Fragments of Lost Judeo-Hellenistic Works.* Garden City, New York: Doubleday, 1985\.
 
-> *Christian Classics Ethereal Library*, Wheaton College \<http://ccel.wheaton.edu/fathers/\>
+> *Christian Classics Ethereal Library*, Wheaton College \<http\://ccel.wheaton.edu/fathers/\>
 
 > Crehan, F. J. "The Bible in the Roman Catholic Church from Trent to the Present Day." Ch. 6 in The *Cambridge History of the Bible* . Vol. 3: *The West From the Reformation to the Present Day.*Greenslade, S.L.,ed. Cambridge: University Press, 1963\. Pp. 199-237.
 
-> Davis, Glenn. "New Testament Canon." URL:\<http://www.best.com/\~gdavis/ntcanon/main.htm\>.
+> Davis, Glenn. "New Testament Canon." URL:\<http\://www\.best.com/\~gdavis/ntcanon/main.htm\>.
 
 > Dentan, Robert B. "Apocrypha: Jewish Apocrypha." *Oxford Companion to the Bible*. Metzger and Coogan, eds. Oxford: University Press, 1993\. P. 37f.
 
 > Du Toit, A. article,"Canon: New Testament." *Oxford Companion to the Bible*.
 
-> The Ecole Initiative. *Early Church Documents Online*. URL: \<http://cedar.evansville.edu/\~ecoleweb/documents.html\>
+> The Ecole Initiative. *Early Church Documents Online*. URL: \<http\://cedar.evansville.edu/\~ecoleweb/documents.html\>
 
 > Ehrman, Bart D. *The New Testament: A Historical Introduction to the Early Christian Writings*. New York: Oxford University Press, 1997\.
 
@@ -765,7 +765,7 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > Greenslade, S.L.,ed. *The Cambridge History of the Bible* . Vol. 3: *The West From the Reformation to the Present Day.* Cambridge: University Press, 1963\.
 
-> Hartono, W. "Canon of the New Testament." URL: \<http://webusers.anetstl.com/\~nosmo/canonnew.htm\>.
+> Hartono, W. "Canon of the New Testament." URL: \<http\://webusers.anetstl.com/\~nosmo/canonnew.htm\>.
 
 > Hoffman, R. Joseph and Gerald Larue, eds. *Jesus in History and Myth*. Buffalo, NY: Prometheus Books, 1986\.
 
@@ -775,7 +775,7 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > Lane Fox, Robin. *The Unauthorized Version: Truth and Fiction in the Bible*. New York: Alfred E. Knopf, 1992\.
 
-> Larue, Gerald. *Old Testament Life and Literature*. Boston: Allyn and Bacon,1969. Electronic reprint, by permission of the author, at the *Secular Web*, URL \<http://www.infidels.org/library/modern/gerald\_larue/otll/\>.
+> Larue, Gerald. *Old Testament Life and Literature*. Boston: Allyn and Bacon,1969. Electronic reprint, by permission of the author, at the *Secular Web*, URL \<http\://www\.infidels.org/library/modern/gerald\_larue/otll/\>.
 
 > Mack, Burton L. *Who Wrote the New Testament? The Making of the Christian Myth*. San Francisco: HarperCollins, 1995\.
 
@@ -793,7 +793,7 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > Paton, Lewis Bayles. *The Book of Esther.* Part of series,*The International Critical Commentary.*Edinburgh: T. & T. Clark, 1908; reprint ed., 1964\.
 
-> Reid, George J. "Canon of the New Testament."*The Catholic Encyclopedia*. Transcribed by Ernie Stefanik. URL: \<http://www.knight.org/advent/cathen/03274a.htm\>. Encyclopedia Press, 1913; Electronic version: New Advent, Inc.,1996.
+> Reid, George J. "Canon of the New Testament."*The Catholic Encyclopedia*. Transcribed by Ernie Stefanik. URL: \<http\://www\.knight.org/advent/cathen/03274a.htm\>. Encyclopedia Press, 1913; Electronic version: New Advent, Inc.,1996.
 
 > Rypins, Stanley. *The Book of Thirty Centuries: An Introduction to Modern Study of the Bible*. New York: Macmillan, 1951\.
 
@@ -803,12 +803,12 @@ Clement of Alexandria recognized obscure works such as the Preaching of Peter an
 
 > \-----. *Torah and Canon*. Philadelphia: Fortress Press, 1972\.
 
-> *Vox Reformata* . Article, "Canon." URL: \<http://www.pastornet.net.au/rtc/canon2.htm\>.
+> *Vox Reformata* . Article, "Canon." URL: \<http\://www\.pastornet.net.au/rtc/canon2.htm\>.
 
-> Wesley Center for Applied Theology, Northwest Nazarene College. "The Noncanonical Gospels," resource web page. \<http://wesley.nnc.edu/noncanon/gospels.htm\>.
+> Wesley Center for Applied Theology, Northwest Nazarene College. "The Noncanonical Gospels," resource web page. \<http\://wesley.nnc.edu/noncanon/gospels.htm\>.
 
-> \-----. "The Complete Works of Josephus," web page. \<http://wesley.nnc.edu/josephus/\>.
+> \-----. "The Complete Works of Josephus," web page. \<http\://wesley.nnc.edu/josephus/\>.
 
-> \-----. "The Church Fathers," web page. Includes pointers off-site to online works: Barnabas, Hermas, Clement, Ignatius, Polybius, Irenaeus, etc. \<http://wesley.nnc.edu/noncanon/fathers.htm\>.
+> \-----. "The Church Fathers," web page. Includes pointers off-site to online works: Barnabas, Hermas, Clement, Ignatius, Polybius, Irenaeus, etc. \<http\://wesley.nnc.edu/noncanon/fathers.htm\>.
 
 > Westermann, Claus. *Our Controversial Bible*. Trans., ed., by Darold H. Beekman. Minneapolis, Minnesota: Augsburg Publishing House, 1960; trans. 1969\.

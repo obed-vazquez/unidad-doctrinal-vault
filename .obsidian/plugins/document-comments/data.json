@@ -1,0 +1,31 @@
+{
+  "author": "",
+  "showComments": true,
+  "showResolved": false,
+  "showHighlights": true,
+  "allowEmptyComments": false,
+  "authorColorsEnabled": true,
+  "authorColors": {
+    "me": {
+      "color": "#0090ff",
+      "mode": "generated"
+    },
+    "claude": {
+      "color": "#e54d2e",
+      "mode": "generated"
+    },
+    "assistant": {
+      "color": "#46a758",
+      "mode": "generated"
+    },
+    "Chato-GPT": {
+      "color": "#6e56cf",
+      "mode": "generated"
+    },
+    "ChatGPT": {
+      "color": "#ffc53d",
+      "mode": "generated"
+    }
+  },
+  "excludedAuthorColors": []
+}
