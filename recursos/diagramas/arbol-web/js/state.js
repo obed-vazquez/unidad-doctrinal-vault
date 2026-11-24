@@ -585,6 +585,8 @@
     grafo: null,
 
     respuestas: {},          // respuestas del usuario: { Q1: 'A' }
+    certezas: {},            // cuestionario: certeza 1–6 de respuestas no seguras del todo { Q1: 4 }
+    NIVELES_CERTEZA: 7,      // la barra es continua; por dentro se cuantiza a estos niveles
     ramasSinRespuesta: {},   // cuestionario: rama cerrada sin elegir respuesta { Q1: true }
     superpuestas: {},        // vista previa del cuestionario (solo ese recorrido)
     rutasExploradas: {},   // respuestas fijadas al pulsar «Explorar»
@@ -797,6 +799,7 @@
       if (!preguntaId) return;
       delete this.respuestas[preguntaId];
       delete this.superpuestas[preguntaId];
+      delete this.certezas[preguntaId];
       this.ramasSinRespuesta[preguntaId] = true;
       podarInalcanzables(this.grafo, this.respuestas, this.ramasSinRespuesta,
         this.respuestasEfectivas());
@@ -804,7 +807,10 @@
       this.emitir('respuesta');
     },
 
-    responder: function (preguntaId, clave) {
+    /* `certeza` (1–NIVELES_CERTEZA) solo la pasa el cuestionario, desde la
+       barra de cada respuesta. Responder desde cualquier otro lugar, o con la
+       barra al máximo, deja la respuesta con certeza completa. */
+    responder: function (preguntaId, clave, certeza) {
       if (this.divulgacion === 'indagatorio' && this.grafo) {
         var anfitrion = this.grafo.anfitrionDePregunta(preguntaId);
         var camino = nodosEnCaminoElegido(this.grafo, this.respuestasEfectivas(),
@@ -819,6 +825,9 @@
           this.respuestasEfectivas());
       }
       this.respuestas[preguntaId] = clave;
+      var nivel = Math.round(Number(certeza));
+      if (nivel >= 1 && nivel < this.NIVELES_CERTEZA) this.certezas[preguntaId] = nivel;
+      else delete this.certezas[preguntaId];
       delete this.ramasSinRespuesta[preguntaId];
       if (this.divulgacion === 'cuestionario' && this.posturasExploradasCuestionario.length
         && Arbol.Creencias) {
@@ -860,8 +869,25 @@
       if (this.seleccionado && !visibles.has(this.seleccionado)) this.seleccionado = null;
     },
 
+    /* Nivel de certeza de una respuesta (1–NIVELES_CERTEZA), o null si la
+       pregunta no está respondida. Solo se guarda cuando no es completa;
+       podar una rama borra la respuesta pero no pasa por aquí. */
+    certezaDe: function (preguntaId) {
+      if (this.respuestas[preguntaId] == null) return null;
+      var nivel = this.certezas[preguntaId];
+      return (typeof nivel === 'number' && nivel >= 1 && nivel < this.NIVELES_CERTEZA)
+        ? nivel : this.NIVELES_CERTEZA;
+    },
+
+    /* Respondida, pero sin certeza completa. */
+    conDudas: function (preguntaId) {
+      var nivel = this.certezaDe(preguntaId);
+      return nivel != null && nivel < this.NIVELES_CERTEZA;
+    },
+
     borrarRespuesta: function (preguntaId) {
       delete this.respuestas[preguntaId];
+      delete this.certezas[preguntaId];
       delete this.superpuestas[preguntaId];
       delete this.ramasSinRespuesta[preguntaId];
       podarInalcanzables(this.grafo, this.respuestas, this.ramasSinRespuesta,
@@ -911,6 +937,7 @@
 
     reiniciar: function () {
       this.respuestas = {};
+      this.certezas = {};
       this.ramasSinRespuesta = {};
       this.superpuestas = {};
       this.aperturaCreencias = null;
@@ -946,6 +973,7 @@
       try {
         global.localStorage.setItem(CLAVE_ALMACEN, JSON.stringify({
           respuestas: this.respuestas,
+          certezas: this.certezas,
           ramasSinRespuesta: this.ramasSinRespuesta,
           rutasExploradas: this.rutasExploradas,
           posturasExploradasCuestionario: this.posturasExploradasCuestionario,
@@ -988,6 +1016,9 @@
       if (!guardado || typeof guardado !== 'object') return;
 
       if (guardado.respuestas) this.respuestas = guardado.respuestas;
+      if (guardado.certezas && typeof guardado.certezas === 'object') {
+        this.certezas = guardado.certezas;
+      }
       if (guardado.ramasSinRespuesta) this.ramasSinRespuesta = guardado.ramasSinRespuesta;
       if (guardado.rutasExploradas) this.rutasExploradas = guardado.rutasExploradas;
       if (Array.isArray(guardado.posturasExploradasCuestionario)) {
@@ -1051,6 +1082,10 @@
       });
       Object.keys(this.rutasExploradas).forEach(function (qid) {
         if (!self.datos.questions[qid]) delete self.rutasExploradas[qid];
+      });
+      if (!this.certezas) this.certezas = {};
+      Object.keys(this.certezas).forEach(function (qid) {
+        if (!self.datos.questions[qid]) delete self.certezas[qid];
       });
       Object.keys(this.superpuestas).forEach(function (qid) {
         if (!self.datos.questions[qid]) delete self.superpuestas[qid];

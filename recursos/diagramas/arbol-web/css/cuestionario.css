@@ -896,7 +896,7 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
 }
 
 .quiz-chips button.quiz-chip-btn,
-.quiz-cercanas .quiz-btn-mini {
+.quiz-btn-mini {
   appearance: none;
   font: inherit;
   cursor: pointer;
@@ -921,9 +921,13 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
   border-color: var(--acento);
 }
 
-.quiz-cercanas .quiz-btn-mini {
-  margin-top: 8px;
-  padding: 6px 10px;
+/* Botón pequeño en píldora: «Explorar en el árbol» de tradiciones cercanas
+   y de las alternativas, y «Reconsiderar esta pregunta». Antes solo tenía
+   estilo dentro de `.quiz-cercanas`, así que los de «Tus puntos de duda»
+   salían con el aspecto por defecto del navegador. */
+.quiz-btn-mini {
+  flex: none;
+  padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid var(--borde);
   background: transparent;
@@ -931,11 +935,20 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
   font-size: 0.8rem;
   font-weight: 600;
   font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: border-color 140ms ease, background 140ms ease;
 }
 
-.quiz-cercanas .quiz-btn-mini:hover {
+.quiz-btn-mini:hover,
+.quiz-btn-mini:focus-visible {
+  outline: none;
   border-color: var(--acento);
   background: var(--acento-suave);
+}
+
+.quiz-cercanas .quiz-btn-mini {
+  margin-top: 8px;
 }
 
 /* Scrollbars del cuestionario */
@@ -1014,4 +1027,601 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
   .quiz-escena,
   .quiz-opcion,
   .quiz-hero-postura { animation: none; transition: none; }
+}
+
+/* -------------------------------------------- Barra de certeza -------- */
+/* Cada respuesta es una tarjeta: arriba el botón que responde, abajo la
+   barra de certeza, continua y sin marcas de pasos. El JS escribe `--pct`
+   (0–100): pinta el relleno del degradado y el tono del tirador, que va
+   del dorado (dudas) al acento (certeza completa). */
+.quiz-opcion-cuerpo {
+  all: unset;
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.quiz-opcion:has(.quiz-opcion-cuerpo:focus-visible) {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-suave);
+}
+
+/* Sobre la barra la tarjeta no se «levanta»: ahí no se responde. */
+.quiz-opcion:has(.quiz-certeza:hover) {
+  transform: none;
+  border-color: var(--borde);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
+}
+
+:root[data-tema="claro"] .quiz-opcion:has(.quiz-certeza:hover) {
+  background: #fff;
+}
+
+.quiz-opcion.con-dudas,
+.quiz-opcion.con-dudas:has(.quiz-certeza:hover) {
+  border-color: color-mix(in oklab, var(--dorado) 45%, var(--borde));
+}
+
+.quiz-certeza {
+  --pct: 100;
+  --tono: color-mix(in oklab, var(--acento) calc(var(--pct) * 1%), var(--dorado));
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--borde-suave);
+  cursor: default;
+}
+
+.quiz-certeza-barra {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.quiz-certeza-barra:focus {
+  outline: none;
+}
+
+.quiz-certeza-barra::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent calc(var(--pct) * 1%), var(--borde) calc(var(--pct) * 1%)),
+    linear-gradient(90deg, var(--dorado), var(--acento));
+}
+
+.quiz-certeza-barra::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent calc(var(--pct) * 1%), var(--borde) calc(var(--pct) * 1%)),
+    linear-gradient(90deg, var(--dorado), var(--acento));
+}
+
+.quiz-certeza-barra::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  width: 8px;
+  height: 24px;
+  margin-top: -9px;
+  border-radius: 999px;
+  background: var(--tono);
+  border: 2px solid var(--fondo-alto);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--tono) 24%, transparent),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.quiz-certeza-barra::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 8px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--tono);
+  border: 2px solid var(--fondo-alto);
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--tono) 22%, transparent),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.quiz-certeza-barra:hover::-webkit-slider-thumb,
+.quiz-certeza-barra:focus-visible::-webkit-slider-thumb {
+  transform: scaleY(1.15);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--tono) 28%, transparent),
+    0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quiz-certeza-barra:hover::-moz-range-thumb,
+.quiz-certeza-barra:focus-visible::-moz-range-thumb {
+  transform: scaleY(1.15);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--tono) 28%, transparent),
+    0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quiz-certeza-barra:active::-webkit-slider-thumb {
+  transform: scaleY(1.25);
+}
+
+.quiz-certeza-barra:active::-moz-range-thumb {
+  transform: scaleY(1.25);
+}
+
+:root[data-tema="claro"] .quiz-certeza-barra::-webkit-slider-thumb {
+  border-color: #fff;
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--tono) 18%, transparent),
+    0 2px 6px rgba(20, 30, 60, 0.18);
+}
+
+:root[data-tema="claro"] .quiz-certeza-barra::-moz-range-thumb {
+  border-color: #fff;
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--tono) 18%, transparent),
+    0 2px 6px rgba(20, 30, 60, 0.18);
+}
+
+.quiz-certeza-rotulos {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  color: var(--texto-tenue);
+}
+
+.quiz-certeza-min,
+.quiz-certeza-max {
+  transition: color 200ms ease;
+}
+
+.quiz-certeza-max {
+  color: var(--acento);
+}
+
+.quiz-opcion.con-dudas .quiz-certeza-max {
+  color: var(--texto-tenue);
+}
+
+.quiz-opcion.certeza-baja .quiz-certeza-min {
+  color: var(--dorado);
+}
+
+/* ------------------------------------- Problema con la pregunta ------- */
+/* Enlace al pie de la tarjeta «No responder»; abre un globo flotante sobre
+   el enlace (al pasar el ratón, con clic o con el teclado). Nada de esto
+   responde la pregunta. */
+.quiz-problema {
+  position: relative;
+  justify-self: end;
+  margin-top: 4px;
+}
+
+.quiz-problema-abrir {
+  color: var(--acento);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.86rem;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--acento) 45%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: text-decoration-color 160ms ease, color 160ms ease;
+}
+
+.quiz-problema-abrir:hover,
+.quiz-problema-abrir:focus-visible,
+.quiz-problema.abierta .quiz-problema-abrir {
+  outline: none;
+  text-decoration-color: currentColor;
+}
+
+/* Sobre el enlace la tarjeta no se «levanta»: ahí no se responde. */
+.quiz-opcion:has(.quiz-problema:hover) {
+  transform: none;
+  border-color: var(--borde);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
+}
+
+:root[data-tema="claro"] .quiz-opcion:has(.quiz-problema:hover) {
+  background: #fff;
+}
+
+.quiz-problema-panel {
+  position: absolute;
+  right: -8px;
+  bottom: calc(100% + 14px);
+  z-index: 40;
+  width: min(400px, 82vw);
+  box-sizing: border-box;
+  padding: 16px 18px;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  background: var(--fondo-alto);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  color: var(--texto-medio);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: left;
+  cursor: default;
+  animation: quiz-globo-entrar 180ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.quiz-problema-panel[hidden] {
+  display: none;
+}
+
+:root[data-tema="claro"] .quiz-problema-panel {
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(20, 30, 60, 0.18);
+}
+
+/* Flecha hacia el enlace y un puente invisible que cubre el hueco, para que
+   el globo no se cierre al llevar el ratón del enlace al globo. */
+.quiz-problema-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -16px;
+  height: 16px;
+}
+
+.quiz-problema-panel::after {
+  content: "";
+  position: absolute;
+  right: 28px;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  background: inherit;
+  border-right: 1px solid var(--borde);
+  border-bottom: 1px solid var(--borde);
+  transform: rotate(45deg);
+}
+
+.quiz-problema-panel p {
+  margin: 0 0 14px;
+}
+
+.quiz-problema-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.quiz-problema-acciones a.quiz-btn {
+  text-decoration: none;
+}
+
+@keyframes quiz-globo-entrar {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-problema-panel {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------ Reporte: firmeza y dudas -- */
+.quiz-firmeza {
+  margin: 10px 0 14px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: var(--texto-medio);
+}
+
+.quiz-firmeza h4 {
+  margin: 0 0 4px;
+}
+
+.quiz-firmeza p {
+  margin: 0 0 6px;
+}
+
+.quiz-firmeza.con-dudas .quiz-barra-firmeza span {
+  background: var(--dorado);
+}
+
+.quiz-firmeza-nota {
+  color: var(--dorado);
+}
+
+.quiz-dudas-intro {
+  color: var(--texto-medio);
+  font-size: 0.92rem;
+}
+
+.quiz-duda {
+  padding: 12px 0;
+  border-top: 1px solid var(--borde-suave);
+}
+
+.quiz-duda-pregunta {
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.quiz-duda-eleccion {
+  margin: 0 0 8px;
+  color: var(--dorado);
+}
+
+.quiz-duda-alternativas {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.quiz-duda-acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.quiz-duda-alternativas li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quiz-duda-lecturas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+}
+
+/* ------------------------------------------------ Nombre al empezar --- */
+/* Solo el campo, como una píldora flotante con sombra. La capa cubre la
+   pantalla; un clic en ella (lejos del campo) la cierra. `.quiz-nombre-zona`
+   es el campo más un margen amplio que no cierra: un clic cercano devuelve
+   el foco al campo. */
+.quiz-nombre-capa {
+  position: fixed;
+  inset: var(--barra-alto, 56px) 0 0 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(10, 14, 21, 0.35), rgba(10, 14, 21, 0.72));
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  backdrop-filter: blur(8px) saturate(120%);
+  animation: quiz-nombre-aparecer 220ms ease both;
+}
+
+:root[data-tema="claro"] .quiz-nombre-capa {
+  background: radial-gradient(ellipse at center, rgba(244, 246, 250, 0.4), rgba(244, 246, 250, 0.82));
+}
+
+.quiz-nombre-capa.saliendo {
+  animation: quiz-nombre-desaparecer 200ms ease forwards;
+}
+
+.quiz-nombre-zona {
+  padding: 88px;
+}
+
+.quiz-nombre-form {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  width: min(520px, 86vw);
+  animation: quiz-nombre-subir 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.quiz-nombre-pildora {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 8px 8px 22px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--fondo-alto);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 22px 60px rgba(0, 0, 0, 0.5);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.quiz-nombre-pildora:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 22px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 5px var(--acento-suave),
+    0 0 48px var(--acento-suave);
+}
+
+:root[data-tema="claro"] .quiz-nombre-pildora {
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(20, 30, 60, 0.16);
+}
+
+:root[data-tema="claro"] .quiz-nombre-pildora:focus-within {
+  box-shadow: 0 18px 48px rgba(20, 30, 60, 0.16),
+    0 0 0 5px var(--acento-suave);
+}
+
+.quiz-nombre-icono {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--texto-tenue);
+  transition: color 200ms ease;
+}
+
+.quiz-nombre-pildora:focus-within .quiz-nombre-icono {
+  color: var(--acento);
+}
+
+.quiz-nombre-campo {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 1.25rem;
+}
+
+.quiz-nombre-campo::placeholder {
+  color: var(--texto-tenue);
+}
+
+.quiz-nombre-ir {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--acento);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.quiz-nombre-ir svg {
+  width: 20px;
+  height: 20px;
+}
+
+.quiz-nombre-ir:hover,
+.quiz-nombre-ir:focus-visible {
+  outline: none;
+  transform: translateX(2px);
+  filter: brightness(1.1);
+}
+
+.quiz-nombre-nota {
+  margin: 0;
+  max-width: 46ch;
+  text-align: center;
+  color: var(--texto-tenue);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+@keyframes quiz-nombre-aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes quiz-nombre-desaparecer {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes quiz-nombre-subir {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-nombre-capa,
+  .quiz-nombre-capa.saliendo,
+  .quiz-nombre-form {
+    animation: none;
+  }
+}
+
+/* Chip en la cabecera del cuestionario: abre la capa para cambiarlo. */
+.quiz-chip-nombre {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px 5px 8px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--texto-medio);
+  font: inherit;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.quiz-chip-nombre .quiz-nombre-icono {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.quiz-chip-nombre:hover,
+.quiz-chip-nombre:focus-visible {
+  outline: none;
+  border-color: var(--acento);
+  background: var(--acento-suave);
+  color: var(--texto);
+}
+
+/* Barrita de certeza en «Tus puntos de duda». */
+.quiz-duda-certeza {
+  width: 100%;
+  max-width: 220px;
+  height: 4px;
+  margin: 2px 0 8px;
+  border-radius: 999px;
+  background: var(--borde-suave);
+  overflow: hidden;
+}
+
+.quiz-duda-certeza span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--dorado), var(--acento));
+  background-size: 220px 100%;
+}
+
+/* ------------------------------------- Borrar el resultado guardado --- */
+.quiz-resultado-pie {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.quiz-resultado-borrar {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--texto-tenue);
+  font: inherit;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.quiz-resultado-borrar:hover,
+.quiz-resultado-borrar:focus-visible {
+  color: var(--acento);
+}
+
+.quiz-resultado-borrado {
+  color: var(--texto-tenue);
+  font-size: 0.8rem;
 }

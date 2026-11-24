@@ -33,7 +33,7 @@
       }
     },
     "Q3": {
-      "formal": "Did Jesus, in any way, at any time, claim to be equal to that Ultimate Foundation?",
+      "formal": "Did Jesus, in any way, at any time, claim to be equal to the Ultimate Foundation?",
       "colloquial": "Did Jesus claim to be God?",
       "answers": {
         "A": {
@@ -498,6 +498,9 @@
       "answers": {
         "A": {
           "label": "Yes"
+        },
+        "B": {
+          "label": "No"
         }
       }
     },
@@ -560,8 +563,8 @@
       }
     },
     "Q49": {
-      "formal": "Is the choice of who receives this call based solely on God's will, and not on anything foreseen in humans (faith, works, or merit)?",
-      "colloquial": "Does God have an unconditional choice of his saints?",
+      "formal": "Is the selection of those who receive God's call to obtain the grace that leads to this conversion based solely on God's will, and not on anything foreseen in humans (faith, works, merit, or will)?",
+      "colloquial": "Does God choose His saints unconditionally?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -572,7 +575,8 @@
       }
     },
     "Q50": {
-      "formal": "If a human being lacks one of these elements, can he or she experience that conversion?: Hearing the gospel, Believing in the gospel, Having faith in Christ Jesus, Surrendering one's life to God completely (Repentance), Invoking the name of God (asking for help)?",
+      "formal": "If a human being lacks 1 of these elements, can he or she experience that conversion?: 1) Hearing the gospel, 2) Believing in the gospel, 3) Having faith in Christ Jesus, 4) Surrendering one's life to God completely (Repentance), 5) Calling on the name of God (asking for help)?",
+      "colloquial": "Can a human being be converted without invoking the name of God or some previous step?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -583,7 +587,8 @@
       }
     },
     "Q51": {
-      "formal": "Does the human have that transformation only to the point of baptism and is that moment when that conversion occurs?",
+      "formal": "Does the human being undergo this transformation only up to the point of baptism, and is it at that moment that this conversion/transformation occurs?",
+      "colloquial": "Does Baptism Save?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -595,6 +600,7 @@
     },
     "Q52": {
       "formal": "Does sinning again after that conversion remove from the human the right to enter heaven?",
+      "colloquial": "Can salvation be lost?",
       "answers": {
         "A": {
           "label": "No"
@@ -605,6 +611,19 @@
       }
     },
     "Q53": {
+      "formal": "Is that conversion the exclusive work of God, without any human cooperation in it?",
+      "colloquial": "Does God bring about conversion without human help?",
+      "answers": {
+        "A": {
+          "label": "Yes"
+        },
+        "B": {
+          "label": "No",
+          "gloss": "The human element contributes something."
+        }
+      }
+    },
+    "Q54": {
       "formal": "Is it to be understood that the divine inspiration of the Bible was full and extended to the whole of Scripture, so that each of its parts and all that the biblical authors wrote were comprehended under the inspiring action of God?",
       "colloquial": "Was every part of the Bible inspired?",
       "answers": {
@@ -617,7 +636,7 @@
         }
       }
     },
-    "Q54": {
+    "Q55": {
       "formal": "What, in this sense, is the limit or extent of inspiration?",
       "answers": {
         "A": {
@@ -632,7 +651,7 @@
         }
       }
     },
-    "Q55": {
+    "Q56": {
       "formal": "What God inspired were the words and not just themes or concepts to the writers?",
       "colloquial": "Did God inspire the words he commanded to be written?",
       "answers": {
@@ -644,7 +663,7 @@
         }
       }
     },
-    "Q56": {
+    "Q57": {
       "formal": "Did God communicate the inspired message using the writer as a mere instrument, without the writer contributing his own elaboration (experience, personality, vocabulary, or faculties)?",
       "colloquial": "Was the writer just an instrument, like someone writing down dictation?",
       "answers": {
@@ -656,7 +675,7 @@
         }
       }
     },
-    "Q57": {
+    "Q58": {
       "formal": "Is it plausible to conceive of a scenario in which, even assuming an ideal exegesis, a biblical interpretation achieves a sufficiently high degree of certainty - or a sufficiently low uncertainty - to be considered safe in at least one of the specific topics the Bible expounds?",
       "colloquial": "Can man understand what the Bible says about at least one thing?",
       "answers": {
@@ -668,7 +687,7 @@
         }
       }
     },
-    "Q58": {
+    "Q59": {
       "formal": "Could the human author, in writing, have introduced into what Scripture affirms as true and normative something that does not correspond to what God wanted to communicate?",
       "colloquial": "Were the authors able to sneak in any errors or opinions of their own when writing the Bible?",
       "answers": {
@@ -680,7 +699,7 @@
         }
       }
     },
-    "Q59": {
+    "Q60": {
       "formal": "Was Jesus, at any time, in substance, equal to God and therefore possessed a divine nature?",
       "colloquial": "Is God the same substance as Jesus?",
       "answers": {
@@ -692,7 +711,7 @@
         }
       }
     },
-    "Q60": {
+    "Q61": {
       "formal": "Is that equality in substance with God eternal — without beginning — and not acquired at some point (such as His conception, baptism, resurrection, or exaltation)?",
       "colloquial": "Was Jesus always God?",
       "answers": {
@@ -705,7 +724,7 @@
         }
       }
     },
-    "Q61": {
+    "Q62": {
       "formal": "Are not the Father and the Son personally distinct subjects, nor do they coexist simultaneously and eternally, nor can they relate to each other as an I and a thou, for they are a single subject that manifests itself successively under different modes or roles?",
       "colloquial": "Did God transform Himself into Jesus Christ and when He speaks to the Father does He not speak to another person of the Trinity, but to Himself?",
       "answers": {
@@ -718,7 +737,7 @@
         }
       }
     },
-    "Q62": {
+    "Q63": {
       "formal": "Did Jesus have a real human body and nature?",
       "answers": {
         "A": {
@@ -730,7 +749,7 @@
         }
       }
     },
-    "Q63": {
+    "Q64": {
       "formal": "Did Jesus have a complete rational human mind/soul?",
       "answers": {
         "A": {
@@ -741,7 +760,7 @@
         }
       }
     },
-    "Q64": {
+    "Q65": {
       "formal": "Are the activities attributed to the divine nature (eternally existing, performing miracles, forgiving sins) and those attributed to the human nature (resting, learning, suffering, dying) attributed to a single hypostasis (personal subject), Jesus Christ, without there being in him two distinct hypostases (personal subjects) that imply that what human nature does or suffers cannot be properly attributed to the divine subject, that is, the same hypostasis (personal subject), Jesus Christ, is the one who forgives sins and the one who dies, although the first corresponds to his divine nature and the second to his human nature, and not to two distinct hypostases (personal subjects)?",
       "colloquial": "Is it the same person who forgave sins and who died on the cross?",
       "answers": {
@@ -753,7 +772,7 @@
         }
       }
     },
-    "Q65": {
+    "Q66": {
       "formal": "Did human nature, by uniting with the divine, cease to subsist with its own properties - not because it had been lacking, but because it had been transformed, absorbed or mixed in the very act of union - so that the incarnate Christ subsists in one nature, even though it comes from two?",
       "colloquial": "Christ's divinity nullified his humanity?",
       "answers": {
@@ -767,7 +786,7 @@
         }
       }
     },
-    "Q66": {
+    "Q67": {
       "formal": "In Gethsemane, Christ asked the Father to take the cup away. He was willing to die, yet he did not want to do so. Did Jesus Christ have two wills?",
       "colloquial": "Could Jesus want as a man something other than what he wanted as God, and still obey?",
       "answers": {
@@ -781,7 +800,7 @@
         }
       }
     },
-    "Q67": {
+    "Q68": {
       "formal": "Have the elements that make up the cosmos as we know it always existed, without having been caused by anything else?",
       "colloquial": "Is the cosmos eternal, and did nothing cause it?",
       "answers": {
@@ -793,7 +812,7 @@
         }
       }
     },
-    "Q68": {
+    "Q69": {
       "formal": "Does that which exists eternally and without cause (the Ultimate Ground) possess a mind, in its entirety or in any of its parts, so that it thinks and knows?",
       "colloquial": "Does the Ultimate Foundation have a mind and think?",
       "answers": {
@@ -805,7 +824,7 @@
         }
       }
     },
-    "Q69": {
+    "Q70": {
       "formal": "Was the cosmos we know formed (not created) by an “entity” with eternity?",
       "colloquial": "Was the universe formed by someone eternal?",
       "answers": {
@@ -817,7 +836,7 @@
         }
       }
     },
-    "Q70": {
+    "Q71": {
       "formal": "Is this conclusion based purely on the use of logic and philosophy?",
       "answers": {
         "A": {
@@ -829,7 +848,7 @@
         }
       }
     },
-    "Q71": {
+    "Q72": {
       "formal": "Is the Ultimate Foundation composed of two parts, one that thinks (mind) and one that does not think (matter or body)?",
       "colloquial": "Does the Ultimate Foundation have one part with a mind and another without?",
       "answers": {
@@ -842,7 +861,7 @@
         }
       }
     },
-    "Q72": {
+    "Q73": {
       "formal": "Does the eternal cosmos consist of a succession of states, each caused by a previous one, with no first state?",
       "colloquial": "Has the universe always been changing, without a first moment?",
       "answers": {
@@ -854,7 +873,7 @@
         }
       }
     },
-    "Q73": {
+    "Q74": {
       "formal": "Did the elements that make up the cosmos arise from the very substance of the Ultimate Foundation, and not from nothingness or from matter external to it?",
       "colloquial": "Did the universe come from the Ultimate Foundation itself?",
       "answers": {
@@ -866,7 +885,7 @@
         }
       }
     },
-    "Q74": {
+    "Q75": {
       "formal": "Did the cosmos come into being without any cause?",
       "colloquial": "Did the universe appear out of nothing, with nothing causing it?",
       "answers": {
@@ -929,68 +948,115 @@
     "P82": "Limbo of the Children",
     "P84": "Condemnation of unbaptized infants*",
     "P85": "Hope of salvation for unbaptized infants*",
-    "P89": "Conversionism",
-    "P90": "Irresistible Grace / Monergism",
-    "P91": "UNCONDITIONAL CHOICE",
-    "P92": "Conditional choice",
-    "P93": "Resistible Grace / Synergism",
-    "P96": "Baptismal Salvation",
-    "P98": "THE PERSEVERANCE OF THE SAINTS",
-    "P99": "Conditional Preservation of Saints",
-    "P100": "Plenary Inspirationalism",
-    "P101": "Limited Inspirationalism",
-    "P102": "Selective Limited Inspirationalism",
-    "P103": "Inspirationalism Limited Partial",
-    "P105": "Verbal Inspirationalism",
-    "P106": "Dynamic / Conceptual Inspirationalism",
-    "P107": "Mechanical Inspirationalism / Dictation",
-    "P108": "Organic / Bankruptcy / Confluent Inspirationalism",
-    "P113": "Homoiousianism / Semi-Arrianism",
-    "P114": "Consubstantialism",
-    "P115": "Eternal Consubstantialism*",
-    "P116": "Modalism / Oneness / Unitarianism",
-    "P117": "Trinitarianism/Trinitarianism",
-    "P118": "Docetism",
-    "P120": "Apollinarianism",
-    "P122": "Christ's Hypostatic Duality *",
-    "P123": "Monoprosopism",
-    "P124": "Monophysicism / Eutychianism",
-    "P125": "Diophysicism / Chalcedonianism / Myaphysicism",
-    "P126": "Monothelitism / Monothelitism",
-    "P127": "Diothelitism",
-    "P128": "Acquired consubstantialism*",
-    "P129": "Non-creationist cosmology*",
-    "P130": "Uncaused eternity of the cosmos*",
-    "P132": "Panentheism / Platonic Demiurge / Creatio ex materia",
-    "P135": "Pantheism",
-    "P136": "Ultimate Foundation Compound*",
-    "P137": "Ultimate Unit Basis*",
-    "P138": "Materialism",
-    "P139": "Infinite regression*",
-    "P142": "Emanationism",
+    "P90": "Conversionism",
+    "P91": "IRRESISTIBLE GRACE",
+    "P92": "Resistible Grace",
+    "P93": "UNCONDITIONAL CHOICE",
+    "P94": "Conditional choice",
+    "P97": "Baptismal Salvation",
+    "P99": "THE PERSEVERANCE OF THE SAINTS",
+    "P100": "Conditional Preservation of Saints",
+    "P101": "Monergism",
+    "P102": "synergism",
+    "P103": "Plenary Inspirationalism",
+    "P104": "Limited Inspirationalism",
+    "P105": "Selective Limited Inspirationalism",
+    "P106": "Inspirationalism Limited Partial",
+    "P108": "Verbal Inspirationalism",
+    "P109": "Dynamic / Conceptual Inspirationalism",
+    "P110": "Mechanical Inspirationalism / Dictation",
+    "P111": "Organic / Bankruptcy / Confluent Inspirationalism",
+    "P116": "Homoiousianism / Semi-Arrianism",
+    "P117": "Consubstantialism",
+    "P118": "Eternal Consubstantialism*",
+    "P119": "Modalism / Oneness / Unitarianism",
+    "P120": "Trinitarianism/Trinitarianism",
+    "P121": "Docetism",
+    "P123": "Apollinarianism",
+    "P125": "Christ's Hypostatic Duality *",
+    "P126": "Monoprosopism",
+    "P127": "Monophysicism / Eutychianism",
+    "P128": "Diophysicism / Chalcedonianism / Myaphysicism",
+    "P129": "Monothelitism / Monothelitism",
+    "P130": "Diothelitism",
+    "P131": "Acquired consubstantialism*",
+    "P132": "Non-creationist cosmology*",
+    "P133": "Uncaused eternity of the cosmos*",
+    "P135": "Panentheism / Platonic Demiurge / Creatio ex materia",
+    "P138": "Pantheism",
+    "P139": "Ultimate Foundation Compound*",
+    "P140": "Ultimate Unit Basis*",
+    "P141": "Materialism",
+    "P142": "Infinite regression*",
+    "P145": "Emanationism",
     "PR1": "Existence"
   },
   "traditions": {
-    "Arminianismo": "Arminianism",
-    "Arminianismo / Metodismo": "Arminianism / Methodism",
+    "Advaita Vedānta": "Advaita Vedanta",
+    "Adventismo": "Seventh-day Adventist Church",
+    "Adventismo (inspiración del pensamiento)": "Adventism (inspiration of thought)",
+    "Agustinismo (s. V–XII)": "Augustinianism (5th–12th centuries)",
+    "Anabaptismo": "Anabaptism",
+    "Anglicanismo": "Anglicanism",
+    "Anglicanismo anglocatólico": "Anglo-Catholic Anglicanism",
+    "Anglicanismo evangélico": "Evangelical Anglicanism",
+    "Arrianismo germánico (godos, vándalos, lombardos; histórico)": "Germanic Arianism (Goths, Vandals, Lombards; historical)",
     "Bautistas": "Baptists",
-    "Calvinismo": "Calvinism",
-    "Calvinismo / Tradición Reformada": "Calvinism /Reformed Tradition",
-    "Catolicismo Moderno": "Modern Catholicism",
-    "Catolicismo Ortodoxo": "Orthodox Catholicism",
+    "Bautistas (Bautistas del Sur, Bautistas reformados)": "Baptists (Southern Baptists, Reformed Baptists)",
+    "Bautistas (Confesión de 1689)": "Baptists (Confession of 1689)",
+    "Bautistas Libres": "Free Baptists",
+    "Bautistas no calvinistas (incl. Bautistas Libres)": "Non-Calvinist Baptists (incl. Free Baptists)",
+    "Bautistas reformados": "Reformed Baptists",
+    "Bautistas reformados (Confesión de 1689, 10.3)": "Reformed Baptists (1689 Confession, 10.3)",
+    "Budismo": "Buddhism",
+    "Catolicismo": "Catholicism",
+    "Catolicismo escolástico (s. XIII–XX; Catecismo de Pío X)": "Scholastic Catholicism (13th–20th centuries; Catechism of Pius X)",
     "Cristadelfianos": "Christadelphians",
+    "Cārvāka": "Cārvāka",
+    "Deísmo": "Deism",
     "Ebionismo": "Ebionites",
+    "Epicureísmo": "Epicureanism",
+    "Evangelicalismo conservador (Declaración de Chicago)": "Conservative Evangelicalism (Chicago Statement)",
+    "Hinduismo": "Hinduism",
+    "Iglesia Asiria del Oriente (históricamente; hoy rechaza la etiqueta)": "Assyrian Church of the East (historically; today it rejects the label)",
+    "Iglesia ni Cristo": "cristo iglesia ni",
+    "Iglesias de Cristo (Restauracionismo)": "Churches of Christ (Restorationism)",
     "Islam Ahmadí": "Ahmadiyya Islam",
     "Islam Suní/Chiita": "Sunni/Shia Islam",
+    "Jainismo": "Jainism",
     "Judaísmo moderno/liberal (académico)": "Modern/Liberal Judaism (Academic)",
     "Judaísmo rabínico/talmúdico": "Rabbinic/Talmudic Judaism",
+    "Luteranismo": "Lutheranism",
+    "Luteranismo confesional": "Confessional Lutheranism",
+    "Luteranismo confesional (LCMS, WELS)": "Confessional Lutheranism (LCMS, WELS)",
+    "Maronitas (históricamente)": "Maronites (historically)",
     "Metodismo": "Methodism",
+    "Metodismo/Arminianismo": "Methodism/Arminianism",
+    "Mormonismo (SUD)": "Mormonism (LDS)",
+    "Movimiento de Santidad (Nazarenos)": "Holiness Movement (Nazarenes)",
+    "Naturalismo ateo": "Atheistic naturalism",
     "Neoplatonismo": "Neoplatonism",
     "Nestorianismo": "Nestorianism",
     "No se identifica quién sostenga esta postura": "The person holding this position is not identified",
-    "Ortodoxia calcedonense": "Chalcedonian Orthodoxy",
+    "Ortodoxia (calcedonense)": "Orthodoxy (Chalcedonian)",
+    "Ortodoxia (calcedonense; Confesión de Dositeo, decreto 3)": "Orthodoxy (Chalcedonian; Confession of Dositheus, Decree 3)",
+    "Ortodoxia oriental (no calcedonense)": "Eastern Orthodoxy (non-Chalcedonian)",
+    "Ortodoxia oriental (no calcedonense; una voluntad unida)": "Eastern Orthodoxy (non-Chalcedonian; one united will)",
     "Pentecostalismo": "Pentecostalism",
-    "Unitarismo bíblico": "Biblical Unitarianism"
+    "Pentecostalismo (Asambleas de Dios)": "Pentecostalism (Assemblies of God)",
+    "Pentecostalismo trinitario": "Trinitarian Pentecostalism",
+    "Pentecostalismo unicitario (Iglesia Pentecostal Unida)": "Oneness Pentecostalism (United Pentecostal Church)",
+    "Protestantismo de línea principal (ELCA, PCUSA, Iglesia Episcopal, Metodismo Unido)": "Mainline Protestantism (ELCA, PCUSA, Episcopal Church, United Methodism)",
+    "Reformados conservadores": "Conservative Reformists",
+    "Reformados conservadores (PCA, OPC)": "Conservative Reformed (PCA, OPC)",
+    "Reformados/Presbiterianos": "Reformed/Presbyterian",
+    "Reformados/Presbiterianos (Confesión de Westminster 1.7)": "Reformed/Presbyterian (Westminster Confession 1.7)",
+    "Reformados/Presbiterianos (Confesión de Westminster 10.3)": "Reformed/Presbyterian (Westminster Confession 10.3)",
+    "Sabelianismo (histórico)": "Sabellianism (historical)",
+    "Sāṃkhya": "Sāṃkhya",
+    "Unitarismo bíblico": "Biblical Unitarianism",
+    "Vedānta Dvaita": "Vedānta Dvaita",
+    "Vedānta Viśiṣṭādvaita": "Vedanta Viśiṣṭādvaita"
   }
 };
 })(window);
