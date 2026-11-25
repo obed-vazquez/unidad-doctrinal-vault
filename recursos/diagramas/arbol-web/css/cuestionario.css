@@ -476,6 +476,23 @@ body.quiz-panel-creencias .quiz-opcion {
   font-weight: 600;
 }
 
+/* «Tradiciones que suelen tomar este camino»: la lista va en su propio
+   renglón, bajo el rótulo, y se corta a 3 renglones; el total va junto al
+   rótulo. Sin esto, cerca de la raíz la tarjeta era un bloque enorme. */
+.quiz-tradiciones-lista {
+  flex: 1 1 100%;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.quiz-tradiciones-total {
+  font-weight: 600;
+}
+
 .quiz-spoiler {
   filter: blur(6px);
   user-select: none;
@@ -847,11 +864,75 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
   font-size: 0.85rem;
 }
 
+/* Nombre arriba y conteo/afinidad debajo; antes iban en línea y el conteo
+   quedaba pegado al nombre. */
+.quiz-cercana-cabecera {
+  display: grid;
+  gap: 3px;
+}
+
+.quiz-tarjeta-intro {
+  margin: -4px 0 12px;
+  color: var(--texto-tenue);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+/* «Tradiciones que encajan», agrupadas por la postura alcanzada. */
+.quiz-encajan-grupo + .quiz-encajan-grupo {
+  margin-top: 14px;
+}
+
+.quiz-encajan-postura {
+  margin: 0 0 8px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.quiz-encajan-cuenta {
+  margin-left: 4px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--dorado-suave);
+  color: var(--eje-texto);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* «Difieren en» bajo una afín y la pregunta de «A una respuesta». */
+.quiz-difieren,
+.quiz-cerca-pregunta {
+  line-height: 1.4;
+}
+
+.quiz-cercanas li .quiz-cerca-pregunta {
+  color: var(--texto);
+  font-size: 0.88rem;
+}
+
+.quiz-cerca-duda {
+  color: var(--dorado);
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* «Tradiciones que encajan con tu postura»: lista compacta en columnas, no
+   chips. Cada fila mide un renglón (todas la misma altura), con una sola
+   fuente y un solo tamaño, iguales a los del resto del reporte; lo que no
+   cabe se corta con «…» y el nombre completo queda en el `title`. Las dos
+   versiones anteriores (píldoras en cuadrícula y chips de dos niveles)
+   producían chips de alturas y tipografías dispares. */
 .quiz-chips {
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 6px;
 }
 
 .quiz-chips li {
+  display: block;
+  min-width: 0;
   padding: 0;
   border: 0;
   background: none;
@@ -903,22 +984,52 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
 }
 
 .quiz-chips button.quiz-chip-btn {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 999px;
-  text-align: center;
-  background: var(--dorado-suave);
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--eje-texto);
-  border: 1px solid rgba(242, 193, 78, 0.28);
+  border: 1px solid var(--borde-suave);
   font-family: "Segoe UI", system-ui, sans-serif;
-  font-weight: 600;
-  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+  font-size: 0.86rem;
+  font-weight: 400;
+  line-height: 1.35;
+  transition: border-color 120ms ease, background 120ms ease;
 }
 
-.quiz-chips button.quiz-chip-btn:hover {
-  transform: translateY(-1px);
+.quiz-chips button.quiz-chip-btn::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dorado);
+}
+
+.quiz-chips button.quiz-chip-btn:hover,
+.quiz-chips button.quiz-chip-btn:focus-visible {
   border-color: var(--acento);
+  background: var(--dorado-suave);
+}
+
+.quiz-chip-texto {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.quiz-chip-principal {
+  font-weight: 600;
+}
+
+.quiz-chip-detalle {
+  color: var(--texto-tenue);
 }
 
 /* Botón pequeño en píldora: «Explorar en el árbol» de tradiciones cercanas

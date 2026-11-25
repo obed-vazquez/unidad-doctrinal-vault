@@ -160,6 +160,31 @@
 
   function limpiarCache() { cacheCaminos = new WeakMap(); }
 
+  /* Respuestas (pregunta + clave) donde el documento escribe la tradición
+     sobre esta postura. Una postura repetida en el documento es un solo nodo
+     al que llegan varias respuestas; la tradición solo recorre la suya. */
+  function viasDeTradicion(datos, pid, nombre) {
+    var postura = datos.postures[pid];
+    var tradicion = postura && (postura.traditions || []).filter(function (t) {
+      return t.name === nombre;
+    })[0];
+    return tradicion && tradicion.via && tradicion.via.length ? tradicion.via : null;
+  }
+
+  /* Deja solo los caminos cuya última respuesta es una de `vias`. Sin vías
+     (datos viejos, posturas sueltas) o si ninguna coincide (p. ej. el Modo de
+     Edición cambió las claves), se conservan todos, como antes. */
+  function caminosPorAnotacion(caminos, vias) {
+    if (!vias) return caminos;
+    var filtrados = caminos.filter(function (camino) {
+      var ultima = camino.aristas[camino.aristas.length - 1];
+      return ultima && vias.some(function (via) {
+        return ultima.preguntaId === via.question_id && ultima.clave === via.answer_key;
+      });
+    });
+    return filtrados.length ? filtrados : caminos;
+  }
+
   /* Resuelve un sujeto de comparación (tradición, postura suelta o el propio
      recorrido del usuario) a su conjunto de nodos, aristas y respuestas. */
   function resolver(grafo, datos, sujeto) {
@@ -174,11 +199,25 @@
     var opciones = {};
     var ambiguas = new Set();
     var sinCamino = [];
+    // Por cada postura, las respuestas de cada camino alternativo por
+    // separado. `respuestas` los mezcla; para comparar con el usuario hace
+    // falta elegir uno (ver `coincidencia`).
+    var alternativas = [];
 
     sujeto.posturaIds.forEach(function (pid) {
       var destino = grafo.idDePostura(pid);
-      var caminos = caminosCache(grafo, destino);
+      var caminos = caminosPorAnotacion(caminosCache(grafo, destino),
+        sujeto.tipo === 'tradicion' ? viasDeTradicion(datos, pid, sujeto.nombre) : null);
       if (!caminos.length) { sinCamino.push(pid); return; }
+      alternativas.push(caminos.map(function (camino) {
+        var propias = {};
+        camino.aristas.forEach(function (arista) {
+          if (arista.tipo === 'respuesta' && arista.preguntaId) {
+            propias[arista.preguntaId] = arista.clave;
+          }
+        });
+        return propias;
+      }));
       caminos.forEach(function (camino) {
         camino.nodos.forEach(function (id) { nodos.add(id); });
         camino.aristas.forEach(function (arista) {
@@ -233,6 +272,7 @@
       respuestas: respuestas,
       opciones: opciones,
       ambiguas: ambiguas,
+      alternativas: alternativas,
       sinCamino: sinCamino,
       destinos: new Set(sujeto.posturaIds.map(function (pid) { return grafo.idDePostura(pid); }))
     };
@@ -506,7 +546,59 @@
     return sujetos.map(function (s) { return '# ' + s.nombre; }).join('\n') + '\n\n' + lineas.join('\n');
   }
 
+  /* Compara una tradición ya resuelta con las respuestas de un usuario.
+     Cuando a una postura se llega por varios caminos (una convergencia `&`
+     o una postura repetida), la tradición sostiene CUALQUIERA de ellos, no
+     todos a la vez: se elige, por postura, el camino que más coincide con
+     el usuario (a igualdad, el más corto). `peso(qid)` pondera cada
+     coincidencia (la certeza); sin él cada una vale 1.
+     Devuelve:
+       total        preguntas del camino elegido
+       coinciden    cuántas responde el usuario igual (conteo entero)
+       comunes      lo mismo, ponderado por `peso`
+       difieren     [{ preguntaId, suya, delUsuario }] respondidas distinto
+       sinResponder [preguntaId] que el usuario no respondió */
+  function coincidencia(resolucion, delUsuario, peso) {
+    var elegidas = {};
+    (resolucion.alternativas || []).forEach(function (caminos) {
+      var mejor = null;
+      var mejorAciertos = -1;
+      var mejorTotal = Infinity;
+      caminos.forEach(function (propias) {
+        var qids = Object.keys(propias);
+        var aciertos = qids.filter(function (qid) {
+          return delUsuario[qid] != null && delUsuario[qid] === propias[qid];
+        }).length;
+        if (aciertos > mejorAciertos || (aciertos === mejorAciertos && qids.length < mejorTotal)) {
+          mejor = propias;
+          mejorAciertos = aciertos;
+          mejorTotal = qids.length;
+        }
+      });
+      if (!mejor) return;
+      Object.keys(mejor).forEach(function (qid) {
+        if (elegidas[qid] === undefined) elegidas[qid] = mejor[qid];
+      });
+    });
+    var resultado = { total: 0, coinciden: 0, comunes: 0, difieren: [], sinResponder: [] };
+    Object.keys(elegidas).sort(function (a, b) {
+      return Number(a.slice(1)) - Number(b.slice(1));
+    }).forEach(function (qid) {
+      resultado.total++;
+      if (delUsuario[qid] == null) {
+        resultado.sinResponder.push(qid);
+      } else if (delUsuario[qid] === elegidas[qid]) {
+        resultado.coinciden++;
+        resultado.comunes += peso ? peso(qid) : 1;
+      } else {
+        resultado.difieren.push({ preguntaId: qid, suya: elegidas[qid], delUsuario: delUsuario[qid] });
+      }
+    });
+    return resultado;
+  }
+
   Arbol.Busqueda = {
+    coincidencia: coincidencia,
     normalizar: normalizar,
     listaTradiciones: listaTradiciones,
     listaPosturasSueltas: listaPosturasSueltas,

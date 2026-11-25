@@ -270,8 +270,8 @@
       }
     },
     "Q24": {
-      "formal": "Is Jesus Christ's normative and liturgical use of the Hebrew Scriptures sufficient evidence to recognize them as authoritative divine revelation?",
-      "colloquial": "Does the Old Testament have divine revelation?",
+      "formal": "Is the normative and liturgical use that Jesus Christ makes of the Hebrew Scriptures sufficient evidence to recognize at least the references as text with authoritative divine inspiration or origin?",
+      "colloquial": "Does part of the Old Testament come from God?",
       "answers": {
         "A": {
           "label": "No"
@@ -282,8 +282,8 @@
       }
     },
     "Q25": {
-      "formal": "Does the recognition of divine revelation extend to the entire Tanakh (Old Testament), and not just to the books expressly cited?",
-      "colloquial": "Is the entire Old Testament divine revelation?",
+      "formal": "Does the recognition of divine inspiration or origin extend to the entire Tanakh (Old Testament), and not just to the books expressly cited?",
+      "colloquial": "Does the entire Old Testament come from God?",
       "answers": {
         "A": {
           "label": "No"
@@ -294,8 +294,8 @@
       }
     },
     "Q26": {
-      "formal": "Is the commission that Jesus Christ confers on his apostles to pass on his teaching, the reciprocal recognition among the apostles, and the reception of the early church sufficient evidence to recognize apostolic testimony as authoritative divine revelation?",
-      "colloquial": "Are Apostolic Letters Divine Revelation?",
+      "formal": "Is the commission that Jesus Christ confers on his apostles to transmit his teaching, the mutual recognition among the apostles, and the reception by the early Church sufficient evidence to recognize the apostolic testimony as an inspired text or one of authoritative divine origin?",
+      "colloquial": "Do the apostolic letters come from God?",
       "answers": {
         "A": {
           "label": "No"
@@ -341,8 +341,8 @@
       }
     },
     "Q30": {
-      "formal": "Are the universal reception of the early church and its treatment of the rest of the New Testament writings, on an equal footing with those already recognized, sufficient evidence to extend to them that same recognition as authoritative divine revelation?",
-      "colloquial": "Is the New Testament divine revelation?",
+      "formal": "Is the universal acceptance by the early Church and its treatment of the other New Testament writings, on an equal footing with those already recognized, sufficient evidence to extend to them that same recognition as an inspired text or one of authoritative divine origin?",
+      "colloquial": "Does the New Testament come from God?",
       "answers": {
         "A": {
           "label": "No"
@@ -377,7 +377,7 @@
     },
     "Q33": {
       "formal": "Does that clarity extend to everything the Bible teaches, and not just to what is necessary for salvation?",
-      "colloquial": "Is the whole Bible clear, or just the message of salvation?",
+      "colloquial": "Is the entire Bible clear, and not just the message of salvation?",
       "answers": {
         "A": {
           "label": "Yes"
@@ -997,6 +997,7 @@
     "Adventismo (inspiración del pensamiento)": "Adventism (inspiration of thought)",
     "Agustinismo (s. V–XII)": "Augustinianism (5th–12th centuries)",
     "Anabaptismo": "Anabaptism",
+    "Anabaptismo (menonitas)": "Anabaptism (Mennonites)",
     "Anglicanismo": "Anglicanism",
     "Anglicanismo anglocatólico": "Anglo-Catholic Anglicanism",
     "Anglicanismo evangélico": "Evangelical Anglicanism",
@@ -1004,6 +1005,7 @@
     "Bautistas": "Baptists",
     "Bautistas (Bautistas del Sur, Bautistas reformados)": "Baptists (Southern Baptists, Reformed Baptists)",
     "Bautistas (Confesión de 1689)": "Baptists (Confession of 1689)",
+    "Bautistas (mayoría; Fe y Mensaje Bautista 2000)": "Baptists (majority; Baptist Faith and Message 2000)",
     "Bautistas Libres": "Free Baptists",
     "Bautistas no calvinistas (incl. Bautistas Libres)": "Non-Calvinist Baptists (incl. Free Baptists)",
     "Bautistas reformados": "Reformed Baptists",
@@ -1037,9 +1039,9 @@
     "Naturalismo ateo": "Atheistic naturalism",
     "Neoplatonismo": "Neoplatonism",
     "Nestorianismo": "Nestorianism",
-    "No se identifica quién sostenga esta postura": "The person holding this position is not identified",
     "Ortodoxia (calcedonense)": "Orthodoxy (Chalcedonian)",
     "Ortodoxia (calcedonense; Confesión de Dositeo, decreto 3)": "Orthodoxy (Chalcedonian; Confession of Dositheus, Decree 3)",
+    "Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)": "Orthodoxy (Chalcedonian; ancestral sin without inherited guilt)",
     "Ortodoxia oriental (no calcedonense)": "Eastern Orthodoxy (non-Chalcedonian)",
     "Ortodoxia oriental (no calcedonense; una voluntad unida)": "Eastern Orthodoxy (non-Chalcedonian; one united will)",
     "Pentecostalismo": "Pentecostalism",

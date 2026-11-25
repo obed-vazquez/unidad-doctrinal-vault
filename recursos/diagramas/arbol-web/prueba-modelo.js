@@ -53,7 +53,8 @@ const contexto = vm.createContext(Object.assign(ventana, {
   RegExp, Error, Infinity, Date
 }));
 
-['js/formato.js', 'js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
+['js/formato.js', 'js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js',
+  'js/definiciones.js'].forEach((archivo) => {
   vm.runInContext(fs.readFileSync(path.join(__dirname, archivo), 'utf8'), contexto, {
     filename: archivo
   });
@@ -1104,6 +1105,155 @@ console.log('\n== Caché de caminos entre grafos ==');
   comprobar('la ruta resuelta en el grafo de edición solo usa nodos de ese grafo',
     rotas.length === 0, rotas.slice(0, 5).join(','));
   Arbol.Busqueda.limpiarCache();
+}
+
+console.log('\n== Tradiciones por respuesta (cuestionario) ==');
+// Regresión: el cuestionario solo leía las tradiciones escritas en la postura
+// destino de cada respuesta, así que casi todas decían «Sin tradición
+// registrada». Una tradición ubicada en un nodo abraza toda la rama de arriba.
+{
+  const g = Arbol.construirGrafo(datos);
+  const porRespuesta = Arbol.tradicionesDeRespuestas(g, datos.traditions_index);
+  const directas = (pid) => (datos.postures[pid].traditions || [])
+    .filter((t) => t.name && !t.is_note).length;
+  const respuestasQ1 = datos.questions.Q1.answers;
+  comprobar('las respuestas de Q1 no tienen tradiciones escritas directamente (premisa del caso)',
+    respuestasQ1.every((r) => directas(r.target_posture_id) === 0));
+  comprobar('aun así, cada respuesta de Q1 hereda tradiciones de su rama',
+    respuestasQ1.every((r) => (porRespuesta['Q1:' + r.key] || []).length > 0),
+    respuestasQ1.map((r) => r.key + '=' + (porRespuesta['Q1:' + r.key] || []).length).join(','));
+  const ubicadas = new Set();
+  Object.values(datos.postures).forEach((p) => (p.traditions || []).forEach((t) => {
+    if (t.name && !t.is_note && datos.traditions_index[t.name]) ubicadas.add(t.name);
+  }));
+  const unionQ1 = new Set();
+  respuestasQ1.forEach((r) => (porRespuesta['Q1:' + r.key] || []).forEach((n) => unionQ1.add(n)));
+  const faltan = Array.from(ubicadas).filter((n) => !unionQ1.has(n));
+  comprobar('entre las respuestas de Q1 aparecen todas las tradiciones ubicadas en el árbol',
+    faltan.length === 0, faltan.slice(0, 5).join(','));
+  // Monotonía: lo que lista una respuesta incluye lo de cualquier respuesta de más abajo.
+  const rotas = [];
+  g.aristas.forEach((a) => {
+    if (a.tipo !== 'respuesta' || !a.preguntaId || !a.clave) return;
+    const propias = new Set(porRespuesta[a.preguntaId + ':' + a.clave] || []);
+    const pila = [a.hasta];
+    const vistos = new Set();
+    while (pila.length) {
+      const id = pila.pop();
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      g.nodos.get(id).salidas.forEach((s) => {
+        if (s.tipo === 'respuesta' && s.preguntaId && s.clave) {
+          const hijas = porRespuesta[s.preguntaId + ':' + s.clave] || [];
+          if (hijas.some((n) => !propias.has(n))) rotas.push(a.id + ' ⊉ ' + s.id);
+        }
+        pila.push(s.hasta);
+      });
+    }
+  });
+  comprobar('cada respuesta incluye las tradiciones de todas las respuestas que cuelgan de ella',
+    rotas.length === 0, rotas.slice(0, 3).join(' | '));
+}
+
+console.log('\n== Tradiciones en posturas repetidas y convergencias ==');
+// Regresión: una postura repetida en el documento (un solo nodo) solo leía las
+// {tradiciones} de su primera aparición, y a las que sí leía les asignaba los
+// caminos de todas las apariciones. Además, en una convergencia `&` el camino
+// de la tradición mezclaba todas las ramas y se tomaba la primera.
+{
+  const g = Arbol.construirGrafo(datos);
+  const resolverT = (n) => {
+    const i = datos.traditions_index[n];
+    return Arbol.Busqueda.resolver(g, datos, { tipo: 'tradicion', id: n, nombre: n,
+      posturaIds: i.posture_ids || [], tentativa: !!i.tentative, respuestas: {} });
+  };
+  const edad = Object.values(datos.postures).find((p) => p.label === 'Edad de responsabilidad');
+  const aparicionesEdad = Object.values(datos.questions).reduce((n, q) =>
+    n + q.answers.filter((a) => a.target_posture_id === edad.id).length, 0);
+  comprobar('la postura repetida «Edad de responsabilidad» llega por dos respuestas (premisa)',
+    aparicionesEdad === 2, String(aparicionesEdad));
+  const viasEdad = new Set(edad.traditions.flatMap((t) => (t.via || [])
+    .map((v) => v.question_id + ':' + v.answer_key)));
+  comprobar('se leen las tradiciones de TODAS sus apariciones (una vía por aparición)',
+    viasEdad.size === 2, Array.from(viasEdad).join(','));
+  const mezcladas = [];
+  Object.values(datos.postures).forEach((p) => (p.traditions || []).forEach((t) => {
+    if (!t.via || !datos.traditions_index[t.name]) return;
+    const r = resolverT(t.name);
+    // Ninguna alternativa del camino puede entrar a la postura por una
+    // respuesta distinta de aquella donde la tradición está escrita.
+    const nodo = g.nodos.get(g.idDePostura(p.id));
+    const entradas = nodo.entradas.filter((a) => a.tipo === 'respuesta');
+    if (entradas.length < 2) return;
+    const ajenas = entradas.filter((a) => !t.via.some((v) =>
+      v.question_id === a.preguntaId && v.answer_key === a.clave));
+    const usaAjena = r.alternativas.some((caminos) => caminos.some((resp) =>
+      ajenas.some((a) => resp[a.preguntaId] === a.clave)));
+    if (usaAjena) mezcladas.push(t.name + ' @ ' + p.label);
+  }));
+  comprobar('en una postura repetida, cada tradición solo recorre la rama donde está escrita',
+    mezcladas.length === 0, mezcladas.slice(0, 3).join(' | '));
+
+  const cat = resolverT('Catolicismo');
+  const usuario = {};
+  cat.alternativas.forEach((caminos) => {
+    Object.assign(usuario, caminos.find((resp) => resp.Q17 === 'B') || caminos[0]);
+  });
+  const rc = Arbol.Busqueda.coincidencia(cat, usuario);
+  comprobar('convergencia «Encarnacionismo & Subordinacionismo»: quien sigue la rama de Encarnacionismo coincide al 100 % con Catolicismo',
+    usuario.Q17 === 'B' && rc.total > 0 && rc.coinciden === rc.total,
+    'Q17=' + usuario.Q17 + ' ' + rc.coinciden + '/' + rc.total);
+  // Q2 no tiene alternativas: cambiarla debe aparecer como diferencia. (Q17
+  // no sirve: con «A» se elige con razón la rama de Subordinacionismo.)
+  const otro = Object.assign({}, usuario, { Q2: usuario.Q2 === 'A' ? 'B' : 'A' });
+  const ro = Arbol.Busqueda.coincidencia(cat, otro);
+  comprobar('coincidencia reporta la pregunta en que difieren',
+    ro.difieren.length === 1 && ro.difieren[0].preguntaId === 'Q2'
+    && ro.coinciden === rc.coinciden - 1,
+    JSON.stringify(ro.difieren));
+}
+
+console.log('\n== Sinónimos excluidos de la búsqueda (~) ==');
+// Regresión: «Inspiracionalismo Mecánico / Dictado» acababa buscando
+// «Dictado» en Wikipedia y mostraba el artículo del ejercicio escolar.
+{
+  const candidatos = Arbol.Definiciones.candidatos;
+  const mecanico = Object.values(datos.postures)
+    .find((p) => /^Inspiracionalismo Mecánico/.test(p.label));
+  comprobar('el convertidor quita la ~ de la etiqueta visible',
+    !!mecanico && mecanico.label === 'Inspiracionalismo Mecánico / Dictado',
+    mecanico && mecanico.label);
+  comprobar('el convertidor anota el sinónimo marcado en search_excluded',
+    !!mecanico && JSON.stringify(mecanico.search_excluded) === '["Dictado"]',
+    mecanico && JSON.stringify(mecanico.search_excluded));
+  comprobar('ninguna etiqueta conserva la marca ~',
+    Object.values(datos.postures).every((p) => p.label.indexOf('~') === -1));
+  const lista = candidatos(mecanico.label, mecanico.search_excluded);
+  comprobar('la búsqueda de definiciones nunca usa el sinónimo marcado',
+    lista.every((c) => !/dictado/i.test(c)), lista.join(' | '));
+  comprobar('la búsqueda de definiciones conserva el sinónimo no marcado',
+    lista.indexOf('Inspiracionalismo Mecánico') !== -1, lista.join(' | '));
+  // Regresión: lo que iba antes de « de » se buscaba solo («Postura»).
+  const recortadas = Object.values(datos.postures).filter((p) => !p.is_unnamed)
+    .map((p) => ({ p, lista: candidatos(p.label, p.search_excluded) }))
+    .filter(({ lista }) => lista.some((c) => /^(postura|teoría|edad)$/i.test(c)));
+  comprobar('la búsqueda no recorta antes de « de » (nada busca «Postura», «Teoría» ni «Edad»)',
+    recortadas.length === 0, recortadas.map(({ p }) => p.label).slice(0, 3).join(' | '));
+  const sinMarca = candidatos('Homoiousianismo / Semi-Arrianismo', []);
+  comprobar('sin marca, los sinónimos se siguen buscando todos',
+    sinMarca.indexOf('Semi-Arrianismo') !== -1, sinMarca.join(' | '));
+
+  const editsRen = Edits.vacio();
+  Edits.nombrarPostura(editsRen, mecanico.id, 'Inspiracionalismo Mecánico / ~Dictado / ~Verbal');
+  const trasRen = Edits.aplicar(datos, editsRen).postures[mecanico.id];
+  comprobar('renombrar en Modo de Edición con ~ oculta la marca y la anota',
+    trasRen.label === 'Inspiracionalismo Mecánico / Dictado / Verbal'
+    && JSON.stringify(trasRen.search_excluded) === '["Dictado","Verbal"]',
+    trasRen.label + ' ' + JSON.stringify(trasRen.search_excluded));
+  const editsSin = Edits.vacio();
+  Edits.nombrarPostura(editsSin, mecanico.id, 'Trinitarianismo/Trinitarismo');
+  comprobar('renombrar sin ~ deja la etiqueta tal cual',
+    Edits.aplicar(datos, editsSin).postures[mecanico.id].label === 'Trinitarianismo/Trinitarismo');
 }
 
 console.log('\n' + (fallos.length

@@ -6,7 +6,11 @@
   'use strict';
 
   var Arbol = global.Arbol || (global.Arbol = {});
-  var CLAVE = 'arbol-posturas/defs-wiki/v1';
+  /* v2: desde que existen los sinónimos marcados con `~` (search_excluded),
+     los extractos guardados con v1 pueden venir de un sinónimo excluido.
+     v3: ya no se recorta antes de « de »; los extractos guardados pueden
+     venir de ese recorte («Postura», «Edad», «Teoría»…). */
+  var CLAVE = 'arbol-posturas/defs-wiki/v3';
   var cache = {};
   var inflight = {};
 
@@ -41,10 +45,27 @@
     return t.indexOf('puede referirse') !== -1 || t.indexOf('puede designar') !== -1;
   }
 
+  function normalizarSinonimo(texto) {
+    return String(texto || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  /* Quita de la etiqueta los sinónimos que el autor marcó con `~` en el
+     documento fuente (llegan en `excluidos`, ya sin la marca). Así ni la
+     etiqueta completa ni sus derivados los vuelven a meter en la búsqueda. */
+  function sinExcluidos(etiqueta, excluidos) {
+    if (!excluidos || !excluidos.length) return String(etiqueta || '');
+    var fuera = {};
+    excluidos.forEach(function (s) { fuera[normalizarSinonimo(s)] = true; });
+    return String(etiqueta || '').split(/\s*\/\s*/).filter(function (parte) {
+      return !fuera[normalizarSinonimo(parte)];
+    }).join(' / ');
+  }
+
   /* Candidatos de búsqueda a partir de la etiqueta de la postura, sin
-     inventar sinónimos: se parte el propio nombre (barras, paréntesis, *). */
-  function candidatos(etiqueta) {
-    var limpia = String(etiqueta || '')
+     inventar sinónimos: se parte el propio nombre (barras, paréntesis, *).
+     Los sinónimos de `excluidos` no se buscan nunca. */
+  function candidatos(etiqueta, excluidos) {
+    var limpia = sinExcluidos(etiqueta, excluidos)
       .replace(/\*+$/g, '')
       .replace(/\?+$/g, '')
       .trim();
@@ -66,10 +87,9 @@
     if (paren) add(paren[1]);
     var cabeza = limpia.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
     add(cabeza);
-    var deLos = cabeza.split(/\s+de los\s+/i)[0];
-    if (deLos && deLos !== cabeza) add(deLos);
-    var de = cabeza.split(/\s+de\s+/i)[0];
-    if (de && de !== cabeza && de.split(' ').length <= 3) add(de);
+    /* No se recorta lo que va antes de « de »/« de los »: casi siempre deja
+       una palabra genérica («Postura de la inspiración bíblica» → «Postura»,
+       «Edad de responsabilidad» → «Edad») y trae un artículo ajeno. */
     return lista;
   }
 
@@ -134,6 +154,9 @@
   var Definiciones = {
     iniciar: function () { leerDisco(); },
 
+    /* Expuesto para la suite sin navegador (prueba-modelo.js). */
+    candidatos: candidatos,
+
     clave: function (postura, idioma) {
       return (idioma || 'es') + '|' + (postura && postura.id ? postura.id : '');
     },
@@ -146,7 +169,7 @@
       if (cache[id]) return Promise.resolve(cache[id]);
       if (inflight[id]) return inflight[id];
 
-      var lista = candidatos(postura.label);
+      var lista = candidatos(postura.label, postura.search_excluded);
       if (!lista.length) {
         var vacia = { estado: 'vacia' };
         cache[id] = vacia;

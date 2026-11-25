@@ -128,3 +128,54 @@ Regenerado el JSON: 120 → 119 posturas; `P50` recibe las respuestas de las lí
 ### Prueba ajustada
 
 `cada convergencia del dataset es un nodo con varias aristas entrantes` contaba solo las preguntas convergentes y daba por hecho que todo nodo con varias entradas era una pregunta (fallaba al leer `nodo.pregunta.formal_text`). Ahora el esperado se deriva del dataset sumando las posturas que reciben más de una respuesta. Los dos fallos que ya tenía la suite antes de este cambio (`expandir todo revela el árbol completo desde la raíz`, `el export conserva el wikilink de la pregunta raíz`) siguen igual: no son de este arreglo.
+
+## Sinónimos excluidos de la búsqueda de definiciones: marca `~` (2026-11-24)
+
+### Petición
+
+Las etiquetas usan `/` para sinónimos. En `Inspiracionalismo Mecánico / Dictado`, «Dictado» no es un nombre de postura, sino una referencia a la teoría del dictado. El visor, al buscar la definición en Wikipedia, probaba cada sinónimo por separado, llegaba a «Dictado» y mostraba el artículo del ejercicio escolar. Lo mismo pasaba con los otros sinónimos sueltos de esa sección (`Conceptual`, `Concursal`, `Confluente`).
+
+### Preguntas y respuestas
+
+- *¿Completar el fragmento con el sustantivo del primer sinónimo (`Inspiracionalismo Dictado`)?* No: sigue adivinando nombres y generaría otros problemas.
+- *¿Buscar solo el primer sinónimo, o el primero sin `*`?* No: también genera problemas.
+- *Decisión:* un carácter de escape nuevo en el documento fuente que marque qué sinónimos no se buscan. Se marca el sinónimo completo, no palabras sueltas; carácter `~` (no se usaba en el documento y no choca con `* ? {} [[]] & / ->`).
+
+### Decisiones tomadas al implementar
+
+- Sintaxis: `~` al inicio de un sinónimo, al principio de la etiqueta o tras `/`. Documentada en la sección *Notación* de `posturas-creencias.md`. Marcados: `~Conceptual`, `~Dictado`, `~Concursal`, `~Confluente`.
+- El convertidor quita la marca en `display_text`, así que no aparece en ninguna salida (JSON, Mermaid, Graphviz, traducciones) y no cambia la identidad de la postura: citarla sin `~` en un `&` o `->` sigue siendo la misma.
+- Campo nuevo en el JSON: `postures[*].search_excluded`, la lista de sinónimos marcados ya limpios (vacía si no hay).
+- `definiciones.js`: quita los sinónimos excluidos de la etiqueta antes de armar los candidatos, para que ni la etiqueta completa ni sus derivados (paréntesis, «de») los vuelvan a meter. La clave del caché local sube a `defs-wiki/v2`, porque los extractos guardados con v1 podían venir de un sinónimo excluido.
+- Modo de Edición: al renombrar con `~`, la etiqueta se muestra sin la marca y se actualiza `search_excluded`. Sin `~`, la etiqueta queda tal cual.
+- Pruebas: sección «Sinónimos excluidos de la búsqueda (~)» de `prueba-modelo.js`.
+
+### Cambio posterior: ya no se recorta antes de « de »
+
+**Petición.** «Postura de la inspiración bíblica» consultaba Wikipedia con «Postura» a secas y devolvía basura.
+
+**Causa.** Ya existía antes de la marca `~`. Si la etiqueta completa no tenía artículo, `candidatos()` probaba lo que iba antes de « de los » y antes de « de » (si eran 3 palabras o menos). En el documento actual eso afectaba a 17 posturas y casi siempre dejaba una palabra genérica: «Postura» (4 posturas), «Teoría», «Edad», «Cristianismo», «Historicidad», «Infalibilidad», «Condenación», «Esperanza», «Perspicuidad»…
+
+**Decisiones tomadas al implementar.**
+- Se elimina el recorte por completo. Se busca la etiqueta completa, sus sinónimos no marcados, el paréntesis y la etiqueta sin paréntesis; si nada tiene artículo, no hay ficha.
+- Pérdida aceptada: «Arrianismo de los JW (Testigos de Jehová)» ya no busca «Arrianismo»; sigue encontrando «Testigos de Jehová» por el paréntesis.
+- La clave del caché local sube a `defs-wiki/v3` para descartar extractos que vinieron del recorte.
+- Prueba: «la búsqueda no recorta antes de « de »» en `prueba-modelo.js`.
+
+## Tradiciones en posturas repetidas y en convergencias `&` (2026-11-24)
+
+### Petición
+Al revisar la estructura de `posturas-creencias.md` se detectó que las posturas repetidas (`Edad de responsabilidad`, `Adopcionismo`, `Postura de la inspiración bíblica`), que la regla 6 une en un solo nodo, mezclaban los caminos de sus tradiciones. Petición: arreglarlo.
+
+### Causas (tres)
+1. **Tradiciones perdidas.** El convertidor leía las `{tradiciones}` solo del texto de la *primera* aparición de una postura. Las de la segunda se perdían: no existían en los datos «Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)», «Bautistas (mayoría; Fe y Mensaje Bautista 2000)» ni «Anabaptismo (menonitas)» (línea 191).
+2. **Caminos mezclados en posturas repetidas.** `resolver` tomaba todos los caminos de la raíz a la postura. Ebionismo (línea 79, rama «Jesús no afirmó ser Dios») quedaba con respuestas de la otra rama; Iglesias de Cristo (línea 165, sin pecado original) con Q42, que cuelga de «Pecado original».
+3. **Convergencias `&`.** Bajo `Encarnacionismo & Subordinacionismo` (línea 127) cuelgan 38 tradiciones. Su camino llevaba las dos ramas y `respuestas` se quedaba con la primera (Subordinacionismo: Q17:A, Q18:A), así que Catolicismo o Luteranismo «respondían» que Jesús no es Dios, y quien respondía que sí perdía coincidencias con todas.
+
+### Decisiones tomadas al implementar
+- **Convertidor:** cada respuesta guarda el texto crudo de su línea. Las tradiciones de una postura se juntan de *todas* sus apariciones, y cada una lleva `via: [{question_id, answer_key}]`, la respuesta donde está escrita. `traditions_index` no cambia (el Modo de Edición lo reconstruye desde las posturas y así conserva `via`).
+- **`resolver` (`search.js`):** para una tradición, de los caminos hacia la postura solo usa los que terminan en una de sus `via`. Si no hay `via` o ninguna coincide (datos viejos, claves cambiadas en edición), usa todos, como antes. Devuelve además `alternativas`: por postura, las respuestas de cada camino por separado.
+- **`Busqueda.coincidencia(resolucion, respuestasUsuario, peso)`:** el `&` une ramas, así que la tradición sostiene *cualquiera* de ellas. Por postura se elige el camino que más coincide con el usuario (a igualdad, el más corto). Devuelve `total`, `coinciden`, `comunes` (ponderado), `difieren` y `sinResponder`. El cuestionario la usa en lugar de comparar contra `respuestas`.
+- **`tradicionesDeRespuestas` (`state.js`):** en una postura repetida, una tradición solo cuenta para la rama que pasa por su `via`.
+- **Fuera de alcance:** el resaltado de la tradición en el árbol sigue cubriendo todas las ramas de una convergencia (`respuestas`/`ambiguas` no cambian). Para las tradiciones anotadas *debajo* de una postura repetida (p. ej. bajo «Postura de la inspiración bíblica»), el documento no dice por cuál de sus entradas llegan; se tratan igual que una convergencia.
+- **Pruebas:** sección «Tradiciones en posturas repetidas y convergencias» de `prueba-modelo.js`.
