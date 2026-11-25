@@ -579,7 +579,9 @@
 
   function coincidenciasTradicion(estado, nombre) {
     var indice = estado.datos.traditions_index[nombre];
-    if (!indice) return { comunes: 0, total: 0, porcentaje: 0 };
+    if (!indice) {
+      return { comunes: 0, coinciden: 0, total: 0, difieren: [], sinResponder: [], porcentaje: 0 };
+    }
     var resolucion = Arbol.Busqueda.resolver(estado.grafo, estado.datos, {
       tipo: 'tradicion',
       id: nombre,
@@ -588,24 +590,20 @@
       tentativa: !!indice.tentative,
       respuestas: {}
     });
-    var propias = estado.respuestasEfectivas();
-    var comunes = 0;
-    var coinciden = 0;
-    var total = 0;
-    Object.keys(resolucion.respuestas || {}).forEach(function (qid) {
-      total++;
-      if (propias[qid] && propias[qid] === resolucion.respuestas[qid]) {
-        coinciden++;
-        comunes += pesoCerteza(estado.certezaDe(qid));
-      }
-    });
     /* `comunes` está ponderado por la certeza (es lo que da el porcentaje de
-       afinidad); `coinciden` es el conteo entero que se le muestra al usuario. */
+       afinidad); `coinciden` es el conteo entero que se le muestra al usuario.
+       Con varios caminos posibles (convergencias), se compara contra el que
+       más coincide: ver Busqueda.coincidencia. */
+    var r = Arbol.Busqueda.coincidencia(resolucion, estado.respuestasEfectivas(), function (qid) {
+      return pesoCerteza(estado.certezaDe(qid));
+    });
     return {
-      comunes: comunes,
-      coinciden: coinciden,
-      total: total,
-      porcentaje: total ? Math.round((comunes / total) * 100) : 0
+      comunes: r.comunes,
+      coinciden: r.coinciden,
+      total: r.total,
+      difieren: r.difieren,
+      sinResponder: r.sinResponder,
+      porcentaje: r.total ? Math.round((r.comunes / r.total) * 100) : 0
     };
   }
 
@@ -1380,6 +1378,95 @@
     return html;
   }
 
+  function plano(texto) {
+    return Arbol.Formato ? Arbol.Formato.plano(texto) : String(texto || '');
+  }
+
+  /* Una fila de la lista de tradiciones: el paréntesis final es una precisión
+     (confesión, época, grupos) y sigue al nombre en el mismo renglón, en
+     color tenue. Si no cabe, se corta con «…» (CSS). */
+  function pintarFilaTradicion(n) {
+    var partes = String(n).match(/^(.*?)\s*\(([^()]*)\)\s*$/);
+    var principal = partes && partes[1] ? partes[1] : n;
+    var detalle = partes && partes[1] ? partes[2] : '';
+    return '<li><button type="button" class="quiz-chip-btn" data-accion="explorar-tradicion" data-tradicion="'
+      + escapar(n) + '" title="' + escapar(n + ' — ' + t('quizExplorarTradicion')) + '">'
+      + '<span class="quiz-chip-texto">'
+      + '<span class="quiz-chip-principal">' + escapar(principal) + '</span>'
+      + (detalle ? '<span class="quiz-chip-detalle"> · ' + escapar(detalle) + '</span>' : '')
+      + '</span></button></li>';
+  }
+
+  /* «Difieren en: «¿…?», «¿…?» y N más» bajo una tradición afín. */
+  function pintarDifieren(estado, difieren) {
+    if (!difieren || !difieren.length) return '';
+    var MAX = 2;
+    var textos = difieren.slice(0, MAX).map(function (d) {
+      var pregunta = estado.datos.questions[d.preguntaId];
+      return '«' + formatear(pregunta ? textoPregunta(pregunta) : d.preguntaId) + '»';
+    });
+    var resto = difieren.length - MAX;
+    return '<span class="quiz-difieren"><span class="quiz-campo-rotulo">'
+      + escapar(t('quizDifierenEn')) + ':</span> ' + textos.join(', ')
+      + (resto > 0 ? ' ' + escapar(t('quizYMas', { n: String(resto) })) : '')
+      + '</span>';
+  }
+
+  /* Agrupa las tradiciones que encajan por la postura alcanzada donde el
+     documento las anota. Primero las posturas más específicas; después las
+     demás, en el orden en que aparecen sus tradiciones (de camino más largo a
+     más corto). Las posturas sin nombre se titulan con la pregunta y la
+     respuesta que llevan a ellas. */
+  function agruparPorPostura(estado, nombres, especificas) {
+    var propias = estado.respuestasEfectivas();
+    var alcanzadas = {};
+    Object.keys(propias).forEach(function (qid) {
+      var pregunta = estado.datos.questions[qid];
+      (pregunta && pregunta.answers || []).forEach(function (r) {
+        if (r.key === propias[qid] && r.target_posture_id && !alcanzadas[r.target_posture_id]) {
+          alcanzadas[r.target_posture_id] = { pregunta: pregunta, clave: r.key };
+        }
+      });
+    });
+    var orden = [];
+    var grupos = {};
+    function grupo(pid) {
+      if (!grupos[pid]) { grupos[pid] = { pid: pid, nombres: [] }; orden.push(pid); }
+      return grupos[pid];
+    }
+    especificas.forEach(function (item) { grupo(item.postura.id); });
+    nombres.forEach(function (nombre) {
+      var indice = estado.datos.traditions_index[nombre];
+      var pids = (indice && indice.posture_ids) || [];
+      var pid = pids.filter(function (p) { return grupos[p] && especificas.some(function (i) {
+        return i.postura.id === p;
+      }) && tradicionesDePostura(estado.datos.postures[p], estado.datos).indexOf(nombre) !== -1; })[0]
+        || pids.filter(function (p) { return alcanzadas[p]; })[0]
+        || '';
+      grupo(pid).nombres.push(nombre);
+    });
+    return orden.map(function (pid) { return grupos[pid]; }).filter(function (g) {
+      return g.nombres.length;
+    }).map(function (g) {
+      var postura = g.pid && estado.datos.postures[g.pid];
+      var titulo;
+      if (!postura) {
+        titulo = t('quizGrupoOtras');
+      } else if (posturaTieneNombre(postura)) {
+        titulo = plano(rotuloPostura(postura));
+      } else {
+        var llegada = alcanzadas[g.pid];
+        titulo = llegada
+          ? t('quizGrupoSinNombre', {
+            pregunta: plano(textoPregunta(llegada.pregunta)),
+            respuesta: plano(etiquetaRespuesta(llegada.pregunta, llegada.clave))
+          })
+          : t('quizGrupoOtras');
+      }
+      return { titulo: titulo, nombres: g.nombres };
+    });
+  }
+
   function pintarReporte(estado) {
     var especificas = posturasEspecificas(estado);
     registrarResultado(estado, especificas);
@@ -1419,10 +1506,23 @@
         || a.nombre.localeCompare(b.nombre, (Arbol.I18n && Arbol.I18n.idioma) || 'es');
     });
     encajanPorCamino.forEach(function (item) { tradicionesExactas.push(item.nombre); });
+
+    /* «A una respuesta de distancia»: coinciden en todo su camino salvo en
+       una pregunta que el usuario sí respondió. Salen de «afines» para no
+       repetirlas. */
+    var aUnaRespuesta = cercanas.filter(function (item) {
+      return item.score.difieren.length === 1 && !item.score.sinResponder.length
+        && item.score.coinciden >= 2;
+    }).sort(function (a, b) {
+      return b.score.total - a.score.total
+        || a.nombre.localeCompare(b.nombre, (Arbol.I18n && Arbol.I18n.idioma) || 'es');
+    }).slice(0, 5);
+    cercanas = cercanas.filter(function (item) { return aUnaRespuesta.indexOf(item) === -1; });
     cercanas.sort(function (a, b) {
       return b.score.porcentaje - a.score.porcentaje || b.score.comunes - a.score.comunes;
     });
     cercanas = cercanas.slice(0, 6);
+    var gruposEncajan = agruparPorPostura(estado, tradicionesExactas, especificas);
 
     var html = '<div class="quiz-escena quiz-reporte">'
       + '<header class="quiz-cabecera">'
@@ -1450,27 +1550,43 @@
 
     html += '<section class="quiz-tarjeta"><h3>'
       + escapar(t('quizReligionesEncaje')) + '</h3>';
-    if (tradicionesExactas.length) {
-      html += '<ul class="quiz-chips">'
-        + tradicionesExactas.map(function (n) {
-          /* El paréntesis final es una precisión (confesión, época, grupos):
-             sigue al nombre en el mismo renglón, en color tenue, para que el
-             nombre se lea primero. Si no cabe, se corta con «…» (CSS). */
-          var partes = String(n).match(/^(.*?)\s*\(([^()]*)\)\s*$/);
-          var principal = partes && partes[1] ? partes[1] : n;
-          var detalle = partes && partes[1] ? partes[2] : '';
-          return '<li><button type="button" class="quiz-chip-btn" data-accion="explorar-tradicion" data-tradicion="'
-            + escapar(n) + '" title="' + escapar(n + ' — ' + t('quizExplorarTradicion')) + '">'
-            + '<span class="quiz-chip-texto">'
-            + '<span class="quiz-chip-principal">' + escapar(principal) + '</span>'
-            + (detalle ? '<span class="quiz-chip-detalle"> · ' + escapar(detalle) + '</span>' : '')
-            + '</span></button></li>';
-        }).join('')
-        + '</ul>';
+    if (gruposEncajan.length) {
+      /* Agrupadas por la postura alcanzada donde el documento las anota: así
+         se ve qué parte de la postura del usuario comparte cada una. */
+      gruposEncajan.forEach(function (grupo) {
+        html += '<div class="quiz-encajan-grupo">'
+          + '<h4 class="quiz-encajan-postura">' + escapar(grupo.titulo)
+          + ' <span class="quiz-encajan-cuenta">' + grupo.nombres.length + '</span></h4>'
+          + '<ul class="quiz-chips">' + grupo.nombres.map(pintarFilaTradicion).join('') + '</ul>'
+          + '</div>';
+      });
     } else {
       html += '<p class="quiz-vacio">' + escapar(t('quizSinReligion')) + '</p>';
     }
     html += '</section>';
+
+    if (aUnaRespuesta.length) {
+      html += '<section class="quiz-tarjeta"><h3>' + escapar(t('quizCercaTitulo')) + '</h3>'
+        + '<p class="quiz-tarjeta-intro">' + escapar(t('quizCercaIntro')) + '</p>'
+        + '<ul class="quiz-cercanas">';
+      aUnaRespuesta.forEach(function (item) {
+        var dif = item.score.difieren[0];
+        var pregunta = estado.datos.questions[dif.preguntaId];
+        html += '<li><div class="quiz-cercana-cabecera"><strong>' + escapar(item.nombre) + '</strong>'
+          + '<span class="quiz-cerca-pregunta">' + (pregunta ? formatear(textoPregunta(pregunta)) : escapar(dif.preguntaId))
+          + '</span>'
+          + '<span>' + escapar(t('quizCercaRespuestas', {
+            suya: pregunta ? plano(etiquetaRespuesta(pregunta, dif.suya)) : dif.suya,
+            tuya: pregunta ? plano(etiquetaRespuesta(pregunta, dif.delUsuario)) : dif.delUsuario
+          }))
+          + (estado.conDudas(dif.preguntaId)
+            ? ' · <em class="quiz-cerca-duda">' + escapar(t('quizCercaDuda')) + '</em>' : '')
+          + '</span></div>'
+          + '<button type="button" class="quiz-btn-mini" data-accion="explorar-tradicion" data-tradicion="'
+          + escapar(item.nombre) + '">' + escapar(t('quizExplorarTradicion')) + '</button></li>';
+      });
+      html += '</ul></section>';
+    }
 
     html += '<section class="quiz-tarjeta"><h3>'
       + escapar(t('quizReligionesCercanas')) + '</h3>'
@@ -1482,7 +1598,7 @@
           + '<span>' + escapar(t('quizCoincidencias', {
             n: String(item.score.coinciden), total: String(item.score.total)
           })) + ' · ' + escapar(t('quizAfinidad', { pct: String(item.score.porcentaje) }))
-          + '</span></div>'
+          + '</span>' + pintarDifieren(estado, item.score.difieren) + '</div>'
           + '<div class="quiz-barra"><span style="width:'
           + item.score.porcentaje + '%"></span></div>'
           + '<button type="button" class="quiz-btn-mini" data-accion="explorar-tradicion" data-tradicion="'
@@ -1498,6 +1614,8 @@
     html += '<div class="quiz-reporte-acciones">'
       + '<button type="button" class="quiz-btn" data-accion="reiniciar-quiz">'
       + escapar(t('quizOtraVez')) + '</button>'
+      + '<button type="button" class="quiz-btn fantasma" data-accion="copiar-enlace">'
+      + escapar(t('quizCopiarEnlace')) + '</button>'
       + '</div>'
       + '<div class="quiz-resultado-pie">' + pintarBorrarResultado() + '</div>'
       + '</div>'; // principal
@@ -1630,6 +1748,22 @@
     var accion = boton.getAttribute('data-accion');
     if (accion === 'cambiar-nombre') {
       mostrarCapaNombre();
+      return;
+    }
+    if (accion === 'copiar-enlace') {
+      /* La URL ya lleva el recorrido (`?path=…`): basta copiarla. */
+      var url = String(global.location && global.location.href || '');
+      var avisarCopiado = function () {
+        boton.textContent = t('quizEnlaceCopiado');
+        global.setTimeout(function () { boton.textContent = t('quizCopiarEnlace'); }, 2000);
+      };
+      if (global.navigator && global.navigator.clipboard && global.navigator.clipboard.writeText) {
+        global.navigator.clipboard.writeText(url).then(avisarCopiado, function () {
+          global.prompt && global.prompt(t('quizCopiarEnlace'), url);
+        });
+      } else if (global.prompt) {
+        global.prompt(t('quizCopiarEnlace'), url);
+      }
       return;
     }
     if (accion === 'borrar-resultado') {

@@ -2,7 +2,7 @@
 /* Copia ejecutable de posturas-creencias.json para abrir el visor con file://. */
 window.__ARBOL_POSTURAS__ = {
   "version": "1.0.0",
-  "generated_at": "2026-11-24T23:48:50Z",
+  "generated_at": "2026-11-25T00:21:07Z",
   "source_document": "posturas-creencias.md",
   "root_questions": [
     "Q1"
@@ -2735,13 +2735,25 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Judaísmo moderno",
             "Judaísmo liberal"
+          ],
+          "via": [
+            {
+              "question_id": "Q4",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Deísmo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q4",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -2821,7 +2833,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Arrianismo germánico (godos, vándalos, lombardos; histórico)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q7",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -2866,7 +2884,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Ebionismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q8",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -2913,19 +2937,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Cristadelfianos",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q10",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Unitarismo bíblico",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q10",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Iglesia ni Cristo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q10",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -2970,7 +3012,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Islam Ahmadí",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q11",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -2992,6 +3040,12 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Islam Suní",
             "Islam Chiita"
+          ],
+          "via": [
+            {
+              "question_id": "Q11",
+              "answer_key": "B"
+            }
           ]
         }
       ],
@@ -3068,6 +3122,12 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Judaísmo rabínico",
             "Judaísmo talmúdico"
+          ],
+          "via": [
+            {
+              "question_id": "Q14",
+              "answer_key": "A"
+            }
           ]
         }
       ],
@@ -3202,14 +3262,7 @@ window.__ARBOL_POSTURAS__ = {
       "is_suggested": false,
       "is_uncertain": false,
       "search_excluded": [],
-      "traditions": [
-        {
-          "name": "No se identifica quién sostenga esta postura",
-          "is_tentative": false,
-          "is_note": false,
-          "aliases": []
-        }
-      ],
+      "traditions": [],
       "notes": [],
       "wikilinks": [],
       "question_axes": []
@@ -3521,35 +3574,7 @@ window.__ARBOL_POSTURAS__ = {
       "is_suggested": false,
       "is_uncertain": false,
       "search_excluded": [],
-      "traditions": [
-        {
-          "name": "Luteranismo",
-          "is_tentative": false,
-          "is_note": false,
-          "aliases": []
-        },
-        {
-          "name": "Reformados/Presbiterianos",
-          "is_tentative": false,
-          "is_note": false,
-          "aliases": [
-            "Reformados",
-            "Presbiterianos"
-          ]
-        },
-        {
-          "name": "Anglicanismo",
-          "is_tentative": false,
-          "is_note": false,
-          "aliases": []
-        },
-        {
-          "name": "Metodismo",
-          "is_tentative": false,
-          "is_note": false,
-          "aliases": []
-        }
-      ],
+      "traditions": [],
       "notes": [],
       "wikilinks": [],
       "question_axes": [
@@ -3603,19 +3628,37 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q33",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Bautistas (Confesión de 1689)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q33",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q33",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3634,13 +3677,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q32",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q32",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3659,37 +3714,73 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo confesional (LCMS, WELS)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Reformados conservadores (PCA, OPC)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo (Asambleas de Dios)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Evangelicalismo conservador (Declaración de Chicago)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3708,7 +3799,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Protestantismo de línea principal (ELCA, PCUSA, Iglesia Episcopal, Metodismo Unido)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q34",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3727,19 +3824,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Ortodoxia oriental (no calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3758,7 +3873,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Reformados/Presbiterianos",
@@ -3767,43 +3888,85 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Anglicanismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Metodismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q35",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3837,7 +4000,61 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Iglesias de Cristo (Restauracionismo)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q37",
+              "answer_key": "A"
+            }
+          ]
+        },
+        {
+          "name": "Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)",
+          "is_tentative": false,
+          "is_note": false,
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q42",
+              "answer_key": "B"
+            }
+          ]
+        },
+        {
+          "name": "Bautistas (mayoría; Fe y Mensaje Bautista 2000)",
+          "is_tentative": false,
+          "is_note": false,
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q42",
+              "answer_key": "B"
+            }
+          ]
+        },
+        {
+          "name": "Pentecostalismo (Asambleas de Dios)",
+          "is_tentative": false,
+          "is_note": false,
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q42",
+              "answer_key": "B"
+            }
+          ]
+        },
+        {
+          "name": "Anabaptismo (menonitas)",
+          "is_tentative": false,
+          "is_note": false,
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q42",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3970,7 +4187,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q36",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -3992,7 +4215,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Anglicanismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q42",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4013,19 +4242,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Anglicanismo anglocatólico",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4046,7 +4293,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo escolástico (s. XIII–XX; Catecismo de Pío X)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q44",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4079,7 +4332,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Agustinismo (s. V–XII)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q45",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4113,19 +4372,37 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Bautistas reformados",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anglicanismo evangélico",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q43",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4182,7 +4459,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q47",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4210,13 +4493,25 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Bautistas reformados",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4235,19 +4530,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Metodismo/Arminianismo",
@@ -4256,37 +4569,73 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Metodismo",
             "Arminianismo"
+          ],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Movimiento de Santidad (Nazarenos)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas no calvinistas (incl. Bautistas Libres)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q48",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4308,19 +4657,37 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Bautistas reformados",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4339,7 +4706,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Ortodoxia (calcedonense; Confesión de Dositeo, decreto 3)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Metodismo/Arminianismo",
@@ -4348,37 +4721,73 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Metodismo",
             "Arminianismo"
+          ],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Movimiento de Santidad (Nazarenos)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas no calvinistas (incl. Bautistas Libres)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q49",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4397,19 +4806,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q50",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q50",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q50",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Reformados/Presbiterianos (Confesión de Westminster 10.3)",
@@ -4418,13 +4845,25 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q50",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Bautistas reformados (Confesión de 1689, 10.3)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q50",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4472,37 +4911,73 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Metodismo",
             "Arminianismo"
+          ],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Movimiento de Santidad (Nazarenos)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas no calvinistas (incl. Bautistas Libres)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q51",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4524,13 +4999,25 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Bautistas (Bautistas del Sur, Bautistas reformados)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4556,25 +5043,49 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anglicanismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Metodismo/Arminianismo",
@@ -4583,31 +5094,61 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Metodismo",
             "Arminianismo"
+          ],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas Libres",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q52",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4629,19 +5170,37 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "A"
+            }
           ]
         },
         {
           "name": "Bautistas reformados",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4660,13 +5219,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Metodismo/Arminianismo",
@@ -4675,37 +5246,73 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Metodismo",
             "Arminianismo"
+          ],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
           ]
         },
         {
           "name": "Movimiento de Santidad (Nazarenos)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Bautistas no calvinistas (incl. Bautistas Libres)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q53",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4724,13 +5331,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q54",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q54",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4817,7 +5436,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Adventismo (inspiración del pensamiento)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q56",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4853,13 +5478,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q57",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q57",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -4880,31 +5517,61 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q58",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Luteranismo confesional",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q58",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Reformados conservadores",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q58",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo (Asambleas de Dios)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q58",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Evangelicalismo conservador (Declaración de Chicago)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q58",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5001,13 +5668,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Pentecostalismo unicitario (Iglesia Pentecostal Unida)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q62",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Sabelianismo (histórico)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q62",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5092,13 +5771,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Nestorianismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q65",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Iglesia Asiria del Oriente (históricamente; hoy rechaza la etiqueta)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q65",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5143,25 +5834,49 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Bautistas",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q66",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Pentecostalismo trinitario",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q66",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Adventismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q66",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anabaptismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q66",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5182,13 +5897,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Ortodoxia oriental (no calcedonense; una voluntad unida)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Maronitas (históricamente)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5207,25 +5934,49 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Ortodoxia (calcedonense)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Catolicismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Luteranismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Anglicanismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Reformados/Presbiterianos",
@@ -5234,6 +5985,12 @@ window.__ARBOL_POSTURAS__ = {
           "aliases": [
             "Reformados",
             "Presbiterianos"
+          ],
+          "via": [
+            {
+              "question_id": "Q67",
+              "answer_key": "B"
+            }
           ]
         }
       ],
@@ -5330,19 +6087,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Mormonismo (SUD)",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q71",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Vedānta Viśiṣṭādvaita",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q71",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Vedānta Dvaita",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q71",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5373,19 +6148,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Advaita Vedānta",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q70",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Jainismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q70",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Sāṃkhya",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q70",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5404,13 +6197,25 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Sāṃkhya",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q72",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Jainismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q72",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5429,7 +6234,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Advaita Vedānta",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q72",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5448,19 +6259,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Cārvāka",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q69",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Epicureísmo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q69",
+              "answer_key": "B"
+            }
+          ]
         },
         {
           "name": "Naturalismo ateo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q69",
+              "answer_key": "B"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5479,19 +6308,37 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Hinduismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q73",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Budismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q73",
+              "answer_key": "A"
+            }
+          ]
         },
         {
           "name": "Jainismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q73",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5536,7 +6383,13 @@ window.__ARBOL_POSTURAS__ = {
           "name": "Neoplatonismo",
           "is_tentative": false,
           "is_note": false,
-          "aliases": []
+          "aliases": [],
+          "via": [
+            {
+              "question_id": "Q74",
+              "answer_key": "A"
+            }
+          ]
         }
       ],
       "notes": [],
@@ -5652,11 +6505,18 @@ window.__ARBOL_POSTURAS__ = {
       ],
       "tentative": false
     },
+    "Anabaptismo (menonitas)": {
+      "canonical_name": "Anabaptismo (menonitas)",
+      "aliases": [],
+      "posture_ids": [
+        "P69"
+      ],
+      "tentative": false
+    },
     "Anglicanismo": {
       "canonical_name": "Anglicanismo",
       "aliases": [],
       "posture_ids": [
-        "P59",
         "P67",
         "P80",
         "P100",
@@ -5714,6 +6574,14 @@ window.__ARBOL_POSTURAS__ = {
       "aliases": [],
       "posture_ids": [
         "P62"
+      ],
+      "tentative": false
+    },
+    "Bautistas (mayoría; Fe y Mensaje Bautista 2000)": {
+      "canonical_name": "Bautistas (mayoría; Fe y Mensaje Bautista 2000)",
+      "aliases": [],
+      "posture_ids": [
+        "P69"
       ],
       "tentative": false
     },
@@ -5925,7 +6793,6 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Luteranismo",
       "aliases": [],
       "posture_ids": [
-        "P59",
         "P62",
         "P67",
         "P81",
@@ -5966,7 +6833,6 @@ window.__ARBOL_POSTURAS__ = {
       "canonical_name": "Metodismo",
       "aliases": [],
       "posture_ids": [
-        "P59",
         "P67"
       ],
       "tentative": false
@@ -6029,14 +6895,6 @@ window.__ARBOL_POSTURAS__ = {
       ],
       "tentative": false
     },
-    "No se identifica quién sostenga esta postura": {
-      "canonical_name": "No se identifica quién sostenga esta postura",
-      "aliases": [],
-      "posture_ids": [
-        "P35"
-      ],
-      "tentative": false
-    },
     "Ortodoxia (calcedonense)": {
       "canonical_name": "Ortodoxia (calcedonense)",
       "aliases": [],
@@ -6056,6 +6914,14 @@ window.__ARBOL_POSTURAS__ = {
       "aliases": [],
       "posture_ids": [
         "P94"
+      ],
+      "tentative": false
+    },
+    "Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)": {
+      "canonical_name": "Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)",
+      "aliases": [],
+      "posture_ids": [
+        "P69"
       ],
       "tentative": false
     },
@@ -6093,6 +6959,7 @@ window.__ARBOL_POSTURAS__ = {
       "aliases": [],
       "posture_ids": [
         "P64",
+        "P69",
         "P112"
       ],
       "tentative": false
@@ -6144,7 +7011,6 @@ window.__ARBOL_POSTURAS__ = {
         "Presbiterianos"
       ],
       "posture_ids": [
-        "P59",
         "P67",
         "P86",
         "P91",
@@ -6222,7 +7088,7 @@ window.__ARBOL_POSTURAS__ = {
   "stats": {
     "questions": 75,
     "postures": 149,
-    "traditions": 65,
+    "traditions": 67,
     "unnamed_postures": 58,
     "convergences": 2,
     "source_lines": 284

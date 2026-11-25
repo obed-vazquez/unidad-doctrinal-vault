@@ -878,6 +878,46 @@ button.quiz-trad-enlace:hover { text-decoration: underline; }
   line-height: 1.45;
 }
 
+/* «Tradiciones que encajan», agrupadas por la postura alcanzada. */
+.quiz-encajan-grupo + .quiz-encajan-grupo {
+  margin-top: 14px;
+}
+
+.quiz-encajan-postura {
+  margin: 0 0 8px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.quiz-encajan-cuenta {
+  margin-left: 4px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--dorado-suave);
+  color: var(--eje-texto);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* «Difieren en» bajo una afín y la pregunta de «A una respuesta». */
+.quiz-difieren,
+.quiz-cerca-pregunta {
+  line-height: 1.4;
+}
+
+.quiz-cercanas li .quiz-cerca-pregunta {
+  color: var(--texto);
+  font-size: 0.88rem;
+}
+
+.quiz-cerca-duda {
+  color: var(--dorado);
+  font-style: normal;
+  font-weight: 600;
+}
+
 /* «Tradiciones que encajan con tu postura»: lista compacta en columnas, no
    chips. Cada fila mide un renglón (todas la misma altura), con una sola
    fuente y un solo tamaño, iguales a los del resto del reporte; lo que no

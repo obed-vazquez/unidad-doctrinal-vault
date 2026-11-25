@@ -1155,6 +1155,64 @@ console.log('\n== Tradiciones por respuesta (cuestionario) ==');
     rotas.length === 0, rotas.slice(0, 3).join(' | '));
 }
 
+console.log('\n== Tradiciones en posturas repetidas y convergencias ==');
+// Regresión: una postura repetida en el documento (un solo nodo) solo leía las
+// {tradiciones} de su primera aparición, y a las que sí leía les asignaba los
+// caminos de todas las apariciones. Además, en una convergencia `&` el camino
+// de la tradición mezclaba todas las ramas y se tomaba la primera.
+{
+  const g = Arbol.construirGrafo(datos);
+  const resolverT = (n) => {
+    const i = datos.traditions_index[n];
+    return Arbol.Busqueda.resolver(g, datos, { tipo: 'tradicion', id: n, nombre: n,
+      posturaIds: i.posture_ids || [], tentativa: !!i.tentative, respuestas: {} });
+  };
+  const edad = Object.values(datos.postures).find((p) => p.label === 'Edad de responsabilidad');
+  const aparicionesEdad = Object.values(datos.questions).reduce((n, q) =>
+    n + q.answers.filter((a) => a.target_posture_id === edad.id).length, 0);
+  comprobar('la postura repetida «Edad de responsabilidad» llega por dos respuestas (premisa)',
+    aparicionesEdad === 2, String(aparicionesEdad));
+  const viasEdad = new Set(edad.traditions.flatMap((t) => (t.via || [])
+    .map((v) => v.question_id + ':' + v.answer_key)));
+  comprobar('se leen las tradiciones de TODAS sus apariciones (una vía por aparición)',
+    viasEdad.size === 2, Array.from(viasEdad).join(','));
+  const mezcladas = [];
+  Object.values(datos.postures).forEach((p) => (p.traditions || []).forEach((t) => {
+    if (!t.via || !datos.traditions_index[t.name]) return;
+    const r = resolverT(t.name);
+    // Ninguna alternativa del camino puede entrar a la postura por una
+    // respuesta distinta de aquella donde la tradición está escrita.
+    const nodo = g.nodos.get(g.idDePostura(p.id));
+    const entradas = nodo.entradas.filter((a) => a.tipo === 'respuesta');
+    if (entradas.length < 2) return;
+    const ajenas = entradas.filter((a) => !t.via.some((v) =>
+      v.question_id === a.preguntaId && v.answer_key === a.clave));
+    const usaAjena = r.alternativas.some((caminos) => caminos.some((resp) =>
+      ajenas.some((a) => resp[a.preguntaId] === a.clave)));
+    if (usaAjena) mezcladas.push(t.name + ' @ ' + p.label);
+  }));
+  comprobar('en una postura repetida, cada tradición solo recorre la rama donde está escrita',
+    mezcladas.length === 0, mezcladas.slice(0, 3).join(' | '));
+
+  const cat = resolverT('Catolicismo');
+  const usuario = {};
+  cat.alternativas.forEach((caminos) => {
+    Object.assign(usuario, caminos.find((resp) => resp.Q17 === 'B') || caminos[0]);
+  });
+  const rc = Arbol.Busqueda.coincidencia(cat, usuario);
+  comprobar('convergencia «Encarnacionismo & Subordinacionismo»: quien sigue la rama de Encarnacionismo coincide al 100 % con Catolicismo',
+    usuario.Q17 === 'B' && rc.total > 0 && rc.coinciden === rc.total,
+    'Q17=' + usuario.Q17 + ' ' + rc.coinciden + '/' + rc.total);
+  // Q2 no tiene alternativas: cambiarla debe aparecer como diferencia. (Q17
+  // no sirve: con «A» se elige con razón la rama de Subordinacionismo.)
+  const otro = Object.assign({}, usuario, { Q2: usuario.Q2 === 'A' ? 'B' : 'A' });
+  const ro = Arbol.Busqueda.coincidencia(cat, otro);
+  comprobar('coincidencia reporta la pregunta en que difieren',
+    ro.difieren.length === 1 && ro.difieren[0].preguntaId === 'Q2'
+    && ro.coinciden === rc.coinciden - 1,
+    JSON.stringify(ro.difieren));
+}
+
 console.log('\n== Sinónimos excluidos de la búsqueda (~) ==');
 // Regresión: «Inspiracionalismo Mecánico / Dictado» acababa buscando
 // «Dictado» en Wikipedia y mostraba el artículo del ejercicio escolar.

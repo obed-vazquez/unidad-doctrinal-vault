@@ -92,6 +92,8 @@ de `recursos/posturas-creencias.md`.
 
 El visor se abre con doble clic en [recursos/diagramas/arbol-web/index.html](recursos/diagramas/arbol-web/index.html).
 
+Aquí se pueden ver los [resultados del cuestionario público](https://docs.google.com/spreadsheets/d/1xZlXdyDa671cO5tWL6k5aR-DOukEYwwO0Er3h8QDJPM/edit?gid=1281006472#gid=1281006472).
+
 ## 🔄 Sincronizar Drive (local)
 
 `run` actualiza `apologética/` desde Google Drive (Drive es la fuente de verdad). Cada ejecución **reemplaza** esa carpeta; el aviso de sobrescritura está en [COMO_CONTRIBUIR.md](COMO_CONTRIBUIR.md).

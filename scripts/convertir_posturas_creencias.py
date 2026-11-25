@@ -110,6 +110,10 @@ class Answer:
     label: str
     target_posture: str
     source_line: int
+    # Texto crudo de la postura en ESTA línea, con sus {tradiciones}. Una
+    # postura que se repite en el documento tiene una respuesta por aparición,
+    # y cada aparición anota sus propias tradiciones.
+    raw: str = ""
 
 
 @dataclass
@@ -499,7 +503,7 @@ def build_model(markdown: str) -> Model:
                 model.root_questions.append(root_question_id)
                 model.questions[root_question_id].posture_hints.append(display_text(item.left))
                 model.questions[root_question_id].answers.append(
-                    Answer(item.left, posture_id, item.line_number)
+                    Answer(item.left, posture_id, item.line_number, raw=target_label)
                 )
                 continue
 
@@ -514,7 +518,7 @@ def build_model(markdown: str) -> Model:
                 )
                 continue
             model.questions[source_question_id].answers.append(
-                Answer(display_text(item.left), posture_id, item.line_number)
+                Answer(display_text(item.left), posture_id, item.line_number, raw=target_label)
             )
 
         elif item.kind == "question":
@@ -927,6 +931,44 @@ def parse_groups(raw_label: str) -> list[dict]:
     return traditions
 
 
+def traditions_by_occurrence(
+    posture_raw: str, occurrences: list[tuple[str, str, str]]
+) -> list[dict]:
+    """Tradiciones de una postura, juntando todas sus apariciones.
+
+    Una postura que se repite (`Edad de responsabilidad` en dos ramas) es un
+    solo nodo, pero cada aparición anota sus propias `{tradiciones}`. Antes
+    solo se leía la primera aparición y las demás se perdían. Cada tradición
+    lleva en `via` la respuesta (pregunta + clave) donde está escrita: así su
+    camino es solo el que pasa por esa respuesta, no todos los que llegan a
+    la postura.
+    """
+
+    if not occurrences:
+        return parse_groups(posture_raw)
+    merged: dict[str, dict] = {}
+    order: list[str] = []
+    for raw, question_id, answer_key in occurrences:
+        for tradition in parse_groups(raw or posture_raw):
+            key = tradition["name"].casefold()
+            if key not in merged:
+                entry = dict(tradition)
+                entry["via"] = []
+                merged[key] = entry
+                order.append(key)
+            else:
+                entry = merged[key]
+                # Tentativa solo si lo es en todas sus apariciones.
+                entry["is_tentative"] = entry["is_tentative"] and tradition["is_tentative"]
+                for alias in tradition["aliases"]:
+                    if alias not in entry["aliases"]:
+                        entry["aliases"].append(alias)
+            via = {"question_id": question_id, "answer_key": answer_key}
+            if via not in merged[key]["via"]:
+                merged[key]["via"].append(via)
+    return [merged[key] for key in order]
+
+
 def split_answer(label: str) -> tuple[str, str | None]:
     """Separa la respuesta corta de su glosa aclaratoria.
 
@@ -1007,9 +1049,16 @@ def build_web_model(
     repository_root = find_repository_root(source_path)
     web_directory = json_path.resolve().parent.parent
 
+    # Apariciones de cada postura: (texto crudo, pregunta, clave de respuesta).
+    occurrences: dict[str, list[tuple[str, str, str]]] = defaultdict(list)
+    for question_id, question in model.questions.items():
+        for index, answer in enumerate(question.answers):
+            key = CHOICES[index] if index < len(CHOICES) else f"A{index}"
+            occurrences[answer.target_posture].append((answer.raw, question_id, key))
+
     postures: dict[str, dict] = {}
     for posture_id, posture in model.postures.items():
-        traditions = parse_groups(posture.raw)
+        traditions = traditions_by_occurrence(posture.raw, occurrences.get(posture_id, []))
         label = plain_text(strip_groups(posture.raw))
         postures[posture_id] = {
             "id": posture_id,

@@ -84,3 +84,18 @@
 - La certeza no decide si encaja: si las respuestas coinciden, encaja aunque haya habido dudas. La certeza solo pondera la afinidad de las parciales.
 - Orden en «encajan»: primero las anotadas en las posturas más específicas (como antes); después, las demás, de camino más largo a más corto y luego alfabético.
 - «Afines» queda solo para coincidencias parciales (menos del 100 %), con el mismo umbral y orden que antes.
+
+### Mejoras del reporte (2026-11-24)
+
+**Petición.** Sugerencias para mejorar el reporte; se pidieron todas:
+1. En «afines», mostrar en qué preguntas difiere cada tradición.
+2. Agrupar «encajan» por postura.
+3. Destacar las tradiciones a una sola respuesta de distancia, ligado a los puntos de duda.
+4. Copiar o compartir el resultado.
+
+**Decisiones tomadas al implementar.**
+- La comparación usa `Busqueda.coincidencia` (ver `pipeline-de-datos-y-pruebas.md`, «Tradiciones en posturas repetidas y en convergencias»), que en una convergencia elige la rama que más coincide con el usuario y devuelve las diferencias.
+- **Encajan, agrupadas:** un grupo por postura alcanzada donde el documento anota la tradición, con su cuenta. Primero las posturas más específicas; después las demás. Las posturas sin nombre se titulan «Postura sin nombre: «¿pregunta?» → respuesta». Si no se encuentra la postura (p. ej. con el panel de creencias), el grupo es «Otras posturas de tu recorrido».
+- **A una respuesta de distancia:** sección nueva, después de «encajan». Tradiciones que coinciden en todo su camino salvo en una pregunta que el usuario sí respondió (y al menos 2 coincidencias). Muestra la pregunta, «Su respuesta: … · la tuya: …» y «aquí dudaste» si el usuario marcó duda en esa pregunta. Máximo 5, de camino más largo a más corto. Salen de «afines» para no repetirlas; si no hay ninguna, la sección no aparece.
+- **Afines:** bajo el conteo, «Difieren en: «¿…?», «¿…?» y N más» (hasta 2 preguntas).
+- **Copiar enlace:** botón junto a «Repetir cuestionario» que copia la URL actual (ya lleva el recorrido en `?path=`). Confirma con «Enlace copiado» durante 2 s; sin portapapeles disponible, muestra la URL para copiarla a mano.

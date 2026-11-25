@@ -256,10 +256,27 @@
   function tradicionesDeRespuestas(grafo, indice) {
     if (grafo.tradicionesRespuestas) return grafo.tradicionesRespuestas;
     var bajo = descendientesDeNodoMapa(grafo);
+    var aristaDeRespuesta = {};
+    grafo.aristas.forEach(function (arista) {
+      if (arista.tipo === 'respuesta' && arista.preguntaId && arista.clave) {
+        aristaDeRespuesta[arista.preguntaId + ':' + arista.clave] = arista;
+      }
+    });
     var porRespuesta = {};
     grafo.aristas.forEach(function (arista) {
       if (arista.tipo !== 'respuesta' || !arista.preguntaId || !arista.clave) return;
       var ids = [arista.hasta].concat(Array.from(bajo.get(arista.hasta) || []));
+      var rama = new Set(ids);
+      /* Una postura repetida en el documento es un nodo al que llegan varias
+         respuestas; cada tradición está escrita en una de ellas (`via`) y
+         solo cuenta para la rama que pasa por esa respuesta. */
+      function cuentaEnRama(tradicion) {
+        if (!tradicion.via || !tradicion.via.length) return true;
+        return tradicion.via.some(function (via) {
+          var a = aristaDeRespuesta[via.question_id + ':' + via.answer_key];
+          return !a || a === arista || rama.has(a.desde);
+        });
+      }
       var nombres = [];
       ids.forEach(function (id) {
         var nodo = grafo.nodos.get(id);
@@ -268,6 +285,7 @@
         (postura.traditions || []).forEach(function (tradicion) {
           if (!tradicion.name || tradicion.is_note) return;
           if (indice && !indice[tradicion.name]) return;
+          if (!cuentaEnRama(tradicion)) return;
           if (nombres.indexOf(tradicion.name) === -1) nombres.push(tradicion.name);
         });
       });

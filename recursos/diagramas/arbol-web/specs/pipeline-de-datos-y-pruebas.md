@@ -161,3 +161,21 @@ Las etiquetas usan `/` para sinónimos. En `Inspiracionalismo Mecánico / Dictad
 - Pérdida aceptada: «Arrianismo de los JW (Testigos de Jehová)» ya no busca «Arrianismo»; sigue encontrando «Testigos de Jehová» por el paréntesis.
 - La clave del caché local sube a `defs-wiki/v3` para descartar extractos que vinieron del recorte.
 - Prueba: «la búsqueda no recorta antes de « de »» en `prueba-modelo.js`.
+
+## Tradiciones en posturas repetidas y en convergencias `&` (2026-11-24)
+
+### Petición
+Al revisar la estructura de `posturas-creencias.md` se detectó que las posturas repetidas (`Edad de responsabilidad`, `Adopcionismo`, `Postura de la inspiración bíblica`), que la regla 6 une en un solo nodo, mezclaban los caminos de sus tradiciones. Petición: arreglarlo.
+
+### Causas (tres)
+1. **Tradiciones perdidas.** El convertidor leía las `{tradiciones}` solo del texto de la *primera* aparición de una postura. Las de la segunda se perdían: no existían en los datos «Ortodoxia (calcedonense; pecado ancestral sin culpa heredada)», «Bautistas (mayoría; Fe y Mensaje Bautista 2000)» ni «Anabaptismo (menonitas)» (línea 191).
+2. **Caminos mezclados en posturas repetidas.** `resolver` tomaba todos los caminos de la raíz a la postura. Ebionismo (línea 79, rama «Jesús no afirmó ser Dios») quedaba con respuestas de la otra rama; Iglesias de Cristo (línea 165, sin pecado original) con Q42, que cuelga de «Pecado original».
+3. **Convergencias `&`.** Bajo `Encarnacionismo & Subordinacionismo` (línea 127) cuelgan 38 tradiciones. Su camino llevaba las dos ramas y `respuestas` se quedaba con la primera (Subordinacionismo: Q17:A, Q18:A), así que Catolicismo o Luteranismo «respondían» que Jesús no es Dios, y quien respondía que sí perdía coincidencias con todas.
+
+### Decisiones tomadas al implementar
+- **Convertidor:** cada respuesta guarda el texto crudo de su línea. Las tradiciones de una postura se juntan de *todas* sus apariciones, y cada una lleva `via: [{question_id, answer_key}]`, la respuesta donde está escrita. `traditions_index` no cambia (el Modo de Edición lo reconstruye desde las posturas y así conserva `via`).
+- **`resolver` (`search.js`):** para una tradición, de los caminos hacia la postura solo usa los que terminan en una de sus `via`. Si no hay `via` o ninguna coincide (datos viejos, claves cambiadas en edición), usa todos, como antes. Devuelve además `alternativas`: por postura, las respuestas de cada camino por separado.
+- **`Busqueda.coincidencia(resolucion, respuestasUsuario, peso)`:** el `&` une ramas, así que la tradición sostiene *cualquiera* de ellas. Por postura se elige el camino que más coincide con el usuario (a igualdad, el más corto). Devuelve `total`, `coinciden`, `comunes` (ponderado), `difieren` y `sinResponder`. El cuestionario la usa en lugar de comparar contra `respuestas`.
+- **`tradicionesDeRespuestas` (`state.js`):** en una postura repetida, una tradición solo cuenta para la rama que pasa por su `via`.
+- **Fuera de alcance:** el resaltado de la tradición en el árbol sigue cubriendo todas las ramas de una convergencia (`respuestas`/`ambiguas` no cambian). Para las tradiciones anotadas *debajo* de una postura repetida (p. ej. bajo «Postura de la inspiración bíblica»), el documento no dice por cuál de sus entradas llegan; se tratan igual que una convergencia.
+- **Pruebas:** sección «Tradiciones en posturas repetidas y convergencias» de `prueba-modelo.js`.
