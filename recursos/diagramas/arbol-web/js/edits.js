@@ -326,9 +326,21 @@
     if (op.op === 'rename') {
       var postura = datos.postures[op.postureId];
       if (!postura) return;
-      postura.label = op.label;
-      postura.is_unnamed = !op.label || op.label === '?';
-      postura.is_suggested = !postura.is_unnamed && /\*$/.test(op.label);
+      /* Igual que el convertidor: la `~` al inicio de un sinónimo no se
+         muestra; solo excluye ese sinónimo de la búsqueda de definiciones. */
+      var excluidos = [];
+      var etiquetaVisible = String(op.label || '');
+      if (/(^|\/)\s*~/.test(etiquetaVisible)) etiquetaVisible = etiquetaVisible.split('/').map(function (parte) {
+        var limpia = parte.trim();
+        if (limpia.charAt(0) !== '~') return limpia;
+        limpia = limpia.slice(1).trim();
+        if (limpia && excluidos.indexOf(limpia) === -1) excluidos.push(limpia);
+        return limpia;
+      }).join(' / ');
+      postura.label = etiquetaVisible;
+      postura.search_excluded = excluidos;
+      postura.is_unnamed = !etiquetaVisible || etiquetaVisible === '?';
+      postura.is_suggested = !postura.is_unnamed && /\*$/.test(etiquetaVisible);
       marcarLocal(postura);
       return;
     }

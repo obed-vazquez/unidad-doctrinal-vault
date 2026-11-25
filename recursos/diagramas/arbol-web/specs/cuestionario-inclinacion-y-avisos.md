@@ -102,3 +102,24 @@ Al abrir la página por primera vez, solo en el cuestionario, un campo al frente
 - Edición directa: el Modo de Edición conserva lo que tenía expandido de una visita anterior, y en edición un nodo solo se ve si toda su cadena de ancestros está expandida. `abrirPreguntaEnEdicion` (app.js) ahora busca el anfitrión en el grafo de edición ya reconstruido y expande la cadena completa hasta la raíz. Prefiere los padres del camino respondido; en una convergencia hay varios. Después selecciona el nodo y lo encuadra con sus respuestas. Se comprobó sin navegador con un recorrido de 3 respuestas: antes, la pregunta Q75 quedaba oculta; después es visible, igual que sus respuestas.
 - Formulario de avisos: nuevo primer campo «Nombre o apodo» (`entry.2018982662`), prerrellenado con el nombre guardado. La URL del formulario se recalcula al pulsar «Reportar el problema», para llevar el nombre y el recorrido vigentes.
 - «Tipo de problema» llega con «Fraseo ambiguo o confuso» ya marcado (`entry.2013098283`). El valor debe coincidir letra por letra con la opción del Form; si se renombra la opción en el Form, hay que cambiarlo también en `urlFormularioAvisos`.
+
+## Cambios posteriores: límite de resultados guardados por visitante
+
+### Petición
+Guardar en la hoja solo los primeros 2 o 3 resultados de cada visitante.
+
+### Preguntas y respuestas
+- **¿Se puede limitar en la hoja?** No con lo que hay: cada fila lleva un id aleatorio por resultado (no por visitante), el nombre es opcional y repetible, y Google Forms solo limita respuestas si exige iniciar sesión con Google. El límite se aplica en el navegador.
+- **¿Cuántos?** 3.
+- **¿Agregar un id de visitante persistente a cada fila?** No; solo el contador.
+
+### Decisiones tomadas al implementar
+- Contador en `localStorage` (`arbol-cuestionario-resultados-enviados`), tope en `MAX_RESULTADOS_ENVIADOS = 3` (`js/cuestionario.js`). Solo cuentan los envíos que realmente salen: repintar el mismo reporte ya no reenvía (firma), así que cuentan resultados distintos.
+- Alcanzado el tope, el reporte se muestra igual pero no se envía nada. La opción «borrar» sigue aplicando al último resultado enviado; borrar no libera un lugar.
+- Es un límite por navegador: borrar los datos del sitio, otro navegador o incógnito lo reinician. Se acepta: el objetivo es evitar filas repetidas de visitantes normales, no impedir abusos.
+
+### Ajuste: el cupo es por nombre de usuario (reemplaza el contador único)
+- **Petición:** después del tercero, seguir guardando pero reescribiendo el tercer registro, siempre que el reporte sea del mismo nombre de usuario.
+- **¿Cómo se reescribe, si Google Forms solo agrega filas?** Se plantearon un Apps Script en la hoja (borra las filas anteriores con el mismo id) o una pestaña con `QUERY` (muestra la fila más reciente por id). Respuesta: «mejor no». No hay reescritura: pasado el cupo, no se envía nada.
+- **¿Y si el visitante cambia de nombre?** Cada nombre tiene sus 3.
+- **Implementación:** reemplaza el contador único `arbol-cuestionario-resultados-enviados` por `arbol-cuestionario-resultados-por-nombre`, un mapa `{ nombre normalizado: enviados }`. El nombre se normaliza (espacios compactados, minúsculas); el nombre vacío tiene su propio cupo. El contador anterior se ignora: nunca llegó a publicarse.

@@ -82,6 +82,38 @@
   };
   var CLAVE_NOMBRE = 'arbol-cuestionario-nombre';
   var CLAVE_RESULTADO = 'arbol-cuestionario-resultado';
+  /* Solo se guardan en la hoja los primeros resultados distintos de cada
+     nombre de usuario en este navegador; después el reporte se sigue
+     mostrando, pero ya no se envía. Cada nombre (y el nombre vacío) tiene
+     su propio cupo. Es un límite del navegador (localStorage), no del
+     servidor. Se guarda como { nombreNormalizado: enviados }. */
+  var CLAVE_ENVIADOS = 'arbol-cuestionario-resultados-por-nombre';
+  var MAX_RESULTADOS_ENVIADOS = 3;
+
+  function claveDeNombre(nombre) {
+    return String(nombre || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function enviadosPorNombre() {
+    var crudo = leerLocal(CLAVE_ENVIADOS);
+    if (!crudo) return {};
+    try {
+      var mapa = JSON.parse(crudo);
+      return mapa && typeof mapa === 'object' ? mapa : {};
+    } catch (error) { return {}; }
+  }
+
+  function resultadosEnviados(nombre) {
+    var n = Number(enviadosPorNombre()[claveDeNombre(nombre)]);
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function contarResultadoEnviado(nombre) {
+    var mapa = enviadosPorNombre();
+    var clave = claveDeNombre(nombre);
+    mapa[clave] = resultadosEnviados(nombre) + 1;
+    escribirLocal(CLAVE_ENVIADOS, JSON.stringify(mapa));
+  }
 
   function leerLocal(clave) {
     try { return global.localStorage.getItem(clave); } catch (error) { return null; }
@@ -145,10 +177,12 @@
     var previo = resultadoGuardado();
     if (previo && previo.firma === firma && !previo.borrado) return;
     var nombre = nombreGuardado();
+    var valorNombre = (nombre && nombre.valor) || '';
+    if (resultadosEnviados(valorNombre) >= MAX_RESULTADOS_ENVIADOS) return;
     var id = idAleatorio();
     var enviado = enviarAFormulario({
       id: id,
-      nombre: (nombre && nombre.valor) || '',
+      nombre: valorNombre,
       posturas: firma,
       nombresPosturas: especificas.map(function (item) {
         return rotuloPostura(item.postura);
@@ -157,6 +191,7 @@
       accion: 'guardar'
     });
     if (!enviado) return;
+    contarResultadoEnviado(valorNombre);
     escribirLocal(CLAVE_RESULTADO, JSON.stringify({ id: id, firma: firma, borrado: false }));
   }
 
@@ -555,15 +590,20 @@
     });
     var propias = estado.respuestasEfectivas();
     var comunes = 0;
+    var coinciden = 0;
     var total = 0;
     Object.keys(resolucion.respuestas || {}).forEach(function (qid) {
       total++;
       if (propias[qid] && propias[qid] === resolucion.respuestas[qid]) {
+        coinciden++;
         comunes += pesoCerteza(estado.certezaDe(qid));
       }
     });
+    /* `comunes` está ponderado por la certeza (es lo que da el porcentaje de
+       afinidad); `coinciden` es el conteo entero que se le muestra al usuario. */
     return {
       comunes: comunes,
+      coinciden: coinciden,
       total: total,
       porcentaje: total ? Math.round((comunes / total) * 100) : 0
     };
@@ -791,6 +831,8 @@
   function pintarRespuestas(nodo, estado) {
     var pregunta = nodo.pregunta;
     var pesos = Arbol.pesoDeRespuestas(estado.grafo);
+    var tradicionesPorRespuesta = Arbol.tradicionesDeRespuestas(
+      estado.grafo, estado.datos.traditions_index);
     var html = '<section class="quiz-respuestas"><h3>'
       + escapar(t('quizRespuestas')) + '</h3><div class="quiz-opciones">';
     (pregunta.answers || []).forEach(function (respuesta) {
@@ -799,7 +841,7 @@
         ? dato('q.' + pregunta.id + '.' + respuesta.key + '.gloss', respuesta.gloss)
         : '';
       var destino = estado.datos.postures[respuesta.target_posture_id];
-      var tradiciones = tradicionesDePostura(destino, estado.datos);
+      var tradiciones = tradicionesPorRespuesta[pregunta.id + ':' + respuesta.key] || [];
       var peso = pesos[pregunta.id + ':' + respuesta.key] || 0;
       var textoTradiciones = tradiciones.length
         ? tradiciones.join(' · ')
@@ -822,7 +864,18 @@
         + '<span class="quiz-opcion-meta">'
         + '<span class="quiz-opcion-fila">'
         + '<span class="quiz-campo-rotulo">' + escapar(t('quizTradicionesSi')) + ':</span> '
-        + '<span class="quiz-spoiler" aria-hidden="' + (revelarAdelantos ? 'false' : 'true') + '">'
+        /* Cerca de la raíz la rama abarca decenas de tradiciones: la lista se
+           corta a 3 renglones (CSS) y el total se anuncia junto al rótulo; la
+           lista completa queda en el `title`. */
+        + (tradiciones.length > 1
+          ? '<span class="quiz-spoiler quiz-tradiciones-total" aria-hidden="'
+            + (revelarAdelantos ? 'false' : 'true') + '">'
+            + escapar(t('quizTradicionesTotal', { n: String(tradiciones.length) }))
+            + '</span>'
+          : '')
+        + '<span class="quiz-spoiler quiz-tradiciones-lista" aria-hidden="'
+        + (revelarAdelantos ? 'false' : 'true') + '"'
+        + (tradiciones.length > 1 ? ' title="' + escapar(textoTradiciones) + '"' : '') + '>'
         + escapar(textoTradiciones)
         + '</span></span>'
         + (textoPeso
@@ -1337,19 +1390,35 @@
     var camino = posturasDelCamino(estado).filter(function (item) {
       return item && item.postura && !idsEspecificas[item.postura.id];
     });
+    /* Encaja toda tradición cuyo camino completo coincide con las respuestas
+       del usuario (conteo entero, sin ponderar por certeza): equivale a estar
+       anotada en alguna postura que alcanzó, sea la más específica, una
+       intermedia o una sin nombre. Primero van las de las posturas más
+       específicas; después, las demás, de camino más largo a más corto.
+       «Afines» queda solo para coincidencias parciales. */
     var tradicionesExactas = [];
     especificas.forEach(function (item) {
       tradicionesDePostura(item.postura, estado.datos).forEach(function (nombre) {
         if (tradicionesExactas.indexOf(nombre) === -1) tradicionesExactas.push(nombre);
       });
     });
+    var encajanPorCamino = [];
     var cercanas = [];
     Object.keys(estado.datos.traditions_index || {}).forEach(function (nombre) {
       if (tradicionesExactas.indexOf(nombre) !== -1) return;
       var score = coincidenciasTradicion(estado, nombre);
+      if (score.total && score.coinciden === score.total) {
+        encajanPorCamino.push({ nombre: nombre, score: score });
+        return;
+      }
       if (score.comunes < 2) return;
       cercanas.push({ nombre: nombre, score: score });
     });
+    encajanPorCamino.sort(function (a, b) {
+      return b.score.total - a.score.total
+        || a.nombre.localeCompare(b.nombre, (Arbol.I18n && Arbol.I18n.idioma) || 'es');
+    });
+    encajanPorCamino.forEach(function (item) { tradicionesExactas.push(item.nombre); });
     cercanas.sort(function (a, b) {
       return b.score.porcentaje - a.score.porcentaje || b.score.comunes - a.score.comunes;
     });
@@ -1384,9 +1453,18 @@
     if (tradicionesExactas.length) {
       html += '<ul class="quiz-chips">'
         + tradicionesExactas.map(function (n) {
+          /* El paréntesis final es una precisión (confesión, época, grupos):
+             sigue al nombre en el mismo renglón, en color tenue, para que el
+             nombre se lea primero. Si no cabe, se corta con «…» (CSS). */
+          var partes = String(n).match(/^(.*?)\s*\(([^()]*)\)\s*$/);
+          var principal = partes && partes[1] ? partes[1] : n;
+          var detalle = partes && partes[1] ? partes[2] : '';
           return '<li><button type="button" class="quiz-chip-btn" data-accion="explorar-tradicion" data-tradicion="'
-            + escapar(n) + '" title="' + escapar(t('quizExplorarTradicion')) + '">'
-            + escapar(n) + '</button></li>';
+            + escapar(n) + '" title="' + escapar(n + ' — ' + t('quizExplorarTradicion')) + '">'
+            + '<span class="quiz-chip-texto">'
+            + '<span class="quiz-chip-principal">' + escapar(principal) + '</span>'
+            + (detalle ? '<span class="quiz-chip-detalle"> · ' + escapar(detalle) + '</span>' : '')
+            + '</span></button></li>';
         }).join('')
         + '</ul>';
     } else {
@@ -1395,15 +1473,16 @@
     html += '</section>';
 
     html += '<section class="quiz-tarjeta"><h3>'
-      + escapar(t('quizReligionesCercanas')) + '</h3>';
+      + escapar(t('quizReligionesCercanas')) + '</h3>'
+      + '<p class="quiz-tarjeta-intro">' + escapar(t('quizReligionesCercanasIntro')) + '</p>';
     if (cercanas.length) {
       html += '<ul class="quiz-cercanas">';
       cercanas.forEach(function (item) {
-        html += '<li><div><strong>' + escapar(item.nombre) + '</strong>'
-          + '<span>' + escapar(t('quizCoincidencias')) + ': '
-          + String(item.score.comunes).replace('.', Arbol.I18n && Arbol.I18n.idioma === 'en' ? '.' : ',')
-          + '/' + item.score.total
-          + ' (' + item.score.porcentaje + '%)</span></div>'
+        html += '<li><div class="quiz-cercana-cabecera"><strong>' + escapar(item.nombre) + '</strong>'
+          + '<span>' + escapar(t('quizCoincidencias', {
+            n: String(item.score.coinciden), total: String(item.score.total)
+          })) + ' · ' + escapar(t('quizAfinidad', { pct: String(item.score.porcentaje) }))
+          + '</span></div>'
           + '<div class="quiz-barra"><span style="width:'
           + item.score.porcentaje + '%"></span></div>'
           + '<button type="button" class="quiz-btn-mini" data-accion="explorar-tradicion" data-tradicion="'
@@ -1412,7 +1491,7 @@
       });
       html += '</ul>';
     } else {
-      html += '<p class="quiz-vacio">' + escapar(t('quizSinReligion')) + '</p>';
+      html += '<p class="quiz-vacio">' + escapar(t('quizSinCercanas')) + '</p>';
     }
     html += '</section>';
 

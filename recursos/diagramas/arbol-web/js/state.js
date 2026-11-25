@@ -247,6 +247,37 @@
     return pesos;
   }
 
+  /* Qué tradiciones recorren cada respuesta: las del nodo al que lleva más
+     las de todo lo que cuelga de él. Una tradición ubicada en un nodo abraza
+     toda la rama que sube hasta la raíz, así que cuenta para cada respuesta
+     del camino, no solo para la última. Sin duplicados, sin notas y en orden
+     alfabético. Si se da `indice` (traditions_index), solo se aceptan los
+     nombres que figuran en él. */
+  function tradicionesDeRespuestas(grafo, indice) {
+    if (grafo.tradicionesRespuestas) return grafo.tradicionesRespuestas;
+    var bajo = descendientesDeNodoMapa(grafo);
+    var porRespuesta = {};
+    grafo.aristas.forEach(function (arista) {
+      if (arista.tipo !== 'respuesta' || !arista.preguntaId || !arista.clave) return;
+      var ids = [arista.hasta].concat(Array.from(bajo.get(arista.hasta) || []));
+      var nombres = [];
+      ids.forEach(function (id) {
+        var nodo = grafo.nodos.get(id);
+        var postura = nodo && nodo.postura;
+        if (!postura || postura.is_root) return;
+        (postura.traditions || []).forEach(function (tradicion) {
+          if (!tradicion.name || tradicion.is_note) return;
+          if (indice && !indice[tradicion.name]) return;
+          if (nombres.indexOf(tradicion.name) === -1) nombres.push(tradicion.name);
+        });
+      });
+      nombres.sort(function (a, b) { return a.localeCompare(b, 'es'); });
+      porRespuesta[arista.preguntaId + ':' + arista.clave] = nombres;
+    });
+    grafo.tradicionesRespuestas = porRespuesta;
+    return porRespuesta;
+  }
+
   /* Indagatorio, limpio y exploración libre comparten expansión; cuestionario,
      árbol completo y edición guardan la suya por separado. */
   function slotExpandidos(divulgacion) {
@@ -1130,6 +1161,7 @@
   Arbol.descendientesDeNodo = descendientesDeNodo;
   Arbol.grupoConvergenciaDeSeleccion = grupoConvergenciaDeSeleccion;
   Arbol.pesoDeRespuestas = pesoDeRespuestas;
+  Arbol.tradicionesDeRespuestas = tradicionesDeRespuestas;
   Arbol.nodosVisibles = nodosVisibles;
   Arbol.aristasVisibles = aristasVisibles;
   Arbol.nodosEnCaminoElegido = nodosEnCaminoElegido;

@@ -56,6 +56,9 @@ WEB_DATA_GLOBAL = "__ARBOL_POSTURAS__"
 WEB_NOTES_GLOBAL = "__ARBOL_NOTAS__"
 WEB_NOTES_FILENAME = "notas.cache.js"
 GROUP = re.compile(r"\{([^{}]*)\}")
+# `~` al inicio de un sinónimo (tras `/` o al principio): sinónimo que no se
+# usa para buscar definiciones externas. Es marca del autor, no texto visible.
+NO_SEARCH_MARK = re.compile(r"(^|/)(\s*)~")
 EMPHASIS = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
 TRAILING_PARENTHESIS = re.compile(r"\s*\([^()]*\)\s*$")
 # Partes finales de una línea `->`: el paréntesis coloquial y el {wikilink}.
@@ -154,7 +157,29 @@ def display_text(value: str) -> str:
         return match.group(2) or match.group(1)
 
     value = WIKILINK.sub(replace_wikilink, value)
+    # La marca `~` no forma parte del nombre: sin quitarla aquí, una postura
+    # marcada en un lugar y citada sin marca en otro (`&`, `->`) dejaría de
+    # reconocerse como la misma.
+    value = NO_SEARCH_MARK.sub(r"\1\2", value)
     return " ".join(value.strip().split())
+
+
+def search_excluded_synonyms(raw_label: str) -> list[str]:
+    """Sinónimos marcados con `~`: no se buscan en fuentes externas.
+
+    `Inspiracionalismo Mecánico / ~Dictado` devuelve `["Dictado"]`. Se
+    devuelven ya limpios, tal como aparecen en `label`.
+    """
+
+    text = strip_groups(raw_label)
+    excluded: list[str] = []
+    for part in text.split("/"):
+        part = part.strip()
+        if part.startswith("~"):
+            clean = display_text(part[1:])
+            if clean and clean not in excluded:
+                excluded.append(clean)
+    return excluded
 
 
 def split_colloquial_question(question: str) -> tuple[str, str | None]:
@@ -992,6 +1017,7 @@ def build_web_model(
             "is_unnamed": label in {"?", "-", ""},
             "is_suggested": label.endswith("*"),
             "is_uncertain": label.endswith("?") and label != "?",
+            "search_excluded": search_excluded_synonyms(posture.raw),
             "traditions": traditions,
             "notes": [],
             "wikilinks": parse_wikilinks(posture.raw, repository_root, web_directory),

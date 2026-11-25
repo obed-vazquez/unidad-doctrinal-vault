@@ -22,6 +22,7 @@ La indentación expresa anidamiento. El nombre de postura repetido al inicio de 
   - Tradiciones divididas: algunas tradiciones agrupan iglesias o corrientes que, a partir de cierta pregunta, responden distinto. La tradición se anota en la última postura en que todos sus grupos coinciden, y cada grupo, con nombre propio, se anota más abajo en la rama que sostiene, con estas mismas reglas, hasta llegar incluso a una hoja. Ejemplo: `X` anotada en la postura A, su grupo `X-α` en B y su grupo `X-β` en C (B y C debajo de A) significa que toda la tradición sostiene A, que α además sostiene B y β además C; no que `X` sostenga cualquier otra postura D que cuelgue de A.
 - `[[]]` enlace wikilink a documentos de descripción/desarrollo de postura o pregunta
 - `&`   pregunta compartida por varias posturas: `Teísmo & Deísmo -> ¿Jesucristo realmente existió?`. Es un punto de convergencia: ramas distintas vuelven a unirse en un mismo nodo.
+- `~`   al inicio de un sinónimo (tras `/`): ese sinónimo no se usa para buscar definiciones externas (p. ej. Wikipedia), porque suelto significa otra cosa (`Inspiracionalismo Mecánico / ~Dictado`). No se muestra en el visor ni cambia la identidad de la postura: citarla sin la marca sigue siendo la misma postura.
 
 ## Particularidad estructural: no es un árbol binario estricto
 Una misma postura puede tener **varias líneas `->`**, cada una abriendo un eje de decisión independiente sobre un tópico distinto. En la estructura, un nodo puede sostener dos preguntas paralelas que exploren dimensiones separadas y generan subárboles que no se solapan.
@@ -108,7 +109,7 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                       - No: Subordinacionismo
                       - Sí: Cristo-creaturismo*
                         - Cristo-creaturismo* -> ¿Fue Jesucristo en algún punto inferior y subordinado al *Fundamento Último*? (¿Fue Jesús inferior a Dios?)
-                          - No: ? {No se identifica quién sostenga esta postura}
+                          - No: ?
                           - Sí: ?
                             - ? -> ¿Era Jesucristo inicialmente un ser divino?
                               - Sí: ?
@@ -123,13 +124,13 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                           - No: ?
                                       - No: ?
                   - Sí: Encarnacionismo
-                    - Encarnacionismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocerlas como revelación divina autoritativa? (¿El Antiguo Testamento tiene revelación divina?)
+                    - Encarnacionismo & Subordinacionismo -> ¿El uso normativo y litúrgico que Jesucristo hace de las Escrituras hebreas es evidencia suficiente para reconocer al menos las referencias como texto con inspiración u origen divino autoritativo? (¿Parte del Antiguo Testamento proviene de Dios?)
                       - No: Teología Liberal / Racionalismo Teológico?
                       - Sí: ?
-                        - ? -> ¿El reconocimiento de revelación divina se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento es revelación divina?) { [[Is the Bible God’s Revelation_]] }
+                        - ? -> ¿El reconocimiento de inspiración u origen divino se extiende al conjunto del Tanaj/TaNaKh (antiguo Testamento), y no solo a los libros expresamente citados? (¿Todo el Antiguo Testamento proviene de Dios?) { [[Is the Bible God’s Revelation_]] }
                           - No: Canon veterotestamentario restringido*
                           - Sí: Canon veterotestamentario pleno*
-                            - Canon veterotestamentario pleno* -> ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como revelación divina autoritativa? (¿Las cartas apostólicas son revelación divina?)
+                            - Canon veterotestamentario pleno* -> ¿La comisión que Jesucristo confiere a sus apóstoles para transmitir su enseñanza, el reconocimiento recíproco entre los apóstoles y la recepción de la iglesia primitiva es evidencia suficiente para reconocer el testimonio apostólico como texto con inspiración o de origen divino autoritativo? (¿Las cartas apostólicas provienen de Dios?)
                               - No: ?
                                 - ? -> ¿Solo las palabras de Jesús dentro del Nuevo Testamento son autoritativas?
                                   - Sí: Cristianismo de letras rojas*
@@ -141,14 +142,14 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                       - Sí: Postura de la Intuición Natural (o inspiración natural)
                                       - No: ?
                               - Sí: Autoridad apostólica derivada*
-                                - Autoridad apostólica derivada* -> ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como revelación divina autoritativa? (¿El Nuevo Testamento es revelación divina?) { [[Is the Bible God’s Revelation_]], [[The Canon of the Bible (1999) by Larry A. Taylor - To Print]] }
+                                - Autoridad apostólica derivada* -> ¿La recepción universal de la iglesia primitiva y el trato que da al resto de los escritos neotestamentarios, en pie de igualdad con los ya reconocidos, son evidencia suficiente para extenderles ese mismo reconocimiento como texto con inspiración o de origen divino autoritativo? (¿El Nuevo Testamento proviene de Dios?) { [[Is the Bible God’s Revelation_]]}
                                   - No: Canon neotestamentario restringido*
                                   - Sí: Canon neotestamentario pleno*
                                     - Canon neotestamentario pleno* -> ¿El autotestimonio explícito de las escrituras autoritativas sobre su origen divino, la atribución de sus palabras al Espíritu Santo como autor primario y su autoidentificación como Palabra de Dios con autoridad inquebrantable son evidencia suficiente para concluir que es producto de la inspiración divina? (¿La Biblia es inspirada por Dios?) { [[Is the Bible God’s Revelation_]], [[La Biblia - La Palabra de Dios]], [[The Bible, Weapon of Desperate]] }
-                                      - Sí: Postura de la inspiración bíblica {Luteranismo, Reformados/Presbiterianos, Anglicanismo, Metodismo}
+                                      - Sí: Postura de la inspiración bíblica
                                         - Postura de la inspiración bíblica -> ¿La Biblia es clara y sin ambigüedades en su mensaje?
                                           - Sí: Perspicuidad de las Escrituras
-                                            - Perspicuidad de las Escrituras -> ¿Esa claridad se extiende a todo lo que la Biblia enseña, y no solo a lo necesario para la salvación? (¿Toda la Biblia es clara, o solo el mensaje de salvación?)
+                                            - Perspicuidad de las Escrituras -> ¿Esa claridad se extiende a todo lo que la Biblia enseña, y no solo a lo necesario para la salvación? (¿Toda la Biblia es clara, y no solo el mensaje de salvación?)
                                               - Sí: Perspicuidad plena*
                                               - No -- la claridad abarca al menos lo necesario para la salvación, no todos los pasajes: Perspicuidad salvífica* {Reformados/Presbiterianos (Confesión de Westminster 1.7), Bautistas (Confesión de 1689), Luteranismo}
                                           - No: ? {Catolicismo, Ortodoxia (calcedonense)}
@@ -221,10 +222,10 @@ El visor se abre con doble clic en **[arbol-web/index.html](diagramas/arbol-web/
                                               - Cierto Contenido o Temas fueron inspirados -- (por ejemplo, solo las palabras de Jesús o solo el tema de la salvación fue inspirado): ?
                                         - Postura de la inspiración bíblica -> ¿Lo que Dios inspiró fueron las palabras y no solamente temas o conceptos a los escritores? (¿Dios inspiró las palabras que mandó escribir?) { [[tipos-de-inspiracion-biblica.md]] }
                                           - Sí: Inspiracionalismo Verbal
-                                          - No: Inspiracionalismo Dinámico / Conceptual {Adventismo (inspiración del pensamiento)}
+                                          - No: Inspiracionalismo Dinámico / ~Conceptual {Adventismo (inspiración del pensamiento)}
                                         - Postura de la inspiración bíblica -> ¿Dios comunicó lo inspirado usando al escritor como mero instrumento, sin que este aportara su propia elaboración (experiencia, personalidad, vocabulario o facultades)? (¿El escritor fue solo un instrumento, como quien escribe un dictado?) { [[tipos-de-inspiracion-biblica.md]] }
-                                          - Sí: Inspiracionalismo Mecánico / Dictado
-                                          - No: Inspiracionalismo Orgánico / Concursal / Confluente {Catolicismo, Adventismo}
+                                          - Sí: Inspiracionalismo Mecánico / ~Dictado
+                                          - No: Inspiracionalismo Orgánico / ~Concursal / ~Confluente {Catolicismo, Adventismo}
                                             - Inspiracionalismo Plenario & Inspiracionalismo Verbal & Inspiracionalismo Orgánico / Concursal / Confluente -> ¿Es plausible concebir un escenario en el que, incluso suponiendo una exégesis ideal, una interpretación bíblica alcance un grado de certeza suficientemente alto —o una incertidumbre suficientemente baja— como para considerarla segura en al menos uno de los tópicos específicos que la Biblia expone? (¿El hombre puede entender lo que la Biblia expresa sobre al menos una cosa?)
                                               - Sí: ? {Bautistas, Luteranismo confesional, Reformados conservadores, Pentecostalismo (Asambleas de Dios), Evangelicalismo conservador (Declaración de Chicago)}
                                               - No: ?

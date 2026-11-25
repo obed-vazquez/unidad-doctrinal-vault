@@ -53,7 +53,8 @@ const contexto = vm.createContext(Object.assign(ventana, {
   RegExp, Error, Infinity, Date
 }));
 
-['js/formato.js', 'js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js'].forEach((archivo) => {
+['js/formato.js', 'js/state.js', 'js/edits.js', 'js/layout.js', 'js/search.js', 'js/router.js',
+  'js/definiciones.js'].forEach((archivo) => {
   vm.runInContext(fs.readFileSync(path.join(__dirname, archivo), 'utf8'), contexto, {
     filename: archivo
   });
@@ -1104,6 +1105,97 @@ console.log('\n== Caché de caminos entre grafos ==');
   comprobar('la ruta resuelta en el grafo de edición solo usa nodos de ese grafo',
     rotas.length === 0, rotas.slice(0, 5).join(','));
   Arbol.Busqueda.limpiarCache();
+}
+
+console.log('\n== Tradiciones por respuesta (cuestionario) ==');
+// Regresión: el cuestionario solo leía las tradiciones escritas en la postura
+// destino de cada respuesta, así que casi todas decían «Sin tradición
+// registrada». Una tradición ubicada en un nodo abraza toda la rama de arriba.
+{
+  const g = Arbol.construirGrafo(datos);
+  const porRespuesta = Arbol.tradicionesDeRespuestas(g, datos.traditions_index);
+  const directas = (pid) => (datos.postures[pid].traditions || [])
+    .filter((t) => t.name && !t.is_note).length;
+  const respuestasQ1 = datos.questions.Q1.answers;
+  comprobar('las respuestas de Q1 no tienen tradiciones escritas directamente (premisa del caso)',
+    respuestasQ1.every((r) => directas(r.target_posture_id) === 0));
+  comprobar('aun así, cada respuesta de Q1 hereda tradiciones de su rama',
+    respuestasQ1.every((r) => (porRespuesta['Q1:' + r.key] || []).length > 0),
+    respuestasQ1.map((r) => r.key + '=' + (porRespuesta['Q1:' + r.key] || []).length).join(','));
+  const ubicadas = new Set();
+  Object.values(datos.postures).forEach((p) => (p.traditions || []).forEach((t) => {
+    if (t.name && !t.is_note && datos.traditions_index[t.name]) ubicadas.add(t.name);
+  }));
+  const unionQ1 = new Set();
+  respuestasQ1.forEach((r) => (porRespuesta['Q1:' + r.key] || []).forEach((n) => unionQ1.add(n)));
+  const faltan = Array.from(ubicadas).filter((n) => !unionQ1.has(n));
+  comprobar('entre las respuestas de Q1 aparecen todas las tradiciones ubicadas en el árbol',
+    faltan.length === 0, faltan.slice(0, 5).join(','));
+  // Monotonía: lo que lista una respuesta incluye lo de cualquier respuesta de más abajo.
+  const rotas = [];
+  g.aristas.forEach((a) => {
+    if (a.tipo !== 'respuesta' || !a.preguntaId || !a.clave) return;
+    const propias = new Set(porRespuesta[a.preguntaId + ':' + a.clave] || []);
+    const pila = [a.hasta];
+    const vistos = new Set();
+    while (pila.length) {
+      const id = pila.pop();
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      g.nodos.get(id).salidas.forEach((s) => {
+        if (s.tipo === 'respuesta' && s.preguntaId && s.clave) {
+          const hijas = porRespuesta[s.preguntaId + ':' + s.clave] || [];
+          if (hijas.some((n) => !propias.has(n))) rotas.push(a.id + ' ⊉ ' + s.id);
+        }
+        pila.push(s.hasta);
+      });
+    }
+  });
+  comprobar('cada respuesta incluye las tradiciones de todas las respuestas que cuelgan de ella',
+    rotas.length === 0, rotas.slice(0, 3).join(' | '));
+}
+
+console.log('\n== Sinónimos excluidos de la búsqueda (~) ==');
+// Regresión: «Inspiracionalismo Mecánico / Dictado» acababa buscando
+// «Dictado» en Wikipedia y mostraba el artículo del ejercicio escolar.
+{
+  const candidatos = Arbol.Definiciones.candidatos;
+  const mecanico = Object.values(datos.postures)
+    .find((p) => /^Inspiracionalismo Mecánico/.test(p.label));
+  comprobar('el convertidor quita la ~ de la etiqueta visible',
+    !!mecanico && mecanico.label === 'Inspiracionalismo Mecánico / Dictado',
+    mecanico && mecanico.label);
+  comprobar('el convertidor anota el sinónimo marcado en search_excluded',
+    !!mecanico && JSON.stringify(mecanico.search_excluded) === '["Dictado"]',
+    mecanico && JSON.stringify(mecanico.search_excluded));
+  comprobar('ninguna etiqueta conserva la marca ~',
+    Object.values(datos.postures).every((p) => p.label.indexOf('~') === -1));
+  const lista = candidatos(mecanico.label, mecanico.search_excluded);
+  comprobar('la búsqueda de definiciones nunca usa el sinónimo marcado',
+    lista.every((c) => !/dictado/i.test(c)), lista.join(' | '));
+  comprobar('la búsqueda de definiciones conserva el sinónimo no marcado',
+    lista.indexOf('Inspiracionalismo Mecánico') !== -1, lista.join(' | '));
+  // Regresión: lo que iba antes de « de » se buscaba solo («Postura»).
+  const recortadas = Object.values(datos.postures).filter((p) => !p.is_unnamed)
+    .map((p) => ({ p, lista: candidatos(p.label, p.search_excluded) }))
+    .filter(({ lista }) => lista.some((c) => /^(postura|teoría|edad)$/i.test(c)));
+  comprobar('la búsqueda no recorta antes de « de » (nada busca «Postura», «Teoría» ni «Edad»)',
+    recortadas.length === 0, recortadas.map(({ p }) => p.label).slice(0, 3).join(' | '));
+  const sinMarca = candidatos('Homoiousianismo / Semi-Arrianismo', []);
+  comprobar('sin marca, los sinónimos se siguen buscando todos',
+    sinMarca.indexOf('Semi-Arrianismo') !== -1, sinMarca.join(' | '));
+
+  const editsRen = Edits.vacio();
+  Edits.nombrarPostura(editsRen, mecanico.id, 'Inspiracionalismo Mecánico / ~Dictado / ~Verbal');
+  const trasRen = Edits.aplicar(datos, editsRen).postures[mecanico.id];
+  comprobar('renombrar en Modo de Edición con ~ oculta la marca y la anota',
+    trasRen.label === 'Inspiracionalismo Mecánico / Dictado / Verbal'
+    && JSON.stringify(trasRen.search_excluded) === '["Dictado","Verbal"]',
+    trasRen.label + ' ' + JSON.stringify(trasRen.search_excluded));
+  const editsSin = Edits.vacio();
+  Edits.nombrarPostura(editsSin, mecanico.id, 'Trinitarianismo/Trinitarismo');
+  comprobar('renombrar sin ~ deja la etiqueta tal cual',
+    Edits.aplicar(datos, editsSin).postures[mecanico.id].label === 'Trinitarianismo/Trinitarismo');
 }
 
 console.log('\n' + (fallos.length
